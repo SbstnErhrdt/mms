@@ -17,8 +17,8 @@ public class SubjectRights extends ContentRights {
 		return valueNames;
 	}
 	
-	public String[] toValues() {
-		String[] values = super.toValues();
+	public String[] toValueStrings() {
+		String[] values = super.toValueStrings();
 		values[4] = "" + subjectID;
 		return values;
 	}

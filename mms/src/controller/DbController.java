@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
+import model.Employee;
 import model.User;
+import model.userRights.EmployeeRights;
 import model.userRights.UserRights;
 
 
@@ -73,7 +75,7 @@ public class DbController {
 		String[] userRightsValueNames = userRights.toValueNames();
 		String [] userRightsValues = userRights.toValues();
 		
-		query = "INSERT INTO users (";
+		query = "INSERT INTO user_rights (";
 		
 		for(int i = 0; i < userRightsValueNames.length-1; i++) {
 			query += userRightsValueNames[i] + ", ";
@@ -98,60 +100,45 @@ public class DbController {
 	}
 	
 
-	public Object read(Object obj) {
+	public User getUser(User user) {
 		
-		String query = "";
-		
-		String className = obj.getClass().getSimpleName();
-		
-		// User
-		if(className.equals("User")) {
-			User user = (User) obj;
-			int id = user.getId();
-			query ="SELECT firstName, lastname, title, email, "+
+		String query = "SELECT SELECT firstName, lastname, title, email, "+
                     "graduation, password, matricNum, semester, "+
-                    "rights, emailVerified FROM users WHERE email = \"" + user.getEmail() + "\" AND password = \"" + user.getPassword() + "\";";  	
-		}
-		
+                    "rights, emailVerified FROM users WHERE email ='"+ 
+                    user.getEmail() + "' AND password = '" + user.getPassword() + "';";
+			
 		System.out.println(query);
 		
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			
-			// User
-			if(className.equals("User")) {
-				if(rs.next()) {
-					User user = new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
-							rs.getString(5), rs.getString(6), Integer.parseInt(rs.getString(7)), Integer.parseInt(rs.getString(8)), new UserRights(rs.getString(9)), 
-									Boolean.parseBoolean(rs.getString(10)));
-					return user;
-				} else {
-					System.out.println("No user found with this email and password.");
-					return null;
-				}
-			}
-			
+			if(rs.next()) {
+				User newUser = new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+						rs.getString(5), rs.getString(6), Integer.parseInt(rs.getString(7)), Integer.parseInt(rs.getString(8)), null,	// userRights are set later 
+						Boolean.parseBoolean(rs.getString(10)));
+				return newUser;
+			} else {
+				System.out.println("No user found with this email and password.");
+				return null;
+			}			
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
-	public boolean update(Object obj) {
-		String query = "";
+	public boolean updateUser(User user) {
+		String query = "UPDATE users SET ";
 		
-		if(obj.getClass().getSimpleName().equals("User")) {
-			User user = (User) obj;
-			int id = user.getId();
-			ArrayList<String> values = user.getAttributes();
-			String[] valueNames = user.getAttrNames();
-			query = "UPDATE users SET ";
-			for(int i = 0; i < valueNames.length-1; i++) {
-				query += valueNames[i] + " = \"" + values.get(i) + "\", " ;
-			}
-			query += valueNames[valueNames.length-1] + " = \"" + values.get(values.size()-1) +"\");";		
-			query += " WHERE id = " + id;
+		String email = user.getEmail();
+		String[] valueNames = user.getValueNames();
+		String[] values = user.getValues();
+		
+		for(int i = 0; i < valueNames.length-1; i++) {
+			query += valueNames[i] + " = '" + values[i] + "', " ;
 		}
+		query += valueNames[valueNames.length-1] + " = '" + values[values.length-1] +"');";		
+		query += " WHERE email = '" + email + "';";
 		
 		try {
 			db.createStatement().executeUpdate(query);
@@ -162,18 +149,95 @@ public class DbController {
 		}
 	}
 	
-	public void delete(Object obj) {
-		String query = "";
-		if(obj.getClass().getSimpleName().equals("User")) {
-			User user = (User) obj;
-			int id = user.getId();
-			query = "DELETE FROM users WHERE id = " + id + ";";
-		}
+	public boolean deleteUser(User user) {
+		String email = user.getEmail();
+		String query = "DELETE FROM users WHERE email = '" + email + "';";
+
 		try {
 			db.createStatement().executeUpdate(query);
 		} catch(SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
+		
+		// delete UserRights of user
+		query = "DELETE FROM user_rights WHERE email = '" + email + "';";
+		
+		try {
+			db.createStatement().executeUpdate(query);
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		if(user.isEmployee()) {	
+			Employee employee = (Employee) user;
+			
+			// delete Employee entries
+			query = "DELETE FROM employees WHERE email = '" + email + "';";
+			
+			try {
+				db.createStatement().executeUpdate(query);
+			} catch(SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+			
+			query = "DELETE FROM employee_rights WHERE email = '" + email + "';";
+			
+			try {
+				db.createStatement().executeUpdate(query);
+			} catch(SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+		
+			// delete ContentRights of user
+			EmployeeRights employeeRights = (EmployeeRights) user.getUserRights();
+			
+			// check, if list is empty, else delete all objects from database
+			// ModuleRights
+			if(!employeeRights.getModuleRightsList().isEmpty()) {
+				query = "DELETE FROM module_rights WHERE users_email = '" + email + "';";
+				try {
+					db.createStatement().executeUpdate(query);
+				} catch(SQLException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+			// EventRights
+			if(!employeeRights.getEventRightsList().isEmpty()) {
+				query = "DELETE FROM event_rights WHERE users_email = '" + email + "';";
+				try {
+					db.createStatement().executeUpdate(query);
+				} catch(SQLException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+			// StudycourseRights
+			if(!employeeRights.getStudycourseRightsList().isEmpty()) {
+				query = "DELETE FROM studycourse_rights WHERE user_email = '" + email + "';";
+				try {
+					db.createStatement().executeUpdate(query);
+				} catch(SQLException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+			// SubjectRights
+			if(!employeeRights.getSubjectRightsList().isEmpty()) {
+				query = "DELETE FROM subject_rights WHERE user_email = '" + email + "';";
+				try {
+					db.createStatement().executeUpdate(query);
+				} catch(SQLException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+			
+		return true;
 	}
 	
 	

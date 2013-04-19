@@ -12,6 +12,44 @@ public class EmployeeRights extends UserRights {
 	private boolean isEmployeeRights = true;
 	
 	
+	
+	public ArrayList<ModuleRights> getModuleRightsList() {
+		return moduleRightsList;
+	}
+
+
+
+	public void setModuleRightsList(ArrayList<ModuleRights> moduleRightsList) {
+		this.moduleRightsList = moduleRightsList;
+	}
+
+
+
+	public ArrayList<StudycourseRights> getStudycourseRightsList() {
+		return studycourseRightsList;
+	}
+
+
+
+	public void setStudycourseRightsList(
+			ArrayList<StudycourseRights> studycourseRightsList) {
+		this.studycourseRightsList = studycourseRightsList;
+	}
+
+
+
+	public ArrayList<SubjectRights> getSubjectRightsList() {
+		return subjectRightsList;
+	}
+
+
+
+	public void setSubjectRightsList(ArrayList<SubjectRights> subjectRightsList) {
+		this.subjectRightsList = subjectRightsList;
+	}
+
+
+
 	public boolean isEmployeeRights() {
 		return isEmployeeRights;
 	}

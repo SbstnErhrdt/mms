@@ -1,5 +1,7 @@
 package model.userRights;
 
+import java.util.ArrayList;
+
 public class ContentRights {
 	private boolean canEdit, canCreate, canDelete;
 	
@@ -39,8 +41,16 @@ public class ContentRights {
 		return valueNames;
 	}
 	
-	public String[] toValues() {
+	public String[] toValueStrings() {
 		String[] values = {"" + canEdit, "" + canCreate, "" + canDelete, "ID"};
+		return values;
+	}
+	
+	public ArrayList toValues() {
+		ArrayList values = new ArrayList();
+		values.add(canEdit);
+		values.add(canCreate);
+		values.add(canDelete);
 		return values;
 	}
 	

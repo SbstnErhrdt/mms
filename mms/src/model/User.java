@@ -12,8 +12,16 @@ public class User {
 	public String firstName, lastName, title, email;
 	protected String graduation;
 	private String password;
-	private int id;
+	private boolean isEmployee = false;
 	
+	public boolean isEmployee() {
+		return isEmployee;
+	}
+
+	public void setEmployee(boolean isEmployee) {
+		this.isEmployee = isEmployee;
+	}
+
 	protected int matricNum, semester;
 	
 	protected UserRights userRights;
@@ -41,7 +49,7 @@ public class User {
 		this.password = password;
 		this.matricNum = matricNum;
 		this.semester = semester;
-		this.rights = rights;
+		this.userRights = rights;
 		this.emailVerified = emailVerified;
 	}
 	
