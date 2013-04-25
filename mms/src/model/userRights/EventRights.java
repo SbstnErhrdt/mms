@@ -18,7 +18,7 @@ public class EventRights extends ContentRights {
 	}
 	
 	public String[] toValueStrings() {
-		String[] values = super.toValueStrings();
+		String[] values = super.toValues();
 		values[4] = "" + eventID;
 		return values;
 	}

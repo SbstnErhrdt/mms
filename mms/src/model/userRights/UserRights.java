@@ -1,6 +1,8 @@
 package model.userRights;
 
-public class UserRights {
+import model.DbControllable;
+
+public class UserRights implements DbControllable {
 	private boolean canLogin;
 	private boolean isEmployeeRights = false;
 

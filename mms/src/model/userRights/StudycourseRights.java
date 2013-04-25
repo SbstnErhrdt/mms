@@ -18,7 +18,7 @@ public class StudycourseRights extends ContentRights {
 	}
 	
 	public String[] toValueString() {
-		String[] values = super.toValueStrings();
+		String[] values = super.toValues();
 		values[4] = "" + studycourseID;
 		return values;
 	}

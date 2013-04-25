@@ -17,7 +17,7 @@ public class DbController {
 	private Connection db = null;
 	private static DbController instance = null;
 
-	private DbController() {
+	protected DbController() {
 		String url = "jdbc:mysql://localhost:3306/mms";
 		String user = "root";
 		String pw = "";
