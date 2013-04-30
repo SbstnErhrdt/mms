@@ -8,7 +8,7 @@ import model.userRights.UserRights;
 
 import controller.DbController;
 
-public class User {
+public class User implements DbControllable {
 	public String firstName, lastName, title, email;
 	protected String graduation;
 	private String password;
@@ -30,7 +30,7 @@ public class User {
 	
 	private String[] attrInOrder = {"firstName", "lastName", "title", "email",
 	                                "graduation", "password", "matricNum", "semester",
-	                                "rights", "emailVerified"};
+	                                "emailVerified"};
 	
 	public User(String email, String password) {
 		this.email = email;
@@ -108,6 +108,19 @@ public class User {
 	
 	public UserRights getUserRights() {
 		return userRights;
+	}
+
+	@Override
+	public String[] toValues() {
+		return attrInOrder;;
+	}
+
+	@Override
+	public String[] toValueNames() {
+		String[] values = {"" + firstName, "" + lastName, "" +  title, "" + email,
+	            "" + graduation, "" + password, "" + matricNum, "" + semester,
+	            "" + emailVerified};
+		return values;
 	}
 
 }

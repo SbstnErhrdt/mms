@@ -34,7 +34,7 @@ public class UserDbController extends DbController {
 		}
 		query += values[values.length-1] + ");";
 		
-		System.out.println(query);
+		System.out.println(query);	// DEBUG
 		
 		try {
 			db.createStatement().executeUpdate(query);
