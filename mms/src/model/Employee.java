@@ -1,8 +1,19 @@
 package model;
 
+import model.userRights.EmployeeRights;
+
 public class Employee extends User {
 	private boolean isEmployee = true;
 	private String address, phoneNum, talkTime;
+	private EmployeeRights employeeRights = super.getUserRights();
+
+	public EmployeeRights getEmployeeRights() {
+		return employeeRights;
+	}
+
+	public void setEmployeeRights(EmployeeRights employeeRights) {
+		this.employeeRights = employeeRights;
+	}
 
 	public boolean isEmployee() {
 		return isEmployee;
