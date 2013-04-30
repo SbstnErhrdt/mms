@@ -2,6 +2,7 @@ package model;
 
 public class Employee extends User {
 	private boolean isEmployee = true;
+	private String address, phoneNum, talkTime;
 
 	public boolean isEmployee() {
 		return isEmployee;
@@ -15,5 +16,40 @@ public class Employee extends User {
 		super(email, password);
 		// TODO Auto-generated constructor stub
 	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getPhoneNum() {
+		return phoneNum;
+	}
+
+	public void setPhoneNum(String phoneNum) {
+		this.phoneNum = phoneNum;
+	}
+
+	public String getTalkTime() {
+		return talkTime;
+	}
+
+	public void setTalkTime(String talkTime) {
+		this.talkTime = talkTime;
+	}
+	
+	public String[] toEmployeeValues() {	
+		String[] values = {"'" + address + "'", "'" + phoneNum + "'", "'" + talkTime + "'"};
+		return values;
+	}
+
+	public String[] toEmployeeValueNames() {
+		String[] valueNames = {"address", "phoneNum", "talkTime"};
+		return valueNames;
+	}
+	
 
 }

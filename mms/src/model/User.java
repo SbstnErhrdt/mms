@@ -53,46 +53,7 @@ public class User implements DbControllable {
 		this.emailVerified = emailVerified;
 	}
 	
-	public ArrayList getAttributes() {
-		ArrayList attr = new ArrayList();
-		attr.add(firstName);
-		attr.add(lastName);
-		attr.add(title);
-		attr.add(email);
-		attr.add(graduation);
-		attr.add(password);
-		attr.add(matricNum);
-		attr.add(semester);
-		attr.add(rights); // KEIN OBJECT?
-		attr.add(emailVerified);
-		return attr;
-	}
-	
-	public boolean registerToDb() {
-		if(DbController.getInstance().createUser(this)) return true;
-		else return false;
-	}
-	
-	public boolean changeToDb() {
-		if(DbController.getInstance().update(this)) return true;
-		else return false;
-	}
-	
-	public String[] getValueNames() {
-		return attrInOrder;
-	}
-	
-	public String[] getValues() {
-		String[] values = {"" + firstName, "" + lastName, "" +  title, "" + email,
-            "" + graduation, "" + password, "" + matricNum, "" + semester,
-            "" + rights, "" + emailVerified};
-        return values;
-	}
-
-	public int getId() {
-		return id;
-	}
-	
+		
 	public String getEmail() {
 		return email;
 	}
@@ -101,10 +62,12 @@ public class User implements DbControllable {
 		return password;
 	}
 
+	/*
 	public static boolean login() {
 		User user = (User) DbController.getInstance().read(this);
 		return false;
 	}
+	*/
 	
 	public UserRights getUserRights() {
 		return userRights;
@@ -112,7 +75,7 @@ public class User implements DbControllable {
 
 	@Override
 	public String[] toValues() {
-		return attrInOrder;;
+		return attrInOrder;
 	}
 
 	@Override

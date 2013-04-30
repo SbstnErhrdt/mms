@@ -21,7 +21,7 @@ public class UserDbController extends DbController {
 	public boolean createUser(User user) {
 		String query = "INSERT INTO users (";
 	
-		String[] valueNames = user.getValueNames();
+		String[] valueNames = user.getValueNames();  	
 		String[] values = user.getValues();
 				
 		for(int i = 0; i < valueNames.length-1; i++) {
@@ -68,6 +68,38 @@ public class UserDbController extends DbController {
 			e.printStackTrace();
 			return false;
 		}
+		
+		if(user.isEmployee()) {
+			query = "INSERT INTO employees (";
+			
+			Employee employee = (Employee) user;
+			
+			String[] employeeValues = employee.toEmployeeValues();
+			String[] employeeValueNames = employee.toEmployeeValueNames();
+			
+			// Names
+			for(int i = 0; i < employeeValueNames.length-1; i++) {
+				query += employeeValueNames[i] + ", ";
+			}
+			query += employeeValueNames[employeeValueNames.length-1] + ") VALUES( ";
+			
+			// Values
+			for(int i = 0; i < values.length-1; i++) {
+				query += values[i] + ", ";
+			}
+			query += values[values.length-1] + ");";
+			
+			System.out.println(query);	// DEBUG
+			
+			try {
+				db.createStatement().executeUpdate(query);
+			} catch(SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		
+		
 		return true;
 	}
 	
@@ -188,7 +220,7 @@ public class UserDbController extends DbController {
 		
 		String query = "SELECT SELECT firstName, lastname, title, email, "+
                     "graduation, password, matricNum, semester, "+
-                    "rights, emailVerified FROM users WHERE email ='"+ 
+                    "emailVerified FROM users WHERE email ='"+ 
                     user.getEmail() + "' AND password = '" + user.getPassword() + "';";
 			
 		System.out.println(query);
