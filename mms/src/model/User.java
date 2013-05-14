@@ -1,7 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-
 
 import model.userRights.UserRights;
 
@@ -9,34 +7,34 @@ import model.userRights.UserRights;
 import controller.DbController;
 
 public class User implements DbControllable {
-	public String firstName, lastName, title, email;
-	protected String graduation;
-	private String password;
+	
+	/* DATENBANK User
+	 * 
+	 * VAR email
+	 * VAR firstName
+	 * VAR lastName
+	 * VAR title
+	 * INT matricNum
+	 * INT current_semester
+	 * VAR graduation
+	 * VAR password
+	 * 
+	 * */
+	
+	private String firstName, lastName, title, email, graduation, password;
 	private boolean isEmployee = false;
+	private boolean emailVerified;
+	private int matricNum, semester;	
+	private UserRights userRights;	
 	
-	public boolean isEmployee() {
-		return isEmployee;
-	}
-
-	public void setEmployee(boolean isEmployee) {
-		this.isEmployee = isEmployee;
-	}
-
-	protected int matricNum, semester;
 	
-	protected UserRights userRights;
-	
-	protected boolean emailVerified;
-	
-	private String[] attrInOrder = {"firstName", "lastName", "title", "email",
-	                                "graduation", "password", "matricNum", "semester",
-	                                "emailVerified"};
-	
+	// Konstruktor 
 	public User(String email, String password) {
 		this.email = email;
 		this.password = password;
 	}
 	
+	// Konstruktor 
 	public User(String firstName, String lastName, String title, String email,
 			String graduation, String password, int matricNum, int semester,
 			UserRights rights, boolean emailVerified) {
@@ -52,38 +50,125 @@ public class User implements DbControllable {
 		this.userRights = rights;
 		this.emailVerified = emailVerified;
 	}
-	
+
 		
+	// Getter & Setter
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	public String getEmail() {
 		return email;
 	}
-	
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getGraduation() {
+		return graduation;
+	}
+
+	public void setGraduation(String graduation) {
+		this.graduation = graduation;
+	}
+
 	public String getPassword() {
 		return password;
 	}
 
-	/*
-	public static boolean login() {
-		User user = (User) DbController.getInstance().read(this);
-		return false;
+	public void setPassword(String password) {
+		this.password = password;
 	}
-	*/
-	
+
+	public boolean isEmployee() {
+		return isEmployee;
+	}
+
+	public void setEmployee(boolean isEmployee) {
+		this.isEmployee = isEmployee;
+	}
+
+	public boolean isEmailVerified() {
+		return emailVerified;
+	}
+
+	public void setEmailVerified(boolean emailVerified) {
+		this.emailVerified = emailVerified;
+	}
+
+	public int getMatricNum() {
+		return matricNum;
+	}
+
+	public void setMatricNum(int matricNum) {
+		this.matricNum = matricNum;
+	}
+
+	public int getSemester() {
+		return semester;
+	}
+
+	public void setSemester(int semester) {
+		this.semester = semester;
+	}
+
 	public UserRights getUserRights() {
 		return userRights;
 	}
 
+	public void setUserRights(UserRights userRights) {
+		this.userRights = userRights;
+	}
+
+	
+	/* DATENBANK User
+	 * 
+	 * VAR email
+	 * VAR firstName
+	 * VAR lastName
+	 * VAR title
+	 * INT matricNum
+	 * INT current_semester
+	 * VAR graduation
+	 * VAR password
+	 * 
+	 * */
+	
+	
 	@Override
-	public String[] toValues() {
-		return attrInOrder;
+	public String[] toValueNames() {
+		String[] values = {"email,", "firstName,", "lastName,", "title,", "graduation,", "password,", "matricNum,", "current_semester"};
+		return values;
 	}
 
 	@Override
-	public String[] toValueNames() {
-		String[] values = {"" + firstName, "" + lastName, "" +  title, "" + email,
-	            "" + graduation, "" + password, "" + matricNum, "" + semester,
-	            "" + emailVerified};
+	public String[] toValues() {
+		String[] values = {email+",",firstName+",",lastName+",",title+",",graduation+",",password+",",matricNum+",",semester+""};
 		return values;
 	}
+
+	
+	
 
 }
