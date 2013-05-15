@@ -192,12 +192,17 @@ public class Module implements DbControllable{
 	}
 	
 	// EVENTS
-	public List<Event> getEvents() {
+	public List<Event> getEventList() {
 		return events;
+	}
+	
+	public void setEventList(List<Event> events ) {
+		this.events = events;
 	}
 	
 	
 	// TODO: ADD - REMOVE EVENT
+	
 	
 	// TODO: ADD - REMOVE LECTURE
 	
@@ -211,7 +216,7 @@ public class Module implements DbControllable{
 	
 	@Override
 	public String[] toValueNames() {
-		String[] value = {moduleID+"",name+"",subjects_subjectID+"",token+"",enlishTitle+"",lp+"",sws+"",language+"",duration+"",director_email+"",requirement+"",learningTarget+"",content+"",literature+""}; 
+		String[] value = {moduleID+"","'"+name+"'",subjects_subjectID+"","'"+token+"'","'"+enlishTitle+"'","'"+lp+"","'"+sws+"'","'"+language+"'",duration+"","'"+director_email+"'","'"+requirement+"'","'"+learningTarget+"'","'"+content+"'","'"+literature+"'"}; 
 		return value;
 	}
 	

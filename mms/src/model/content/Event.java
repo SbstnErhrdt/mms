@@ -66,7 +66,7 @@ public class Event implements DbControllable {
 
 	@Override
 	public String[] toValues() {
-		String values[] = {eventID+"", modules_moduleID+"", name+"",sws+"",lecturer_email+""};
+		String values[] = {eventID+"", modules_moduleID+"", "'"+name+"",sws+"'","'"+lecturer_email+"'"};
 		return values;
 	}
 	
