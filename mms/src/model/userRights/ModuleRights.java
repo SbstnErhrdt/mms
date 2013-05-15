@@ -16,7 +16,7 @@ public class ModuleRights extends ContentRights {
 		return valueNames;
 	}
 	
-	public String toValueStrings() {
+	public String toValues() {
 		String values = super.toValues() + ", "+moduleID;
 		return values;
 	}
@@ -27,7 +27,7 @@ public class ModuleRights extends ContentRights {
 		return valueNames;
 	}
 	
-	public String[] toValues() {
+	public String[] toValuesArray() {
 		String[] values = super.toValuesArray();
 		values[4] = "" + moduleID;
 		return values;
