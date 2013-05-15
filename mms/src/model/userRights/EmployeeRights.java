@@ -154,12 +154,22 @@ public class EmployeeRights extends UserRights {
 		subjectRightsList.remove(subjectRights);
 	}
 	
-	public String[] toValueNames() {
+	public String toValueNames() {
+		String valueNames = "canLogin, canDeblockCriticalModule, canDeblockModule, isAdmin";
+		return valueNames;
+	}
+	
+	public String toValues() {
+		String values = getCanLogin()+", "+canDeblockCriticalModule+", "+canDeblockModule+", "+isAdmin;
+		return values;
+	}
+	
+	public String[] toValueNamesArray() {
 		String[] valueNames = {"canLogin", "canDeblockCriticalModule", "canDeblockModule", "isAdmin"};
 		return valueNames;
 	}
 	
-	public String[] toValues() {
+	public String[] toValuesArray() {
 		String[] values = {"" + getCanLogin(), "" + canDeblockCriticalModule, "" + canDeblockModule, "" + isAdmin};
 		return values;
 	}

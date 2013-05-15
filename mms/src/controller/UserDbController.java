@@ -24,19 +24,10 @@ public class UserDbController extends DbController {
 	
 	public boolean createUser(User user) {
 		String query = "INSERT INTO users (";
-	
-		String valueNames = user.toValueNames();  	
-		String values = user.toValues();
 				
-		for(int i = 0; i < valueNames.length-1; i++) {
-			query += valueNames[i] + ", ";
-		}
-		query += valueNames[valueNames.length-1] + ") VALUES( ";
+		query += user.toValueNames()+") VALUES( ";
 		
-		for(int i = 0; i < values.length-1; i++) {
-			query += values[i] + ", ";
-		}
-		query += values[values.length-1] + ");";
+		query += user.toValues() + ");";
 		
 		System.out.println(query);	// DEBUG
 		
@@ -49,20 +40,11 @@ public class UserDbController extends DbController {
 		
 		UserRights userRights = user.getUserRights();
 		
-		String[] userRightsValueNames = userRights.toValueNames();
-		String [] userRightsValues = userRights.toValues();
-		
 		query = "INSERT INTO user_rights (";
 		
-		for(int i = 0; i < userRightsValueNames.length-1; i++) {
-			query += userRightsValueNames[i] + ", ";
-		}
-		query += userRightsValueNames[userRightsValueNames.length-1] + ") VALUES( ";
+		query += userRights.toValueNames() + ") VALUES( ";
 		
-		for(int i = 0; i < userRightsValues.length-1; i++) {
-			query += userRightsValues[i] + ", ";
-		}
-		query += userRightsValues[userRightsValues.length-1] + ");";
+		query += userRights.toValues() + ");";
 		
 		System.out.println(query);
 		
@@ -77,21 +59,12 @@ public class UserDbController extends DbController {
 			query = "INSERT INTO employees (";
 			
 			Employee employee = (Employee) user;
-			
-			String[] employeeValues = employee.toEmployeeValues();
-			String[] employeeValueNames = employee.toEmployeeValueNames();
-			
+		
 			// Names
-			for(int i = 0; i < employeeValueNames.length-1; i++) {
-				query += employeeValueNames[i] + ", ";
-			}
-			query += employeeValueNames[employeeValueNames.length-1] + ") VALUES( ";
+			query += employee.toEmployeeValues() + ") VALUES( ";
 			
 			// Values
-			for(int i = 0; i < employeeValues.length-1; i++) {
-				query += employeeValues[i] + ", ";
-			}
-			query += employeeValues[employeeValues.length-1] + ");";
+			query += employee.toEmployeeValueNames() + ");";
 			
 			System.out.println(query);	// DEBUG
 			
@@ -106,20 +79,11 @@ public class UserDbController extends DbController {
 			
 			EmployeeRights employeeRights = employee.getEmployeeRights();
 			
-			String[] employeeRightsValueNames = employeeRights.toValueNames();
-			String[] employeeRightsValues = employeeRights.toValues();
-			
 			// Names
-			for(int i = 0; i < employeeRightsValueNames.length-1; i++) {
-				query += employeeRightsValueNames[i] + ", ";
-			}
-			query += employeeRightsValueNames[employeeRightsValueNames.length-1] + ") VALUES( ";
+			query += employeeRights.toValueNames() + ") VALUES( ";
 			
 			// Values
-			for(int i = 0; i < employeeRightsValues.length-1; i++) {
-				query += employeeRightsValues[i] + ", ";
-			}
-			query += employeeRightsValues[employeeRightsValues.length-1] + ");";
+			query += employeeRights.toValues() + ");";
 			
 			System.out.println(query);	// DEBUG
 			
@@ -138,20 +102,11 @@ public class UserDbController extends DbController {
 				for(ModuleRights moduleRights : moduleRightsList) {
 					query = "INSERT INTO module_rights (";
 					
-					String[] moduleRightsValueNames = moduleRights.toValueNames();
-					String[] moduleRightsValues = moduleRights.toValues();
-					
 					// Names
-					for(int i = 0; i < moduleRightsValueNames.length-1; i++) {
-						query += moduleRightsValueNames[i] + ", ";
-					}
-					query += moduleRightsValueNames[moduleRightsValueNames.length-1] + ") VALUES( ";
+					query += moduleRights.toValueNames() + ") VALUES( ";
 					
 					// Values
-					for(int i = 0; i < moduleRightsValues.length-1; i++) {
-						query += moduleRightsValues[i] + ", ";
-					}
-					query += moduleRightsValues[moduleRightsValues.length-1] + ");";
+					query += moduleRights.toValues() + ");";
 					
 					System.out.println(query);	// DEBUG
 					
@@ -169,21 +124,12 @@ public class UserDbController extends DbController {
 				
 				for(EventRights eventRights : eventRightsList) {
 					query = "INSERT INTO event_rights (";
-					
-					String[] eventRightsValueNames = eventRights.toValueNames();
-					String[] eventRightsValues = eventRights.toValues();
-					
+							
 					// Names
-					for(int i = 0; i < eventRightsValueNames.length-1; i++) {
-						query += eventRightsValueNames[i] + ", ";
-					}
-					query += eventRightsValueNames[eventRightsValueNames.length-1] + ") VALUES( ";
+					query += eventRights.toValueNames() + ") VALUES( ";
 					
 					// Values
-					for(int i = 0; i < eventRightsValues.length-1; i++) {
-						query += eventRightsValues[i] + ", ";
-					}
-					query += eventRightsValues[eventRightsValues.length-1] + ");";
+					query += eventRights.toValues() + ");";
 					
 					System.out.println(query);	// DEBUG
 					
@@ -201,21 +147,12 @@ public class UserDbController extends DbController {
 				
 				for(StudycourseRights studycourseRights : studycourseRightsList) {
 					query = "INSERT INTO event_rights (";
-					
-					String[] studycourseRightsValueNames = studycourseRights.toValueNames();
-					String[] studycourseRightsValues = studycourseRights.toValues();
-					
+								
 					// Names
-					for(int i = 0; i < studycourseRightsValueNames.length-1; i++) {
-						query += studycourseRightsValueNames[i] + ", ";
-					}
-					query += studycourseRightsValueNames[studycourseRightsValueNames.length-1] + ") VALUES( ";
+					query += studycourseRights.toValueNames() + ") VALUES( ";
 					
 					// Values
-					for(int i = 0; i < studycourseRightsValues.length-1; i++) {
-						query += studycourseRightsValues[i] + ", ";
-					}
-					query += studycourseRightsValues[studycourseRightsValues.length-1] + ");";
+					query += studycourseRights.toValues() + ");";
 					
 					System.out.println(query);	// DEBUG
 					
@@ -233,21 +170,12 @@ public class UserDbController extends DbController {
 				
 				for(SubjectRights subjectRights : subjectRightsList) {
 					query = "INSERT INTO event_rights (";
-					
-					String[] subjectRightsValueNames = subjectRights.toValueNames();
-					String[] subjectRightsValues = subjectRights.toValues();
-					
+										
 					// Names
-					for(int i = 0; i < subjectRightsValueNames.length-1; i++) {
-						query += subjectRightsValueNames[i] + ", ";
-					}
-					query += subjectRightsValueNames[subjectRightsValueNames.length-1] + ") VALUES( ";
+					query += subjectRights.toValueNames() + ") VALUES( ";
 					
 					// Values
-					for(int i = 0; i < subjectRightsValues.length-1; i++) {
-						query += subjectRightsValues[i] + ", ";
-					}
-					query += subjectRightsValues[subjectRightsValues.length-1] + ");";
+					query += subjectRights.toValues() + ");";
 					
 					System.out.println(query);	// DEBUG
 					

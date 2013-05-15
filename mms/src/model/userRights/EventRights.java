@@ -11,14 +11,24 @@ public class EventRights extends ContentRights {
 		this.eventID = eventID;
 	}
 	
-	public String[] toValueNames() {
-		String[] valueNames = super.toValueNames();
+	public String toValueNames() {
+		String valueNames = super.toValueNames() + ", eventID";
+		return valueNames;
+	}
+	
+	public String toValueStrings() {
+		String values = super.toValues() + ", "+eventID;
+		return values;
+	}
+	
+	public String[] toValueNamesArray() {
+		String[] valueNames = super.toValueNamesArray();
 		valueNames[4] = "eventID";
 		return valueNames;
 	}
 	
-	public String[] toValueStrings() {
-		String[] values = super.toValues();
+	public String[] toValuesArray() {
+		String[] values = super.toValuesArray();
 		values[4] = "" + eventID;
 		return values;
 	}

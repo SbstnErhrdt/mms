@@ -29,13 +29,25 @@ public class UserRights implements DbControllable {
 		this.canLogin = canLogin;
 	}
 	
-	public String[] toValueNames() {
-		String[] valueNames = {"canLogin"};
+	public String toValueNames() {
+		String valueNames = "canLogin";
 		return valueNames;
 	}
 	
-	public String[] toValues() {
-		String[] values = {"" + canLogin};
+	public String toValues() {
+		String values = "" + canLogin;
 		return values;
+	}
+
+	@Override
+	public String[] toValuesArray() {
+		String[] values = {""+canLogin};
+		return values;
+	}
+
+	@Override
+	public String[] toValueNamesArray() {
+		String[] valueNames = {"canLogin"};
+		return valueNames;
 	}
 }

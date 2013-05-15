@@ -11,15 +11,26 @@ public class ModuleRights extends ContentRights {
 		this.moduleID = moduleID;
 	}
 	
-	public String[] toValueNames() {
-		String[] valueNames = super.toValueNames();
+	public String toValueNames() {
+		String valueNames = super.toValueNames() + ", moduleID";
+		return valueNames;
+	}
+	
+	public String toValueStrings() {
+		String values = super.toValues() + ", "+moduleID;
+		return values;
+	}
+	
+	public String[] toValueNamesArray() {
+		String[] valueNames = super.toValueNamesArray();
 		valueNames[4] = "moduleID";
 		return valueNames;
 	}
 	
-	public String[] toValueStrings() {
-		String[] values = super.toValues();
+	public String[] toValues() {
+		String[] values = super.toValuesArray();
 		values[4] = "" + moduleID;
 		return values;
 	}
+	
 }
