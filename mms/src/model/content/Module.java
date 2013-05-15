@@ -2,7 +2,7 @@ package model.content;
 
 import model.DbControllable;
 
-public class Module implements DbControllable{
+public class Module extends Content {
 
 	/*
 	 * 	moduleID	int(5)	
@@ -202,6 +202,20 @@ public class Module implements DbControllable{
 		String value = "moduleID, name, subjects_subjectID, token, enlishTitle, lp, sws, language, " +
 				"duration, director_email, requirement, learningTarget, content, literature"; 
 		return value;
+	}
+
+	@Override
+	public String[] toValuesArray() {
+		String[] values = {""+moduleID, ""+name, ""+subjects_subjectID, ""+token, ""+enlishTitle, ""+lp, ""+sws, ""+language,
+				""+duration, ""+director_email, ""+requirement, ""+learningTarget, ""+content, ""+literature}; 
+		return values;
+	}
+
+	@Override
+	public String[] toValueNamesArray() {
+		String[] valueNames = {"moduleID", "name", "subjects_subjectID", "token", "enlishTitle", "lp", "sws", "language",
+			"duration", "director_email", "requirement", "learningTarget", "content", "literature"}; 
+		return null;
 	}
 	
 }

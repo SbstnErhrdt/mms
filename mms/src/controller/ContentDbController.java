@@ -26,9 +26,18 @@ public class ContentDbController extends DbController {
 	// EVENT UPDATEN
 	public boolean updateEvent(Event event) {
 
-		String query = "UPDATE events (" + event.toValueNames() + ")";
-		query += "VALUES (" + event.toValues() + ");";
-		query += "WHERE eventID = " + event.getEventID() + ";";
+		String query = "UPDATE events SET ";
+		
+		String[] valueNames = event.toValueNamesArray();
+		String[] values = event.toValuesArray();
+		
+		for(int i = 0; i < valueNames.length-1; i++) {
+			query += valueNames[i] + " = '" + values[i] + "', " ;
+		}
+		query += valueNames[valueNames.length-1] + " = '" + values[values.length-1] +"');";		
+		query += " WHERE eventID = " + event.getEventID() + ";";
+		
+		System.out.println(query);
 
 		try {
 			db.createStatement().executeUpdate(query);

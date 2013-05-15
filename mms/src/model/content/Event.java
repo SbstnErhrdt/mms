@@ -2,7 +2,7 @@ package model.content;
 
 import model.DbControllable;
 
-public class Event implements DbControllable {
+public class Event extends Content {
 
 	
 	/* DATENBANK
@@ -14,7 +14,7 @@ public class Event implements DbControllable {
 	 */
 	
 	
-	private String name, sws, lecturer_email;
+	private String sws, lecturer_email;
 	private int eventID, modules_moduleID;
 	
 	// Konstruktor
@@ -68,6 +68,18 @@ public class Event implements DbControllable {
 	public String toValueNames() {
 		String valuesNames = "eventID, modules_moduleID, name, sws, lecturer_email";
 		return valuesNames;
+	}
+
+	@Override
+	public String[] toValuesArray() {
+		String[] values = {""+eventID, ""+modules_moduleID, ""+name, ""+sws, ""+lecturer_email, ""+archieved};
+		return values;
+	}
+
+	@Override
+	public String[] toValueNamesArray() {
+		String[] valueNames = {"eventID", "modules_moduleID", "name", "sws", "lecturer_email, archieved"};
+		return valueNames;
 	}
 	
 	

@@ -2,7 +2,7 @@ package model.content;
 
 import model.DbControllable;
 
-public class ModuleHandbook implements DbControllable{
+public class ModuleHandbook extends Content {
 
 	/*
 	 * 	moduleHandbookID	int(5)
@@ -71,15 +71,27 @@ public class ModuleHandbook implements DbControllable{
 	
 	
 	@Override
-	public String[] toValues() {
+	public String[] toValuesArray() {
 		String[] values = {moduleHandbookID+",", name+",",  studycourses_studycourseID+",",  semester+",",  archived+",", };
 		return values;
 	}
 
 	@Override
-	public String[] toValueNames() {
+	public String[] toValueNamesArray() {
 		String[] values = {"moduleHandbookID,", "name,", "studycourses_studycourseID,", "semester,", "archived,"};
 		return values;
+	}
+
+	@Override
+	public String toValues() {
+		String values = moduleHandbookID+","+name+","+studycourses_studycourseID+","+semester+","+archived; 
+		return values;
+	}
+
+	@Override
+	public String toValueNames() {
+		String valueNames = "moduleHandbookID, name, studycourses_studycourseID, semester, archived";
+		return valueNames;
 	}
 	
 }

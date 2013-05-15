@@ -1,5 +1,5 @@
 package model.content;
 
-public class Subject {
+public class Subject extends Content {
 
 }

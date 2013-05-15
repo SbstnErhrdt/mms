@@ -168,6 +168,20 @@ public class User implements DbControllable {
 		return values;
 	}
 
+	@Override
+	public String[] toValuesArray() {
+		String[] values = {""+email, ""+firstName, ""+lastName, ""+title, ""+graduation,
+				""+password, ""+matricNum, ""+semester};
+		return values;
+	}
+
+	@Override
+	public String[] toValueNamesArray() {
+		String[] valueNames = {"email", "firstName", "lastName", "title", "graduation",
+				"password", "matricNum", "semester"};
+		return valueNames;
+	}
+
 	
 	
 

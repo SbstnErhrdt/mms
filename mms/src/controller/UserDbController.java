@@ -206,6 +206,8 @@ public class UserDbController extends DbController {
 		query += valueNames[valueNames.length-1] + " = '" + values[values.length-1] +"');";		
 		query += " WHERE email = '" + email + "';";
 		
+		System.out.println(query);
+		
 		try {
 			db.createStatement().executeUpdate(query);
 			return true;
