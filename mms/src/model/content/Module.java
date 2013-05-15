@@ -1,10 +1,15 @@
 package model.content;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import model.DbControllable;
+
+import model.content.Event;
 
 public class Module implements DbControllable{
 
-	/*
+	/*	DATABASE
 	 * 	moduleID	int(5)	
 	 * 	name	varchar(100)	
 	 * 	subjects_subjectID	int(5)
@@ -24,6 +29,8 @@ public class Module implements DbControllable{
 	private int moduleID, subjects_subjectID, duration;
 	private String name, token, enlishTitle, lp, sws, language, director_email, requirement, learningTarget, content, literature; 
 	
+	// CHILDREN EVENTS
+	private List<Event> events = new ArrayList<Event>();
 	
 	// Konstruktor
 	public Module(int moduleID, String name, int subjects_subjectID, String token, String enlishTitle, String lp, String sws, 
@@ -184,23 +191,27 @@ public class Module implements DbControllable{
 		this.literature = literature;
 	}
 	
+	// EVENTS
+	public List<Event> getEvents() {
+		return events;
+	}
+	
+	
 	// TODO: ADD - REMOVE EVENT
 	
 	// TODO: ADD - REMOVE LECTURE
 	
 	
 	@Override
-	public String toValues() {
-		String value = moduleID+", "+name+", "+subjects_subjectID+", "+token+", "+enlishTitle+", "+lp+", "+sws+
-				", "+language+", "+duration+", "+director_email+", "+requirement+", "+learningTarget+" ,"+content+", "+literature; 
+	public String[] toValues() {
+		String[] value = {"moduleID", "name", "subjects_subjectID", "token", "enlishTitle", "lp", "sws", "language", "duration", "director_email", "requirement", "learningTarget," ,"content", "literature" }; 
 		return value;
 	}
 
 	
 	@Override
-	public String toValueNames() {
-		String value = "moduleID, name, subjects_subjectID, token, enlishTitle, lp, sws, language, " +
-				"duration, director_email, requirement, learningTarget, content, literature"; 
+	public String[] toValueNames() {
+		String[] value = {moduleID+"",name+"",subjects_subjectID+"",token+"",enlishTitle+"",lp+"",sws+"",language+"",duration+"",director_email+"",requirement+"",learningTarget+"",content+"",literature+""}; 
 		return value;
 	}
 	
