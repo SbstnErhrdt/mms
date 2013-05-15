@@ -59,15 +59,15 @@ public class Event implements DbControllable {
 	}
 
 	@Override
-	public String toValues() {
-		String values = eventID+", "+modules_moduleID+", "+name+", "+sws+", "+lecturer_email;
+	public String[] toValueNames() {
+		String values[] = {"eventID,", "modules_moduleID,", "name,", "sws,", "lecturer_email"};
 		return values;
 	}
 
 	@Override
-	public String toValueNames() {
-		String valuesNames = "eventID, modules_moduleID, name, sws, lecturer_email";
-		return valuesNames;
+	public String[] toValues() {
+		String values[] = {eventID+"", modules_moduleID+"", name+"",sws+"",lecturer_email+""};
+		return values;
 	}
 	
 	
