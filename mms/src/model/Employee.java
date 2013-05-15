@@ -5,7 +5,7 @@ import model.userRights.EmployeeRights;
 public class Employee extends User {
 	private boolean isEmployee = true;
 	private String address, phoneNum, talkTime;
-	private EmployeeRights employeeRights = super.getUserRights();
+	private EmployeeRights employeeRights;
 
 	public EmployeeRights getEmployeeRights() {
 		return employeeRights;

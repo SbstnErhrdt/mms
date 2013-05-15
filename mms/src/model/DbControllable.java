@@ -1,6 +1,6 @@
 package model;
 
 public interface DbControllable {
-	public String[] toValues();
-	public String[] toValueNames();
+	public String toValues();
+	public String toValueNames();
 }

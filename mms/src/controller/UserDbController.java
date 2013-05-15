@@ -16,7 +16,6 @@ import model.userRights.UserRights;
 
 public class UserDbController extends DbController {
 	
-	private Connection db = null;
 	private static DbController instance = null;
 	
 	public UserDbController() {
@@ -26,8 +25,8 @@ public class UserDbController extends DbController {
 	public boolean createUser(User user) {
 		String query = "INSERT INTO users (";
 	
-		String[] valueNames = user.toValueNames();  	
-		String[] values = user.toValues();
+		String valueNames = user.toValueNames();  	
+		String values = user.toValues();
 				
 		for(int i = 0; i < valueNames.length-1; i++) {
 			query += valueNames[i] + ", ";
