@@ -15,7 +15,7 @@ import model.userRights.UserRights;
 
 public class DbController {
 
-	private Connection db = null;
+	protected Connection db = null;
 	private static DbController instance = null;
 
 	protected DbController() {

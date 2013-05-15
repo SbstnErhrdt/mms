@@ -197,8 +197,8 @@ public class UserDbController extends DbController {
 		String query = "UPDATE users SET ";
 		
 		String email = user.getEmail();
-		String[] valueNames = user.toValueNames();
-		String[] values = user.toValues();
+		String[] valueNames = user.toValueNamesArray();
+		String[] values = user.toValuesArray();
 		
 		for(int i = 0; i < valueNames.length-1; i++) {
 			query += valueNames[i] + " = '" + values[i] + "', " ;
