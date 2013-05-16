@@ -3,8 +3,6 @@ package model.content;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.DbControllable;
-
 import model.content.Event;
 
 public class Module extends Content {
@@ -191,29 +189,29 @@ public class Module extends Content {
 	
 	@Override
 	public String toValues() {
-		String value = ""+ name +","+ID+",'"+token+"','"+enlishTitle+"',"+lp+","+sws+",'"+language+"',"+duration+",'"+director_email+"','"+requirement+"','"+learningTarget+"','"+content+"','"+literature+"',"+archived; 
+		String value = arrayToString(toValuesArray());
 		return value;
 	}
 
 	
 	@Override
 	public String toValueNames() {
-		String value = {moduleID+"","'"+name+"'",subjects_subjectID+"","'"+token+"'","'"+enlishTitle+"'","'"+lp+"","'"+sws+"'","'"+language+"'",duration+"","'"+director_email+"'","'"+requirement+"'","'"+learningTarget+"'","'"+content+"'","'"+literature+"'",""+archived}; 
+		String value = arrayToString(toValueNamesArray());
 		return value;
 	}
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {""+moduleID, ""+name, ""+subjects_subjectID, ""+token, ""+enlishTitle, ""+lp, ""+sws, ""+language,
-				""+duration, ""+director_email, ""+requirement, ""+learningTarget, ""+content, ""+literature}; 
+		String[] values = {""+ID, "'"+name+"'", ""+parentID, "'"+token+"'", "'"+enlishTitle+"'", ""+lp, ""+sws, "'"+language+"'",
+				""+duration, "'"+director_email+"'", "'"+requirement+"'", "'"+learningTarget+"'", "'"+content+"'", "'"+literature+"'", ""+archived}; 
 		return values;
 	}
 
 	@Override
 	public String[] toValueNamesArray() {
 		String[] valueNames = {"moduleID", "name", "subjects_subjectID", "token", "enlishTitle", "lp", "sws", "language",
-			"duration", "director_email", "requirement", "learningTarget", "content", "literature"}; 
-		return null;
+			"duration", "director_email", "requirement", "learningTarget", "content", "literature", "archived"}; 
+		return valueNames;
 	}
 	
 }

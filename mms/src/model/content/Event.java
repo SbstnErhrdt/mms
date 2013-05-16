@@ -42,24 +42,14 @@ public class Event extends Content {
 
 	@Override
 	public String toValueNames() {
-		String[] array = toValueNamesArray();
-		String valueNames = "";
-		for(int i=0; i<array.length-1; i++) {
-			valueNames += array[i] + ", ";
-		}
-		valueNames += array[array.length-1];
-		return valueNames;
+		String value = arrayToString(toValueNamesArray());
+		return value;
 	}
 
 	@Override
 	public String toValues() {
-		String[] array = toValuesArray();
-		String values = "";
-		for(int i=0; i<array.length-1; i++) {
-			values += array[i] + ", ";
-		}
-		values += array[array.length-1];
-		return values;
+		String value = arrayToString(toValuesArray());
+		return value;
 	}
 
 	@Override

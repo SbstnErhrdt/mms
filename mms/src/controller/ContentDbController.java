@@ -231,12 +231,9 @@ public class ContentDbController extends DbController {
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
-			if (rs.next()) {
+			while (rs.next()) {
 				Event event = new Event(rs.getInt(1), rs.getInt(2),	rs.getString(3), rs.getString(4), rs.getString(5));
 				events.add(event);				
-			} else {
-				System.out.println("No Event found with this ID.");
-				return false;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

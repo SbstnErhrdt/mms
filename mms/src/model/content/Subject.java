@@ -11,51 +11,21 @@ public class Subject extends Content {
 	 *  name var(100)
 	 */
 		
-	private int subjectID, module_handbooks_moduleHandbookID;
-	private String name;
-	
 	private List<Module> modules = new ArrayList<Module>();
 	
 	
 	// Konstruktor
-	public Subject (int subjectID, int module_handbooks_moduleHandbookID, String name) {
-		this.subjectID = subjectID; 
-		this.module_handbooks_moduleHandbookID = module_handbooks_moduleHandbookID;
+	public Subject (int subjectID, int module_handbooks_moduleHandbookID, String name, boolean archived) {
+		this.ID = subjectID; 
+		this.parentID = module_handbooks_moduleHandbookID;
 		this.name = name;
+		this.archived = archived;
 	}
 	
 	
 	// Getter & Setter
-	public int getSubjectID() {
-		return subjectID;
-	}
 
-
-	public void setSubjectID(int subjectID) {
-		this.subjectID = subjectID;
-	}
-
-
-	public int getModule_handbooks_moduleHandbookID() {
-		return module_handbooks_moduleHandbookID;
-	}
-
-
-	public void setModule_handbooks_moduleHandbookID(
-			int module_handbooks_moduleHandbookID) {
-		this.module_handbooks_moduleHandbookID = module_handbooks_moduleHandbookID;
-	}
-
-
-	public String getName() {
-		return name;
-	}
-
-
-	public void setName(String name) {
-		this.name = name;
-	}	
-	
+	// entfallen - vererbung
 	
 	// Modules
 	public List<Module> getModules(Subject subject) {		
@@ -66,28 +36,39 @@ public class Subject extends Content {
 		this.modules = modules;
 	}
 	
+	// MODULES
+	public List<Module> getModulList() {
+		return modules;
+	}
+	
+	public void setEventList(List<Module> modules ) {
+		this.modules = modules;
+	}
+	
 	@Override
 	public String toValues() {
-		// TODO Auto-generated method stub
-		return null;
+		String value = arrayToString(toValuesArray());
+		return value;
 	}
 
+	
 	@Override
 	public String toValueNames() {
-		// TODO Auto-generated method stub
-		return null;
+		String value = arrayToString(toValueNamesArray());
+		return value;
 	}
 
 	@Override
 	public String[] toValuesArray() {
-		// TODO Auto-generated method stub
-		return null;
+		String[] value = {""+ID, ""+parentID, "'"+name+"'",""+archived };
+		return value;
 	}
 
 	@Override
 	public String[] toValueNamesArray() {
 		// TODO Auto-generated method stub
-		return null;
+		String[] value = {"subjectID", "module_handbooks_moduleHandbookID", "name", "archived"};
+		return value;
 	}
 	
 	

@@ -1,5 +1,10 @@
 package model.content;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import model.content.Subject;
+
 public class ModuleHandbook extends Content {
 
 	/*
@@ -7,11 +12,12 @@ public class ModuleHandbook extends Content {
 	 *  name	varchar(100)
 	 *  studycourses_studycourseID	int(5)
 	 *  semester	varchar(2)
-	 *  archived tinyint(1)
+	 *  archived boolean
 	 */
 	
-	private boolean archived;
 	private String name, semester;
+	private List<Subject> subjects = new ArrayList<Subject>();
+	
 	
 	
 	// Konstruktor
@@ -40,7 +46,29 @@ public class ModuleHandbook extends Content {
 		this.archived = archived;
 	}
 
+	// Subjects
+	public List<Subject> getSubjectList() {
+		return subjects;
+	}
 	
+	public void setSubjectList(List<Subject> subjects ) {
+		this.subjects = subjects;
+	}
+	
+	
+	
+	@Override
+	public String toValues() {
+		String value = arrayToString(toValuesArray());
+		return value;
+	}
+
+	
+	@Override
+	public String toValueNames() {
+		String value = arrayToString(toValueNamesArray());
+		return value;
+	}
 	
 	
 	@Override
@@ -55,16 +83,5 @@ public class ModuleHandbook extends Content {
 		return values;
 	}
 
-	@Override
-	public String toValues() {
-		String values = ID+",'"+name+"',"+parentID+",'"+semester+"',"+archived; 
-		return values;
-	}
-
-	@Override
-	public String toValueNames() {
-		String valueNames = "moduleHandbookID, name, studycourses_studycourseID, semester, archived";
-		return valueNames;
-	}
 	
 }
