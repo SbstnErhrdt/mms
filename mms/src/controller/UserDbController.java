@@ -25,7 +25,7 @@ public class UserDbController extends DbController {
 	public boolean createUser(User user) {
 		String query = "INSERT INTO users (";
 				
-		query += user.toValueNames()+") VALUES( ";
+		query += user.toValueNames()+") VALUES(";
 		
 		query += user.toValues() + ");";
 		
@@ -40,9 +40,9 @@ public class UserDbController extends DbController {
 		
 		UserRights userRights = user.getUserRights();
 		
-		query = "INSERT INTO user_rights (";
+		query = "INSERT INTO user_rights (email, ";
 		
-		query += userRights.toValueNames() + ") VALUES( ";
+		query += userRights.toValueNames() + ") VALUES('"+user.getEmail() + "', ";
 		
 		query += userRights.toValues() + ");";
 		
@@ -61,7 +61,7 @@ public class UserDbController extends DbController {
 			Employee employee = (Employee) user;
 		
 			// Names
-			query += employee.toEmployeeValues() + ") VALUES( ";
+			query += employee.toEmployeeValues() + ") VALUES(";
 			
 			// Values
 			query += employee.toEmployeeValueNames() + ");";
@@ -221,6 +221,8 @@ public class UserDbController extends DbController {
 		String email = user.getEmail();
 		String query = "DELETE FROM users WHERE email = '" + email + "';";
 
+		System.out.println(query);
+		
 		try {
 			db.createStatement().executeUpdate(query);
 		} catch(SQLException e) {
@@ -230,6 +232,8 @@ public class UserDbController extends DbController {
 		
 		// delete UserRights of user
 		query = "DELETE FROM user_rights WHERE email = '" + email + "';";
+		
+		System.out.println(query);
 		
 		try {
 			db.createStatement().executeUpdate(query);
@@ -244,6 +248,8 @@ public class UserDbController extends DbController {
 			// delete Employee entries
 			query = "DELETE FROM employees WHERE email = '" + email + "';";
 			
+			System.out.println(query);
+			
 			try {
 				db.createStatement().executeUpdate(query);
 			} catch(SQLException e) {
@@ -252,6 +258,8 @@ public class UserDbController extends DbController {
 			}
 			
 			query = "DELETE FROM employee_rights WHERE email = '" + email + "';";
+			
+			System.out.println(query);
 			
 			try {
 				db.createStatement().executeUpdate(query);
@@ -267,6 +275,9 @@ public class UserDbController extends DbController {
 			// ModuleRights
 			if(!employeeRights.getModuleRightsList().isEmpty()) {
 				query = "DELETE FROM module_rights WHERE users_email = '" + email + "';";
+				
+				System.out.println(query);
+				
 				try {
 					db.createStatement().executeUpdate(query);
 				} catch(SQLException e) {
@@ -277,6 +288,7 @@ public class UserDbController extends DbController {
 			// EventRights
 			if(!employeeRights.getEventRightsList().isEmpty()) {
 				query = "DELETE FROM event_rights WHERE users_email = '" + email + "';";
+				System.out.println(query);
 				try {
 					db.createStatement().executeUpdate(query);
 				} catch(SQLException e) {
@@ -287,6 +299,7 @@ public class UserDbController extends DbController {
 			// StudycourseRights
 			if(!employeeRights.getStudycourseRightsList().isEmpty()) {
 				query = "DELETE FROM studycourse_rights WHERE user_email = '" + email + "';";
+				System.out.println(query);
 				try {
 					db.createStatement().executeUpdate(query);
 				} catch(SQLException e) {
@@ -297,6 +310,7 @@ public class UserDbController extends DbController {
 			// SubjectRights
 			if(!employeeRights.getSubjectRightsList().isEmpty()) {
 				query = "DELETE FROM subject_rights WHERE user_email = '" + email + "';";
+				System.out.println(query);
 				try {
 					db.createStatement().executeUpdate(query);
 				} catch(SQLException e) {

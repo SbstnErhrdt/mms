@@ -158,14 +158,12 @@ public class User implements DbControllable {
 	
 	@Override
 	public String toValueNames() {
-		
-		return values;
+		return arrayToString(toValueNamesArray());
 	}
 
 	@Override
 	public String toValues() {
-		String values = ""+email+", "+firstName+", "+lastName+", "+title+", "+graduation+", "+password+", "+matricNum+", "+semester;
-		return values;
+		return arrayToString(toValuesArray());
 	}
 
 	@Override
@@ -178,7 +176,7 @@ public class User implements DbControllable {
 	@Override
 	public String[] toValueNamesArray() {
 		String[] valueNames = {"email", "firstName", "lastName", "title", "graduation",
-				"password", "matricNum", "semester"};
+				"password", "matricNum", "current_semester"};
 		return valueNames;
 	}
 	
@@ -191,7 +189,7 @@ public class User implements DbControllable {
 		return string;
 	}
 
-	
-	
-
+	public String toString() {
+		return "["+firstName + ", "+lastName +", " + email+"]";
+	}
 }
