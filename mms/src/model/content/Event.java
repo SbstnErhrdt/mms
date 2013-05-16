@@ -82,7 +82,7 @@ public class Event extends Content {
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {""+eventID, ""+modules_moduleID, "'"+name+"'", ""+sws, ""+"'"+lecturer_email+"'", ""+archieved};
+		String[] values = {""+eventID, ""+modules_moduleID, "'"+name+"'", "'"+sws+"'", ""+"'"+lecturer_email+"'", ""+archieved};
 		return values;
 	}
 
