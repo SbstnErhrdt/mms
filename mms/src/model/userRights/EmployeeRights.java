@@ -11,7 +11,18 @@ public class EmployeeRights extends UserRights {
 	
 	private boolean isEmployeeRights = true;
 	
-	
+	public EmployeeRights(boolean canDeblockCriticalModule, boolean canDeblockModule, 
+			boolean isAdmin) {
+		super(true);
+		this.canDeblockCriticalModule = canDeblockCriticalModule;
+		this.canDeblockModule = canDeblockModule;
+		this.isAdmin = isAdmin;
+		eventRightsList = new ArrayList<EventRights>();
+		moduleRightsList = new ArrayList<ModuleRights>();
+		subjectRightsList = new ArrayList<SubjectRights>();
+		studycourseRightsList = new ArrayList<StudycourseRights>();
+		
+	}
 	
 	public ArrayList<ModuleRights> getModuleRightsList() {
 		return moduleRightsList;
@@ -154,23 +165,23 @@ public class EmployeeRights extends UserRights {
 		subjectRightsList.remove(subjectRights);
 	}
 	
-	public String toValueNames() {
-		String valueNames = "canLogin, canDeblockCriticalModule, canDeblockModule, isAdmin";
+	public String toEmployeeValueNames() {
+		String valueNames = "canDeblockCriticalModule, canDeblockModule, isAdmin";
 		return valueNames;
 	}
 	
-	public String toValues() {
-		String values = getCanLogin()+", "+canDeblockCriticalModule+", "+canDeblockModule+", "+isAdmin;
+	public String toEmployeeValues() {
+		String values = canDeblockCriticalModule+", "+canDeblockModule+", "+isAdmin;
 		return values;
 	}
 	
-	public String[] toValueNamesArray() {
-		String[] valueNames = {"canLogin", "canDeblockCriticalModule", "canDeblockModule", "isAdmin"};
+	public String[] toValueEmployeeNamesArray() {
+		String[] valueNames = {"canDeblockCriticalModule", "canDeblockModule", "isAdmin"};
 		return valueNames;
 	}
 	
-	public String[] toValuesArray() {
-		String[] values = {"" + getCanLogin(), "" + canDeblockCriticalModule, "" + canDeblockModule, "" + isAdmin};
+	public String[] toEmployeeValuesArray() {
+		String[] values = {""+canDeblockCriticalModule, "" + canDeblockModule, "" + isAdmin};
 		return values;
 	}
 	

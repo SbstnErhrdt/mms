@@ -1,6 +1,7 @@
 package model;
 
 import model.userRights.EmployeeRights;
+import model.userRights.UserRights;
 import util.*;
 
 public class Employee extends User {
@@ -8,6 +9,18 @@ public class Employee extends User {
 	private String address, phoneNum, talkTime;
 	private EmployeeRights employeeRights;
 
+	public Employee(String email, String password, String address, String phoneNum, String talkTime)  {
+		super(email, password);
+	}
+	
+	public Employee(String email, String password, String firstName, String lastName, String title,
+			String graduation, int matricNum, int semester,
+			UserRights rights, boolean emailVerified) {
+		super(firstName, lastName, title, email, graduation, password, 
+				matricNum, semester, rights, emailVerified);
+		this.employeeRights = new EmployeeRights();
+	}
+	
 	public EmployeeRights getEmployeeRights() {
 		return employeeRights;
 	}
@@ -54,12 +67,12 @@ public class Employee extends User {
 	}
 	
 	public String[] toEmployeeValuesArray() {	
-		String[] values = {"'" + address + "'", "'" + phoneNum + "'", "'" + talkTime + "'"};
+		String[] values = {"'"+email+"'", "'" + address + "'", "'" + phoneNum + "'", "'" + talkTime + "'"};
 		return values;
 	}
 
 	public String[] toEmployeeValueNamesArray() {
-		String[] valueNames = {"address", "phoneNum", "talkTime"};
+		String[] valueNames = {"email", "address", "phoneNum", "talkTime"};
 		return valueNames;
 	}
 	
@@ -71,5 +84,10 @@ public class Employee extends User {
 		return Utilities.arrayToString(toEmployeeValueNamesArray());
 	}
 	
+	
+	public String toString() {
+		return "["+Utilities.arrayToString(toValuesArray())+
+				", "+ Utilities.arrayToString(toEmployeeValuesArray())+"]";
+	}
 
 }

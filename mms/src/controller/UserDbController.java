@@ -61,10 +61,10 @@ public class UserDbController extends DbController {
 			Employee employee = (Employee) user;
 		
 			// Names
-			query += employee.toEmployeeValues() + ") VALUES(";
+			query += employee.toEmployeeValueNames() + ") VALUES(";
 			
 			// Values
-			query += employee.toEmployeeValueNames() + ");";
+			query += employee.toEmployeeValues() + ");";
 			
 			System.out.println(query);	// DEBUG
 			
@@ -75,15 +75,15 @@ public class UserDbController extends DbController {
 				return false;
 			}
 			
-			query = "INSERT INTO employee_rights (";
+			query = "INSERT INTO employee_rights (email, ";
 			
 			EmployeeRights employeeRights = employee.getEmployeeRights();
 			
 			// Names
-			query += employeeRights.toValueNames() + ") VALUES( ";
+			query += employeeRights.toEmployeeValueNames() + ") VALUES(";
 			
 			// Values
-			query += employeeRights.toValues() + ");";
+			query += "'"+user.getEmail() + "', " + employeeRights.toEmployeeValues() + ");";
 			
 			System.out.println(query);	// DEBUG
 			
@@ -243,7 +243,9 @@ public class UserDbController extends DbController {
 		}
 		
 		if(user.isEmployee()) {	
-			Employee employee = (Employee) user;
+			Employee employee = new Employee(user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), 
+					user.getTitle(), user.getGraduation(), user.getMatricNum(), user.getSemester(), user.getUserRights(), 
+					user.isEmailVerified());
 			
 			// delete Employee entries
 			query = "DELETE FROM employees WHERE email = '" + email + "';";
@@ -269,7 +271,7 @@ public class UserDbController extends DbController {
 			}
 		
 			// delete ContentRights of user
-			EmployeeRights employeeRights = (EmployeeRights) user.getUserRights();
+			EmployeeRights employeeRights = employee.getEmployeeRights();
 			
 			// check, if list is empty, else delete all objects from database
 			// ModuleRights
@@ -373,7 +375,10 @@ public class UserDbController extends DbController {
 		}
 		
 		// are there any employee entries?
-		Employee employee = new Employee(user.getEmail(), user.getPassword());
+		// new Employee-object with same attributes
+		Employee employee = new Employee(user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), 
+				user.getTitle(), user.getGraduation(), user.getMatricNum(), user.getSemester(), user.getUserRights(), 
+				user.isEmailVerified());
 		
 		query = "SELECT "+employee.toEmployeeValueNames()+ " FROM employees " +
 				"WHERE email='"+user.getEmail()+"'";
@@ -384,8 +389,9 @@ public class UserDbController extends DbController {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			if(rs.next()) {
 				user.setEmployee(true);		// isEmployee == true
-				employee = (Employee) user;	// convert User to Employee
-				//employee.setAddress(rs);
+				employee.setAddress(rs.getString(1));	// address
+				employee.setPhoneNum(rs.getString(2));	// phoneNum
+				employee.setTalkTime(rs.getString(3)); 	// talkTime
 			} else {
 				System.out.println("No employees found with this email");
 				return user;		// return user
@@ -394,7 +400,30 @@ public class UserDbController extends DbController {
 			e.printStackTrace();
 		}
 		
-	
+		// EmployeeRights
+		EmployeeRights employeeRights = new EmployeeRights();
+		employeeRights.setCanLogin(userRights.getCanLogin());
+		
+		query = "SELECT "+employeeRights.toEmployeeValueNames() +
+				" FROM employee_rights WHERE email='"+user.getEmail()+"';";
+		
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			if(rs.next()) {
+				user.setEmployee(true);		// isEmployee == true
+				employee.setAddress(rs.getString(1));	// address
+				employee.setPhoneNum(rs.getString(2));	// phoneNum
+				employee.setTalkTime(rs.getString(3)); 	// talkTime
+			} else {
+				System.out.println("No employee_rights found with this email");
+				return employee;		// return user
+			}	
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
 		return user;
 	}
 }
