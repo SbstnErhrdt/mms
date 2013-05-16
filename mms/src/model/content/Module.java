@@ -179,10 +179,15 @@ public class Module extends Content {
 	public void setEventList(List<Event> events ) {
 		this.events = events;
 	}
-	
-	
-	// TODO: ADD - REMOVE EVENT
-	
+		
+	// ADD EVENT
+	public void addEvent(Event event) {
+		events.add(event);
+	}
+	// REMOVE EVENT
+	public void removeEvent(Event event) {
+		events.remove(event);
+	}
 	
 	// TODO: ADD - REMOVE LECTURE
 	

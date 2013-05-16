@@ -44,6 +44,17 @@ public class Subject extends Content {
 	public void setEventList(List<Module> modules ) {
 		this.modules = modules;
 	}
+	// ADD MODULE
+	public void addModule(Module module) {
+		modules.add(module);
+	}
+	// REMOVE MODULES
+	public void removeModule(Module module) {
+		modules.remove(module);
+	}
+	
+	
+	
 	
 	@Override
 	public String toValues() {

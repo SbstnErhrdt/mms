@@ -16,7 +16,7 @@ public class Studycourse extends Content {
 		this.archived = archived;
 	}
 	
-	// Subjects
+	// MODULE HANDBOOKS
 	public List<ModuleHandbook> getSubjectList() {
 		return moduleHandbooks;
 	}
@@ -24,6 +24,17 @@ public class Studycourse extends Content {
 	public void setSubjectList(List<ModuleHandbook> moduleHandbooks ) {
 		this.moduleHandbooks = moduleHandbooks;
 	}
+	// ADD MODULE HANDBOOKS
+	public void addModuleHandbook(ModuleHandbook moduleHandbook) {
+		moduleHandbooks.add(moduleHandbook);
+	}
+	// REMOVE MODULE HANDBOOKS
+	public void removeModuleHandbook(ModuleHandbook moduleHandbook) {
+		moduleHandbooks.remove(moduleHandbook);
+	}
+		
+	
+	
 	
 	@Override
 	public String toValues() {

@@ -46,13 +46,21 @@ public class ModuleHandbook extends Content {
 		this.archived = archived;
 	}
 
-	// Subjects
+	// SUBJECTS
 	public List<Subject> getSubjectList() {
 		return subjects;
 	}
 	
 	public void setSubjectList(List<Subject> subjects ) {
 		this.subjects = subjects;
+	}
+	// ADD SUBJECT
+	public void addSubject(Subject subject) {
+		subjects.add(subject);
+	}
+	// REMOVE SUBJECT
+	public void removeSubject(Subject subject) {
+		subjects.remove(subject);
 	}
 	
 	
