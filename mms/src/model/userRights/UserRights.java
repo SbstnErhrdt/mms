@@ -12,6 +12,11 @@ public class UserRights implements DbControllable {
 		
 	}
 	
+	// Konstruktor	
+	public UserRights(boolean canLogin) {
+			this.canLogin = canLogin;
+	}
+	
 	// Getter & Setter	
 	public boolean isEmployeeRights() {
 		return isEmployeeRights;

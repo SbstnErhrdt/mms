@@ -19,7 +19,7 @@ public class DbController {
 	private static DbController instance = null;
 
 	protected DbController() {
-		String url = "jdbc:mysql://localhost:3306/mms";
+		String url = "jdbc:mysql://localhost:3306/sopra";
 		String user = "sopratest";
 		String pw = "sopratest";
 
