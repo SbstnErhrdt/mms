@@ -1,7 +1,5 @@
 package model.content;
 
-import model.DbControllable;
-
 public class ModuleHandbook extends Content {
 
 	/*
@@ -12,42 +10,25 @@ public class ModuleHandbook extends Content {
 	 *  archived tinyint(1)
 	 */
 	
-	private int moduleHandbookID, studycourses_studycourseID, semester;
 	private boolean archived;
-	private String name;
+	private String name, semester;
 	
 	
 	// Konstruktor
-	public ModuleHandbook (int moduleHandbookID, String name, int studycourses_studycourseID, int semester,boolean archived) {
-		this.moduleHandbookID = moduleHandbookID;
+	public ModuleHandbook (int moduleHandbookID, String name, int studycourses_studycourseID, String semester,boolean archived) {
+		this.ID = moduleHandbookID;
 		this.name = name;
-		this.studycourses_studycourseID = studycourses_studycourseID;
+		this.parentID = studycourses_studycourseID;
 		this.semester = semester;
 		this.archived = archived;
 	}
 	
 	// Getter & Setter
-	public int getModuleHandbookID() {
-		return moduleHandbookID;
-	}
-
-	public void setModuleHandbookID(int moduleHandbookID) {
-		this.moduleHandbookID = moduleHandbookID;
-	}
-
-	public int getStudycourses_studycourseID() {
-		return studycourses_studycourseID;
-	}
-
-	public void setStudycourses_studycourseID(int studycourses_studycourseID) {
-		this.studycourses_studycourseID = studycourses_studycourseID;
-	}
-
-	public int getSemester() {
+	public String getSemester() {
 		return semester;
 	}
 
-	public void setSemester(int semester) {
+	public void setSemester(String semester) {
 		this.semester = semester;
 	}
 
@@ -59,20 +40,12 @@ public class ModuleHandbook extends Content {
 		this.archived = archived;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-	
 	
 	
 	
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {moduleHandbookID+",", name+",",  studycourses_studycourseID+",",  semester+",",  archived+",", };
+		String[] values = {ID+"", "'"+name+"'",  parentID+"",  "'"+semester+"'",  archived+""};
 		return values;
 	}
 
@@ -84,7 +57,7 @@ public class ModuleHandbook extends Content {
 
 	@Override
 	public String toValues() {
-		String values = moduleHandbookID+","+name+","+studycourses_studycourseID+","+semester+","+archived; 
+		String values = ID+",'"+name+"',"+parentID+",'"+semester+"',"+archived; 
 		return values;
 	}
 

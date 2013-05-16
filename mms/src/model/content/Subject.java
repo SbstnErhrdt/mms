@@ -8,22 +8,19 @@ public class Subject extends Content {
 	/*	DATABASE
 	 * 	subjectID	int(5)
 	 * 	module_handbooks_moduleHandbookID	int(5)
-	 *  studycourses_sudycourseID	int(5)
 	 *  name var(100)
 	 */
-	
-	
-	private int subjectID, module_handbooks_moduleHandbookID, studycourses_sudycourseID;
+		
+	private int subjectID, module_handbooks_moduleHandbookID;
 	private String name;
 	
 	private List<Module> modules = new ArrayList<Module>();
 	
 	
 	// Konstruktor
-	public Subject (int subjectID, int module_handbooks_moduleHandbookID, int studycourses_sudycourseID, String name) {
+	public Subject (int subjectID, int module_handbooks_moduleHandbookID, String name) {
 		this.subjectID = subjectID; 
 		this.module_handbooks_moduleHandbookID = module_handbooks_moduleHandbookID;
-		this.studycourses_sudycourseID = studycourses_sudycourseID;
 		this.name = name;
 	}
 	
@@ -50,16 +47,6 @@ public class Subject extends Content {
 	}
 
 
-	public int getStudycourses_sudycourseID() {
-		return studycourses_sudycourseID;
-	}
-
-
-	public void setStudycourses_sudycourseID(int studycourses_sudycourseID) {
-		this.studycourses_sudycourseID = studycourses_sudycourseID;
-	}
-
-
 	public String getName() {
 		return name;
 	}
@@ -77,6 +64,30 @@ public class Subject extends Content {
 	
 	public void setModules(List<Module> modules) {
 		this.modules = modules;
+	}
+	
+	@Override
+	public String toValues() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String toValueNames() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String[] toValuesArray() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String[] toValueNamesArray() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

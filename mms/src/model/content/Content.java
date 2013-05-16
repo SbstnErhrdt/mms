@@ -6,7 +6,7 @@ public class Content implements DbControllable {
 
 	protected String name;
 	protected int ID, parentID;
-	protected boolean archieved;
+	protected boolean archived;
 
 	public String getName() {
 		return name;
@@ -20,8 +20,8 @@ public class Content implements DbControllable {
 		return parentID;
 	}
 
-	public boolean isArchieved() {
-		return archieved;
+	public boolean isArchived() {
+		return archived;
 	}
 	
 	public void setName(String name) {
@@ -36,8 +36,8 @@ public class Content implements DbControllable {
 		this.parentID = parentID;
 	}
 
-	public void setArchieved(boolean archieved) {
-		this.archieved = archieved;
+	public void setArchived(boolean archived) {
+		this.archived = archived;
 	}
 
 	@Override

@@ -24,9 +24,10 @@ public class Module extends Content {
 	 * 	learningTarget	text
 	 * 	content	text
 	 * 	literature text
+	 *  archived boolean
 	 */
 	
-	private int moduleID, subjects_subjectID, duration;
+	private int duration;
 	private String name, token, enlishTitle, lp, sws, language, director_email, requirement, learningTarget, content, literature; 
 	
 	// CHILDREN EVENTS
@@ -34,10 +35,10 @@ public class Module extends Content {
 	
 	// Konstruktor
 	public Module(int moduleID, String name, int subjects_subjectID, String token, String enlishTitle, String lp, String sws, 
-			String language, int duration, String director_email, String requirement, String learningTarget, String content, String literature) {
-		this.moduleID = moduleID;
+			String language, int duration, String director_email, String requirement, String learningTarget, String content, String literature, boolean archived) {
+		this.ID = moduleID;
 		this.name = name;
-		this.subjects_subjectID = subjects_subjectID;
+		this.parentID = subjects_subjectID;
 		this.token = token;
 		this.enlishTitle = enlishTitle;
 		this.lp = lp;
@@ -49,29 +50,10 @@ public class Module extends Content {
 		this.learningTarget = learningTarget;
 		this.content = content;
 		this.literature = literature;
+		this.archived = archived;
 	}
 	// Getter & Setter
 	
-	public int getModuleID() {
-		return moduleID;
-	}
-
-
-	public void setModuleID(int moduleID) {
-		this.moduleID = moduleID;
-	}
-
-
-	public int getSubjects_subjectID() {
-		return subjects_subjectID;
-	}
-
-
-	public void setSubjects_subjectID(int subjects_subjectID) {
-		this.subjects_subjectID = subjects_subjectID;
-	}
-
-
 	public int getDuration() {
 		return duration;
 	}
@@ -208,15 +190,15 @@ public class Module extends Content {
 	
 	
 	@Override
-	public String[] toValues() {
-		String[] value = {"moduleID", "name", "subjects_subjectID", "token", "enlishTitle", "lp", "sws", "language", "duration", "director_email", "requirement", "learningTarget," ,"content", "literature" }; 
+	public String toValues() {
+		String value = ""+ name +","+ID+",'"+token+"','"+enlishTitle+"',"+lp+","+sws+",'"+language+"',"+duration+",'"+director_email+"','"+requirement+"','"+learningTarget+"','"+content+"','"+literature+"',"+archived; 
 		return value;
 	}
 
 	
 	@Override
-	public String[] toValueNames() {
-		String[] value = {moduleID+"","'"+name+"'",subjects_subjectID+"","'"+token+"'","'"+enlishTitle+"'","'"+lp+"","'"+sws+"'","'"+language+"'",duration+"","'"+director_email+"'","'"+requirement+"'","'"+learningTarget+"'","'"+content+"'","'"+literature+"'"}; 
+	public String toValueNames() {
+		String value = {moduleID+"","'"+name+"'",subjects_subjectID+"","'"+token+"'","'"+enlishTitle+"'","'"+lp+"","'"+sws+"'","'"+language+"'",duration+"","'"+director_email+"'","'"+requirement+"'","'"+learningTarget+"'","'"+content+"'","'"+literature+"'",""+archived}; 
 		return value;
 	}
 

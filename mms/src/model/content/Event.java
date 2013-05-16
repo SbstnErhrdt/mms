@@ -1,7 +1,5 @@
 package model.content;
 
-import model.DbControllable;
-
 public class Event extends Content {
 
 	
@@ -11,20 +9,21 @@ public class Event extends Content {
 	 * VAR name
 	 * VAR sws
 	 * VAR lecturer_email
+	 * BOOL archived
 	 */
 	
 	
 	private String lecturer_email;
 	private int sws;
 	
-	
 	// Konstruktor
-	public Event(int eventID, int modules_moduleID, String name, int sws, String lecturer_email) {
+	public Event(int eventID, int modules_moduleID, String name, int sws, String lecturer_email, boolean archived) {
 		this.ID = eventID;
 		this.parentID = modules_moduleID;
 		this.name = name;
 		this.sws = sws;
 		this.lecturer_email = lecturer_email;
+		this.archived = archived;
 	}
 	
 	// Getter & Setter
@@ -65,7 +64,7 @@ public class Event extends Content {
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {""+ID, ""+parentID, "'"+name+"'", ""+sws, ""+"'"+lecturer_email+"'", ""+archieved};
+		String[] values = {""+ID, ""+parentID, "'"+name+"'", ""+sws, ""+"'"+lecturer_email+"'", ""+archived};
 		return values;
 	}
 
