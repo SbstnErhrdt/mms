@@ -59,20 +59,20 @@ public class Event extends Content {
 	}
 
 	@Override
-	public String[] toValueNames() {
-		String values[] = {"eventID,", "modules_moduleID,", "name,", "sws,", "lecturer_email"};
-		return values;
+	public String toValueNames() {
+		String valuesNames = "eventID, modules_moduleID, name, sws, lecturer_email";
+		return valuesNames;
 	}
 
 	@Override
-	public String[] toValues() {
-		String values[] = {eventID+"", modules_moduleID+"", "'"+name+"",sws+"'","'"+lecturer_email+"'"};
+	public String toValues() {
+		String values = eventID+", "+modules_moduleID+", "+"'"+name+"', "+sws+"', "+"'"+lecturer_email+"'";
 		return values;
 	}
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {""+eventID, ""+modules_moduleID, ""+name, ""+sws, ""+lecturer_email, ""+archieved};
+		String[] values = {""+eventID, ""+modules_moduleID, "'"+name+"'", ""+sws, ""+"'"+lecturer_email+"'", ""+archieved};
 		return values;
 	}
 
