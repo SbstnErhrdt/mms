@@ -324,6 +324,7 @@ public class UserDbController extends DbController {
 	
 	public User getUser(User user) {
 		
+		// User
 		String query = "SELECT " + user.toValueNames() +
 				" FROM users WHERE email ='"+ 
                     user.getEmail() + "' AND password = '" + user.getPassword() + "';";
@@ -334,10 +335,13 @@ public class UserDbController extends DbController {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			
 			if(rs.next()) {
-				User newUser = new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
-						rs.getString(5), rs.getString(6), Integer.parseInt(rs.getString(7)), Integer.parseInt(rs.getString(8)), null,	// userRights are set later 
-						Boolean.parseBoolean(rs.getString(10)));
-				return newUser;
+				user.setFirstName(rs.getString(2));	// firstName
+				user.setLastName(rs.getString(3)); 	// lastName
+				user.setTitle(rs.getString(4));		// title
+				user.setGraduation(rs.getString(5));// graduation
+				user.setMatricNum(rs.getInt(7));	// matricNum
+				user.setSemester(rs.getInt(8));		// semester
+				
 			} else {
 				System.out.println("No user found with this email and password.");
 				return null;
@@ -345,6 +349,52 @@ public class UserDbController extends DbController {
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
-		return null;
+		
+		UserRights userRights = new UserRights();
+		
+		// UserRights
+		query = "SELECT " + userRights.toValueNames() +
+				" FROM user_rights WHERE email ='"+user.getEmail() + "';";
+			
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			
+			if(rs.next()) {
+				userRights.setCanLogin(rs.getBoolean(1));	// canLogin
+			} else {
+				System.out.println("No user_rights found with this email");
+				return null;
+			}	
+			user.setUserRights(userRights);
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		// are there any employee entries?
+		Employee employee = new Employee(user.getEmail(), user.getPassword());
+		
+		query = "SELECT "+employee.toEmployeeValueNames()+ " FROM employees " +
+				"WHERE email='"+user.getEmail()+"'";
+		
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			if(rs.next()) {
+				user.setEmployee(true);		// isEmployee == true
+				employee = (Employee) user;	// convert User to Employee
+				//employee.setAddress(rs);
+			} else {
+				System.out.println("No employees found with this email");
+				return user;		// return user
+			}	
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+	
+		return user;
 	}
 }

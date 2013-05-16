@@ -1,6 +1,7 @@
 package model;
 
 import model.userRights.EmployeeRights;
+import util.*;
 
 public class Employee extends User {
 	private boolean isEmployee = true;
@@ -52,14 +53,22 @@ public class Employee extends User {
 		this.talkTime = talkTime;
 	}
 	
-	public String[] toEmployeeValues() {	
+	public String[] toEmployeeValuesArray() {	
 		String[] values = {"'" + address + "'", "'" + phoneNum + "'", "'" + talkTime + "'"};
 		return values;
 	}
 
-	public String[] toEmployeeValueNames() {
+	public String[] toEmployeeValueNamesArray() {
 		String[] valueNames = {"address", "phoneNum", "talkTime"};
 		return valueNames;
+	}
+	
+	public String toEmployeeValues() {
+		return Utilities.arrayToString(toEmployeeValuesArray());
+	}
+	
+	public String toEmployeeValueNames() {
+		return Utilities.arrayToString(toEmployeeValueNamesArray());
 	}
 	
 

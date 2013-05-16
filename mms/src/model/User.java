@@ -21,11 +21,11 @@ public class User implements DbControllable {
 	 * 
 	 * */
 	
-	private String firstName, lastName, title, email, graduation, password;
-	private boolean isEmployee = false;
-	private boolean emailVerified;
-	private int matricNum, semester;	
-	private UserRights userRights;	
+	protected String firstName, lastName, title, email, graduation, password;
+	protected boolean isEmployee = false;
+	protected boolean emailVerified;
+	protected int matricNum, semester;	
+	protected UserRights userRights;	
 	
 	
 	// Konstruktor 
@@ -190,6 +190,6 @@ public class User implements DbControllable {
 	}
 
 	public String toString() {
-		return "["+firstName + ", "+lastName +", " + email+"]";
+		return "["+arrayToString(toValuesArray())+"]";
 	}
 }

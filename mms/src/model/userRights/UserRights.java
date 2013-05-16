@@ -55,4 +55,8 @@ public class UserRights implements DbControllable {
 		String[] valueNames = {"canLogin"};
 		return valueNames;
 	}
+	
+	public String toString() {
+		return ""+canLogin;
+	}
 }
