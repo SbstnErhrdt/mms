@@ -217,6 +217,7 @@ public class UserDbController extends DbController {
 		}
 	}
 	
+	// Deletes a user, the database will delete all referring entries automatically
 	public boolean deleteUser(User user) {
 		String email = user.getEmail();
 		String query = "DELETE FROM users WHERE email = '" + email + "';";
@@ -228,98 +229,6 @@ public class UserDbController extends DbController {
 		} catch(SQLException e) {
 			e.printStackTrace();
 			return false;
-		}
-		
-		// delete UserRights of user
-		query = "DELETE FROM user_rights WHERE email = '" + email + "';";
-		
-		System.out.println(query);
-		
-		try {
-			db.createStatement().executeUpdate(query);
-		} catch(SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-		if(user.isEmployee()) {	
-			Employee employee = new Employee(user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), 
-					user.getTitle(), user.getGraduation(), user.getMatricNum(), user.getSemester(), user.getUserRights(), 
-					user.isEmailVerified());
-			
-			// delete Employee entries
-			query = "DELETE FROM employees WHERE email = '" + email + "';";
-			
-			System.out.println(query);
-			
-			try {
-				db.createStatement().executeUpdate(query);
-			} catch(SQLException e) {
-				e.printStackTrace();
-				return false;
-			}
-			
-			query = "DELETE FROM employee_rights WHERE email = '" + email + "';";
-			
-			System.out.println(query);
-			
-			try {
-				db.createStatement().executeUpdate(query);
-			} catch(SQLException e) {
-				e.printStackTrace();
-				return false;
-			}
-		
-			// delete ContentRights of user
-			EmployeeRights employeeRights = employee.getEmployeeRights();
-						
-			// check, if list is empty, else delete all objects from database
-			// ModuleRights
-			if(!employeeRights.getModuleRightsList().isEmpty()) {
-				query = "DELETE FROM module_rights WHERE users_email = '" + email + "';";
-				
-				System.out.println(query);
-				
-				try {
-					db.createStatement().executeUpdate(query);
-				} catch(SQLException e) {
-					e.printStackTrace();
-					return false;
-				}
-			}
-			// EventRights
-			if(!employeeRights.getEventRightsList().isEmpty()) {
-				query = "DELETE FROM event_rights WHERE users_email = '" + email + "';";
-				System.out.println(query);
-				try {
-					db.createStatement().executeUpdate(query);
-				} catch(SQLException e) {
-					e.printStackTrace();
-					return false;
-				}
-			}
-			// StudycourseRights
-			if(!employeeRights.getStudycourseRightsList().isEmpty()) {
-				query = "DELETE FROM studycourse_rights WHERE user_email = '" + email + "';";
-				System.out.println(query);
-				try {
-					db.createStatement().executeUpdate(query);
-				} catch(SQLException e) {
-					e.printStackTrace();
-					return false;
-				}
-			}
-			// SubjectRights
-			if(!employeeRights.getSubjectRightsList().isEmpty()) {
-				query = "DELETE FROM subject_rights WHERE user_email = '" + email + "';";
-				System.out.println(query);
-				try {
-					db.createStatement().executeUpdate(query);
-				} catch(SQLException e) {
-					e.printStackTrace();
-					return false;
-				}
-			}
 		}
 		return true;
 	}

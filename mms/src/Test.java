@@ -2,6 +2,7 @@ import model.Employee;
 import model.User;
 import model.userRights.EmployeeRights;
 import model.userRights.EventRights;
+import model.userRights.ModuleRights;
 import model.userRights.UserRights;
 import controller.UserDbController;
 
@@ -22,6 +23,25 @@ public class Test {
 		
 		emp.getEmployeeRights().addEventRights(eventRights);
 		
+		eventRights = new EventRights();
+		eventRights.setEventID(6);
+		eventRights.setCanCreate(false);
+		eventRights.setCanEdit(true);
+		eventRights.setCanDelete(false);
+		
+		emp.getEmployeeRights().addEventRights(eventRights);
+		
+		System.out.println("emp.getEmployeeRights().getEventRightsList():");
+		System.out.println(emp.getEmployeeRights().getEventRightsList());
+		
+		ModuleRights moduleRights = new ModuleRights();
+		moduleRights.setModuleID(1);
+		moduleRights.setCanCreate(true);
+		moduleRights.setCanEdit(true);
+		moduleRights.setCanDelete(false);
+		
+		emp.getEmployeeRights().addModuleRights(moduleRights);
+		
 		//if(udbc.createUser(user)) System.out.println("user "+user+" created successfully");
 		
 		// if(udbc.deleteUser(user)) System.out.println("user "+user+" deleted succesfully");
@@ -33,9 +53,10 @@ public class Test {
 		//System.out.println(user1);
 		//System.out.println(user1.getUserRights());
 		
+		udbc.deleteUser(emp);
+		udbc.createUser(emp);
 		emp = (Employee) udbc.getUser(user1);
-		//udbc.deleteUser(emp);
-		//udbc.createUser(emp);
+		
 		
 		System.out.println(emp);
 		System.out.println(emp.getEmployeeRights());
