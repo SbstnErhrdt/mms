@@ -23,14 +23,20 @@ public class StudycourseRights extends ContentRights {
 	
 	public String[] toValueNamesArray() {
 		String[] valueNames = super.toValueNamesArray();
-		valueNames[4] = "studycourseID";
+		valueNames[3] = "studycourseID";
 		return valueNames;
 	}
 	
 	public String[] toValuesArray() {
 		String[] values = super.toValuesArray();
-		values[4] = "" + studycourseID;
+		values[3] = "" + studycourseID;
 		return values;
+	}
+	
+	public String toString() {
+		String string = super.toString();
+		string += ", studycourseID="+studycourseID+"]";
+		return string;
 	}
 }
 

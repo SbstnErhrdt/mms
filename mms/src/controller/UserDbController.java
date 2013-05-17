@@ -100,10 +100,10 @@ public class UserDbController extends DbController {
 			if(!moduleRightsList.isEmpty()) {
 				
 				for(ModuleRights moduleRights : moduleRightsList) {
-					query = "INSERT INTO module_rights (";
+					query = "INSERT INTO module_rights (users_email, ";
 					
 					// Names
-					query += moduleRights.toValueNames() + ") VALUES( ";
+					query += moduleRights.toValueNames() + ") VALUES('"+user.getEmail()+"', ";
 					
 					// Values
 					query += moduleRights.toValues() + ");";
@@ -123,10 +123,10 @@ public class UserDbController extends DbController {
 			if(!eventRightsList.isEmpty()) {
 				
 				for(EventRights eventRights : eventRightsList) {
-					query = "INSERT INTO event_rights (";
+					query = "INSERT INTO event_rights (users_email, ";
 							
 					// Names
-					query += eventRights.toValueNames() + ") VALUES( ";
+					query += eventRights.toValueNames() + ") VALUES('"+user.getEmail()+"', ";
 					
 					// Values
 					query += eventRights.toValues() + ");";
@@ -146,10 +146,10 @@ public class UserDbController extends DbController {
 			if(!studycourseRightsList.isEmpty()) {
 				
 				for(StudycourseRights studycourseRights : studycourseRightsList) {
-					query = "INSERT INTO event_rights (";
+					query = "INSERT INTO studycourse_rights (users_email, ";
 								
 					// Names
-					query += studycourseRights.toValueNames() + ") VALUES( ";
+					query += studycourseRights.toValueNames() + ") VALUES('"+user.getEmail()+"', ";
 					
 					// Values
 					query += studycourseRights.toValues() + ");";
@@ -169,10 +169,10 @@ public class UserDbController extends DbController {
 			if(!subjectRightsList.isEmpty()) {
 				
 				for(SubjectRights subjectRights : subjectRightsList) {
-					query = "INSERT INTO event_rights (";
+					query = "INSERT INTO event_rights (users_email, ";
 										
 					// Names
-					query += subjectRights.toValueNames() + ") VALUES( ";
+					query += subjectRights.toValueNames() + ") VALUES('"+user.getEmail()+"', ";
 					
 					// Values
 					query += subjectRights.toValues() + ");";
@@ -272,7 +272,7 @@ public class UserDbController extends DbController {
 		
 			// delete ContentRights of user
 			EmployeeRights employeeRights = employee.getEmployeeRights();
-			
+						
 			// check, if list is empty, else delete all objects from database
 			// ModuleRights
 			if(!employeeRights.getModuleRightsList().isEmpty()) {
@@ -381,7 +381,7 @@ public class UserDbController extends DbController {
 				user.isEmailVerified());
 		
 		query = "SELECT "+employee.toEmployeeValueNames()+ " FROM employees " +
-				"WHERE email='"+user.getEmail()+"'";
+				"WHERE email='"+user.getEmail()+"';";
 		
 		System.out.println(query);
 		
@@ -412,10 +412,9 @@ public class UserDbController extends DbController {
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			if(rs.next()) {
-				user.setEmployee(true);		// isEmployee == true
-				employee.setAddress(rs.getString(1));	// address
-				employee.setPhoneNum(rs.getString(2));	// phoneNum
-				employee.setTalkTime(rs.getString(3)); 	// talkTime
+				employeeRights.setCanDeblockCriticalModule(rs.getBoolean(1)); // canDeblockCriticalModule
+				employeeRights.setCanDeblockModule(rs.getBoolean(2)); 	// canDeblockModule
+				employeeRights.setAdmin(rs.getBoolean(3));				// isAdmin
 			} else {
 				System.out.println("No employee_rights found with this email");
 				return employee;		// return user
@@ -424,6 +423,121 @@ public class UserDbController extends DbController {
 			e.printStackTrace();
 		}
 		
-		return user;
+		// ContentRights
+		// EventRights
+		ArrayList<EventRights> eventRightsList = new ArrayList<EventRights>();
+		EventRights eventRights = new EventRights();
+		
+		query = "SELECT "+eventRights.toValueNames()+
+				" FROM event_rights WHERE users_email='"+employee.getEmail()+"';";
+		
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			while(rs.next()) {
+				eventRights.setCanEdit(rs.getBoolean(1)); 	// canEdit
+				eventRights.setCanCreate(rs.getBoolean(2)); // canCreate
+				eventRights.setCanDelete(rs.getBoolean(3)); // canDelete
+				eventRights.setEventID(rs.getInt(4)); 		// eventID
+				eventRightsList.add(eventRights);
+			} 
+			if(eventRightsList.isEmpty()) {
+				System.out.println("No event_rights found with this users_email");
+			} else {
+				// set eventRightsList of EmployeeRights
+				employeeRights.setEventRightsList(eventRightsList);
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		// ModuleRights
+		ArrayList<ModuleRights> moduleRightsList = new ArrayList<ModuleRights>();
+		ModuleRights moduleRights = new ModuleRights();
+		
+		query = "SELECT "+moduleRights.toValueNames()+
+				" FROM module_rights WHERE users_email='"+employee.getEmail()+"';";
+		
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			while(rs.next()) {
+				moduleRights.setCanEdit(rs.getBoolean(1)); 	// canEdit
+				moduleRights.setCanCreate(rs.getBoolean(2)); // canCreate
+				moduleRights.setCanDelete(rs.getBoolean(3));// canDelete
+				moduleRights.setModuleID(rs.getInt(4)); 	// moduleID
+				moduleRightsList.add(moduleRights);
+			} 
+			if(moduleRightsList.isEmpty()) {
+				System.out.println("No module_rights found with this users_email");
+			} else {
+				// set moduleRightsList of EmployeeRights
+				employeeRights.setModuleRightsList(moduleRightsList);
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+
+		// SubjectRights
+		ArrayList<SubjectRights> subjectRightsList = new ArrayList<SubjectRights>();
+		SubjectRights subjectRights = new SubjectRights();
+		
+		query = "SELECT "+subjectRights.toValueNames()+
+				" FROM subject_rights WHERE users_email='"+employee.getEmail()+"';";
+		
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			while(rs.next()) {
+				subjectRights.setCanEdit(rs.getBoolean(1)); 	// canEdit
+				subjectRights.setCanCreate(rs.getBoolean(2)); 	// canCreate
+				subjectRights.setCanDelete(rs.getBoolean(3));	// canDelete
+				subjectRights.setSubjectID(rs.getInt(4)); 		// subjectID
+				subjectRightsList.add(subjectRights);
+			} 
+			if(subjectRightsList.isEmpty()) {
+				System.out.println("No subject_rights found with this users_email");
+			} else {
+				// set subjectRightsList of EmployeeRights
+				employeeRights.setSubjectRightsList(subjectRightsList);
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		// StudycourseRights
+		ArrayList<StudycourseRights> studycourseRightsList = new ArrayList<StudycourseRights>();
+		StudycourseRights studycourseRights = new StudycourseRights();
+		
+		query = "SELECT "+studycourseRights.toValueNames()+
+				" FROM studycourse_rights WHERE users_email='"+employee.getEmail()+"';";
+		
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			while(rs.next()) {
+				studycourseRights.setCanEdit(rs.getBoolean(1)); 	// canEdit
+				studycourseRights.setCanCreate(rs.getBoolean(2)); 	// canCreate
+				studycourseRights.setCanDelete(rs.getBoolean(3));	// canDelete
+				studycourseRights.setStudycourseID(rs.getInt(4)); 	// studycourseID
+				studycourseRightsList.add(studycourseRights);
+			} 
+			if(studycourseRightsList.isEmpty()) {
+				System.out.println("No studycourse_rights found with this users_email");
+			} else {
+				// set studycourseRightsList of EmployeeRights
+				employeeRights.setStudycourseRightsList(studycourseRightsList);
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		employee.setEmployeeRights(employeeRights);
+		
+		return employee;
 	}
 }

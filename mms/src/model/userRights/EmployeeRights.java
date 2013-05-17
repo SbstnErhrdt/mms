@@ -11,6 +11,14 @@ public class EmployeeRights extends UserRights {
 	
 	private boolean isEmployeeRights = true;
 	
+	public EmployeeRights() {
+		super(true);
+		eventRightsList = new ArrayList<EventRights>();
+		moduleRightsList = new ArrayList<ModuleRights>();
+		subjectRightsList = new ArrayList<SubjectRights>();
+		studycourseRightsList = new ArrayList<StudycourseRights>();
+	}
+	
 	public EmployeeRights(boolean canDeblockCriticalModule, boolean canDeblockModule, 
 			boolean isAdmin) {
 		super(true);
@@ -70,13 +78,6 @@ public class EmployeeRights extends UserRights {
 	public void setEmployeeRights(boolean isEmployeeRights) {
 		this.isEmployeeRights = isEmployeeRights;
 	}
-
-
-
-	public EmployeeRights() {
-		super();
-	}
-	
 	
 	
 	public boolean isCanDeblockCriticalModule() {
@@ -175,7 +176,7 @@ public class EmployeeRights extends UserRights {
 		return values;
 	}
 	
-	public String[] toValueEmployeeNamesArray() {
+	public String[] toEmployeeValueNamesArray() {
 		String[] valueNames = {"canDeblockCriticalModule", "canDeblockModule", "isAdmin"};
 		return valueNames;
 	}
@@ -185,4 +186,27 @@ public class EmployeeRights extends UserRights {
 		return values;
 	}
 	
+	public String toString() {
+		String string = "[";
+		String[] values = toEmployeeValuesArray();
+		String[] valueNames = toEmployeeValueNamesArray();
+		for(int i=0; i<values.length-1; i++) {
+			string += valueNames[i]+"="+values[i]+", ";
+		}
+		string += valueNames[values.length-1]+"="+values[values.length-1]+"]";
+		string += "\n";
+		for(EventRights er : eventRightsList) {
+			string += er + "\n";
+		}
+		for(ModuleRights mr : moduleRightsList) {
+			string += mr + "\n";
+		}
+		for(SubjectRights sr : subjectRightsList) {
+			string += sr + "\n";
+		}
+		for(StudycourseRights scr : studycourseRightsList) {
+			string += scr + "\n";
+		}
+		return string;
+	}	
 }

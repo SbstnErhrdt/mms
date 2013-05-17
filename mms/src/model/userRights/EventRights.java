@@ -23,13 +23,19 @@ public class EventRights extends ContentRights {
 	
 	public String[] toValueNamesArray() {
 		String[] valueNames = super.toValueNamesArray();
-		valueNames[4] = "eventID";
+		valueNames[3] = "eventID";
 		return valueNames;
 	}
 	
 	public String[] toValuesArray() {
 		String[] values = super.toValuesArray();
-		values[4] = "" + eventID;
+		values[3] = "" + eventID;
 		return values;
+	}
+	
+	public String toString() {
+		String string = super.toString();
+		string += ", eventID="+eventID+"]";
+		return string;
 	}
 }

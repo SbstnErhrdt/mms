@@ -23,13 +23,19 @@ public class SubjectRights extends ContentRights {
 	
 	public String[] toValueNamesArray() {
 		String[] valueNames = super.toValueNamesArray();
-		valueNames[4] = "subjectID";
+		valueNames[3] = "subjectID";
 		return valueNames;
 	}
 	
 	public String[] toValuesArray() {
 		String[] values = super.toValuesArray();
-		values[4] = "" + subjectID;
+		values[3] = "" + subjectID;
 		return values;
+	}
+	
+	public String toString() {
+		String string = super.toString();
+		string += ", subjectID="+subjectID+"]";
+		return string;
 	}
 }

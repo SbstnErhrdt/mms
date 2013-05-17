@@ -46,14 +46,6 @@ public class ContentRights implements DbControllable {
 		String values = canEdit+", "+canCreate+", "+canDelete;
 		return values;
 	}
-	
-	public ArrayList toValues2() {
-		ArrayList values = new ArrayList();
-		values.add(canEdit);
-		values.add(canCreate);
-		values.add(canDelete);
-		return values;
-	}
 
 	@Override
 	public String[] toValuesArray() {
@@ -66,5 +58,16 @@ public class ContentRights implements DbControllable {
 		String[] valueNames = {"canEdit", "canCreate", "canDelete", "ID"};
 		return valueNames;
 	}
+	
+	public String toString() {
+		String string = "[";
+		String[] values = toValuesArray();
+		String[] valueNames = toValueNamesArray();
+		for(int i=0; i<values.length-2; i++) {
+			string += valueNames[i]+"="+values[i]+", ";
+		}
+		string += valueNames[values.length-2]+"="+values[values.length-2];
+		return string;
+	}	
 	
 }

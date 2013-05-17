@@ -11,6 +11,7 @@ public class Employee extends User {
 
 	public Employee(String email, String password, String address, String phoneNum, String talkTime)  {
 		super(email, password);
+		this.employeeRights = new EmployeeRights();
 	}
 	
 	public Employee(String email, String password, String firstName, String lastName, String title,

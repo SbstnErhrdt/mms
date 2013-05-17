@@ -23,14 +23,20 @@ public class ModuleRights extends ContentRights {
 	
 	public String[] toValueNamesArray() {
 		String[] valueNames = super.toValueNamesArray();
-		valueNames[4] = "moduleID";
+		valueNames[3] = "moduleID";
 		return valueNames;
 	}
 	
 	public String[] toValuesArray() {
 		String[] values = super.toValuesArray();
-		values[4] = "" + moduleID;
+		values[3] = "" + moduleID;
 		return values;
+	}
+	
+	public String toString() {
+		String string = super.toString();
+		string += ", moduleID="+moduleID+"]";
+		return string;
 	}
 	
 }
