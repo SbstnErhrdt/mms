@@ -9,6 +9,7 @@ public class Subject extends Content {
 	 * 	subjectID	int(5)
 	 * 	module_handbooks_moduleHandbookID	int(5)
 	 *  name var(100)
+	 *  archived bool
 	 */
 		
 	private List<Module> modules = new ArrayList<Module>();
