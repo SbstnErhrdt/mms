@@ -215,6 +215,16 @@ public class UserDbController extends DbController {
 			e.printStackTrace();
 			return false;
 		}
+		
+		/*
+		 * TO DO
+		 * 
+		 * update: 
+		 * Employee, UserRights, EmployeeRights, 
+		 * EventRights, ModuleRights, SubjectRights, StudycourseRights
+		 * 
+		 * 
+		 */
 	}
 	
 	// Deletes a user, the database will delete all referring entries automatically

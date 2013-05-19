@@ -31,8 +31,8 @@ public class Test {
 		
 		emp.getEmployeeRights().addEventRights(eventRights);
 		
-		System.out.println("emp.getEmployeeRights().getEventRightsList():");
-		System.out.println(emp.getEmployeeRights().getEventRightsList());
+		//System.out.println("emp.getEmployeeRights().getEventRightsList():");
+		//System.out.println(emp.getEmployeeRights().getEventRightsList());
 		
 		ModuleRights moduleRights = new ModuleRights();
 		moduleRights.setModuleID(1);
