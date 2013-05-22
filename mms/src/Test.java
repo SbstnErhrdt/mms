@@ -77,6 +77,7 @@ public class Test {
 		
 		udbc.deleteUser(emp);
 		udbc.createUser(emp);
+		
 		emp = (Employee) udbc.getUser(user1);
 			
 		udbc.updateUser(emp);

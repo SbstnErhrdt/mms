@@ -237,11 +237,11 @@ public class UserDbController extends DbController {
 				user.setGraduation(rs.getString(5));// graduation
 				user.setMatricNum(rs.getInt(7));	// matricNum
 				user.setSemester(rs.getInt(8));		// semester
-				
 			} else {
 				System.out.println("No user found with this email and password.");
 				return null;
-			}			
+			}
+			rs.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -261,8 +261,10 @@ public class UserDbController extends DbController {
 				userRights.setCanLogin(rs.getBoolean(1));	// canLogin
 			} else {
 				System.out.println("No user_rights found with this email");
+				rs.close();
 				return null;
 			}	
+			rs.close();
 			user.setUserRights(userRights);
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -289,8 +291,10 @@ public class UserDbController extends DbController {
 				employee.setTalkTime(rs.getString(4)); 	// talkTime
 			} else {
 				System.out.println("No employees found with this email");
+				rs.close();
 				return user;		// return user
 			}	
+			rs.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -313,7 +317,8 @@ public class UserDbController extends DbController {
 			} else {
 				System.out.println("No employee_rights found with this email");
 				return employee;		// return user
-			}	
+			}
+			rs.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -321,7 +326,7 @@ public class UserDbController extends DbController {
 		// ContentRights
 		// EventRights
 		ArrayList<EventRights> eventRightsList = new ArrayList<EventRights>();
-		EventRights eventRights = new EventRights();
+		EventRights eventRights = new EventRights();;
 		
 		query = "SELECT "+eventRights.toValueNames()+
 				" FROM event_rights WHERE users_email='"+employee.getEmail()+"';";
@@ -336,6 +341,7 @@ public class UserDbController extends DbController {
 				eventRights.setCanDelete(rs.getBoolean(3)); // canDelete
 				eventRights.setEventID(rs.getInt(4)); 		// eventID
 				eventRightsList.add(eventRights);
+				eventRights = new EventRights();
 			} 
 			if(eventRightsList.isEmpty()) {
 				System.out.println("No event_rights found with this users_email");
@@ -343,6 +349,7 @@ public class UserDbController extends DbController {
 				// set eventRightsList of EmployeeRights
 				employeeRights.setEventRightsList(eventRightsList);
 			}
+			rs.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -364,6 +371,7 @@ public class UserDbController extends DbController {
 				moduleRights.setCanDelete(rs.getBoolean(3));// canDelete
 				moduleRights.setModuleID(rs.getInt(4)); 	// moduleID
 				moduleRightsList.add(moduleRights);
+				moduleRights = new ModuleRights();
 			} 
 			if(moduleRightsList.isEmpty()) {
 				System.out.println("No module_rights found with this users_email");
@@ -371,6 +379,7 @@ public class UserDbController extends DbController {
 				// set moduleRightsList of EmployeeRights
 				employeeRights.setModuleRightsList(moduleRightsList);
 			}
+			rs.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -392,6 +401,7 @@ public class UserDbController extends DbController {
 				subjectRights.setCanDelete(rs.getBoolean(3));	// canDelete
 				subjectRights.setSubjectID(rs.getInt(4)); 		// subjectID
 				subjectRightsList.add(subjectRights);
+				subjectRights = new SubjectRights();
 			} 
 			if(subjectRightsList.isEmpty()) {
 				System.out.println("No subject_rights found with this users_email");
@@ -399,6 +409,7 @@ public class UserDbController extends DbController {
 				// set subjectRightsList of EmployeeRights
 				employeeRights.setSubjectRightsList(subjectRightsList);
 			}
+			rs.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -420,6 +431,7 @@ public class UserDbController extends DbController {
 				studycourseRights.setCanDelete(rs.getBoolean(3));	// canDelete
 				studycourseRights.setStudycourseID(rs.getInt(4)); 	// studycourseID
 				studycourseRightsList.add(studycourseRights);
+				studycourseRights = new StudycourseRights();
 			} 
 			if(studycourseRightsList.isEmpty()) {
 				System.out.println("No studycourse_rights found with this users_email");
@@ -427,6 +439,7 @@ public class UserDbController extends DbController {
 				// set studycourseRightsList of EmployeeRights
 				employeeRights.setStudycourseRightsList(studycourseRightsList);
 			}
+			rs.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
