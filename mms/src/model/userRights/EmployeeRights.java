@@ -2,6 +2,8 @@ package model.userRights;
 
 import java.util.ArrayList;
 
+import util.Utilities;
+
 public class EmployeeRights extends UserRights {
 	private boolean canDeblockCriticalModule, canDeblockModule, isAdmin;
 	private ArrayList<ModuleRights> moduleRightsList;
@@ -167,12 +169,12 @@ public class EmployeeRights extends UserRights {
 	}
 	
 	public String toEmployeeValueNames() {
-		String valueNames = "canDeblockCriticalModule, canDeblockModule, isAdmin";
+		String valueNames = Utilities.arrayToString(toEmployeeValueNamesArray());
 		return valueNames;
 	}
 	
 	public String toEmployeeValues() {
-		String values = canDeblockCriticalModule+", "+canDeblockModule+", "+isAdmin;
+		String values = Utilities.arrayToString(toEmployeeValuesArray());
 		return values;
 	}
 	

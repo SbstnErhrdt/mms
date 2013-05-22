@@ -1,6 +1,8 @@
 package model.userRights;
 
 import java.util.ArrayList;
+
+import util.Utilities;
 import model.DbControllable;
 
 public class ContentRights implements DbControllable {
@@ -38,12 +40,12 @@ public class ContentRights implements DbControllable {
 	}
 	
 	public String toValueNames() {
-		String valueNames = "canEdit, canCreate, canDelete";
+		String valueNames = Utilities.arrayToString(toValueNamesArray());
 		return valueNames;
 	}
 	
 	public String toValues() {
-		String values = canEdit+", "+canCreate+", "+canDelete;
+		String values = Utilities.arrayToString(toValuesArray());
 		return values;
 	}
 

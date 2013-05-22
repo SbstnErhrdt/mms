@@ -11,16 +11,6 @@ public class StudycourseRights extends ContentRights {
 		this.studycourseID = studycourseID;
 	}
 	
-	public String toValueNames() {
-		String valueNames = super.toValueNames() + ", studycourseID";
-		return valueNames;
-	}
-	
-	public String toValues() {
-		String values = super.toValues() + ", "+studycourseID;
-		return values;
-	}
-	
 	public String[] toValueNamesArray() {
 		String[] valueNames = super.toValueNamesArray();
 		valueNames[3] = "studycourseID";

@@ -11,16 +11,6 @@ public class SubjectRights extends ContentRights {
 		this.subjectID = subjectID;
 	} 
 	
-	public String toValueNames() {
-		String valueNames = super.toValueNames() + ", subjectID";
-		return valueNames;
-	}
-	
-	public String toValues() {
-		String values = super.toValues() + ", "+subjectID;
-		return values;
-	}
-	
 	public String[] toValueNamesArray() {
 		String[] valueNames = super.toValueNamesArray();
 		valueNames[3] = "subjectID";

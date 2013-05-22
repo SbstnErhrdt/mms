@@ -1,5 +1,7 @@
 package model.userRights;
 
+import util.Utilities;
+
 public class EventRights extends ContentRights {
 	private int eventID;
 
@@ -9,16 +11,6 @@ public class EventRights extends ContentRights {
 
 	public void setEventID(int eventID) {
 		this.eventID = eventID;
-	}
-	
-	public String toValueNames() {
-		String valueNames = super.toValueNames() + ", eventID";
-		return valueNames;
-	}
-	
-	public String toValues() {
-		String values = super.toValues() + ", "+eventID;
-		return values;
 	}
 	
 	public String[] toValueNamesArray() {
