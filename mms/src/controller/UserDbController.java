@@ -169,7 +169,7 @@ public class UserDbController extends DbController {
 			if(!subjectRightsList.isEmpty()) {
 				
 				for(SubjectRights subjectRights : subjectRightsList) {
-					query = "INSERT INTO event_rights (users_email, ";
+					query = "INSERT INTO subject_rights (users_email, ";
 										
 					// Names
 					query += subjectRights.toValueNames() + ") VALUES('"+user.getEmail()+"', ";
@@ -194,37 +194,12 @@ public class UserDbController extends DbController {
 	}
 	
 	public boolean updateUser(User user) {
-		String query = "UPDATE users SET ";
 		
-		String email = user.getEmail();
-		String[] valueNames = user.toValueNamesArray();
-		String[] values = user.toValuesArray();
-		
-		for(int i = 0; i < valueNames.length-1; i++) {
-			query += valueNames[i] + " = '" + values[i] + "', " ;
-		}
-		query += valueNames[valueNames.length-1] + " = '" + values[values.length-1] +"');";		
-		query += " WHERE email = '" + email + "';";
-		
-		System.out.println(query);
-		
-		try {
-			db.createStatement().executeUpdate(query);
-			return true;
-		} catch(SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-		/*
-		 * TO DO
-		 * 
-		 * update: 
-		 * Employee, UserRights, EmployeeRights, 
-		 * EventRights, ModuleRights, SubjectRights, StudycourseRights
-		 * 
-		 * 
-		 */
+		// Update: delete and re-create
+		if(deleteUser(user)){
+			if(createUser(user)) return true;
+		} 
+		return false;
 	}
 	
 	// Deletes a user, the database will delete all referring entries automatically
@@ -308,9 +283,10 @@ public class UserDbController extends DbController {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			if(rs.next()) {
 				user.setEmployee(true);		// isEmployee == true
-				employee.setAddress(rs.getString(1));	// address
-				employee.setPhoneNum(rs.getString(2));	// phoneNum
-				employee.setTalkTime(rs.getString(3)); 	// talkTime
+				// rs.getString(1) is email
+				employee.setAddress(rs.getString(2));	// address
+				employee.setPhoneNum(rs.getString(3));	// phoneNum
+				employee.setTalkTime(rs.getString(4)); 	// talkTime
 			} else {
 				System.out.println("No employees found with this email");
 				return user;		// return user

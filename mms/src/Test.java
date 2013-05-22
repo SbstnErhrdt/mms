@@ -3,6 +3,8 @@ import model.User;
 import model.userRights.EmployeeRights;
 import model.userRights.EventRights;
 import model.userRights.ModuleRights;
+import model.userRights.StudycourseRights;
+import model.userRights.SubjectRights;
 import model.userRights.UserRights;
 import controller.UserDbController;
 
@@ -12,6 +14,7 @@ public class Test {
 		
 		Employee emp = new Employee("email@ex-studios.net", "1234", "Sebastian", "Sehrhardt", "Herr Dipl. Ing.",
 				"Bachelor", 1234567, 4, new EmployeeRights(), true);
+		emp = new Employee("neue_email@ex-studios.net", "1234", "Sebastian", "Der Zweite", "Herr Dr. Dipl. Ing.", "Bachelor", 123456, 4, new UserRights(), false);
 		emp.setAddress("Am Arsch der Welt");
 		emp.setEmployeeRights(new EmployeeRights(true, false, false));
 		
@@ -42,21 +45,41 @@ public class Test {
 		
 		emp.getEmployeeRights().addModuleRights(moduleRights);
 		
+		SubjectRights sR = new SubjectRights();
+		sR.setSubjectID(1);
+		sR.setCanCreate(true);
+		sR.setCanEdit(true);
+		sR.setCanDelete(false);
+		
+		emp.getEmployeeRights().addSubjectRights(sR);
+		
+		StudycourseRights scR = new StudycourseRights();
+		scR.setStudycourseID(1);
+		scR.setCanCreate(true);
+		scR.setCanEdit(true);
+		scR.setCanDelete(false);
+		
+		emp.getEmployeeRights().addStudycourseRights(scR);
+		
 		//if(udbc.createUser(user)) System.out.println("user "+user+" created successfully");
 		
 		// if(udbc.deleteUser(user)) System.out.println("user "+user+" deleted succesfully");
 		
-		User user1 = new User("email@ex-studios.net", "1234");
+		User user1 = new User("neue_email@ex-studios.net", "1234");
 		//user1.setEmployee(true);
 		//user1 = udbc.getUser(user1);
 		
 		//System.out.println(user1);
 		//System.out.println(user1.getUserRights());
 		
+		
+		
+		
 		udbc.deleteUser(emp);
 		udbc.createUser(emp);
 		emp = (Employee) udbc.getUser(user1);
-		
+			
+		udbc.updateUser(emp);
 		
 		System.out.println(emp);
 		System.out.println(emp.getEmployeeRights());

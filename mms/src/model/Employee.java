@@ -12,6 +12,9 @@ public class Employee extends User {
 	public Employee(String email, String password, String address, String phoneNum, String talkTime)  {
 		super(email, password);
 		this.employeeRights = new EmployeeRights();
+		this.address = address;
+		this.phoneNum = phoneNum;
+		this.talkTime = talkTime;
 	}
 	
 	public Employee(String email, String password, String firstName, String lastName, String title,
@@ -20,6 +23,9 @@ public class Employee extends User {
 		super(firstName, lastName, title, email, graduation, password, 
 				matricNum, semester, rights, emailVerified);
 		this.employeeRights = new EmployeeRights();
+		this.address = address;
+		this.phoneNum = phoneNum;
+		this.talkTime = talkTime;
 	}
 	
 	public EmployeeRights getEmployeeRights() {
