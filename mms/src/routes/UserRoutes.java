@@ -11,6 +11,10 @@ import model.userRights.UserRights;
 
 public class UserRoutes {
 
+	// ####################################################
+	// GET Methods
+	// ####################################################
+	
 	public void readUser(HttpServletRequest request,
 			HttpServletResponse response) {
 		// TODO Auto-generated method stub
@@ -24,6 +28,22 @@ public class UserRoutes {
 	}
 
 	public void readUsers(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	// ####################################################
+	// POST Methods
+	// ####################################################
+
+	public void createUser(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void updateUser(HttpServletRequest request,
 			HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		

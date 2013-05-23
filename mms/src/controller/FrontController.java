@@ -173,6 +173,13 @@ public class FrontController extends HttpServlet {
 		// User
 		// ####################################################
 		
+		// create User
+		else if(path.equals("/create/user")) {
+			userRoutes.createUser(request, response);
+		// update User
+		} else if(path.equals("/update/user")) {
+			userRoutes.updateUser(request, response);
+		}
 	}
 
 }
