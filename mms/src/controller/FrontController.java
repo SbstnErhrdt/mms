@@ -36,7 +36,7 @@ public class FrontController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		String path = request.getServletPath();
-		System.out.println("Path: " + path);
+		System.out.println("GET-Request, Path: " + path);
 		UserRoutes userRoutes = new UserRoutes();
 		ContentRoutes contentRoutes = new ContentRoutes();
 		
@@ -49,64 +49,130 @@ public class FrontController extends HttpServlet {
 		if(path.equals("/read/event")) {
 			contentRoutes.readEvent(request, response);
 		/// delete Event
-		} else if(path.equals("delete/event")) {
+		} else if(path.equals("/delete/event")) {
 			contentRoutes.deleteEvent(request, response);
 		// read Events
-		} else if(path.equals("read/events")) {
+		} else if(path.equals("/read/events")) {
 			contentRoutes.readEvents(request, response);
 		}
 			
 		// read Module
-		else if(path.equals("read/module")) {
+		else if(path.equals("/read/module")) {
 			contentRoutes.readModule(request, response);
 		// delete Module
-		} else if(path.equals("delete/module")) {
+		} else if(path.equals("/delete/module")) {
 			contentRoutes.deleteModule(request, response);
 		// read Modules
-		} else if(path.equals("read/modules")) {
+		} else if(path.equals("/read/modules")) {
 			contentRoutes.readModules(request, response);
 		}
 		
 		// read Subject
-		else if(path.equals("read/subject")) {
+		else if(path.equals("/read/subject")) {
 			contentRoutes.readSubject(request, response);
 		// delete Module
-		} else if(path.equals("delete/subject")) {
+		} else if(path.equals("/delete/subject")) {
 			contentRoutes.deleteSubject(request, response);
 		// read Modules
-		} else if(path.equals("read/subjects")) {
+		} else if(path.equals("/read/subjects")) {
 			contentRoutes.readSubjects(request, response);
 		}
 		
 		// read Studycourse
-		else if(path.equals("read/studycourse")) {
+		else if(path.equals("/read/studycourse")) {
 			contentRoutes.readStudycourse(request, response);
 		// delete Studycourse
-		} else if(path.equals("delete/studycourse")) {
+		} else if(path.equals("/delete/studycourse")) {
 			contentRoutes.deleteStudycourse(request, response);
 		// read Studycourses
-		} else if(path.equals("read/studycourses")) {
+		} else if(path.equals("/read/studycourses")) {
 			contentRoutes.readStudycourses(request, response);
 		}
 		
 		// read ModuleHandbook
-		else if(path.equals("read/modulehandbook")) {
+		else if(path.equals("/read/modulehandbook")) {
 			contentRoutes.readModuleHandbook(request, response);
 		// delete ModuleHandbook
-		} else if(path.equals("delete/modulehandbook")) {
+		} else if(path.equals("/delete/modulehandbook")) {
 			contentRoutes.deleteModuleHandbook(request, response);
 		// read ModuleHandbooks
-		} else if(path.equals("read/modulehandbooks")) {
+		} else if(path.equals("/read/modulehandbooks")) {
 			contentRoutes.readModuleHandbooks(request, response);
-		}		
+		}	
 		
+		// ####################################################
+		// User
+		// ####################################################
+		
+		// read User
+		else if(path.equals("/read/user")) {
+			userRoutes.readUser(request, response);
+		// delete User
+		} else if(path.equals("/delete/user")) {
+			userRoutes.deleteUser(request, response);
+		// read Users
+		} else if(path.equals("/read/users")) {
+			userRoutes.readUsers(request, response);
+		}
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		String path = request.getServletPath();
+		System.out.println("POST-Request, Path: " + path);
+		UserRoutes userRoutes = new UserRoutes();
+		ContentRoutes contentRoutes = new ContentRoutes();
+		
+		// ####################################################
+		// Content
+		// ####################################################
+		
+		// create Event
+		if(path.equals("/create/event")) {
+			contentRoutes.createEvent(request, response);
+		// update Event
+		} else if(path.equals("/update/event")) {
+			contentRoutes.updateEvent(request, response);
+		}
+		
+		// create Module
+		else if(path.equals("/create/module")) {
+			contentRoutes.createModule(request, response);
+		// update Module
+		} else if(path.equals("/update/module")) {
+			contentRoutes.updateModule(request, response);
+		}
+		
+		// create Subject
+		else if(path.equals("/create/subject")) {
+			contentRoutes.createSubject(request, response);
+		// update Subject
+		} else if(path.equals("/update/subject")) {
+			contentRoutes.updateSubject(request, response);
+		}
+		
+		// create Studycourse
+		else if(path.equals("/create/studycourse")) {
+			contentRoutes.createStudycourse(request, response);
+		// update Studycourse
+		} else if(path.equals("/update/studycourse")) {
+			contentRoutes.updateStudycourse(request, response);
+		}
+		
+		// create ModuleHandbook
+		else if(path.equals("/create/modulehandbook")) {
+			contentRoutes.createStudycourse(request, response);
+		// update ModuleHandbook
+		} else if(path.equals("/update/modulehandbook")) {
+			contentRoutes.updateStudycourse(request, response);
+		}
+		
+		// ####################################################
+		// User
+		// ####################################################
+		
 	}
 
 }

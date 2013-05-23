@@ -5,6 +5,10 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ContentRoutes {
 
+	// ####################################################
+	// GET Methods
+	// ####################################################
+	
 	public void readEvent(HttpServletRequest request,
 			HttpServletResponse response) {
 		// TODO Auto-generated method stub
@@ -90,6 +94,58 @@ public class ContentRoutes {
 	}
 
 	public void readModuleHandbooks(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	// ####################################################
+	// POST Methods
+	// ####################################################
+
+	public void createEvent(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void updateEvent(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void createModule(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void updateModule(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void createSubject(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void updateSubject(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void createStudycourse(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void updateStudycourse(HttpServletRequest request,
 			HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		
