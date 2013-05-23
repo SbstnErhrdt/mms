@@ -71,10 +71,7 @@ public class Test {
 		
 		//System.out.println(user1);
 		//System.out.println(user1.getUserRights());
-		
-		
-		
-		
+	
 		udbc.deleteUser(emp);
 		udbc.createUser(emp);
 		
