@@ -94,7 +94,4 @@ public class ContentRoutes {
 		// TODO Auto-generated method stub
 		
 	}
-
-	
-
 }
