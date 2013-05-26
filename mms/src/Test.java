@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
@@ -5,12 +7,14 @@ import com.sun.org.apache.bcel.internal.generic.Type;
 
 import model.Employee;
 import model.User;
+import model.content.Event;
 import model.userRights.EmployeeRights;
 import model.userRights.EventRights;
 import model.userRights.ModuleRights;
 import model.userRights.StudycourseRights;
 import model.userRights.SubjectRights;
 import model.userRights.UserRights;
+import controller.ContentDbController;
 import controller.UserDbController;
 
 public class Test {
@@ -80,7 +84,6 @@ public class Test {
 		/*
 		udbc.deleteUser(emp);
 		udbc.createUser(emp);
-		*/
 		
 		emp = (Employee) udbc.getUser(user1);
 		
@@ -88,11 +91,28 @@ public class Test {
 		
 		String json = gson.toJson(eventRights);
 		
-		/*
 		udbc.updateUser(emp);
 		
 		System.out.println(emp);
 		System.out.println(emp.getEmployeeRights());
 		*/
+		ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
+		moduleIDs.add(1);
+		moduleIDs.add(2);
+		
+		Event event = new Event(5, moduleIDs, "Ana IIa", 4, "gerhard.baur@uni-ulm.de", false);
+		
+		
+		
+		ContentDbController cdbc = new ContentDbController();
+		
+		//cdbc.createEvent(event);
+		
+		
+		cdbc.updateEvent(event);
+		
+		event = cdbc.getEvent(5);
+				
+		System.out.println(event);
 	}
 }

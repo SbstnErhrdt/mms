@@ -1,5 +1,7 @@
 package model.content;
 
+import java.util.ArrayList;
+
 public class Event extends Content {
 
 	
@@ -15,11 +17,16 @@ public class Event extends Content {
 	
 	private String lecturer_email;
 	private int sws;
+	private ArrayList<Integer> moduleIDs;
 	
 	// Konstruktor
-	public Event(int eventID, int modules_moduleID, String name, int sws, String lecturer_email, boolean archived) {
+	public Event(int eventID) {
+		eventID = eventID;
+	}
+	
+	public Event(int eventID, ArrayList<Integer> moduleIDs, String name, int sws, String lecturer_email, boolean archived) {
 		this.ID = eventID;
-		this.parentID = modules_moduleID;
+		this.moduleIDs = moduleIDs;
 		this.name = name;
 		this.sws = sws;
 		this.lecturer_email = lecturer_email;
@@ -45,6 +52,14 @@ public class Event extends Content {
 		String value = arrayToString(toValueNamesArray());
 		return value;
 	}
+	
+	public ArrayList<Integer> getModuleIDs() {
+		return moduleIDs;
+	}
+
+	public void setModuleIDs(ArrayList<Integer> moduleIDs) {
+		this.moduleIDs = moduleIDs;
+	}
 
 	@Override
 	public String toValues() {
@@ -54,15 +69,31 @@ public class Event extends Content {
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {""+ID, ""+parentID, "'"+name+"'", ""+sws, ""+"'"+lecturer_email+"'", ""+archived};
+		String[] values = {""+ID, "'"+name+"'", ""+sws, ""+"'"+lecturer_email+"'", ""+archived};
 		return values;
 	}
 
 	@Override
 	public String[] toValueNamesArray() {
-		String[] valueNames = {"eventID", "modules_moduleID", "name", "sws", "lecturer_email, archieved"};
+		String[] valueNames = {"eventID", "name", "sws", "lecturer_email", "archived"};
 		return valueNames;
 	}
 	
+	public String toString() {
+		String string = "[";
+		String[] values = toValuesArray();
+		String[] valueNames = toValueNamesArray();
+		for(int i=0; i<values.length-1; i++) {
+			string += valueNames[i]+"="+values[i]+", ";
+		}
+		string += valueNames[values.length-1]+"="+values[values.length-1];
+		string += ", moduleIDs={";
+		for(int i=0; i<moduleIDs.size()-1; i++) {
+			string += moduleIDs.get(i) + ",";
+		}
+		string += moduleIDs.get(moduleIDs.size()-1) + "}]";
+		
+		return string;
+	}
 	
 }

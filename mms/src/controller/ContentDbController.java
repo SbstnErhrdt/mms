@@ -1,5 +1,6 @@
 package controller;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -31,6 +32,32 @@ public class ContentDbController extends DbController {
 			e.printStackTrace();
 			return false;
 		}
+		
+		// CREATE ENTRY IN TABLE EVENTS_MODULES
+		query = "INSERT INTO events_modules(eventID, moduleID) VALUES ("+event.getID()+", ?)";
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ArrayList<Integer> moduleIDs = event.getModuleIDs();
+			for(int moduleID : moduleIDs) {
+				ps.setInt(1, moduleID);
+				ps.executeUpdate();
+				db.commit();
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
 		return true;
 	}
@@ -46,11 +73,11 @@ public class ContentDbController extends DbController {
 		String query = "UPDATE events SET ";
 
 		for (int i = 0; i < valueNames.length - 1; i++) {
-			query += valueNames[i] + " = " + values[i] + ", ";
+			query += valueNames[i] + "=" + values[i] + ", ";
 		}
-		query += valueNames[valueNames.length - 1] + " = '"
-				+ values[values.length - 1] + "') ";
-		query += "WHERE eventID = " + event.getID() + ";";
+		query += valueNames[valueNames.length - 1] + "="
+				+ values[values.length - 1];
+		query += " WHERE eventID = " + event.getID() + ";";
 
 		System.out.println("db:updateEvent " + query);
 
@@ -60,25 +87,60 @@ public class ContentDbController extends DbController {
 			e.printStackTrace();
 			return false;
 		}
-
+		
+		// UPDATE EVENTS_MODULES: delete and recreate
+		query = "DELETE FROM events_modules WHERE eventID="+event.getID();
+		
+		System.out.println(query);
+		
+		try {
+			db.createStatement().executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		query = "INSERT INTO events_modules(eventID, moduleID) VALUES ("+event.getID()+", ?)";
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ArrayList<Integer> moduleIDs = event.getModuleIDs();
+			for(int moduleID : moduleIDs) {
+				ps.setInt(1, moduleID);
+				ps.executeUpdate();
+				db.commit();
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return true;
 	}
 
 	// EVENT HOLEN
-	public Event getEvent(Event event) {
-
-		String query = "SELECT FROM events WHERE eventID = " + event.getID()
-				+ ";";
+	public Event getEvent(int eventID) {
+		Event newEvent = new Event(eventID);
+		
+		String query = "SELECT "+newEvent.toValueNames()+" FROM events WHERE eventID = " + eventID;
 		System.out.println("db:getEvent " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
 			if (rs.next()) {
-				Event newEvent = new Event(rs.getInt(1), rs.getInt(2),
-						rs.getString(3), rs.getInt(4), rs.getString(5),
-						rs.getBoolean(6));
+				newEvent = new Event(rs.getInt(1), new ArrayList<Integer>(),
+						rs.getString(2), rs.getInt(3), rs.getString(4),
+						rs.getBoolean(5));
 				rs.close();
-				return newEvent;
 
 			} else {
 				System.out.println("No Event found with this ID.");
@@ -87,8 +149,24 @@ public class ContentDbController extends DbController {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return null;
 		}
-		return null;
+		
+		// moduleIDs
+		query = "SELECT moduleID FROM events_modules WHERE eventID="+eventID;
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			
+			ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
+			while(rs.next()) {
+				moduleIDs.add(rs.getInt(1));
+			}
+			newEvent.setModuleIDs(moduleIDs);
+			return newEvent;
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return newEvent;
+		}
 	}
 
 	// EVENT ENTFERNEN
@@ -218,7 +296,7 @@ public class ContentDbController extends DbController {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
 			while (rs.next()) {
-				Event event = new Event(rs.getInt(1), rs.getInt(2),
+				Event event = new Event(rs.getInt(1), new ArrayList<Integer>(),
 						rs.getString(3), rs.getInt(4), rs.getString(5),
 						rs.getBoolean(6));
 				events.add(event);
