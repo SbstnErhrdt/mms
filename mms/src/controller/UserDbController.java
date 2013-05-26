@@ -193,6 +193,12 @@ public class UserDbController extends DbController {
 		return true;
 	}
 	
+	
+	/**
+	 * 
+	 * @param user
+	 * @return
+	 */
 	public boolean updateUser(User user) {
 		
 		// Update: delete and re-create

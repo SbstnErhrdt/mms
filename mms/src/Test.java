@@ -1,3 +1,8 @@
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
+import com.sun.org.apache.bcel.internal.generic.Type;
+
 import model.Employee;
 import model.User;
 import model.userRights.EmployeeRights;
@@ -72,14 +77,22 @@ public class Test {
 		//System.out.println(user1);
 		//System.out.println(user1.getUserRights());
 	
+		/*
 		udbc.deleteUser(emp);
 		udbc.createUser(emp);
+		*/
 		
 		emp = (Employee) udbc.getUser(user1);
-			
+		
+		Gson gson = new Gson();
+		
+		String json = gson.toJson(eventRights);
+		
+		/*
 		udbc.updateUser(emp);
 		
 		System.out.println(emp);
 		System.out.println(emp.getEmployeeRights());
+		*/
 	}
 }
