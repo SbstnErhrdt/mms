@@ -197,7 +197,7 @@ public class ContentDbController extends DbController {
 
 		// QUERY
 		String query = "INSERT INTO modules (" + valueNames + ") VALUES ("
-				+ values + ");";
+				+ values + ")";
 		System.out.println("db:createModule " + query);
 		try {
 			db.createStatement().executeUpdate(query);
@@ -205,7 +205,32 @@ public class ContentDbController extends DbController {
 			e.printStackTrace();
 			return false;
 		}
-
+		
+		// CREATE ENTRY IN TABLE modules_subjects
+		query = "INSERT INTO modules_subjects(moduleID, subjectID) VALUES ("+module.getID()+", ?)";
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ArrayList<Integer> subjectIDs = module.getSubjectIDs();
+			for(int subjectID : subjectIDs) {
+				ps.setInt(1, subjectID);
+				ps.executeUpdate();
+				db.commit();
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return true;
 	}
 
@@ -222,9 +247,9 @@ public class ContentDbController extends DbController {
 		for (int i = 0; i < valueNames.length - 1; i++) {
 			query += valueNames[i] + " = " + values[i] + ", ";
 		}
-		query += valueNames[valueNames.length - 1] + " = '"
-				+ values[values.length - 1] + "') ";
-		query += "WHERE moduleID = " + module.getID() + ";";
+		query += valueNames[valueNames.length - 1] + "="
+				+ values[values.length - 1];
+		query += " WHERE moduleID = " + module.getID() + ";";
 
 		System.out.println("db:updateModule " + query);
 
@@ -235,28 +260,61 @@ public class ContentDbController extends DbController {
 			return false;
 		}
 
+		// UPDATE modules_subjects: delete and recreate
+		query = "DELETE FROM modules_subjects WHERE moduleID="+module.getID();
+		
+		System.out.println(query);
+		
+		try {
+			db.createStatement().executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		query = "INSERT INTO modules_subjects(moduleID, subjectID) VALUES ("+module.getID()+", ?)";
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ArrayList<Integer> subjectIDs = module.getSubjectIDs();
+			for(int subjectID : subjectIDs) {
+				ps.setInt(1, subjectID);
+				ps.executeUpdate();
+				db.commit();
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return true;
 	}
 
 	// MODULE HOLEN
-	public Module getModule(Module module) {
-
-		String query = "SELECT FROM modules WHERE moduleID = " + module.getID()
-				+ ";";
+	public Module getModule(int moduleID) {
+		Module newModule = new Module(moduleID);
+		String query = "SELECT "+newModule.toValueNames()+" FROM modules WHERE moduleID = " + moduleID;
 		System.out.println("db:getModule " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
 			if (rs.next()) {
-				Module newModule = new Module(rs.getInt(1), rs.getString(2),
-						rs.getInt(3), rs.getString(4), rs.getString(5),
-						rs.getString(6), rs.getString(7), rs.getString(8),
-						rs.getInt(9), rs.getString(10), rs.getString(11),
-						rs.getString(12), rs.getString(13), rs.getString(14),
-						rs.getBoolean(15));
+				newModule = new Module(rs.getInt(1), rs.getString(2),
+						new ArrayList<Integer>(), rs.getString(3), rs.getString(4),
+						rs.getString(5), rs.getString(6), rs.getString(7),
+						rs.getInt(8), rs.getString(9), rs.getString(10),
+						rs.getString(11), rs.getString(12), rs.getString(13),
+						rs.getBoolean(14));
 				rs.close();
-				return newModule;
-
 			} else {
 				System.out.println("No Event found with this ID.");
 				return null;
@@ -264,8 +322,24 @@ public class ContentDbController extends DbController {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return null;
 		}
-		return null;
+		
+		// subjectIDs
+		query = "SELECT subjectID FROM modules_subjects WHERE moduleID="+moduleID;
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			
+			ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
+			while(rs.next()) {
+				subjectIDs.add(rs.getInt(1));
+			}
+			newModule.setSubjectIDs(subjectIDs);
+			return newModule;
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return newModule;
+		}	
 	}
 
 	// MODULE ENTFERNEN
@@ -423,7 +497,7 @@ public class ContentDbController extends DbController {
 
 			while (rs.next()) {
 				Module newModule = new Module(rs.getInt(1), rs.getString(2),
-						rs.getInt(3), rs.getString(4), rs.getString(5),
+						new ArrayList<Integer>(), rs.getString(4), rs.getString(5),
 						rs.getString(6), rs.getString(7), rs.getString(8),
 						rs.getInt(9), rs.getString(10), rs.getString(11),
 						rs.getString(12), rs.getString(13), rs.getString(14),

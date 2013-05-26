@@ -8,6 +8,7 @@ import com.sun.org.apache.bcel.internal.generic.Type;
 import model.Employee;
 import model.User;
 import model.content.Event;
+import model.content.Module;
 import model.userRights.EmployeeRights;
 import model.userRights.EventRights;
 import model.userRights.ModuleRights;
@@ -102,17 +103,34 @@ public class Test {
 		
 		Event event = new Event(5, moduleIDs, "Ana IIa", 4, "gerhard.baur@uni-ulm.de", false);
 		
+		ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
+		subjectIDs.add(1);
+		subjectIDs.add(2);
+		
+		Module module = new Module(3, "Testmodul3", subjectIDs, "", "", "5 LP", "3", 
+				"Deutsch", 2, "gerhard.baur@uni-ulm.de", "", "", "", "", false);
 		
 		
 		ContentDbController cdbc = new ContentDbController();
 		
 		//cdbc.createEvent(event);
 		
-		
+		/*
 		cdbc.updateEvent(event);
 		
 		event = cdbc.getEvent(5);
 				
 		System.out.println(event);
+		*/
+		// System.out.println(module);
+		
+		// cdbc.createModule(module);
+		
+		module.setDuration(3);
+		
+		cdbc.updateModule(module);
+		
+		module = cdbc.getModule(3);
+		System.out.println(module);
 	}
 }

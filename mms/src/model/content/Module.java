@@ -26,19 +26,22 @@ public class Module extends Content {
 	 */
 	
 	private int duration;
-	private String name, token, enlishTitle, lp, sws, language, director_email, requirement, learningTarget, content, literature; 
+	private String name, token, englishTitle, lp, sws, language, director_email, requirement, learningTarget, content, literature; 
 	
 	// CHILDREN EVENTS
 	private List<Event> events = new ArrayList<Event>();
 	
+	// PARENT SUBJECTS
+	private ArrayList<Integer> subjectIDs;
+	
 	// Konstruktor
-	public Module(int moduleID, String name, int subjects_subjectID, String token, String enlishTitle, String lp, String sws, 
+	public Module(int moduleID, String name, ArrayList<Integer> subjectIDs, String token, String englishTitle, String lp, String sws, 
 			String language, int duration, String director_email, String requirement, String learningTarget, String content, String literature, boolean archived) {
 		this.ID = moduleID;
 		this.name = name;
-		this.parentID = subjects_subjectID;
+		this.subjectIDs = subjectIDs;
 		this.token = token;
-		this.enlishTitle = enlishTitle;
+		this.englishTitle = englishTitle;
 		this.lp = lp;
 		this.sws = sws;
 		this.language = language;
@@ -50,8 +53,20 @@ public class Module extends Content {
 		this.literature = literature;
 		this.archived = archived;
 	}
-	// Getter & Setter
 	
+	public Module(int moduleID) {
+		this.ID = moduleID;
+	}
+
+	// Getter & Setter
+	public ArrayList<Integer> getSubjectIDs() {
+		return subjectIDs;
+	}
+
+	public void setSubjectIDs(ArrayList<Integer> subjectIDs) {
+		this.subjectIDs = subjectIDs;
+	}
+
 	public int getDuration() {
 		return duration;
 	}
@@ -83,12 +98,12 @@ public class Module extends Content {
 
 
 	public String getEnlishTitle() {
-		return enlishTitle;
+		return englishTitle;
 	}
 
 
 	public void setEnlishTitle(String enlishTitle) {
-		this.enlishTitle = enlishTitle;
+		this.englishTitle = enlishTitle;
 	}
 
 
@@ -207,16 +222,33 @@ public class Module extends Content {
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {""+ID, "'"+name+"'", ""+parentID, "'"+token+"'", "'"+enlishTitle+"'", ""+lp, ""+sws, "'"+language+"'",
+		String[] values = {""+ID, "'"+name+"'", "'"+token+"'", "'"+englishTitle+"'", "'"+lp+"'", ""+sws, "'"+language+"'",
 				""+duration, "'"+director_email+"'", "'"+requirement+"'", "'"+learningTarget+"'", "'"+content+"'", "'"+literature+"'", ""+archived}; 
 		return values;
 	}
 
 	@Override
 	public String[] toValueNamesArray() {
-		String[] valueNames = {"moduleID", "name", "subjects_subjectID", "token", "enlishTitle", "lp", "sws", "language",
+		String[] valueNames = {"moduleID", "name", "token", "englishTitle", "lp", "sws", "language",
 			"duration", "director_email", "requirement", "learningTarget", "content", "literature", "archived"}; 
 		return valueNames;
+	}
+	
+	public String toString() {
+		String string = "[";
+		String[] values = toValuesArray();
+		String[] valueNames = toValueNamesArray();
+		for(int i=0; i<values.length-1; i++) {
+			string += valueNames[i]+"="+values[i]+", ";
+		}
+		string += valueNames[values.length-1]+"="+values[values.length-1];
+		string += ", subjectIDs={";
+		for(int i=0; i<subjectIDs.size()-1; i++) {
+			string += subjectIDs.get(i) + ",";
+		}
+		string += subjectIDs.get(subjectIDs.size()-1) + "}]";
+		
+		return string;
 	}
 	
 }
