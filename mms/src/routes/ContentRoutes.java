@@ -3,7 +3,13 @@ package routes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+
+import controller.ContentDbController;
+
 public class ContentRoutes {
+	private ContentDbController db;
+	private Gson gson = new Gson();
 
 	// ####################################################
 	// GET Methods

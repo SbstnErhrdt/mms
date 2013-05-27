@@ -5,7 +5,6 @@ import model.userRights.UserRights;
 import util.*;
 
 public class Employee extends User {
-	private boolean isEmployee = true;
 	private String address, phoneNum, talkTime;
 	private EmployeeRights employeeRights;
 
@@ -15,6 +14,7 @@ public class Employee extends User {
 		this.address = address;
 		this.phoneNum = phoneNum;
 		this.talkTime = talkTime;
+		isEmployee = true;
 	}
 	
 	public Employee(String email, String password, String firstName, String lastName, String title,
@@ -26,6 +26,7 @@ public class Employee extends User {
 		this.address = address;
 		this.phoneNum = phoneNum;
 		this.talkTime = talkTime;
+		isEmployee = true;
 	}
 	
 	public EmployeeRights getEmployeeRights() {
@@ -34,14 +35,6 @@ public class Employee extends User {
 
 	public void setEmployeeRights(EmployeeRights employeeRights) {
 		this.employeeRights = employeeRights;
-	}
-
-	public boolean isEmployee() {
-		return isEmployee;
-	}
-
-	public void setEmployee(boolean isEmployee) {
-		this.isEmployee = isEmployee;
 	}
 
 	public Employee(String email, String password) {

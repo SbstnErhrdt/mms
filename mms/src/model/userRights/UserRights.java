@@ -5,25 +5,14 @@ import model.DbControllable;
 public class UserRights implements DbControllable {
 	
 	private boolean canLogin;
-	private boolean isEmployeeRights = false;
 
 	// Konstruktor	
 	public UserRights() {
-		
 	}
 	
 	// Konstruktor	
 	public UserRights(boolean canLogin) {
 			this.canLogin = canLogin;
-	}
-	
-	// Getter & Setter	
-	public boolean isEmployeeRights() {
-		return isEmployeeRights;
-	}
-
-	public void setEmployeeRights(boolean isEmployeeRights) {
-		this.isEmployeeRights = isEmployeeRights;
 	}
 	
 	public boolean getCanLogin() {

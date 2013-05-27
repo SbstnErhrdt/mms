@@ -11,7 +11,6 @@ public class EmployeeRights extends UserRights {
 	private ArrayList<StudycourseRights> studycourseRightsList;
 	private ArrayList<SubjectRights> subjectRightsList;
 	
-	private boolean isEmployeeRights = true;
 	
 	public EmployeeRights() {
 		super(true);
@@ -31,7 +30,6 @@ public class EmployeeRights extends UserRights {
 		moduleRightsList = new ArrayList<ModuleRights>();
 		subjectRightsList = new ArrayList<SubjectRights>();
 		studycourseRightsList = new ArrayList<StudycourseRights>();
-		
 	}
 	
 	public ArrayList<ModuleRights> getModuleRightsList() {
@@ -68,19 +66,6 @@ public class EmployeeRights extends UserRights {
 	public void setSubjectRightsList(ArrayList<SubjectRights> subjectRightsList) {
 		this.subjectRightsList = subjectRightsList;
 	}
-
-
-
-	public boolean isEmployeeRights() {
-		return isEmployeeRights;
-	}
-
-
-
-	public void setEmployeeRights(boolean isEmployeeRights) {
-		this.isEmployeeRights = isEmployeeRights;
-	}
-	
 	
 	public boolean isCanDeblockCriticalModule() {
 		return canDeblockCriticalModule;

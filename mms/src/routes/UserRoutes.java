@@ -1,5 +1,7 @@
 package routes;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,7 +30,15 @@ public class UserRoutes {
 			HttpServletResponse response) {
 		String email = request.getParameter("email");
 		
-	
+		User user = new User("email@email.de", "123457");
+		
+		String json = gson.toJson(user);
+		
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 

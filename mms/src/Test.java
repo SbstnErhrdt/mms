@@ -85,7 +85,7 @@ public class Test {
 		//System.out.println(user1);
 		//System.out.println(user1.getUserRights());
 	
-		/*
+		
 		udbc.deleteUser(emp);
 		udbc.createUser(emp);
 		
@@ -95,11 +95,22 @@ public class Test {
 		
 		String json = gson.toJson(eventRights);
 		
-		udbc.updateUser(emp);
+		System.out.println(json);
+		EventRights er = gson.fromJson(json, EventRights.class);
 		
-		System.out.println(emp);
-		System.out.println(emp.getEmployeeRights());
-		*/
+		System.out.println(er);
+		
+		json = gson.toJson(emp);
+		
+		System.out.println(json);
+				
+		
+		
+		//udbc.updateUser(emp);
+		
+		//System.out.println(emp);
+		//System.out.println(emp.getEmployeeRights());
+	
 		ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
 		moduleIDs.add(1);
 		moduleIDs.add(2);
@@ -166,7 +177,6 @@ public class Test {
 		studycourse = cdbc.getStudycourse(2);
 		
 		System.out.println(studycourse);
-		*/
 		
 		ModuleHandbook mhb = new ModuleHandbook(2, "Neues Testmodulhandbuch", 2, "SoSe2013", false);
 		
@@ -182,5 +192,6 @@ public class Test {
 		mhb = cdbc.getModuleHandbook(mhb.getID());
 		
 		System.out.println(mhb);
+		*/
 	}
 }
