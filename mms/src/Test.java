@@ -9,6 +9,9 @@ import model.Employee;
 import model.User;
 import model.content.Event;
 import model.content.Module;
+import model.content.ModuleHandbook;
+import model.content.Studycourse;
+import model.content.Subject;
 import model.userRights.EmployeeRights;
 import model.userRights.EventRights;
 import model.userRights.ModuleRights;
@@ -126,11 +129,58 @@ public class Test {
 		
 		// cdbc.createModule(module);
 		
-		module.setDuration(3);
+		//module.setDuration(3);
 		
-		cdbc.updateModule(module);
-		
+		//cdbc.updateModule(module);
+		/*
 		module = cdbc.getModule(3);
 		System.out.println(module);
+		*/
+		/*
+		Subject subject = new Subject(3, 1, "New TestSubject", false);
+		
+		System.out.println(subject);
+		
+		cdbc.deleteSubject(subject);
+		cdbc.createSubject(subject);
+		
+		subject.setArchived(true);
+		
+		cdbc.updateSubject(subject);
+		
+		subject = cdbc.getSubject(3);
+		
+		System.out.println(subject);
+		
+		Studycourse studycourse = new Studycourse(2, "Maedcheninformatik", false);
+		
+		System.out.println(studycourse);
+		
+		cdbc.deleteStudycourse(studycourse);
+		cdbc.createStudycourse(studycourse);
+		
+		studycourse.setName("Mädcheninformatik");
+		
+		cdbc.updateStudycourse(studycourse);
+		
+		studycourse = cdbc.getStudycourse(2);
+		
+		System.out.println(studycourse);
+		*/
+		
+		ModuleHandbook mhb = new ModuleHandbook(2, "Neues Testmodulhandbuch", 2, "SoSe2013", false);
+		
+		System.out.println(mhb);
+		
+		cdbc.deleteModuleHandbook(mhb);
+		cdbc.createModuleHandbook(mhb);
+		
+		mhb.setSemester("SoSe13");
+		
+		cdbc.updateModuleHandbook(mhb);
+		
+		mhb = cdbc.getModuleHandbook(mhb.getID());
+		
+		System.out.println(mhb);
 	}
 }

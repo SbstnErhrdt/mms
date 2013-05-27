@@ -29,6 +29,10 @@ public class ModuleHandbook extends Content {
 		this.archived = archived;
 	}
 	
+	public ModuleHandbook(int moduleHandbookID) {
+		this.ID = moduleHandbookID;
+	}
+
 	// Getter & Setter
 	public String getSemester() {
 		return semester;
@@ -87,7 +91,7 @@ public class ModuleHandbook extends Content {
 
 	@Override
 	public String[] toValueNamesArray() {
-		String[] values = {"moduleHandbookID,", "name,", "studycourses_studycourseID,", "semester,", "archived,"};
+		String[] values = {"moduleHandbookID", "name", "studycourses_studycourseID", "semester", "archived"};
 		return values;
 	}
 

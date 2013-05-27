@@ -34,7 +34,7 @@ public class ContentDbController extends DbController {
 		}
 		
 		// CREATE ENTRY IN TABLE EVENTS_MODULES
-		query = "INSERT INTO events_modules(eventID, moduleID) VALUES ("+event.getID()+", ?)";
+		query = "INSERT INTO events_modules(eventID, moduleID) VALUES ("+event.getID()+", ?);";
 		System.out.println(query);
 		
 		try {
@@ -131,7 +131,7 @@ public class ContentDbController extends DbController {
 	public Event getEvent(int eventID) {
 		Event newEvent = new Event(eventID);
 		
-		String query = "SELECT "+newEvent.toValueNames()+" FROM events WHERE eventID = " + eventID;
+		String query = "SELECT "+newEvent.toValueNames()+" FROM events WHERE eventID="+eventID+";";
 		System.out.println("db:getEvent " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -197,7 +197,7 @@ public class ContentDbController extends DbController {
 
 		// QUERY
 		String query = "INSERT INTO modules (" + valueNames + ") VALUES ("
-				+ values + ")";
+				+ values + ");";
 		System.out.println("db:createModule " + query);
 		try {
 			db.createStatement().executeUpdate(query);
@@ -302,7 +302,7 @@ public class ContentDbController extends DbController {
 	// MODULE HOLEN
 	public Module getModule(int moduleID) {
 		Module newModule = new Module(moduleID);
-		String query = "SELECT "+newModule.toValueNames()+" FROM modules WHERE moduleID = " + moduleID;
+		String query = "SELECT "+newModule.toValueNames()+" FROM modules WHERE moduleID="+moduleID+";";
 		System.out.println("db:getModule " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -425,9 +425,9 @@ public class ContentDbController extends DbController {
 		for (int i = 0; i < valueNames.length - 1; i++) {
 			query += valueNames[i] + " = " + values[i] + ", ";
 		}
-		query += valueNames[valueNames.length - 1] + " = '"
-				+ values[values.length - 1] + "') ";
-		query += "WHERE subjectID = " + subject.getID() + ";";
+		query += valueNames[valueNames.length - 1] + "="
+				+ values[values.length - 1];
+		query += " WHERE subjectID = " + subject.getID() + ";";
 
 		System.out.println("db:updateSubject " + query);
 
@@ -442,16 +442,16 @@ public class ContentDbController extends DbController {
 	}
 
 	// SUBJECT HOLEN
-	public Subject getSubject(Subject subject) {
-
-		String query = "SELECT FROM subjects WHERE moduleID = "
-				+ subject.getID() + ";";
+	public Subject getSubject(int subjectID) {
+		Subject newSubject = new Subject(subjectID);
+		
+		String query = "SELECT "+newSubject.toValueNames()+" FROM subjects WHERE subjectID="+subjectID+";";
 		System.out.println("db:getSubject " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
 			if (rs.next()) {
-				Subject newSubject = new Subject(rs.getInt(1), rs.getInt(2),
+				newSubject = new Subject(rs.getInt(1), rs.getInt(2),
 						rs.getString(3), rs.getBoolean(4));
 				rs.close();
 				return newSubject;
@@ -471,7 +471,7 @@ public class ContentDbController extends DbController {
 	public boolean deleteSubject(Subject subject) {
 
 		String query = "DELETE FROM subjects ";
-		query += "WHERE subjectID = " + subject.getID() + ";";
+		query += "WHERE subjectID=" + subject.getID() + ";";
 		System.out.println("db:deleteSubject " + query);
 		try {
 			db.createStatement().executeUpdate(query);
@@ -552,11 +552,11 @@ public class ContentDbController extends DbController {
 		String query = "UPDATE module_handbooks SET ";
 
 		for (int i = 0; i < valueNames.length - 1; i++) {
-			query += valueNames[i] + " = " + values[i] + ", ";
+			query += valueNames[i] + "=" + values[i] + ", ";
 		}
-		query += valueNames[valueNames.length - 1] + " = '"
-				+ values[values.length - 1] + "') ";
-		query += "WHERE moduleHandbookID = " + moduleHandbook.getID() + ";";
+		query += valueNames[valueNames.length - 1] + "="
+				+ values[values.length - 1];
+		query += " WHERE moduleHandbookID=" + moduleHandbook.getID() + ";";
 
 		System.out.println("db:updateModuleHandbook " + query);
 
@@ -571,16 +571,18 @@ public class ContentDbController extends DbController {
 	}
 
 	// MODULE HANDBOOK HOLEN
-	public ModuleHandbook getModuleHandbook(ModuleHandbook moduleHandbook) {
-
-		String query = "SELECT FROM module_handbooks WHERE moduleID = "
-				+ moduleHandbook.getID() + ";";
+	public ModuleHandbook getModuleHandbook(int moduleHandbookID) {
+		ModuleHandbook newModuleHandbook = new ModuleHandbook(moduleHandbookID);
+		
+		String query = "SELECT "+newModuleHandbook.toValueNames()+
+				" FROM module_handbooks WHERE moduleHandbookID="
+				+ moduleHandbookID + ";";
 		System.out.println("db:getModuleHandbook " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
 			if (rs.next()) {
-				ModuleHandbook newModuleHandbook = new ModuleHandbook(
+				newModuleHandbook = new ModuleHandbook(
 						rs.getInt(1), rs.getString(2), rs.getInt(3),
 						rs.getString(4), rs.getBoolean(5));
 				rs.close();
@@ -601,7 +603,7 @@ public class ContentDbController extends DbController {
 	public boolean deleteModuleHandbook(ModuleHandbook moduleHandbook) {
 
 		String query = "DELETE FROM module_handbooks ";
-		query += "WHERE subjectID = " + moduleHandbook.getID() + ";";
+		query += "WHERE moduleHandbookID = " + moduleHandbook.getID() + ";";
 		System.out.println("db:deleteModuleHandbook " + query);
 		try {
 			db.createStatement().executeUpdate(query);
@@ -681,8 +683,8 @@ public class ContentDbController extends DbController {
 		for (int i = 0; i < valueNames.length - 1; i++) {
 			query += valueNames[i] + " = " + values[i] + ", ";
 		}
-		query += valueNames[valueNames.length - 1] + " = '"
-				+ values[values.length - 1] + "') ";
+		query += valueNames[valueNames.length - 1] + " = "
+				+ values[values.length - 1] + " ";
 		query += "WHERE studycourseID = " + studycourse.getID() + ";";
 
 		System.out.println("db:updateStudycourse " + query);
@@ -698,16 +700,17 @@ public class ContentDbController extends DbController {
 	}
 
 	// STUDYCOURSE HOLEN
-	public Studycourse getStudycourse(Studycourse studycourse) {
-
-		String query = "SELECT FROM studycourses WHERE moduleID = "
-				+ studycourse.getID() + ";";
+	public Studycourse getStudycourse(int studycourseID) {
+		Studycourse newStudycourse = new Studycourse(studycourseID);
+		
+		String query = "SELECT "+newStudycourse.toValueNames()+
+				" FROM studycourses WHERE studycourseID="+studycourseID+";";
 		System.out.println("db:getStudycourse " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
 			if (rs.next()) {
-				Studycourse newStudycourse = new Studycourse(
+				newStudycourse = new Studycourse(
 						rs.getInt(1), rs.getString(2), rs.getBoolean(3));
 				rs.close();
 				return newStudycourse;
@@ -727,7 +730,7 @@ public class ContentDbController extends DbController {
 	public boolean deleteStudycourse(Studycourse studycourse) {
 
 		String query = "DELETE FROM studycourses ";
-		query += "WHERE subjectID = " + studycourse.getID() + ";";
+		query += "WHERE studycourseID=" + studycourse.getID() + ";";
 		System.out.println("db:deleteStudycourse " + query);
 		try {
 			db.createStatement().executeUpdate(query);

@@ -16,6 +16,11 @@ public class Studycourse extends Content {
 		this.archived = archived;
 	}
 	
+	public Studycourse(int studycourseID) {
+		this.ID = studycourseID;
+	}
+	
+	
 	// MODULE HANDBOOKS
 	public List<ModuleHandbook> getSubjectList() {
 		return moduleHandbooks;

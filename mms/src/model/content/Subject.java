@@ -28,6 +28,11 @@ public class Subject extends Content {
 
 	// entfallen - vererbung
 	
+	public Subject(int subjectID) {
+		this.ID = subjectID;
+	}
+
+
 	// Modules
 	public List<Module> getModules(Subject subject) {		
 		return this.modules;		
@@ -81,8 +86,5 @@ public class Subject extends Content {
 		// TODO Auto-generated method stub
 		String[] value = {"subjectID", "module_handbooks_moduleHandbookID", "name", "archived"};
 		return value;
-	}
-	
-	
-	
+	}	
 }

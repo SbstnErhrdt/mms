@@ -228,8 +228,8 @@ public class UserDbController extends DbController {
 		
 		// User
 		String query = "SELECT " + user.toValueNames() +
-				" FROM users WHERE email ='"+ 
-                    user.getEmail() + "' AND password = '" + user.getPassword() + "';";
+				" FROM users WHERE email ='"+ user.getEmail() + 
+				"' AND password = '" + user.getPassword() + "';";
 			
 		System.out.println(query);
 		
