@@ -78,8 +78,7 @@ public class UserRoutes extends Routes {
 	// ####################################################
 
 	public void createUser(HttpServletRequest request,
-			HttpServletResponse response) {
-			
+			HttpServletResponse response) {		
 		String json = getRequestBody(request);
 		
 		User user = gson.fromJson(json, User.class);

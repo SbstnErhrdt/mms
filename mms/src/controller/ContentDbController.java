@@ -808,7 +808,6 @@ public class ContentDbController extends DbController {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 		return subjects;
 	}
 

@@ -224,8 +224,7 @@ public class UserDbController extends DbController {
 		return true;
 	}
 	
-	public User getUser(User user) {
-		
+	public User getUser(User user) {	
 		// User
 		String query = "SELECT " + user.toValueNames() +
 				" FROM users WHERE email ='"+ user.getEmail()+"';";

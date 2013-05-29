@@ -201,8 +201,7 @@ public class ContentRoutes extends Routes{
 
 	public void deleteModuleHandbook(HttpServletRequest request,
 			HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
 
 	public void readModuleHandbooks(HttpServletRequest request,
