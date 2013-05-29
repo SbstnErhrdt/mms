@@ -1,16 +1,69 @@
 var MMSApp = angular.module("MMS", []);
 
+var pURL = "../partials/";
+
 MMSApp.config(["$routeProvider", function($routeProvider) {
-	console.log("asdasd");
+
+	/*
+	*	SHOW ROUTES
+	*/
 	$routeProvider.when("/home", {
-		templateUrl: "home.html",
-		controller: HomeController
+		templateUrl: pURL+"home.html",
+		controller: homeCtrl
 	});
 	$routeProvider.when("/show/studycourses", {
-		templateUrl: "/partials/studycourses",
-		controller: StudycoursesController
+		templateUrl: pURL+"show/studycourses.html",
+		controller: showStudycoursesCtrl
 	});
-	// USW
+	$routeProvider.when("/show/modulehandbooks", {
+		templateUrl: pURL+"show/modulehandbooks.html",
+		controller: showModuleHandbooksCtrl
+	});
+	$routeProvider.when("/show/subjects", {
+		templateUrl: pURL+"show/subjects.html",
+		controller: showSubjectsCtrl
+	});
+	$routeProvider.when("/show/modules", {
+		templateUrl: pURL+"show/modules.html",
+		controller: showModulesCtrl
+	});
+	$routeProvider.when("/show/events", {
+		templateUrl: pURL+"show/events.html",
+		controller: showEventsCtrl
+	});
+	$routeProvider.when("/show/users", {
+		templateUrl: pURL+"show/users.html",
+		controller: showUsersCtrl
+	});
+
+
+	/*
+	*	DELETE ROUTES
+	*/
+	$routeProvider.when("/delete/studycourse", {
+		templateUrl: pURL+"show/studycourses.html",
+		controller: deleteStudycourseCtrl
+	});
+	$routeProvider.when("/delete/modulehandbook", {
+		templateUrl: pURL+"show/modulehandbooks.html",
+		controller: deleteModuleHandbookCtrl
+	});
+	$routeProvider.when("/delete/subject", {
+		templateUrl: pURL+"show/subjects.html",
+		controller: deleteSubjectCtrl
+	});
+	$routeProvider.when("/delete/module", {
+		templateUrl: pURL+"show/modules.html",
+		controller: deleteModuleCtrl
+	});
+	$routeProvider.when("/delete/event", {
+		templateUrl: pURL+"show/events.html",
+		controller: deleteEventCtrl
+	});
+	$routeProvider.when("/delete/user", {
+		templateUrl: pURL+"show/users.html",
+		controller: deleteUserCtrl
+	});
 	$routeProvider.otherwise({redirectTo: "/home"});
 }]);
 
@@ -19,7 +72,7 @@ MMSApp.config(["$routeProvider", function($routeProvider) {
 	UserFactory
 
  */
-MMSApp.factory("UserFactory", function() {
+MMSApp.factory("UserFactory", function($http, $q) {
 	var factory = {};
 
 	var User = {
@@ -34,7 +87,7 @@ MMSApp.factory("UserFactory", function() {
 
 	var Users = [];
 
-	factory.getUser = function($http, $q, email) {
+	factory.getUser = function(email) {
 
 		var url = "/read/user";
 
@@ -48,28 +101,28 @@ MMSApp.factory("UserFactory", function() {
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 			User = data;
-			deferred.resolve(data);
+			deferred.resolve(User);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.getUsers = function($http, $q) {
+	factory.getUsers = function() {
 
 		var url = "/read/users";
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 			Users = data;
-			deferred.resolve(data);
+			deferred.resolve(Users);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.deleteUser = function($http, $q, email) {
+	factory.deleteUser = function(email) {
 
 		var url = "/delete/user";
 
@@ -82,21 +135,22 @@ MMSApp.factory("UserFactory", function() {
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(data.email === email) {
+			if(data.email === email && data.firstName && data.lastName) {
 				// Success
 				User.email = data.email;
 				User.firstName = data.firstName;
-				User.lastName = lastName;
+				User.lastName = data.lastName;
 			} else {
 				// ERROR
 				console.log("ERROR in factory.deleteUser");
 			}
-			deferred.resolve(data);
+			deferred.resolve(User);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
+	return factory;
 });
 
 /*
@@ -104,7 +158,7 @@ MMSApp.factory("UserFactory", function() {
 	EmployeeFactory
 
  */
-MMSApp.factory("EmployeeFactory", function() {
+MMSApp.factory("EmployeeFactory", function($http, $q) {
 	var factory = {};
 
 	var Employee = {
@@ -115,7 +169,7 @@ MMSApp.factory("EmployeeFactory", function() {
 
 	var Employees = [];
 
-	factory.getEmployee = function($http, $q, email) {
+	factory.getEmployee = function(email) {
 
 		var url = "read/employee";
 
@@ -129,28 +183,28 @@ MMSApp.factory("EmployeeFactory", function() {
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 			Employee = data;
-			deferred.resolve(data);
+			deferred.resolve(Employee);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.getEmployees = function($http, $q) {
+	factory.getEmployees = function() {
 
 		var url = "read/employees";
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 			Employees = data;
-			deferred.resolve(data);
+			deferred.resolve(Employees);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.deleteEmployee = function($http, $q, email) {
+	factory.deleteEmployee = function(email) {
 
 		var url = "delete/employee";
 
@@ -169,12 +223,13 @@ MMSApp.factory("EmployeeFactory", function() {
 				// ERROR
 				console.log("ERROR in factory.deleteEmployee");
 			}
-			deferred.resolve(data);
+			deferred.resolve(Employee);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
+	return factory;
 });
 
 /*
@@ -182,7 +237,7 @@ MMSApp.factory("EmployeeFactory", function() {
 	EventFactory
 
  */
-MMSApp.factory("EventFactory", function() {
+MMSApp.factory("EventFactory", function($http, $q) {
 	var factory = {};
 	var Event = {
 		eventID: "Number",
@@ -197,14 +252,14 @@ MMSApp.factory("EventFactory", function() {
 	/*
 	 * getEvent: Holt ein Event mit einer bestimmten eventID vom Server
 	 */
-	factory.getEvent = function($http, $q, studycourseID, moduleHandbookID, subjectID, moduleID, eventID) {
+	factory.getEvent = function(eventID, studycourseID, moduleHandbookID, subjectID, moduleID) {
 
-		var url = checkSingularURL("read", studycourseID, moduleHandbookID, subjectID, moduleID, eventID);
+		var url = factory.checkSingularURL("read", studycourseID, moduleHandbookID, subjectID, moduleID, eventID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 			Event = data;
-			deferred.resolve(data);
+			deferred.resolve(Event);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
@@ -214,7 +269,7 @@ MMSApp.factory("EventFactory", function() {
 	/*
 	 * getEvents: Holt alle Events einer bestimmten Kategorie vom Server
 	 */
-	factory.getEvents = function($http, $q, studycourseID, moduleHandbookID, subjectID, moduleID) {
+	factory.getEvents = function(moduleID, subjectID, moduleHandbookID, studycourseID) {
 
 		var url = "/read/events";
 
@@ -231,27 +286,27 @@ MMSApp.factory("EventFactory", function() {
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 			Events = data; // FIX THIS
-			deferred.resolve(data);
+			deferred.resolve(Events);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.deleteEvent = function($http, $q, studycourseID, moduleHandbookID, subjectID, moduleID, eventID) {
+	factory.deleteEvent = function(eventID, studycourseID, moduleHandbookID, subjectID, moduleID) {
 
-		var url = checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID, moduleID, eventID);
+		var url = factory.checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID, moduleID, eventID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(data.eventID === eventID) {
+			if(data.eventID === eventID && data.name) {
 				Event.eventID = data.eventID;
 				Event.name = data.name;
 			} else {
 				// ERROR
 				console.log("ERROR in factory.deleteEvent");
 			}
-			deferred.resolve(data);
+			deferred.resolve(Event);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
@@ -278,6 +333,7 @@ MMSApp.factory("EventFactory", function() {
 			console.log("ERROR in Eventfactory.checkSingularURL");
 		}
 	};
+	return factory;
 });
 
 /*
@@ -285,7 +341,7 @@ MMSApp.factory("EventFactory", function() {
 	ModuleFactory
 
  */
-MMSApp.factory("ModuleFactory", function() {
+MMSApp.factory("ModuleFactory", function($http, $q) {
 	var factory = {};
 	var Module = {
 		duration: "Number",
@@ -301,25 +357,26 @@ MMSApp.factory("ModuleFactory", function() {
 		requirement: "String",
 		learningTarget: "String",
 		content: "String",
-		literature: "String" // MGL: Array?!
+		literature: "String", // MGL: Array?!
+		archived: "boolean"
 	};
 	var Modules = [];
 
-	factory.getModule = function($http, $q, studycourseID, moduleHandbookID, subjectID, moduleID) {
+	factory.getModule = function(moduleID, studycourseID, moduleHandbookID, subjectID) {
 
-		var url = checkSingularURL("read", studycourseID, moduleHandbookID, subjectID, moduleID);
+		var url = factory.checkSingularURL("read", studycourseID, moduleHandbookID, subjectID, moduleID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 			Module = data;
-			deferred.resolve(data);
+			deferred.resolve(Module);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.getModules = function($http, $q, studycourseID, moduleHandbookID, subjectID) {
+	factory.getModules = function(subjectID, moduleHandbookID, studycourseID) {
 
 		var url = "/read/modules";
 
@@ -334,20 +391,20 @@ MMSApp.factory("ModuleFactory", function() {
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 			Modules = data;
-			deferred.resolve(data);
+			deferred.resolve(Modules);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.deleteModule = function($http, $q, studycourseID, moduleHandbookID, subjectID, moduleID) {
+	factory.deleteModule = function(moduleID, studycourseID, moduleHandbookID, subjectID) {
 
-		var url = checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID, moduleID);
+		var url = factory.checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID, moduleID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(data.moduleID === moduleID) {
+			if(data.moduleID === moduleID && data.name && data.subjects_subjectID) {
 				Module.moduleID = data.moduleID;
 				Module.name = data.name;
 				Module.subjects_subjectID = data.subjects_subjectID;
@@ -355,7 +412,7 @@ MMSApp.factory("ModuleFactory", function() {
 				// ERROR
 				console.log("ERROR in Modulefactory.deleteModule");
 			}
-			deferred.resolve(data);
+			deferred.resolve(Module);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
@@ -369,7 +426,7 @@ MMSApp.factory("ModuleFactory", function() {
 
 			if(studycourseID && moduleHandbookID && subjectID && moduleID) {
 				url  = url+"?studycourseID="+studycourseID+"&moduleHandbookID="+moduleHandbookID+"&subjectID="+subjectID+"&moduleID="+moduleID;
-			} else if(eventID) {
+			} else if(moduleID) {
 				url  = url+"?moduleID="+moduleID;
 			} else {
 				// ERROR
@@ -382,6 +439,7 @@ MMSApp.factory("ModuleFactory", function() {
 			console.log("ERROR in Modulefactory.checkSingularURL");
 		}
 	};
+	return factory;
 });
 
 /*
@@ -389,7 +447,7 @@ MMSApp.factory("ModuleFactory", function() {
 	SubjectFactory
 
  */
-MMSApp.factory("SubjectFactory", function() {
+MMSApp.factory("SubjectFactory", function($http, $q) {
 	var factory = {};
 	var Subject = {
 		subjectID: "Number",
@@ -399,21 +457,21 @@ MMSApp.factory("SubjectFactory", function() {
 	};
 	var Subjects = [];
 
-	factory.getSubject = function($http, $q, studycourseID, moduleHandbookID, subjectID) {
+	factory.getSubject = function(subjectID, studycourseID, moduleHandbookID) {
 
-		var url = checkSingularURL("read", studycourseID, moduleHandbookID, subjectID);
+		var url = factory.checkSingularURL("read", studycourseID, moduleHandbookID, subjectID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 			Subject = data;
-			deferred.resolve(data);
+			deferred.resolve(Subject);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.getSubjects = function($http, $q, studycourseID, moduleHandbookID) {
+	factory.getSubjects = function(moduleHandbookID, studycourseID) {
 
 		var url = "/read/subjects";
 
@@ -426,20 +484,20 @@ MMSApp.factory("SubjectFactory", function() {
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 			Subjects = data;
-			deferred.resolve(data);
+			deferred.resolve(Subjects);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.deleteSubject = function($http, $q, studycourseID, moduleHandbookID, subjectID) {
+	factory.deleteSubject = function(subjectID, studycourseID, moduleHandbookID) {
 
-		var url = checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID);
+		var url = factory.checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(subjectID === data.subjectID) {
+			if(subjectID === data.subjectID && data.module_handbooks_moduleHandbookID && data.name) {
 				Subject.subjectID = data.subjectID;
 				Subject.module_handbooks_moduleHandbookID = data.module_handbooks_moduleHandbookID;
 				Subject.name = data.name;
@@ -447,7 +505,7 @@ MMSApp.factory("SubjectFactory", function() {
 				// ERROR
 				console.log("ERROR in Subjectfactory.deleteSubject");
 			}
-			deferred.resolve(data);
+			deferred.resolve(Subject);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
@@ -473,6 +531,7 @@ MMSApp.factory("SubjectFactory", function() {
 				console.log("ERROR in Subjectfactory.checkSingularURL");
 		}
 	};
+	return factory;
 });
 
 /*
@@ -480,7 +539,7 @@ MMSApp.factory("SubjectFactory", function() {
 	ModuleHandbookFactory
 
  */
-MMSApp.factory("ModuleHandbookFactory", function() {
+MMSApp.factory("ModuleHandbookFactory", function($http, $q) {
 	var factory = {};
 	var ModuleHandbook = {
 		moduleHandbookID: "Number",
@@ -491,21 +550,21 @@ MMSApp.factory("ModuleHandbookFactory", function() {
 	};
 	var ModuleHandbooks = [];
 
-	factory.getModuleHandbook = function($http, $q, studycourseID, moduleHandbookID) {
+	factory.getModuleHandbook = function(moduleHandbookID, studycourseID) {
 
-		var url = checkSingularURL("read", studycourseID, moduleHandbookID);
+		var url = factory.checkSingularURL("read", studycourseID, moduleHandbookID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 			ModuleHandbook = data;
-			deferred.resolve(data);
+			deferred.resolve(ModuleHandbook);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.getModuleHandbooks = function($http, $q, studycourseID) {
+	factory.getModuleHandbooks = function(studycourseID) {
 
 		var url = "/read/modulehandbooks";
 
@@ -516,7 +575,7 @@ MMSApp.factory("ModuleHandbookFactory", function() {
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 			ModuleHandbooks = data;
-			deferred.resolve(data);
+			deferred.resolve(ModuleHandbooks);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
@@ -524,13 +583,13 @@ MMSApp.factory("ModuleHandbookFactory", function() {
 
 	};
 
-	factory.deleteModuleHandbook = function($http, $q, studycourseID, moduleHandbookID) {
+	factory.deleteModuleHandbook = function(moduleHandbookID, studycourseID) {
 
-		var url = checkSingularURL("delete", studycourseID, moduleHandbookID);
+		var url = factory.checkSingularURL("delete", studycourseID, moduleHandbookID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(moduleHandbookID === data.moduleHandbookID) {
+			if(moduleHandbookID === data.moduleHandbookID && data.studycourses_studycourseID && data.name) {
 				ModuleHandbook.moduleHandbookID = data.moduleHandbookID;
 				ModuleHandbook.studycourses_studycourseID = data.studycourses_studycourseID;
 				ModuleHandbook.name = data.name;
@@ -538,7 +597,7 @@ MMSApp.factory("ModuleHandbookFactory", function() {
 				// ERROR
 				console.log("ERROR in ModuleHandbookfactory.checkSingularURL");
 			}
-			deferred.resolve(data);
+			deferred.resolve(ModuleHandbook);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
@@ -564,6 +623,7 @@ MMSApp.factory("ModuleHandbookFactory", function() {
 			console.log("ERROR in ModuleHandbookfactory.checkSingularURL");
 		}
 	};
+	return factory;
 });
 
 /*
@@ -571,7 +631,7 @@ MMSApp.factory("ModuleHandbookFactory", function() {
 	StudycourseFactory
 
  */
-MMSApp.factory("StudycourseFactory", function() {
+MMSApp.factory("StudycourseFactory", function($http, $q) {
 	var factory = {};
 	var Studycourse = {
 		studycourseID: "Number",
@@ -580,21 +640,21 @@ MMSApp.factory("StudycourseFactory", function() {
 	};
 	var Studycourses = [];
 
-	factory.getStudycourse = function($http, $q, studycourseID) {
+	factory.getStudycourse = function(studycourseID) {
 
-		var url = checkSingularURL("read", studycourseID);
+		var url = factory.checkSingularURL("read", studycourseID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 			Studycourse = data;
-			deferred.resolve(data);
+			deferred.resolve(Studycourse);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.getStudycourses = function($http, $q) {
+	factory.getStudycourses = function() {
 
 		var url = "/read/studycourses";
 
@@ -608,13 +668,13 @@ MMSApp.factory("StudycourseFactory", function() {
 		return deferred.promise;
 	};
 
-	factory.deleteStudycourse = function($http, $q, studycourseID) {
+	factory.deleteStudycourse = function(studycourseID) {
 
-		var url = checkSingularURL("delete", studycourseID);
+		var url = factory.checkSingularURL("delete", studycourseID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(studycourseID === data.studycourseID) {
+			if(studycourseID === data.studycourseID && data.name && data.archived) {
 				Studycourse.studycourseID = data.studycourseID;
 				Studycourse.name = data.name;
 				Studycourse.archived = data.archived;
@@ -622,7 +682,7 @@ MMSApp.factory("StudycourseFactory", function() {
 				// ERROR
 				console.log("ERROR in Studycoursefactory.deleteStudycourse");
 			}
-			deferred.resolve(data);
+			deferred.resolve(Studycourse);
 		}).error(function(data, status) {
 			deferred.reject(data);
 		});
@@ -646,4 +706,5 @@ MMSApp.factory("StudycourseFactory", function() {
 			console.log("ERROR in Studycoursefactory.checkSingularURL");
 		}
 	};
+	return factory;
 });

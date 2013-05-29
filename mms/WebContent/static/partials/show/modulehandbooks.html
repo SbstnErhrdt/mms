@@ -1,0 +1,51 @@
+<div class="container-fluid">
+	<div class="row-fluid">
+		<ul class="span 12 breadcrumb">
+		<li><a href="#/home">Home</a> <span class="divider">/</span></li>
+		<li class="active">Modulhandbücher</li>
+		</ul>
+	</div>
+</div>
+<div class="container-fluid">
+  <div class="row-fluid">
+     <div class="span2">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Studiengänge</li>
+              <li ng-repeat="studycourse in studycourses">
+              	<a href="#/show/modulehandbooks?studycourseID={{studycourse.studycourseID}}">{{studycourse.name}}</a>
+              </li>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+    <div class="span7">
+      <!--Body content-->
+	    <h1>Modulhandbücher</h1>
+		<p class="lead"> Hier finden Sie alle Modul-Handb&uuml;cher der Fakult&auml;t f&uuml;r Ingenierwissenschaften &amp; Informatik</p>
+
+		<hr />
+	    <table class="table">
+	    	<thead>
+				<tr>
+					<td>#</td>
+					<td>Name</td>
+					<td>Studienbeginn</td>
+					<td>Archiviert</td>
+					<td>Aktion</td>
+				</tr>
+	    	</thead>
+	    	<tbody>
+			<tr ng-repeat="handbook in moduleHandbooks">
+				<td>{{handbook.moduleHandbookID}}</td>
+				<td>{{handbook.name}}</td>
+				<td>{{handbook.semester}}</td>
+				<td>{{handbook.archived}}</td>
+				<td><a href="#/delete/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}"><button style="margin-left: 5px;" class="btn btn-mini btn-danger" type="button">löschen</button></a></td>
+			</tr>
+	    	</tbody>
+		</table>
+
+
+    </div>
+  </div>
+</div>
