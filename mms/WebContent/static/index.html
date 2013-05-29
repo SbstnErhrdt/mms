@@ -23,42 +23,40 @@
 	</head>
 
 	<body ng-controller="HomeCtrl">
-	{{bind}}
-	<div class="navbar navbar-inverse navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container-fluid">
-				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</a>
-				<a class="brand" href="index.php">MMS</a>
-				<div class="nav-collapse collapse">
-					<ul class="nav">
-						<li>
-							<a href="#/home">Home</a>
-						</li>
-						<li>
-							<a href="#/show/studycourses">Studiengänge</a>
-						</li>
-					</ul>
-					<ul class="nav pull-right">
-						<li style="margin-top: 5px;" class="input-append">
-							<input class="span2" id="appendedInputButton" type="text">
-							<button class="btn" type="button">Suche</button>
-						</li>
-						<li>
-							<a href="index.php?page=user">Benutzerverwaltung</a>
-						</li>
-						<li>
-							<a href="index.php">Logout</a>
-						</li>
-					</ul>
-				</div><!--/.nav-collapse -->
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container-fluid">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</a>
+					<a class="brand" href="index.php">MMS</a>
+					<div class="nav-collapse collapse">
+						<ul class="nav">
+							<li>
+								<a href="#/home">Home</a>
+							</li>
+							<li>
+								<a href="#/show/studycourses">Studiengänge</a>
+							</li>
+						</ul>
+						<ul class="nav pull-right">
+							<li style="margin-top: 5px;" class="input-append">
+								<input class="span2" id="appendedInputButton" type="text">
+								<button class="btn" type="button">Suche</button>
+							</li>
+							<li>
+								<a href="index.php?page=user">Benutzerverwaltung</a>
+							</li>
+							<li>
+								<a href="index.php">Logout</a>
+							</li>
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div>
 			</div>
 		</div>
-	</div>
-
 	<div ng-view></div>
 
 	<!-- Javascript

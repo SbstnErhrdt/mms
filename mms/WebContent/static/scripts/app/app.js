@@ -1,12 +1,14 @@
 var MMSApp = angular.module("MMS", []);
 
 MMSApp.config(["$routeProvider", function($routeProvider) {
+	console.log("asdasd");
 	$routeProvider.when("/home", {
-		templateUrl: "../static/partials/home.html",
-		controller: HomeCtrl
+		templateUrl: "home.html",
+		controller: HomeController
 	});
 	$routeProvider.when("/show/studycourses", {
-		templateUrl: "../static/partials/studycourses.html"
+		templateUrl: "/partials/studycourses",
+		controller: StudycoursesController
 	});
 	// USW
 	$routeProvider.otherwise({redirectTo: "/home"});
