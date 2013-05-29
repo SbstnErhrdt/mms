@@ -7,7 +7,7 @@ public class Subject extends Content {
 
 	/*	DATABASE
 	 * 	subjectID	int(5)
-	 * 	module_handbooks_moduleHandbookID	int(5)
+	 * 	studycourses_studycourseID	int(5)
 	 *  name var(100)
 	 *  archived bool
 	 */
@@ -16,9 +16,9 @@ public class Subject extends Content {
 	
 	
 	// Konstruktor
-	public Subject (int subjectID, int module_handbooks_moduleHandbookID, String name, boolean archived) {
+	public Subject (int subjectID, int studycourses_studycourseID, String name, boolean archived) {
 		this.ID = subjectID; 
-		this.parentID = module_handbooks_moduleHandbookID;
+		this.parentID = studycourses_studycourseID;
 		this.name = name;
 		this.archived = archived;
 	}
@@ -84,7 +84,7 @@ public class Subject extends Content {
 	@Override
 	public String[] toValueNamesArray() {
 		// TODO Auto-generated method stub
-		String[] value = {"subjectID", "module_handbooks_moduleHandbookID", "name", "archived"};
+		String[] value = {"subjectID", "studycourses_studycourseID", "name", "archived"};
 		return value;
 	}	
 }

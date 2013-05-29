@@ -48,7 +48,7 @@ public class FrontController extends HttpServlet {
 		// read Event
 		if(path.equals("/read/event")) {
 			contentRoutes.readEvent(request, response);
-		/// delete Event
+		// delete Event
 		} else if(path.equals("/delete/event")) {
 			contentRoutes.deleteEvent(request, response);
 		// read Events

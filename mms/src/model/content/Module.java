@@ -26,7 +26,7 @@ public class Module extends Content {
 	 */
 	
 	private int duration;
-	private String name, token, englishTitle, lp, sws, language, director_email, requirement, learningTarget, content, literature; 
+	private String token, englishTitle, lp, sws, language, director_email, requirement, learningTarget, content, literature; 
 	
 	// CHILDREN EVENTS
 	private List<Event> events = new ArrayList<Event>();

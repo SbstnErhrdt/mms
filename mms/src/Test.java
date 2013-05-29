@@ -199,5 +199,18 @@ public class Test {
 		json = gson.toJson(users);
 		
 		System.out.println(json);
+		
+		ArrayList<Event> events = cdbc.getModuleEvents(2);
+		
+		System.out.println(gson.toJson(events));
+		
+		ArrayList<Module> modules = cdbc.getSubjectModules(2);
+		
+		System.out.println(modules);
+		
+		ArrayList<Subject> subjects = cdbc.getStudycourseSubjects(1);
+		
+		System.out.println(subjects);
+		
 	}
 }

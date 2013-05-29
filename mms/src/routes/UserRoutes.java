@@ -49,14 +49,15 @@ public class UserRoutes extends Routes {
 			HttpServletResponse response) {
 		String email = request.getParameter("email");
 		User user = new User(email);
-		db.deleteUser(user);
 		
-		String json = gson.toJson(user);
-		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(db.deleteUser(user)) {
+			String json = gson.toJson(user);
+			
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -83,14 +84,14 @@ public class UserRoutes extends Routes {
 		
 		User user = gson.fromJson(json, User.class);
 		
-		db.createUser(user);
-		
-		json = gson.toJson(new User(user.getEmail()));
-		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(db.createUser(user)) {
+			json = gson.toJson(new User(user.getEmail()));
+			
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -103,14 +104,14 @@ public class UserRoutes extends Routes {
 		
 		User user = gson.fromJson(json, User.class);
 		
-		db.updateUser(user);
-		
-		json = gson.toJson(user);
-		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(db.updateUser(user)) {
+			json = gson.toJson(user);
+			
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
