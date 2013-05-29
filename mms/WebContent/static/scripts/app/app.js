@@ -1,8 +1,12 @@
 var MMSApp = angular.module("MMS", []);
 
-var pURL = "../static/partials/";
+var pURL = "../partials/";
 
 MMSApp.config(["$routeProvider", function($routeProvider) {
+
+	/*
+	*	SHOW ROUTES
+	*/
 	$routeProvider.when("/home", {
 		templateUrl: pURL+"home.html",
 		controller: homeCtrl
@@ -27,7 +31,39 @@ MMSApp.config(["$routeProvider", function($routeProvider) {
 		templateUrl: pURL+"show/events.html",
 		controller: showEventsCtrl
 	});
-	// USW
+	$routeProvider.when("/show/users", {
+		templateUrl: pURL+"show/users.html",
+		controller: showUsersCtrl
+	});
+
+
+	/*
+	*	DELETE ROUTES
+	*/
+	$routeProvider.when("/delete/studycourse", {
+		templateUrl: pURL+"show/studycourses.html",
+		controller: deleteStudycourseCtrl
+	});
+	$routeProvider.when("/delete/modulehandbook", {
+		templateUrl: pURL+"show/modulehandbooks.html",
+		controller: deleteModuleHandbookCtrl
+	});
+	$routeProvider.when("/delete/subject", {
+		templateUrl: pURL+"show/subjects.html",
+		controller: deleteSubjectCtrl
+	});
+	$routeProvider.when("/delete/module", {
+		templateUrl: pURL+"show/modules.html",
+		controller: deleteModuleCtrl
+	});
+	$routeProvider.when("/delete/event", {
+		templateUrl: pURL+"show/events.html",
+		controller: deleteEventCtrl
+	});
+	$routeProvider.when("/delete/user", {
+		templateUrl: pURL+"show/users.html",
+		controller: deleteUserCtrl
+	});
 	$routeProvider.otherwise({redirectTo: "/home"});
 }]);
 
@@ -99,11 +135,11 @@ MMSApp.factory("UserFactory", function($http, $q) {
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(data.email === email) {
+			if(data.email === email && data.firstName && data.lastName) {
 				// Success
 				User.email = data.email;
 				User.firstName = data.firstName;
-				User.lastName = lastName;
+				User.lastName = data.lastName;
 			} else {
 				// ERROR
 				console.log("ERROR in factory.deleteUser");
@@ -216,9 +252,9 @@ MMSApp.factory("EventFactory", function($http, $q) {
 	/*
 	 * getEvent: Holt ein Event mit einer bestimmten eventID vom Server
 	 */
-	factory.getEvent = function(studycourseID, moduleHandbookID, subjectID, moduleID, eventID) {
+	factory.getEvent = function(eventID, studycourseID, moduleHandbookID, subjectID, moduleID) {
 
-		var url = checkSingularURL("read", studycourseID, moduleHandbookID, subjectID, moduleID, eventID);
+		var url = factory.checkSingularURL("read", studycourseID, moduleHandbookID, subjectID, moduleID, eventID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
@@ -233,7 +269,7 @@ MMSApp.factory("EventFactory", function($http, $q) {
 	/*
 	 * getEvents: Holt alle Events einer bestimmten Kategorie vom Server
 	 */
-	factory.getEvents = function(studycourseID, moduleHandbookID, subjectID, moduleID) {
+	factory.getEvents = function(moduleID, subjectID, moduleHandbookID, studycourseID) {
 
 		var url = "/read/events";
 
@@ -257,13 +293,13 @@ MMSApp.factory("EventFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
-	factory.deleteEvent = function(studycourseID, moduleHandbookID, subjectID, moduleID, eventID) {
+	factory.deleteEvent = function(eventID, studycourseID, moduleHandbookID, subjectID, moduleID) {
 
-		var url = checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID, moduleID, eventID);
+		var url = factory.checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID, moduleID, eventID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(data.eventID === eventID) {
+			if(data.eventID === eventID && data.name) {
 				Event.eventID = data.eventID;
 				Event.name = data.name;
 			} else {
@@ -321,13 +357,14 @@ MMSApp.factory("ModuleFactory", function($http, $q) {
 		requirement: "String",
 		learningTarget: "String",
 		content: "String",
-		literature: "String" // MGL: Array?!
+		literature: "String", // MGL: Array?!
+		archived: "boolean"
 	};
 	var Modules = [];
 
-	factory.getModule = function(studycourseID, moduleHandbookID, subjectID, moduleID) {
+	factory.getModule = function(moduleID, studycourseID, moduleHandbookID, subjectID) {
 
-		var url = checkSingularURL("read", studycourseID, moduleHandbookID, subjectID, moduleID);
+		var url = factory.checkSingularURL("read", studycourseID, moduleHandbookID, subjectID, moduleID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
@@ -339,7 +376,7 @@ MMSApp.factory("ModuleFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
-	factory.getModules = function(studycourseID, moduleHandbookID, subjectID) {
+	factory.getModules = function(subjectID, moduleHandbookID, studycourseID) {
 
 		var url = "/read/modules";
 
@@ -361,13 +398,13 @@ MMSApp.factory("ModuleFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
-	factory.deleteModule = function(studycourseID, moduleHandbookID, subjectID, moduleID) {
+	factory.deleteModule = function(moduleID, studycourseID, moduleHandbookID, subjectID) {
 
-		var url = checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID, moduleID);
+		var url = factory.checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID, moduleID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(data.moduleID === moduleID) {
+			if(data.moduleID === moduleID && data.name && data.subjects_subjectID) {
 				Module.moduleID = data.moduleID;
 				Module.name = data.name;
 				Module.subjects_subjectID = data.subjects_subjectID;
@@ -389,7 +426,7 @@ MMSApp.factory("ModuleFactory", function($http, $q) {
 
 			if(studycourseID && moduleHandbookID && subjectID && moduleID) {
 				url  = url+"?studycourseID="+studycourseID+"&moduleHandbookID="+moduleHandbookID+"&subjectID="+subjectID+"&moduleID="+moduleID;
-			} else if(eventID) {
+			} else if(moduleID) {
 				url  = url+"?moduleID="+moduleID;
 			} else {
 				// ERROR
@@ -420,9 +457,9 @@ MMSApp.factory("SubjectFactory", function($http, $q) {
 	};
 	var Subjects = [];
 
-	factory.getSubject = function(studycourseID, moduleHandbookID, subjectID) {
+	factory.getSubject = function(subjectID, studycourseID, moduleHandbookID) {
 
-		var url = checkSingularURL("read", studycourseID, moduleHandbookID, subjectID);
+		var url = factory.checkSingularURL("read", studycourseID, moduleHandbookID, subjectID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
@@ -434,7 +471,7 @@ MMSApp.factory("SubjectFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
-	factory.getSubjects = function(studycourseID, moduleHandbookID) {
+	factory.getSubjects = function(moduleHandbookID, studycourseID) {
 
 		var url = "/read/subjects";
 
@@ -454,13 +491,13 @@ MMSApp.factory("SubjectFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
-	factory.deleteSubject = function(studycourseID, moduleHandbookID, subjectID) {
+	factory.deleteSubject = function(subjectID, studycourseID, moduleHandbookID) {
 
-		var url = checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID);
+		var url = factory.checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(subjectID === data.subjectID) {
+			if(subjectID === data.subjectID && data.module_handbooks_moduleHandbookID && data.name) {
 				Subject.subjectID = data.subjectID;
 				Subject.module_handbooks_moduleHandbookID = data.module_handbooks_moduleHandbookID;
 				Subject.name = data.name;
@@ -513,9 +550,9 @@ MMSApp.factory("ModuleHandbookFactory", function($http, $q) {
 	};
 	var ModuleHandbooks = [];
 
-	factory.getModuleHandbook = function(studycourseID, moduleHandbookID) {
+	factory.getModuleHandbook = function(moduleHandbookID, studycourseID) {
 
-		var url = checkSingularURL("read", studycourseID, moduleHandbookID);
+		var url = factory.checkSingularURL("read", studycourseID, moduleHandbookID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
@@ -546,13 +583,13 @@ MMSApp.factory("ModuleHandbookFactory", function($http, $q) {
 
 	};
 
-	factory.deleteModuleHandbook = function(studycourseID, moduleHandbookID) {
+	factory.deleteModuleHandbook = function(moduleHandbookID, studycourseID) {
 
-		var url = checkSingularURL("delete", studycourseID, moduleHandbookID);
+		var url = factory.checkSingularURL("delete", studycourseID, moduleHandbookID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(moduleHandbookID === data.moduleHandbookID) {
+			if(moduleHandbookID === data.moduleHandbookID && data.studycourses_studycourseID && data.name) {
 				ModuleHandbook.moduleHandbookID = data.moduleHandbookID;
 				ModuleHandbook.studycourses_studycourseID = data.studycourses_studycourseID;
 				ModuleHandbook.name = data.name;
@@ -605,7 +642,7 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 
 	factory.getStudycourse = function(studycourseID) {
 
-		var url = checkSingularURL("read", studycourseID);
+		var url = factory.checkSingularURL("read", studycourseID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
@@ -633,11 +670,11 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 
 	factory.deleteStudycourse = function(studycourseID) {
 
-		var url = checkSingularURL("delete", studycourseID);
+		var url = factory.checkSingularURL("delete", studycourseID);
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(studycourseID === data.studycourseID) {
+			if(studycourseID === data.studycourseID && data.name && data.archived) {
 				Studycourse.studycourseID = data.studycourseID;
 				Studycourse.name = data.name;
 				Studycourse.archived = data.archived;

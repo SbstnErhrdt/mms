@@ -21,3 +21,7 @@ body, html {
 	width: 150px;
 	float:left;
 }
+
+th tr {
+	font-weight: bold;
+}
