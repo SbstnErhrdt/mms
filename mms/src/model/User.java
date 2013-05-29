@@ -52,6 +52,10 @@ public class User implements DbControllable {
 	}
 
 		
+	public User(String email) {
+		this.email = email;
+	}
+
 	// Getter & Setter
 	public String getFirstName() {
 		return firstName;

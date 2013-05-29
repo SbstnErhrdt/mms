@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 
 import controller.ContentDbController;
 
-public class ContentRoutes {
+public class ContentRoutes extends Routes{
 	private ContentDbController db;
 	private Gson gson = new Gson();
 
