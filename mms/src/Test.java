@@ -193,5 +193,11 @@ public class Test {
 		
 		System.out.println(mhb);
 		*/
+		
+		ArrayList<User> users = udbc.readUsers();
+		
+		json = gson.toJson(users);
+		
+		System.out.println(json);
 	}
 }

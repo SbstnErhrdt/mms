@@ -228,8 +228,7 @@ public class UserDbController extends DbController {
 		
 		// User
 		String query = "SELECT " + user.toValueNames() +
-				" FROM users WHERE email ='"+ user.getEmail() + 
-				"' AND password = '" + user.getPassword() + "';";
+				" FROM users WHERE email ='"+ user.getEmail()+"';";
 			
 		System.out.println(query);
 		
@@ -453,5 +452,24 @@ public class UserDbController extends DbController {
 		employee.setEmployeeRights(employeeRights);
 		
 		return employee;
+	}
+	
+	public ArrayList<User> readUsers() {
+		User user = new User("");
+		ArrayList<User> users = new ArrayList<User>();
+		String query = "SELECT email FROM users;";
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);		
+			while(rs.next()) {
+				String email = rs.getString(1);		// email
+				users.add(getUser(new User(email)));
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		return users;
 	}
 }
