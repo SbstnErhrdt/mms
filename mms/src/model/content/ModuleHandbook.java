@@ -15,7 +15,7 @@ public class ModuleHandbook extends Content {
 	 *  archived boolean
 	 */
 	
-	private String name, semester;
+	private String semester;
 	private List<Subject> subjects = new ArrayList<Subject>();
 	
 	

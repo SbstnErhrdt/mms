@@ -8,10 +8,13 @@ import model.content.ModuleHandbook;
 public class Studycourse extends Content {
 	
 	private List<ModuleHandbook> moduleHandbooks = new ArrayList<ModuleHandbook>();
+	private int current_moduleHandbook;
+	
 	
 	// Konstruktor
-	public Studycourse (int studycourseID, String name, boolean archived) {
+	public Studycourse (int studycourseID, int current_moduleHandbook, String name, boolean archived) {
 		this.ID = studycourseID;
+		this.current_moduleHandbook = current_moduleHandbook;
 		this.name = name;
 		this.archived = archived;
 	}
@@ -55,14 +58,14 @@ public class Studycourse extends Content {
 	
 	@Override
 	public String[] toValuesArray() {
-		String[] value = {""+ID, "'"+name+"'",""+archived };
+		String[] value = {""+ID, ""+current_moduleHandbook, "'"+name+"'",""+archived };
 		return value;
 	}
 
 	@Override
 	public String[] toValueNamesArray() {
 		// TODO Auto-generated method stub
-		String[] value = {"studycourseID","name", "archived"};
+		String[] value = {"studycourseID", "current_moduleHandbook", "name", "archived"};
 		return value;
 	}
 	

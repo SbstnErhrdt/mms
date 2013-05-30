@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.content.Event;
 import model.content.Module;
+import model.content.ModuleHandbook;
 import model.content.Studycourse;
 import model.content.Subject;
 
@@ -145,8 +146,15 @@ public class ContentRoutes extends Routes{
 	public void readSubjects(HttpServletRequest request,
 			HttpServletResponse response) {
 		int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
+		int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
 		
-		ArrayList<Subject> subjects = db.getStudycourseSubjects((studycourseID));
+		ArrayList<Subject> subjects = null;
+		
+		if(moduleHandbookID != 0) {
+			subjects = db.getModuleHandbookSubjects((moduleHandbookID));
+		} else {
+			subjects = db.getStudycourseSubjects((studycourseID));
+		}
 		
 		String json = gson.toJson(subjects);
 		
@@ -189,24 +197,60 @@ public class ContentRoutes extends Routes{
 
 	public void readStudycourses(HttpServletRequest request,
 			HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		ArrayList<Studycourse> studycourses = db.readStudycourses();
 		
+		String json = gson.toJson(studycourses);
+		
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 	}
 
 	public void readModuleHandbook(HttpServletRequest request,
 			HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
+		
+		ModuleHandbook moduleHandbook = db.getModuleHandbook(moduleHandbookID);
+		
+		String json = gson.toJson(moduleHandbook);
+		
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 		
 	}
 
 	public void deleteModuleHandbook(HttpServletRequest request,
 			HttpServletResponse response) {
-		// TODO Auto-generated method stub	
+		int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
+		
+		if(db.deleteModuleHandbook(new ModuleHandbook(moduleHandbookID))) {
+			String json = gson.toJson(moduleHandbookID);
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}		
 	}
 
 	public void readModuleHandbooks(HttpServletRequest request,
 			HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
+		
+		ArrayList<ModuleHandbook> moduleHandbooks = db.readModuleHandbooks(studycourseID);
+		
+		String json = gson.toJson(moduleHandbooks);
+		
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 		
 	}
 	

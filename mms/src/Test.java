@@ -212,5 +212,18 @@ public class Test {
 		
 		System.out.println(subjects);
 		
+		ArrayList<Studycourse> studycourses = cdbc.readStudycourses();
+		
+		System.out.println(studycourses);
+		
+		
+		ArrayList<ModuleHandbook> mhbs = cdbc.readModuleHandbooks(1);
+		
+		System.out.println(mhbs);
+		
+		subjects = cdbc.getModuleHandbookSubjects(1);
+			
+		System.out.println(subjects);
+		
 	}
 }
