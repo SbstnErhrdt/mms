@@ -163,10 +163,10 @@ public class FrontController extends HttpServlet {
 		
 		// create ModuleHandbook
 		else if(path.equals("/create/modulehandbook")) {
-			contentRoutes.createStudycourse(request, response);
+			contentRoutes.createModuleHandbook(request, response);
 		// update ModuleHandbook
 		} else if(path.equals("/update/modulehandbook")) {
-			contentRoutes.updateStudycourse(request, response);
+			contentRoutes.updateModuleHandbook(request, response);
 		}
 		
 		// ####################################################

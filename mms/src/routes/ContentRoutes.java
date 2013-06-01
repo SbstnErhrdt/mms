@@ -260,8 +260,20 @@ public class ContentRoutes extends Routes{
 
 	public void createEvent(HttpServletRequest request,
 			HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		int eventID = Integer.parseInt(request.getParameter("eventID"));
 		
+		String json = getRequestBody(request);
+		
+		Event event = gson.fromJson(json, Event.class);
+		
+		if(db.createEvent(event)) {
+			json = gson.toJson(event);
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void updateEvent(HttpServletRequest request,
@@ -285,37 +297,145 @@ public class ContentRoutes extends Routes{
 
 	public void createModule(HttpServletRequest request,
 			HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		int moduleID = Integer.parseInt(request.getParameter("moduleID"));
 		
+		String json = getRequestBody(request);
+		
+		Module module = gson.fromJson(json, Module.class);
+		
+		if(db.createModule(module)) {
+			json = gson.toJson(module);
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void updateModule(HttpServletRequest request,
 			HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		int moduleID = Integer.parseInt(request.getParameter("moduleID"));
 		
+		String json = getRequestBody(request);
+		
+		Module module = gson.fromJson(json, Module.class);
+		
+		if(db.updateModule(module)) {
+			json = gson.toJson(module);
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void createSubject(HttpServletRequest request,
 			HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		int subjectID = Integer.parseInt(request.getParameter("subjectID"));
 		
+		String json = getRequestBody(request);
+		
+		Subject subject = gson.fromJson(json, Subject.class);
+		
+		if(db.createSubject(subject)) {
+			json = gson.toJson(subject);
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void updateSubject(HttpServletRequest request,
 			HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		int subjectID = Integer.parseInt(request.getParameter("subjectID"));
 		
+		String json = getRequestBody(request);
+		
+		Subject subject = gson.fromJson(json, Subject.class);
+		
+		if(db.updateSubject(subject)) {
+			json = gson.toJson(subject);
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void createStudycourse(HttpServletRequest request,
 			HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
 		
+		String json = getRequestBody(request);
+		
+		Studycourse studycourse = gson.fromJson(json, Studycourse.class);
+		
+		if(db.createStudycourse(studycourse)) {
+			json = gson.toJson(studycourse);
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void updateStudycourse(HttpServletRequest request,
 			HttpServletResponse response) {
-		// TODO Auto-generated method stub
+		int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
 		
+		String json = getRequestBody(request);
+		
+		Studycourse studycourse = gson.fromJson(json, Studycourse.class);
+		
+		if(db.updateStudycourse(studycourse)) {
+			json = gson.toJson(studycourse);
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void createModuleHandbook(HttpServletRequest request,
+			HttpServletResponse response) {
+		int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
+		
+		String json = getRequestBody(request);
+		
+		ModuleHandbook moduleHandbook = gson.fromJson(json, ModuleHandbook.class);
+		
+		if(db.createModuleHandbook(moduleHandbook)) {
+			json = gson.toJson(moduleHandbook);
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void updateModuleHandbook(HttpServletRequest request,
+			HttpServletResponse response) {
+		int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
+		
+		String json = getRequestBody(request);
+		
+		ModuleHandbook moduleHandbook = gson.fromJson(json, ModuleHandbook.class);
+		
+		if(db.updateModuleHandbook(moduleHandbook)) {
+			json = gson.toJson(moduleHandbook);
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
