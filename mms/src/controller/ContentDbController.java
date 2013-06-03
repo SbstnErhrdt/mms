@@ -15,6 +15,10 @@ import model.content.Subject;
 
 public class ContentDbController extends DbController {
 
+	public ContentDbController() {
+		super();
+	}
+	
 	// EVENT ERSTELLEN
 	public boolean createEvent(Event event) {
 
