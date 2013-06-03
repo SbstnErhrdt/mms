@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 // IMPORT MODLES
 import model.content.Event;
@@ -14,7 +13,7 @@ import model.content.Studycourse;
 import model.content.Subject;
 
 public class ContentDbController extends DbController {
-
+	
 	public ContentDbController() {
 		super();
 	}

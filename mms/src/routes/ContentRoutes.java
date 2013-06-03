@@ -19,6 +19,10 @@ import controller.ContentDbController;
 public class ContentRoutes extends Routes{
 	private ContentDbController db;
 	private Gson gson = new Gson();
+	
+	public ContentRoutes() {
+		db = new ContentDbController();
+	}
 
 	// ####################################################
 	// GET Methods
