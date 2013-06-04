@@ -30,42 +30,61 @@ public class ContentRoutes extends Routes{
 	
 	public void readEvent(HttpServletRequest request,
 			HttpServletResponse response) {
-		int eventID = Integer.parseInt(request.getParameter("eventID"));
+		String json = "";
 		
-		Event event = db.getEvent(eventID);
-		
-		String json = gson.toJson(event);
-		
+		if(request.getParameter("eventID") != null) {
+			int eventID = Integer.parseInt(request.getParameter("eventID"));
+			Event event = db.getEvent(eventID);
+			json = gson.toJson(event);
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"unspecified eventID\", "+
+						"\"method\" : \"readEvent(...)\""+
+					" }}";
+		}
 		try {
 			response.getWriter().write(json);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public void deleteEvent(HttpServletRequest request,
 			HttpServletResponse response) {
-		int eventID = Integer.parseInt(request.getParameter("eventID"));
-		
-		if(db.deleteEvent(new Event(eventID))) {
-			String json = gson.toJson(eventID);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
+		String json = "";
+		if(request.getParameter("eventID") != null) {
+			int eventID = Integer.parseInt(request.getParameter("eventID"));
+			if(db.deleteEvent(new Event(eventID))) {
+				json = gson.toJson(eventID);
 			}
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"unspecified eventID\", "+
+						"\"method\" : \"deleteEvent(...)\""+
+					" }}";
+		}
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
 	public void readEvents(HttpServletRequest request,
 			HttpServletResponse response) {
-		int moduleID = Integer.parseInt(request.getParameter("moduleID"));
-		
-		ArrayList<Event> events = db.getModuleEvents(moduleID);
-		
-		String json = gson.toJson(events);
-		
+		String json = "";
+		if(request.getParameter("moduleID") != null) {
+			int moduleID = Integer.parseInt(request.getParameter("moduleID"));
+			
+			ArrayList<Event> events = db.getModuleEvents(moduleID);
+			
+			json = gson.toJson(events);
+		} else {
+			ArrayList<Event> events = db.getEvents();	
+			json = gson.toJson(events);
+		}
 		try {
 			response.getWriter().write(json);
 		} catch (IOException e) {

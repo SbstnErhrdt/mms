@@ -225,5 +225,13 @@ public class Test {
 			
 		System.out.println(subjects);
 		
+		
+		event = new Event(6, moduleIDs, "Ana I", 8, "gerhard.baur@uni-ulm.de", false);
+		
+		cdbc.createEvent(event);
+		
+		events = cdbc.getEvents();
+		
+		System.out.println(events);
 	}
 }

@@ -30,6 +30,10 @@ public class FrontController extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    	doGet(request, response);
+    }
+    
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -38,8 +42,7 @@ public class FrontController extends HttpServlet {
 		String path = request.getServletPath();
 		System.out.println("GET-Request, Path: " + path);
 		UserRoutes userRoutes = new UserRoutes();
-		ContentRoutes contentRoutes = new ContentRoutes();
-		
+		ContentRoutes contentRoutes = new ContentRoutes();		
 		
 		// ####################################################
 		// Content
@@ -114,6 +117,12 @@ public class FrontController extends HttpServlet {
 		} else if(path.equals("/read/users")) {
 			userRoutes.readUsers(request, response);
 		}
+		
+		// set Headers
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Headers", "accept, origin, x-requested-with, content-type");
+		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+		response.setHeader("Access-Control-Max-Age", "15");
 	}
 
 	/**
@@ -124,7 +133,7 @@ public class FrontController extends HttpServlet {
 		System.out.println("POST-Request, Path: " + path);
 		UserRoutes userRoutes = new UserRoutes();
 		ContentRoutes contentRoutes = new ContentRoutes();
-		
+				
 		// ####################################################
 		// Content
 		// ####################################################
@@ -180,6 +189,12 @@ public class FrontController extends HttpServlet {
 		} else if(path.equals("/update/user")) {
 			userRoutes.updateUser(request, response);
 		}
+		
+		// set Headers
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Headers", "accept, origin, x-requested-with, content-type");
+		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+		response.setHeader("Access-Control-Max-Age", "15");
 	}
 
 }

@@ -186,6 +186,51 @@ public class ContentDbController extends DbController {
 		}
 		return true;
 	}
+	
+	public ArrayList<Event> getEvents() {
+		ArrayList<Event> events = new ArrayList<Event>();
+
+		Event event = new Event(0);
+		
+		String query = "SELECT "+event.toValueNames()+" FROM events"; 
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+
+			while (rs.next()) {
+				int eventID = rs.getInt(1);
+				event = null;
+				event = new Event(eventID, new ArrayList<Integer>(),
+						rs.getString(2), rs.getInt(3), rs.getString(4),
+						rs.getBoolean(5));
+				
+				// moduleIDs
+				ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
+				query = "SELECT moduleID FROM events_modules WHERE eventID="+eventID+";";
+				System.out.println(query);
+				
+				try {
+					ResultSet rs1 = db.createStatement().executeQuery(query);
+					while(rs1.next()) {
+						moduleIDs.add(rs1.getInt(1)); 	// moduleID
+					}
+					event.setModuleIDs(moduleIDs);
+				} catch(SQLException e) {
+					e.printStackTrace();
+				}
+				events.add(event);
+			}
+
+			rs.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return events;
+	}
+
 
 	// ####################################################
 	// MODULE
@@ -864,5 +909,5 @@ public class ContentDbController extends DbController {
 		return studycourses;
 		
 	}
-
+	
 }
