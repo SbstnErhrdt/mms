@@ -192,7 +192,7 @@ public class ContentDbController extends DbController {
 
 		Event event = new Event(0);
 		
-		String query = "SELECT "+event.toValueNames()+" FROM events"; 
+		String query = "SELECT "+event.toValueNames()+" FROM events;"; 
 		System.out.println(query);
 		
 		try {
@@ -404,6 +404,54 @@ public class ContentDbController extends DbController {
 		}
 		return true;
 	}
+	
+	public ArrayList<Module> getModules() {
+		ArrayList<Module> modules = new ArrayList<Module>();
+		Module module = new Module(0);
+		
+		String query = "SELECT "+module.toValueNames()+" FROM modules;";
+		
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+
+			while (rs.next()) {
+				module = null;
+				int moduleID = rs.getInt(1);
+				module = new Module(moduleID, rs.getString(2),
+						new ArrayList<Integer>(), rs.getString(3), rs.getString(4),
+						rs.getString(5), rs.getString(6), rs.getString(7),
+						rs.getInt(8), rs.getString(9), rs.getString(10),
+						rs.getString(11), rs.getString(12), rs.getString(13),
+						rs.getBoolean(14));
+				
+				// subjectIDs
+				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
+				query = "SELECT subjectID FROM modules_subjects WHERE moduleID="+moduleID+";";
+				System.out.println(query);
+				
+				try {
+					ResultSet rs1 = db.createStatement().executeQuery(query);
+					while(rs1.next()) {
+						subjectIDs.add(rs1.getInt(1)); 	// subjectID
+					}
+					module.setSubjectIDs(subjectIDs);
+				} catch(SQLException e) {
+					e.printStackTrace();
+				}		
+				
+				modules.add(module);
+			}
+
+			rs.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return modules;
+	}
 
 	// MODUL EVENTS LISTE
 	// Holt die Events eines Modules und gibt diese in einer ArrayList aus
@@ -453,7 +501,7 @@ public class ContentDbController extends DbController {
 
 		return events;
 	}
-
+	
 	// ####################################################
 	// SUBJECT
 	// ####################################################
@@ -548,6 +596,33 @@ public class ContentDbController extends DbController {
 		}
 		return true;
 
+	}
+	
+	public ArrayList<Subject> getSubjects() {
+		ArrayList<Subject> subjects = new ArrayList<Subject>();
+		Subject subject = new Subject(0);
+		
+		String query = "SELECT "+subject.toValueNames()+" FROM subjects;";
+		
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+
+			while (rs.next()) {
+				subject = null;
+				subject = new Subject(rs.getInt(1), rs.getInt(2),rs.getInt(3), 
+						rs.getString(4), rs.getBoolean(5));
+
+				subjects.add(subject);
+			}
+
+			rs.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return subjects;
 	}
 
 	// SUBJECT MODULE LISTE
@@ -702,7 +777,7 @@ public class ContentDbController extends DbController {
 
 	}
 
-	public ArrayList<ModuleHandbook> readModuleHandbooks(int studycourseID) {
+	public ArrayList<ModuleHandbook> readStudycourseModuleHandbooks(int studycourseID) {
 
 		ArrayList<ModuleHandbook> moduleHandbooks = new ArrayList<ModuleHandbook>();
 		
@@ -907,7 +982,29 @@ public class ContentDbController extends DbController {
 		}
 		
 		return studycourses;
-		
 	}
 	
+	public ArrayList<ModuleHandbook> readModuleHandbooks() {
+		ArrayList<ModuleHandbook> moduleHandbooks = new ArrayList<ModuleHandbook>();
+		
+		ModuleHandbook moduleHandbook = new ModuleHandbook(0);
+		
+		String query = "SELECT "+moduleHandbook.toValueNames()+" FROM module_handbooks;";
+		
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			
+			while(rs.next()) {
+				moduleHandbooks.add(new ModuleHandbook(rs.getInt(1),
+						rs.getString(2), rs.getInt(3), 
+						rs.getString(4), rs.getBoolean(5)));
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return moduleHandbooks;
+	}
 }

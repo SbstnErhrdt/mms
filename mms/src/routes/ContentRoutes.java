@@ -94,12 +94,19 @@ public class ContentRoutes extends Routes{
 
 	public void readModule(HttpServletRequest request,
 			HttpServletResponse response) {
-		int moduleID = Integer.parseInt(request.getParameter("moduleID"));
-		
-		Module module = db.getModule(moduleID);
-		
-		String json = gson.toJson(module);
-		
+		String json = "";
+		if(request.getParameter("moduleID") != null) {
+			int moduleID = Integer.parseInt(request.getParameter("moduleID"));
+			Module module = db.getModule(moduleID);
+			json = gson.toJson(module);
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"unspecified moduleID\", "+
+						"\"method\" : \"readModule(...)\""+
+					" }}";
+		}
+			
 		try {
 			response.getWriter().write(json);
 		} catch (IOException e) {
@@ -110,26 +117,40 @@ public class ContentRoutes extends Routes{
 
 	public void deleteModule(HttpServletRequest request,
 			HttpServletResponse response) {
-		int moduleID = Integer.parseInt(request.getParameter("moduleID"));
-		
-		if(db.deleteModule(new Module(moduleID))) {
-			String json = gson.toJson(moduleID);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
+		String json = "";
+		if(request.getParameter("moduleID") != null) {
+			int moduleID = Integer.parseInt(request.getParameter("moduleID"));
+			if(db.deleteModule(new Module(moduleID))) {
+				json = gson.toJson(moduleID);
 			}
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"unspecified moduleID\", "+
+						"\"method\" : \"deleteModule(...)\""+
+					" }}";		
+		}
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
 	public void readModules(HttpServletRequest request,
 			HttpServletResponse response) {
-		int subjectID = Integer.parseInt(request.getParameter("subjectID"));
+		String json = "";
+		if(request.getParameter("subjectID") != null) {		
+			int subjectID = Integer.parseInt(request.getParameter("subjectID"));
 		
-		ArrayList<Module> modules = db.getSubjectModules(subjectID);
+			ArrayList<Module> modules = db.getSubjectModules(subjectID);
 		
-		String json = gson.toJson(modules);
-		
+			json = gson.toJson(modules);
+		} else {
+			ArrayList<Module> modules = db.getModules();
+			
+			json = gson.toJson(modules);
+		}
 		try {
 			response.getWriter().write(json);
 		} catch (IOException e) {
@@ -139,12 +160,22 @@ public class ContentRoutes extends Routes{
 
 	public void readSubject(HttpServletRequest request,
 			HttpServletResponse response) {
-		int subjectID = Integer.parseInt(request.getParameter("subjectID"));
-		
-		Subject subject = db.getSubject(subjectID);
-		
-		String json = gson.toJson(subject);
-		
+		String json = "";
+		if(request.getParameter("subjectID") != null) {		
+
+			int subjectID = Integer.parseInt(request.getParameter("subjectID"));
+			
+			Subject subject = db.getSubject(subjectID);
+			
+			json = gson.toJson(subject);
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"unspecified subjectID\", "+
+						"\"method\" : \"readSubject(...)\""+
+					" }}";		
+		}
+			
 		try {
 			response.getWriter().write(json);
 		} catch (IOException e) {
@@ -154,32 +185,43 @@ public class ContentRoutes extends Routes{
 
 	public void deleteSubject(HttpServletRequest request,
 			HttpServletResponse response) {
-		int subjectID = Integer.parseInt(request.getParameter("subjectID"));
-		
-		if(db.deleteSubject(new Subject(subjectID))) {
-			String json = gson.toJson(subjectID);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
+		String json = "";
+		if(request.getParameter("subjectID") != null) {		
+			int subjectID = Integer.parseInt(request.getParameter("subjectID"));
+			if(db.deleteSubject(new Subject(subjectID))) {
+				json = gson.toJson(subjectID);
 			}
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"unspecified subjectID\", "+
+						"\"method\" : \"deleteSubject(...)\""+
+					" }}";		
+		}
+		
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}		
 	}
 
 	public void readSubjects(HttpServletRequest request,
 			HttpServletResponse response) {
-		int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
-		int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
-		
 		ArrayList<Subject> subjects = null;
 		
-		if(moduleHandbookID != 0) {
-			subjects = db.getModuleHandbookSubjects((moduleHandbookID));
-		} else {
-			subjects = db.getStudycourseSubjects((studycourseID));
-		}
+		String json = "";
 		
-		String json = gson.toJson(subjects);
+		if(request.getParameter("studycourseID") != null) {
+			int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
+			subjects = db.getStudycourseSubjects(studycourseID);
+		} else if(request.getParameter("moduleHandbookID") != null) {
+			int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
+			subjects = db.getModuleHandbookSubjects(moduleHandbookID);
+		} else {
+			subjects = db.getSubjects();
+		}
+		json = gson.toJson(subjects);
 		
 		try {
 			response.getWriter().write(json);
@@ -191,11 +233,20 @@ public class ContentRoutes extends Routes{
 
 	public void readStudycourse(HttpServletRequest request,
 			HttpServletResponse response) {
-		int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
+		String json = "";
+		if(request.getParameter("studycourseID") != null) {		
+			int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
 		
-		Studycourse studycourse = db.getStudycourse(studycourseID);
+			Studycourse studycourse = db.getStudycourse(studycourseID);
 		
-		String json = gson.toJson(studycourse);
+			json = gson.toJson(studycourse);
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"unspecified studycourseID\", "+
+						"\"method\" : \"readStudycourse(...)\""+
+					" }}";
+		}
 		
 		try {
 			response.getWriter().write(json);
@@ -206,20 +257,30 @@ public class ContentRoutes extends Routes{
 
 	public void deleteStudycourse(HttpServletRequest request,
 			HttpServletResponse response) {
-		int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
-		
-		if(db.deleteStudycourse(new Studycourse(studycourseID))) {
-			String json = gson.toJson(studycourseID);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
+		String json = "";
+		if(request.getParameter("studycourseID") != null) {		
+			int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
+			if(db.deleteStudycourse(new Studycourse(studycourseID))) {
+				json = gson.toJson(studycourseID);
 			}
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"unspecified studycourseID\", "+
+						"\"method\" : \"deleteStudycourse(...)\""+
+					" }}";
+		}
+		
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}		
 	}
 
 	public void readStudycourses(HttpServletRequest request,
 			HttpServletResponse response) {
+
 		ArrayList<Studycourse> studycourses = db.readStudycourses();
 		
 		String json = gson.toJson(studycourses);
@@ -233,11 +294,20 @@ public class ContentRoutes extends Routes{
 
 	public void readModuleHandbook(HttpServletRequest request,
 			HttpServletResponse response) {
-		int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
+		String json = "";
+		if(request.getParameter("moduleHandbookID") != null) {				
+			int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
 		
-		ModuleHandbook moduleHandbook = db.getModuleHandbook(moduleHandbookID);
+			ModuleHandbook moduleHandbook = db.getModuleHandbook(moduleHandbookID);
 		
-		String json = gson.toJson(moduleHandbook);
+			json = gson.toJson(moduleHandbook);
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"unspecified moduleHandbookID\", "+
+						"\"method\" : \"readModuleHandbook(...)\""+
+					" }}";
+		}
 		
 		try {
 			response.getWriter().write(json);
@@ -249,25 +319,40 @@ public class ContentRoutes extends Routes{
 
 	public void deleteModuleHandbook(HttpServletRequest request,
 			HttpServletResponse response) {
-		int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
-		
-		if(db.deleteModuleHandbook(new ModuleHandbook(moduleHandbookID))) {
-			String json = gson.toJson(moduleHandbookID);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
+		String json = "";
+		if(request.getParameter("moduleHandbookID") != null) {						
+			int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
+			if(db.deleteModuleHandbook(new ModuleHandbook(moduleHandbookID))) {
+				json = gson.toJson(moduleHandbookID);
 			}
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"unspecified moduleHandbookID\", "+
+						"\"method\" : \"deleteModuleHandbook(...)\""+
+					" }}";
+		}
+		
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}		
 	}
 
 	public void readModuleHandbooks(HttpServletRequest request,
 			HttpServletResponse response) {
-		int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
+		String json = "";
+		ArrayList<ModuleHandbook> moduleHandbooks = null;
+		if(request.getParameter("studycourseID") != null) {						
+			int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
 		
-		ArrayList<ModuleHandbook> moduleHandbooks = db.readModuleHandbooks(studycourseID);
+			moduleHandbooks = db.readStudycourseModuleHandbooks(studycourseID);
+		} else {
+			moduleHandbooks = db.readModuleHandbooks();
+		}
 		
-		String json = gson.toJson(moduleHandbooks);
+		json = gson.toJson(moduleHandbooks);
 		
 		try {
 			response.getWriter().write(json);

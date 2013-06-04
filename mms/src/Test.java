@@ -217,7 +217,7 @@ public class Test {
 		System.out.println(studycourses);
 		
 		
-		ArrayList<ModuleHandbook> mhbs = cdbc.readModuleHandbooks(1);
+		ArrayList<ModuleHandbook> mhbs = cdbc.readStudycourseModuleHandbooks(1);
 		
 		System.out.println(mhbs);
 		
