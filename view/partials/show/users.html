@@ -1,0 +1,47 @@
+<div class="container-fluid">
+	<div class="row-fluid">
+		<ul class="span 12 breadcrumb">
+			<li><a href="#/home">Home</a> <span class="divider">/</span></li>
+			<li class="active">Benutzer</li>
+		</ul>
+	</div>
+</div>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+		<div class="well sidebar-nav">
+			<ul class="nav nav-list">
+				<li class="nav-header">Veranstaltungen</li>
+				<li><a href="">Benutzer</a><li>
+				<li><a href="">Mitarbeiter</a><li>
+				<li><a href="">Administratoren</a><li>
+			</ul>
+		</div><!--/.well -->
+	</div><!--/span-->
+	<div class="span7">
+		<!--Body content-->
+		<h1>Benutzer</h1>
+		<p class="lead"> Hier finden Sie alle Benutzer des MMS</p>
+
+		<hr />
+		<table class="table">
+			<thead>
+				<tr>
+					<td>Email</td>
+					<td>Vorname</td>
+					<td>Nachname</td>
+					<td>Aktion</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="user in users">
+					<td>{{user.email}}</td>
+					<td>{{user.firstName}}</td>
+					<td>{{user.lastName}}</td>
+					<td><a href="#/delete/user?email={{user.email}}"><button style="margin-left: 5px;" class="btn btn-mini btn-danger" type="button">löschen</button></a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+  </div>
+</div>
