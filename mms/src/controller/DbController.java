@@ -2,16 +2,6 @@ package controller;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-
-
-import model.Employee;
-import model.User;
-import model.userRights.EmployeeRights;
-import model.userRights.UserRights;
-
 
 public class DbController {
 

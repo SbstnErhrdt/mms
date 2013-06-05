@@ -1,9 +1,6 @@
 package routes;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,12 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-
-import controller.DbController;
 import controller.UserDbController;
 
 import model.User;
-import model.userRights.UserRights;
 
 public class UserRoutes extends Routes {
 	private UserDbController db;

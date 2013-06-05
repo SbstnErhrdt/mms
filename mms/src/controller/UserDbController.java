@@ -451,7 +451,6 @@ public class UserDbController extends DbController {
 	}
 	
 	public ArrayList<User> readUsers() {
-		User user = new User("");
 		ArrayList<User> users = new ArrayList<User>();
 		String query = "SELECT email FROM users;";
 		

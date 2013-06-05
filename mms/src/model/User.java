@@ -3,9 +3,6 @@ package model;
 
 import model.userRights.UserRights;
 
-
-import controller.DbController;
-
 public class User implements DbControllable {
 	
 	/* DATENBANK User

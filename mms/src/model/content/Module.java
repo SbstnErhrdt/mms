@@ -1,9 +1,6 @@
 package model.content;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import model.content.Event;
 
 public class Module extends Content {
 

@@ -1,7 +1,5 @@
 package model.userRights;
 
-import util.Utilities;
-
 public class EventRights extends ContentRights {
 	private int eventID;
 

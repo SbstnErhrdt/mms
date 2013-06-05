@@ -1,10 +1,5 @@
 package model.content;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import model.content.ModuleHandbook;
-
 public class Studycourse extends Content {
 	
 	private int current_moduleHandbook;

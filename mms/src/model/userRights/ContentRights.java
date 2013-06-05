@@ -1,7 +1,5 @@
 package model.userRights;
 
-import java.util.ArrayList;
-
 import util.Utilities;
 import model.DbControllable;
 

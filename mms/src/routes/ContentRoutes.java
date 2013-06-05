@@ -384,9 +384,7 @@ public class ContentRoutes extends Routes{
 	}
 
 	public void updateEvent(HttpServletRequest request,
-			HttpServletResponse response) {
-		int eventID = Integer.parseInt(request.getParameter("eventID"));
-		
+			HttpServletResponse response) {		
 		String json = getRequestBody(request);
 		
 		Event event = gson.fromJson(json, Event.class);
@@ -403,9 +401,7 @@ public class ContentRoutes extends Routes{
 	
 
 	public void createModule(HttpServletRequest request,
-			HttpServletResponse response) {
-		int moduleID = Integer.parseInt(request.getParameter("moduleID"));
-		
+			HttpServletResponse response) {		
 		String json = getRequestBody(request);
 		
 		Module module = gson.fromJson(json, Module.class);
@@ -421,9 +417,7 @@ public class ContentRoutes extends Routes{
 	}
 
 	public void updateModule(HttpServletRequest request,
-			HttpServletResponse response) {
-		int moduleID = Integer.parseInt(request.getParameter("moduleID"));
-		
+			HttpServletResponse response) {		
 		String json = getRequestBody(request);
 		
 		Module module = gson.fromJson(json, Module.class);
@@ -439,9 +433,7 @@ public class ContentRoutes extends Routes{
 	}
 
 	public void createSubject(HttpServletRequest request,
-			HttpServletResponse response) {
-		int subjectID = Integer.parseInt(request.getParameter("subjectID"));
-		
+			HttpServletResponse response) {		
 		String json = getRequestBody(request);
 		
 		Subject subject = gson.fromJson(json, Subject.class);
@@ -457,9 +449,7 @@ public class ContentRoutes extends Routes{
 	}
 
 	public void updateSubject(HttpServletRequest request,
-			HttpServletResponse response) {
-		int subjectID = Integer.parseInt(request.getParameter("subjectID"));
-		
+			HttpServletResponse response) {		
 		String json = getRequestBody(request);
 		
 		Subject subject = gson.fromJson(json, Subject.class);
@@ -476,8 +466,6 @@ public class ContentRoutes extends Routes{
 
 	public void createStudycourse(HttpServletRequest request,
 			HttpServletResponse response) {
-		int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
-		
 		String json = getRequestBody(request);
 		
 		Studycourse studycourse = gson.fromJson(json, Studycourse.class);
@@ -494,8 +482,6 @@ public class ContentRoutes extends Routes{
 
 	public void updateStudycourse(HttpServletRequest request,
 			HttpServletResponse response) {
-		int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
-		
 		String json = getRequestBody(request);
 		
 		Studycourse studycourse = gson.fromJson(json, Studycourse.class);
@@ -512,8 +498,6 @@ public class ContentRoutes extends Routes{
 
 	public void createModuleHandbook(HttpServletRequest request,
 			HttpServletResponse response) {
-		int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
-		
 		String json = getRequestBody(request);
 		
 		ModuleHandbook moduleHandbook = gson.fromJson(json, ModuleHandbook.class);
@@ -530,8 +514,6 @@ public class ContentRoutes extends Routes{
 
 	public void updateModuleHandbook(HttpServletRequest request,
 			HttpServletResponse response) {
-		int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
-		
 		String json = getRequestBody(request);
 		
 		ModuleHandbook moduleHandbook = gson.fromJson(json, ModuleHandbook.class);

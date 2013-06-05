@@ -21,7 +21,7 @@ public class Event extends Content {
 	
 	// Konstruktor
 	public Event(int eventID) {
-		eventID = eventID;
+		this.ID = eventID;
 	}
 	
 	public Event(int eventID, ArrayList<Integer> moduleIDs, String name, int sws, String lecturer_email, boolean archived) {
