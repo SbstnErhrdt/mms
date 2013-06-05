@@ -96,7 +96,6 @@ public class UserRoutes extends Routes {
 
 	public void updateUser(HttpServletRequest request,
 			HttpServletResponse response) {
-		
 		String json = getRequestBody(request);
 		
 		User user = gson.fromJson(json, User.class);
