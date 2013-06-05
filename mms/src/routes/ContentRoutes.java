@@ -80,16 +80,7 @@ public class ContentRoutes extends Routes{
 			
 			ArrayList<Event> events = db.getModuleEvents(moduleID);
 			
-			json = gson.toJson(events);
-		} else if(request.getParameter("subjectID") != null) {
-			int subjectID = Integer.parseInt(request.getParameter("subjectID"));
-			
-			ArrayList<Module> modules = db.getSubjectModules(subjectID);
-			
-			for(Module m : modules) {
-				
-			}
-			
+			json = gson.toJson(events);			
 		} else {
 			ArrayList<Event> events = db.getEvents();	
 			json = gson.toJson(events);

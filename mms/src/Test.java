@@ -233,5 +233,8 @@ public class Test {
 		events = cdbc.getEvents();
 		
 		System.out.println(events);
+		
+		System.out.println(modules);
+		
 	}
 }

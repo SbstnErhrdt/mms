@@ -28,9 +28,6 @@ public class Module extends Content {
 	private int duration;
 	private String token, englishTitle, lp, sws, language, director_email, requirement, learningTarget, content, literature; 
 	
-	// CHILDREN EVENTS
-	private List<Event> events = new ArrayList<Event>();
-	
 	// PARENT SUBJECTS
 	private ArrayList<Integer> subjectIDs;
 	
@@ -184,28 +181,7 @@ public class Module extends Content {
 
 	public void setLiterature(String literature) {
 		this.literature = literature;
-	}
-	
-	// EVENTS
-	public List<Event> getEventList() {
-		return events;
-	}
-	
-	public void setEventList(List<Event> events ) {
-		this.events = events;
-	}
-		
-	// ADD EVENT
-	public void addEvent(Event event) {
-		events.add(event);
-	}
-	// REMOVE EVENT
-	public void removeEvent(Event event) {
-		events.remove(event);
-	}
-	
-	// TODO: ADD - REMOVE LECTURE
-	
+	}	
 	
 	@Override
 	public String toValues() {
