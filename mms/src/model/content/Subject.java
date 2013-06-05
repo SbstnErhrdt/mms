@@ -13,14 +13,14 @@ public class Subject extends Content {
 	 */
 		
 	private List<Module> modules = new ArrayList<Module>();
-	private int moduleHandbooks_moduleHandbookID;
+	private int moduleHandbooks_moduleHandbookID, studycourses_studycourseID;
 	
 	
 	// Konstruktor
 	public Subject (int subjectID, int studycourses_studycourseID, int moduleHandbooks_moduleHandbookID,
 			String name, boolean archived) {
 		this.ID = subjectID; 
-		this.parentID = studycourses_studycourseID;
+		this.studycourses_studycourseID = studycourses_studycourseID;
 		this.moduleHandbooks_moduleHandbookID = moduleHandbooks_moduleHandbookID;
 		this.name = name;
 		this.archived = archived;
@@ -80,7 +80,7 @@ public class Subject extends Content {
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {""+ID, ""+parentID, ""+moduleHandbooks_moduleHandbookID, "'"+name+"'",""+archived };
+		String[] values = {""+ID, ""+studycourses_studycourseID, ""+moduleHandbooks_moduleHandbookID, "'"+name+"'",""+archived };
 		return values;
 	}
 

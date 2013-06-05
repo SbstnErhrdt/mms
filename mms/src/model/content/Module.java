@@ -7,7 +7,6 @@ public class Module extends Content {
 	/*	DATABASE
 	 * 	moduleID	int(5)	
 	 * 	name	varchar(100)	
-	 * 	subjects_subjectID	int(5)
 	 * 	token	varchar(60)	
 	 * 	englishTitle	varchar(100)
 	 * 	lp	varchar(10)	

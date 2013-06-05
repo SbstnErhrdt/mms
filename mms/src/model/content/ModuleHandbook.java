@@ -16,6 +16,7 @@ public class ModuleHandbook extends Content {
 	 */
 	
 	private String semester;
+	private int studycourses_studycourseID;
 	private List<Subject> subjects = new ArrayList<Subject>();
 	
 	
@@ -24,7 +25,7 @@ public class ModuleHandbook extends Content {
 	public ModuleHandbook (int moduleHandbookID, String name, int studycourses_studycourseID, String semester,boolean archived) {
 		this.ID = moduleHandbookID;
 		this.name = name;
-		this.parentID = studycourses_studycourseID;
+		this.studycourses_studycourseID = studycourses_studycourseID;
 		this.semester = semester;
 		this.archived = archived;
 	}
@@ -85,7 +86,7 @@ public class ModuleHandbook extends Content {
 	
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {ID+"", "'"+name+"'",  parentID+"",  "'"+semester+"'",  archived+""};
+		String[] values = {ID+"", "'"+name+"'",  studycourses_studycourseID+"",  "'"+semester+"'",  archived+""};
 		return values;
 	}
 

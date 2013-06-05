@@ -5,7 +5,7 @@ import model.DbControllable;
 public class Content implements DbControllable {
 
 	protected String name;
-	protected int ID, parentID;
+	protected int ID;
 	protected boolean archived;
 
 	public String getName() {
@@ -14,10 +14,6 @@ public class Content implements DbControllable {
 
 	public int getID() {
 		return ID;
-	}
-
-	public int getParentID() {
-		return parentID;
 	}
 
 	public boolean isArchived() {
@@ -30,10 +26,6 @@ public class Content implements DbControllable {
 
 	public void setID(int iD) {
 		ID = iD;
-	}
-
-	public void setParentID(int parentID) {
-		this.parentID = parentID;
 	}
 
 	public void setArchived(boolean archived) {

@@ -7,7 +7,6 @@ public class Event extends Content {
 	
 	/* DATENBANK
 	 * INT eventID
-	 * INT modules_moduleID
 	 * VAR name
 	 * VAR sws
 	 * VAR lecturer_email
