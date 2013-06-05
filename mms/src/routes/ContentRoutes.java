@@ -81,6 +81,15 @@ public class ContentRoutes extends Routes{
 			ArrayList<Event> events = db.getModuleEvents(moduleID);
 			
 			json = gson.toJson(events);
+		} else if(request.getParameter("subjectID") != null) {
+			int subjectID = Integer.parseInt(request.getParameter("subjectID"));
+			
+			ArrayList<Module> modules = db.getSubjectModules(subjectID);
+			
+			for(Module m : modules) {
+				
+			}
+			
 		} else {
 			ArrayList<Event> events = db.getEvents();	
 			json = gson.toJson(events);
@@ -368,7 +377,6 @@ public class ContentRoutes extends Routes{
 
 	public void createEvent(HttpServletRequest request,
 			HttpServletResponse response) {
-		int eventID = Integer.parseInt(request.getParameter("eventID"));
 		
 		String json = getRequestBody(request);
 		
