@@ -71,6 +71,7 @@ MMSApp.config(["$routeProvider", function($routeProvider) {
 	$routeProvider.otherwise({redirectTo: "/home"});
 }]);
 
+
 /*
 
 	UserFactory
@@ -660,10 +661,12 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 
 	factory.getStudycourses = function() {
 
+
 		var url = hURL+"read/studycourses";
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
+			console.log(data);
 			Studycourses = data;
 			deferred.resolve(data);
 		}).error(function(data, status) {
