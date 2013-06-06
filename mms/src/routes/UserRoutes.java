@@ -3,6 +3,7 @@ package routes;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -103,5 +104,84 @@ public class UserRoutes extends Routes {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void login(HttpServletRequest request, HttpServletResponse response) {
+		String email = request.getParameter("email");
+		String json = getRequestBody(request);
+		
+		User user = gson.fromJson(json, User.class);
+		
+		user = db.verifyUser(user);
+		
+		if(user != null) {
+			if(user.getEmail().equals(email)) {
+				System.out.println("user verified!");
+				
+				String hash = createRandomHash();
+				
+				if(db.insertUserHash(email, hash)) {
+					Cookie hashCookie = new Cookie("hash", hash);
+					hashCookie.setMaxAge(60*60*12);
+					response.addCookie(hashCookie);
+					Cookie emailCookie = new Cookie("email", email);
+					emailCookie.setMaxAge(60*60*12);
+					response.addCookie(emailCookie);
+					
+					json = gson.toJson(db.getUser(user));
+			
+					System.out.println("user "+user+" logged in successfully");
+				} else {
+					json = "{"+
+							"\"error\": { "+
+								"\"message\": \"db.insertUserHash(email, hash) failed\", "+
+								"\"method\" : \"login(...)\""+
+							" }}";
+				}
+			} else {
+				System.out.println("wrong email parameter.");
+				
+				json = "{"+
+						"\"error\": { "+
+							"\"message\": \"wrong email parameter\", "+
+							"\"method\" : \"login(...)\""+
+						" }}";
+			}
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"no user with this email and password\", "+
+						"\"method\" : \"login(...)\""+
+					" }}";
+		}
+		
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String createRandomHash() {
+		double randomDouble = Math.random();
+		return ""+randomDouble;
+	}
+
+	public boolean verifyUserHash(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		
+		String email = "";
+		String hash = "";
+		
+		for(Cookie c : cookies) {
+			if(c.getName().equals("email")) {
+				email = c.getValue();
+			} else if(c.getName().equals("hash")) {
+				hash = c.getValue();
+			}
+		}
+		
+		if(db.verifyUserHash(email, hash)) return true;
+		else return false;
 	}
 }

@@ -1,5 +1,6 @@
 package controller;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -239,7 +240,7 @@ public class UserDbController extends DbController {
 				user.setMatricNum(rs.getInt(7));	// matricNum
 				user.setSemester(rs.getInt(8));		// semester
 			} else {
-				System.out.println("No user found with this email and password.");
+				System.out.println("No user found with this email.");
 				return null;
 			}
 			rs.close();
@@ -466,5 +467,118 @@ public class UserDbController extends DbController {
 		}
 		
 		return users;
+	}
+	
+	public User verifyUser(User user) {
+		String query = "SELECT " + user.toValueNames() +
+				" FROM users WHERE email ='"+ user.getEmail()+"'" +
+				" AND password='"+user.getPassword()+"';";
+			
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			
+			if(rs.next()) {
+				user.setFirstName(rs.getString(2));	// firstName
+				user.setLastName(rs.getString(3)); 	// lastName
+				user.setTitle(rs.getString(4));		// title
+				user.setGraduation(rs.getString(5));// graduation
+				user.setMatricNum(rs.getInt(7));	// matricNum
+				user.setSemester(rs.getInt(8));		// semester
+			} else {
+				System.out.println("No user found with this email and password.");
+				return null;
+			}
+			rs.close();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return user;
+	}
+
+	public boolean insertUserHash(String email, String hash) {
+		String query = "DELETE FROM user_hashes WHERE users_email=?";
+		
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ps.setString(1, email);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		query = "INSERT INTO user_hashes(users_email, hash) VALUES(?,?);";
+		
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ps.setString(1, email);
+			ps.setString(2, hash);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+
+	public boolean verifyUserHash(String email, String hash) {
+		
+		String query = "SELECT * FROM user_hashes " +
+				"WHERE users_email=? AND " +
+				"hash=?;";
+		
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ps.setString(1, email);
+			ps.setString(2, hash);
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			if(rs.next()) return true;
+			else return false;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

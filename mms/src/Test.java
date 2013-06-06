@@ -236,5 +236,12 @@ public class Test {
 		
 		System.out.println(modules);
 		
+		
+		System.out.println(udbc.insertUserHash("email@ex-studios.net", "fzuactwatfuai46238419hujkk"));	
+		
+		
+		System.out.println(udbc.verifyUserHash("email@ex-studios.net", "fzuactwatfuai46238419hujkk"));
+	
+		System.out.println(gson.toJson(event));
 	}
 }

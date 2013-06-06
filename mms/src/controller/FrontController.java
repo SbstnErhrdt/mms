@@ -41,6 +41,13 @@ public class FrontController extends HttpServlet {
 		UserRoutes userRoutes = new UserRoutes();
 		ContentRoutes contentRoutes = new ContentRoutes();		
 		
+		if(path.startsWith("/delete")) {
+			if(!userRoutes.verifyUserHash(request)) {
+				response.sendError(403);
+				return;
+			}
+		}
+		
 		// ####################################################
 		// Content
 		// ####################################################
@@ -130,13 +137,21 @@ public class FrontController extends HttpServlet {
 		System.out.println("POST-Request, Path: " + path);
 		UserRoutes userRoutes = new UserRoutes();
 		ContentRoutes contentRoutes = new ContentRoutes();
+		
+		
+		if(path.equals("/login")) {
+			userRoutes.login(request, response);
+		} else if(!userRoutes.verifyUserHash(request)) {
+			response.sendError(403);
+			return;
+		}
 				
 		// ####################################################
 		// Content
 		// ####################################################
 		
 		// create Event
-		if(path.equals("/create/event")) {
+		else if(path.equals("/create/event")) {
 			contentRoutes.createEvent(request, response);
 		// update Event
 		} else if(path.equals("/update/event")) {
