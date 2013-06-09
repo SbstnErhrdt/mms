@@ -27,12 +27,19 @@ public class UserRoutes extends Routes {
 	
 	public void readUser(HttpServletRequest request,
 			HttpServletResponse response) {
-		String email = request.getParameter("email");
-		
-		User user = db.getUser(new User(email));
-		
-		String json = gson.toJson(user);
-		
+		String json;
+		if(request.getParameter("email") != null) {
+			String email = request.getParameter("email");
+			User user = db.getUser(new User(email));
+			json = gson.toJson(user);
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"unspecified email\", "+
+						"\"method\" : \"readUser(...)\""+
+					" }}";	
+		}
+			
 		try {
 			response.getWriter().write(json);
 		} catch (IOException e) {
@@ -42,17 +49,30 @@ public class UserRoutes extends Routes {
 
 	public void deleteUser(HttpServletRequest request,
 			HttpServletResponse response) {
-		String email = request.getParameter("email");
-		User user = new User(email);
-		
-		if(db.deleteUser(user)) {
-			String json = gson.toJson(user);
-			
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
+		String json;
+		if(request.getParameter("email") != null) {
+			String email = request.getParameter("email");
+			User user = new User(email);
+			if(db.deleteUser(user))	json = gson.toJson(user);
+			else {
+				json = "{"+
+						"\"error\": { "+
+							"\"message\": \"db.deleteUser(user) failed\", "+
+							"\"method\" : \"deleteUser(...)\""+
+						" }}";
 			}
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"unspecified email\", "+
+						"\"method\" : \"deleteUser(...)\""+
+					" }}";	
+		}
+		
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -79,13 +99,19 @@ public class UserRoutes extends Routes {
 		User user = gson.fromJson(json, User.class);
 		
 		if(db.createUser(user)) {
-			json = gson.toJson(new User(user.getEmail()));
-			
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			json = gson.toJson(user);
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"db.createUser(user) failed\", "+
+						"\"method\" : \"createUser(...)\""+
+					" }}";	
+		}
+		
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -97,60 +123,80 @@ public class UserRoutes extends Routes {
 		
 		if(db.updateUser(user)) {
 			json = gson.toJson(user);
-			
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		} else {
+			json = "{"+
+					"\"error\": { "+
+						"\"message\": \"db.updateUser(user) failed\", "+
+						"\"method\" : \"updateUser(...)\""+
+					" }}";	
+		}
+		
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
 	public void login(HttpServletRequest request, HttpServletResponse response) {
-		String email = request.getParameter("email");
-		String json = getRequestBody(request);
 		
-		User user = gson.fromJson(json, User.class);
+		String json;
 		
-		user = db.verifyUser(user);
-		
-		if(user != null) {
-			if(user.getEmail().equals(email)) {
-				System.out.println("user verified!");
-				
-				String hash = createRandomHash();
-				
-				if(db.insertUserHash(email, hash)) {
-					Cookie hashCookie = new Cookie("hash", hash);
-					hashCookie.setMaxAge(60*60*12);
-					response.addCookie(hashCookie);
-					Cookie emailCookie = new Cookie("email", email);
-					emailCookie.setMaxAge(60*60*12);
-					response.addCookie(emailCookie);
-					
-					json = gson.toJson(db.getUser(user));
+		if(request.getParameter("email") != null) {
+			String email = request.getParameter("email");
+			json = getRequestBody(request);
+			User user = gson.fromJson(json, User.class);
 			
-					System.out.println("user "+user+" logged in successfully");
+			user = db.verifyUser(user);
+			
+			if(user != null) {
+				if(user.getEmail().equals(email)) {
+					System.out.println("user verified!");
+					
+					String hash = createRandomHash();
+					
+					if(db.insertUserHash(email, hash)) {
+						Cookie hashCookie = new Cookie("hash", hash);
+						hashCookie.setMaxAge(60*60*12);
+						hashCookie.setPath("/mms");
+						hashCookie.setDomain("sopra.ex-studios.net");
+						response.addCookie(hashCookie);
+						Cookie emailCookie = new Cookie("email", email);
+						emailCookie.setPath("/mms");
+						emailCookie.setDomain("sopra.ex-studios.net");
+						emailCookie.setMaxAge(60*60*12);
+						response.addCookie(emailCookie);
+						
+						json = gson.toJson(db.getUser(user));
+				
+						System.out.println("user "+user+" logged in successfully");
+					} else {
+						json = "{"+
+								"\"error\": { "+
+									"\"message\": \"db.insertUserHash(email, hash) failed\", "+
+									"\"method\" : \"login(...)\""+
+								" }}";
+					}
 				} else {
+					System.out.println("wrong email parameter.");
+					
 					json = "{"+
 							"\"error\": { "+
-								"\"message\": \"db.insertUserHash(email, hash) failed\", "+
+								"\"message\": \"wrong email parameter\", "+
 								"\"method\" : \"login(...)\""+
 							" }}";
 				}
 			} else {
-				System.out.println("wrong email parameter.");
-				
 				json = "{"+
 						"\"error\": { "+
-							"\"message\": \"wrong email parameter\", "+
+							"\"message\": \"wrong email or password\", "+
 							"\"method\" : \"login(...)\""+
 						" }}";
 			}
 		} else {
 			json = "{"+
 					"\"error\": { "+
-						"\"message\": \"no user with this email and password\", "+
+						"\"message\": \"unspecified email parameter\", "+
 						"\"method\" : \"login(...)\""+
 					" }}";
 		}
@@ -162,26 +208,53 @@ public class UserRoutes extends Routes {
 		}
 	}
 
-	private String createRandomHash() {
-		double randomDouble = Math.random();
+	public String createRandomHash() {
+		double randomDouble = Math.random()+Math.random();
 		return ""+randomDouble;
 	}
 
-	public boolean verifyUserHash(HttpServletRequest request) {
+	public boolean verifyUserHash(HttpServletRequest request, HttpServletResponse response) {
 		Cookie[] cookies = request.getCookies();
 		
 		String email = "";
 		String hash = "";
 		
-		for(Cookie c : cookies) {
-			if(c.getName().equals("email")) {
-				email = c.getValue();
-			} else if(c.getName().equals("hash")) {
-				hash = c.getValue();
+		if(cookies == null) {
+			String json = "{"+
+					"\"error\": { "+
+					"\"message\": \"no valid hash found (request.getCookies() == null)\", "+
+					"\"method\" : \"verifyUserHash(...)\""+
+				" }}";
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return false;
+		} else {
+		
+			for(Cookie c : cookies) {
+				if(c.getName().equals("email")) {
+					email = c.getValue();
+				} else if(c.getName().equals("hash")) {
+					hash = c.getValue();
+				}
+			}
+			
+			if(db.verifyUserHash(email, hash)) return true;
+			else {
+				String json = "{"+
+						"\"error\": { "+
+						"\"message\": \"no valid hash found\", "+
+						"\"method\" : \"verifyUserHash(...)\""+
+					" }}";
+				try {
+					response.getWriter().write(json);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return false;
 			}
 		}
-		
-		if(db.verifyUserHash(email, hash)) return true;
-		else return false;
 	}
 }

@@ -41,9 +41,15 @@ public class FrontController extends HttpServlet {
 		UserRoutes userRoutes = new UserRoutes();
 		ContentRoutes contentRoutes = new ContentRoutes();		
 		
+		// set Headers
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Headers", "accept, origin, x-requested-with, content-type");
+		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+		response.setHeader("Access-Control-Max-Age", "15");
+		
 		if(path.startsWith("/delete")) {
-			if(!userRoutes.verifyUserHash(request)) {
-				response.sendError(403);
+			if(!userRoutes.verifyUserHash(request, response)) {
+				System.out.println("no valid hash found");
 				return;
 			}
 		}
@@ -121,12 +127,6 @@ public class FrontController extends HttpServlet {
 		} else if(path.equals("/read/users")) {
 			userRoutes.readUsers(request, response);
 		}
-		
-		// set Headers
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		response.setHeader("Access-Control-Allow-Headers", "accept, origin, x-requested-with, content-type");
-		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-		response.setHeader("Access-Control-Max-Age", "15");
 	}
 
 	/**
@@ -137,12 +137,17 @@ public class FrontController extends HttpServlet {
 		System.out.println("POST-Request, Path: " + path);
 		UserRoutes userRoutes = new UserRoutes();
 		ContentRoutes contentRoutes = new ContentRoutes();
-		
+	
+		// set Headers
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Headers", "accept, origin, x-requested-with, content-type");
+		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+		response.setHeader("Access-Control-Max-Age", "15");
 		
 		if(path.equals("/login")) {
 			userRoutes.login(request, response);
-		} else if(!userRoutes.verifyUserHash(request)) {
-			response.sendError(403);
+		} else if(!userRoutes.verifyUserHash(request, response)) {
+			System.out.println("no valid hash found");
 			return;
 		}
 				
@@ -201,12 +206,6 @@ public class FrontController extends HttpServlet {
 		} else if(path.equals("/update/user")) {
 			userRoutes.updateUser(request, response);
 		}
-		
-		// set Headers
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		response.setHeader("Access-Control-Allow-Headers", "accept, origin, x-requested-with, content-type");
-		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-		response.setHeader("Access-Control-Max-Age", "15");
 	}
 
 }

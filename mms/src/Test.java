@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import routes.UserRoutes;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
@@ -237,11 +239,17 @@ public class Test {
 		System.out.println(modules);
 		
 		
-		System.out.println(udbc.insertUserHash("email@ex-studios.net", "fzuactwatfuai46238419hujkk"));	
+		
+		
+		System.out.println(udbc.insertUserHash("email@ex-studios.net", new UserRoutes().createRandomHash()));	
 		
 		
 		System.out.println(udbc.verifyUserHash("email@ex-studios.net", "fzuactwatfuai46238419hujkk"));
 	
 		System.out.println(gson.toJson(event));
+		
+		User user = new User("email@ex-studios.net", "1234");
+		
+		System.out.println(gson.toJson(user));
 	}
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 public abstract class Routes {
@@ -42,4 +43,22 @@ public abstract class Routes {
 		return stringBuilder.toString();
 	}
 	
+	protected String getCookieEmail(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		
+		String email = "";
+		
+		if(cookies != null) {
+			for(Cookie c : cookies) {
+				if(c.getName().equals("email")){
+					email = c.getValue();
+				}
+			}
+		} else {
+			System.out.println("request.getCookies() == null");
+		}
+		
+		return email;
+		
+	}
 }
