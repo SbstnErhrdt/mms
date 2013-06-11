@@ -21,7 +21,7 @@ public class Module extends Content {
 	 *  archived boolean
 	 */
 	
-	private int duration;
+	private int moduleID, duration;
 	private String token, englishTitle, lp, sws, language, director_email, requirement, learningTarget, content, literature; 
 	
 	// PARENT SUBJECTS
@@ -30,7 +30,7 @@ public class Module extends Content {
 	// Konstruktor
 	public Module(int moduleID, String name, ArrayList<Integer> subjectIDs, String token, String englishTitle, String lp, String sws, 
 			String language, int duration, String director_email, String requirement, String learningTarget, String content, String literature, boolean archived) {
-		this.ID = moduleID;
+		this.moduleID = moduleID;
 		this.name = name;
 		this.subjectIDs = subjectIDs;
 		this.token = token;
@@ -48,7 +48,7 @@ public class Module extends Content {
 	}
 	
 	public Module(int moduleID) {
-		this.ID = moduleID;
+		this.moduleID = moduleID;
 	}
 
 	// Getter & Setter
@@ -194,7 +194,7 @@ public class Module extends Content {
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {""+ID, "'"+name+"'", "'"+token+"'", "'"+englishTitle+"'", "'"+lp+"'", ""+sws, "'"+language+"'",
+		String[] values = {""+moduleID, "'"+name+"'", "'"+token+"'", "'"+englishTitle+"'", "'"+lp+"'", ""+sws, "'"+language+"'",
 				""+duration, "'"+director_email+"'", "'"+requirement+"'", "'"+learningTarget+"'", "'"+content+"'", "'"+literature+"'", ""+archived}; 
 		return values;
 	}
@@ -221,6 +221,22 @@ public class Module extends Content {
 		string += subjectIDs.get(subjectIDs.size()-1) + "}]";
 		
 		return string;
+	}
+
+	public int getID() {
+		return moduleID;
+	}
+
+	public void setID(int moduleID) {
+		this.moduleID = moduleID;
+	}
+
+	public String getEnglishTitle() {
+		return englishTitle;
+	}
+
+	public void setEnglishTitle(String englishTitle) {
+		this.englishTitle = englishTitle;
 	}
 	
 }

@@ -15,16 +15,16 @@ public class Event extends Content {
 	
 	
 	private String lecturer_email;
-	private int sws;
+	private int eventID, sws;
 	private ArrayList<Integer> moduleIDs;
 	
 	// Konstruktor
 	public Event(int eventID) {
-		this.ID = eventID;
+		this.eventID = eventID;
 	}
 	
 	public Event(int eventID, ArrayList<Integer> moduleIDs, String name, int sws, String lecturer_email, boolean archived) {
-		this.ID = eventID;
+		this.eventID = eventID;
 		this.moduleIDs = moduleIDs;
 		this.name = name;
 		this.sws = sws;
@@ -68,7 +68,7 @@ public class Event extends Content {
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {""+ID, "'"+name+"'", ""+sws, ""+"'"+lecturer_email+"'", ""+archived};
+		String[] values = {""+eventID, "'"+name+"'", ""+sws, ""+"'"+lecturer_email+"'", ""+archived};
 		return values;
 	}
 
@@ -93,6 +93,14 @@ public class Event extends Content {
 		string += moduleIDs.get(moduleIDs.size()-1) + "}]";
 		
 		return string;
+	}
+
+	public int getID() {
+		return eventID;
+	}
+
+	public void setID(int eventID) {
+		this.eventID = eventID;
 	}
 	
 }

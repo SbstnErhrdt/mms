@@ -37,11 +37,7 @@ public class ContentRoutes extends Routes{
 			Event event = db.getEvent(eventID);
 			json = gson.toJson(event);
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"unspecified eventID\", "+
-						"\"method\" : \"readEvent(...)\""+
-					" }}";
+			json = gson.toJson(new JsonContent(new JsonError("unspecified eventID", "readEvent(...)")));
 		}
 		try {
 			response.getWriter().write(json);

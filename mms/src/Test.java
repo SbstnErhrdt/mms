@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import routes.JsonContent;
+import routes.JsonError;
 import routes.UserRoutes;
 
 import com.google.gson.Gson;
@@ -251,5 +253,13 @@ public class Test {
 		User user = new User("email@ex-studios.net", "1234");
 		
 		System.out.println(gson.toJson(user));
+		
+		JsonError je = new JsonError("unspecified eventID", "readEvent(...)");
+		
+		JsonContent jc = new JsonContent(je);
+		
+		System.out.println(gson.toJson(je));
+		
+		System.out.println(gson.toJson(jc));
 	}
 }

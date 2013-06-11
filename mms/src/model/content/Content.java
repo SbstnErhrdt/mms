@@ -5,15 +5,10 @@ import model.DbControllable;
 public class Content implements DbControllable {
 
 	protected String name;
-	protected int ID;
 	protected boolean archived;
 
 	public String getName() {
 		return name;
-	}
-
-	public int getID() {
-		return ID;
 	}
 
 	public boolean isArchived() {
@@ -22,10 +17,6 @@ public class Content implements DbControllable {
 	
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public void setID(int iD) {
-		ID = iD;
 	}
 
 	public void setArchived(boolean archived) {

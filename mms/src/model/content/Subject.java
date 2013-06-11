@@ -13,13 +13,13 @@ public class Subject extends Content {
 	 */
 		
 	private List<Module> modules = new ArrayList<Module>();
-	private int moduleHandbooks_moduleHandbookID, studycourses_studycourseID;
+	private int subjectID, moduleHandbooks_moduleHandbookID, studycourses_studycourseID;
 	
 	
 	// Konstruktor
 	public Subject (int subjectID, int studycourses_studycourseID, int moduleHandbooks_moduleHandbookID,
 			String name, boolean archived) {
-		this.ID = subjectID; 
+		this.subjectID = subjectID; 
 		this.studycourses_studycourseID = studycourses_studycourseID;
 		this.moduleHandbooks_moduleHandbookID = moduleHandbooks_moduleHandbookID;
 		this.name = name;
@@ -32,7 +32,7 @@ public class Subject extends Content {
 	// entfallen - vererbung
 	
 	public Subject(int subjectID) {
-		this.ID = subjectID;
+		this.subjectID = subjectID;
 	}
 
 
@@ -80,7 +80,7 @@ public class Subject extends Content {
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {""+ID, ""+studycourses_studycourseID, ""+moduleHandbooks_moduleHandbookID, "'"+name+"'",""+archived };
+		String[] values = {""+subjectID, ""+studycourses_studycourseID, ""+moduleHandbooks_moduleHandbookID, "'"+name+"'",""+archived };
 		return values;
 	}
 
@@ -89,5 +89,15 @@ public class Subject extends Content {
 		// TODO Auto-generated method stub
 		String[] values = {"subjectID", "studycourses_studycourseID", "module_handbooks_moduleHandbookID", "name", "archived"};
 		return values;
+	}
+
+
+	public int getID() {
+		return subjectID;
+	}
+
+
+	public void setID(int subjectID) {
+		this.subjectID = subjectID;
 	}	
 }

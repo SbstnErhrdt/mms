@@ -16,14 +16,14 @@ public class ModuleHandbook extends Content {
 	 */
 	
 	private String semester;
-	private int studycourses_studycourseID;
+	private int moduleHandbookID, studycourses_studycourseID;
 	private List<Subject> subjects = new ArrayList<Subject>();
 	
 	
 	
 	// Konstruktor
 	public ModuleHandbook (int moduleHandbookID, String name, int studycourses_studycourseID, String semester,boolean archived) {
-		this.ID = moduleHandbookID;
+		this.moduleHandbookID = moduleHandbookID;
 		this.name = name;
 		this.studycourses_studycourseID = studycourses_studycourseID;
 		this.semester = semester;
@@ -31,7 +31,7 @@ public class ModuleHandbook extends Content {
 	}
 	
 	public ModuleHandbook(int moduleHandbookID) {
-		this.ID = moduleHandbookID;
+		this.moduleHandbookID = moduleHandbookID;
 	}
 
 	// Getter & Setter
@@ -86,7 +86,7 @@ public class ModuleHandbook extends Content {
 	
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {ID+"", "'"+name+"'",  studycourses_studycourseID+"",  "'"+semester+"'",  archived+""};
+		String[] values = {moduleHandbookID+"", "'"+name+"'",  studycourses_studycourseID+"",  "'"+semester+"'",  archived+""};
 		return values;
 	}
 
@@ -94,6 +94,14 @@ public class ModuleHandbook extends Content {
 	public String[] toValueNamesArray() {
 		String[] values = {"moduleHandbookID", "name", "studycourses_studycourseID", "semester", "archived"};
 		return values;
+	}
+
+	public int getID() {
+		return moduleHandbookID;
+	}
+
+	public void setID(int moduleHandbookID) {
+		this.moduleHandbookID = moduleHandbookID;
 	}
 
 	
