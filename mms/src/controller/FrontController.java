@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+
 import routes.UserRoutes;
 import routes.ContentRoutes;
 
@@ -27,8 +29,21 @@ public class FrontController extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    	doGet(request, response);
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    	String path = request.getServletPath();
+		System.out.println("OPTIONS-Request, Path: " + path);
+    	request.getSession(true);
+    	
+    	// set Headers
+		response.setHeader("Access-Control-Allow-Origin", "http://sopra.ex-studios.net");
+		response.setHeader("Access-Control-Allow-Headers", "accept, origin, withcredentials, x-requested-with, content-type");
+		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+		response.setHeader("Access-Control-Max-Age", "15");
+		response.setHeader("Access-Control-Allow-Credentials", "true");
+		response.setHeader("Content-Type", "charset=utf-8");
+	
+    	//doGet(request, response);
+    	//doPost(request, response);
     }
     
 	/**
@@ -42,17 +57,24 @@ public class FrontController extends HttpServlet {
 		ContentRoutes contentRoutes = new ContentRoutes();		
 		
 		// set Headers
-		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Origin", "http://sopra.ex-studios.net");
 		response.setHeader("Access-Control-Allow-Headers", "accept, origin, x-requested-with, content-type");
 		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 		response.setHeader("Access-Control-Max-Age", "15");
-		
+		response.setHeader("Content-Type", "charset=utf-8");
+	
 		if(path.startsWith("/delete")) {
 			if(!userRoutes.verifyUserHash(request, response)) {
 				System.out.println("no valid hash found");
 				return;
 			}
+		} 
+		/*
+		else {
+			response.getWriter().write("sessionID: "+request.getSession().getId()+", email: "+request.getSession().getAttribute("email"));
+			return;
 		}
+		*/
 		
 		// ####################################################
 		// Content
@@ -139,11 +161,12 @@ public class FrontController extends HttpServlet {
 		ContentRoutes contentRoutes = new ContentRoutes();
 	
 		// set Headers
-		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Origin", "http://sopra.ex-studios.net");
 		response.setHeader("Access-Control-Allow-Headers", "accept, origin, x-requested-with, content-type");
 		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 		response.setHeader("Access-Control-Max-Age", "15");
-		
+		response.setHeader("Content-Type", "charset=utf-8");
+    
 		if(path.equals("/login")) {
 			userRoutes.login(request, response);
 		} else if(!userRoutes.verifyUserHash(request, response)) {

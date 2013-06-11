@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.catalina.Session;
 
 import com.google.gson.Gson;
 
@@ -153,22 +156,17 @@ public class UserRoutes extends Routes {
 				if(user.getEmail().equals(email)) {
 					System.out.println("user verified!");
 					
-					String hash = createRandomHash();
-					
-					if(db.insertUserHash(email, hash)) {
-						Cookie hashCookie = new Cookie("hash", hash);
-						hashCookie.setMaxAge(60*60*12);
-						hashCookie.setPath("/mms");
-						hashCookie.setDomain("sopra.ex-studios.net");
-						response.addCookie(hashCookie);
-						Cookie emailCookie = new Cookie("email", email);
-						emailCookie.setPath("/mms");
-						emailCookie.setDomain("sopra.ex-studios.net");
-						emailCookie.setMaxAge(60*60*12);
-						response.addCookie(emailCookie);
-						
-						json = gson.toJson(db.getUser(user));
+					HttpSession session = request.getSession();
 				
+					String sessionID = session.getId();
+					if(db.insertUserHash(email, sessionID)) {
+						json = "[" + gson.toJson(db.getUser(user));
+						
+						json += ", {\"jsessionID\" : "+"\""+sessionID+"\"}]";
+				
+						// write email in session
+						session.setAttribute("email", "test");
+						
 						System.out.println("user "+user+" logged in successfully");
 					} else {
 						json = "{"+
