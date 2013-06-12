@@ -1,0 +1,44 @@
+<!--
+ÜBERSICHT DER ATTRIBUTE
+
+DIESE MÜSSEN DARGESTELLT WERDEN
+
+var Studycourse = {
+		studycourseID: "Number",
+		name: "String",
+		archived: "boolean"
+};
+
+var ModuleHandbook = {
+		moduleHandbookID: "Number",
+		studycourses_studycourseID: "Number",
+		name: "String",
+		semester: "Number",
+		archived: "boolean"
+};
+
+-->
+<div class="container-fluid">
+	<div class="row-fluid">
+		<ul class="span 12 breadcrumb">
+		<li><a href="#/home">Home</a> <span class="divider">/</span></li>
+		<li class="active">{{studycourse.name}}</li>
+		</ul>
+	</div>
+</div>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<h1>{{studycourse.name}} <span class="label label-warning" ng-show="studycourse.archived">Archiviert</span></h1>
+			<hr>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12">
+			<h3>Alle Modulhandb&uuml;cher von {{studycourse.name}}</h3>
+			<ul ng-repeat="moduleHandbook in moduleHandbooks">
+				<li><a href="#/show/modulehandbook?modulehandbookID={{moduleHandbook.moduleHandbookID}}">{{moduleHandbook.name}}</a></li>
+			</ul>
+		</div>
+	</div>
+</div>

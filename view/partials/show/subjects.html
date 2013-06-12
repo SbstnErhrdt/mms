@@ -8,37 +8,35 @@
 </div>
 <div class="container-fluid">
   <div class="row-fluid">
-     <div class="span2">
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">Studiengänge</li>
-              <li ng-repeat="studycourse in studycourses">
-              	<a href="#/show/subjects?studycourseID={{studycourse.studycourseID}}">{{studycourse.name}}</a>
-              </li>
-            </ul>
-          </div><!--/.well -->
-        </div><!--/span-->
-    <div class="span7">
+    <div class="span12">
       <!--Body content-->
 	    <h1>Fächer</h1>
 		<p class="lead"> Hier finden Sie alle Fächer der Universität Ulm</p>
-
+        <div class="input-prepend pull-left">
+          <span class="add-on">Filter:</span>
+          <input id="prependedInput" type="text" ng-model="search.name">
+        </div>
+        <a href="#/create/subject" class="btn btn-success pull-left" style="margin-left: 10px;"><i class="icon-edit icon-white"></i> Neues Fach erstellen</a>
+        <div style="clear: both;"></div>
 		<hr />
 	    <table class="table">
 	    	<thead>
 				<tr>
-					<td>#</td>
-					<td>Name</td>
-					<td>Archiviert</td>
-					<td>Aktion</td>
+					<th>#</th>
+					<th>Name</th>
+					<th>Archiviert</th>
+					<th>Aktion</th>
 				</tr>
 	    	</thead>
 	    	<tbody>
-			<tr ng-repeat="subject in subjects">
+			<tr ng-repeat="subject in subjects | filter: search">
 				<td>{{subject.subjectID}}</td>
-				<td>{{subject.name}}</td>
-				<td>{{subject.archived}}</td>
-				<td><a href="#/delete/subject?subjectID={{subject.subjectID}}"><button style="margin-left: 5px;" class="btn btn-mini btn-danger" type="button">löschen</button></a></td>
+				<td><a href="#/show/subject?subjectID={{subject.subjectID}}">{{subject.name}}</a></td>
+				<td><span class="label" ng-hide="subject.archived">nicht archiviert</span><span class="label label-warning" ng-show="subject.archived">archiviert</span></td>
+				<td>
+					<a href="#/delete/subject?subjectID={{subject.subjectID}}"class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+					<a href="#/update/subject?subjectID={{subject.subjectID}}" class="btn btn-mini btn-warning"><i class="icon-refresh icon-white"></i> bearbeiten</a>
+				</td>
 			</tr>
 	    	</tbody>
 		</table>

@@ -1,4 +1,11 @@
-var MMSApp = angular.module("MMS", []);
+/*
+
+	Tabs Projekt! Spaces könnt ihr nehmen, dann aber VIER und ja nicht 2!!!
+	I DREH EICH OIGAHENDIG S KNICK ROM A WENN IH
+*/
+
+
+var MMSApp = angular.module("MMS", ["ngCookies"]);
 
 // Partials URL
 var pURL = "./partials/";
@@ -6,7 +13,9 @@ var pURL = "./partials/";
 // Host URL
 var hURL = "http://sopra.ex-studios.net:8080/mms/";
 
-MMSApp.config(["$routeProvider", function($routeProvider) {
+MMSApp.config(function($routeProvider, $httpProvider) {
+
+	$httpProvider.defaults.withCredentials = true;
 
 	/*
 	*	SHOW ROUTES
@@ -15,30 +24,94 @@ MMSApp.config(["$routeProvider", function($routeProvider) {
 		templateUrl: pURL+"home.html",
 		controller: homeCtrl
 	});
+	$routeProvider.when("/overview", {
+		templateUrl: pURL+"overview.html",
+		controller: overviewCtrl
+	});
 	$routeProvider.when("/show/studycourses", {
 		templateUrl: pURL+"show/studycourses.html",
 		controller: showStudycoursesCtrl
+	});
+	$routeProvider.when("/show/studycourse", {
+		templateUrl: pURL+"show/studycourse.html",
+		controller: showStudycourseCtrl
 	});
 	$routeProvider.when("/show/modulehandbooks", {
 		templateUrl: pURL+"show/modulehandbooks.html",
 		controller: showModuleHandbooksCtrl
 	});
+	$routeProvider.when("/show/modulehandbook", {
+		templateUrl: pURL+"show/modulehandbook.html",
+		controller: showModuleHandbookCtrl
+	});
 	$routeProvider.when("/show/subjects", {
 		templateUrl: pURL+"show/subjects.html",
 		controller: showSubjectsCtrl
+	});
+	$routeProvider.when("/show/subject", {
+		templateUrl: pURL+"show/subject.html",
+		controller: showSubjectCtrl
 	});
 	$routeProvider.when("/show/modules", {
 		templateUrl: pURL+"show/modules.html",
 		controller: showModulesCtrl
 	});
+	$routeProvider.when("/show/module", {
+		templateUrl: pURL+"show/module.html",
+		controller: showModuleCtrl
+	});
 	$routeProvider.when("/show/events", {
 		templateUrl: pURL+"show/events.html",
 		controller: showEventsCtrl
+	});
+	$routeProvider.when("/show/event", {
+		templateUrl: pURL+"show/event.html",
+		controller: showEventCtrl
 	});
 	$routeProvider.when("/show/users", {
 		templateUrl: pURL+"show/users.html",
 		controller: showUsersCtrl
 	});
+	$routeProvider.when("/show/user", {
+		templateUrl: pURL+"show/user.html",
+		controller: showUserCtrl
+	});
+
+	/*
+	*	CREATE ROUTES
+	*/
+	$routeProvider.when("/create/user", {
+		templateUrl: pURL+"create/user.html"
+		//controller: createUserCtrl
+	});
+
+	$routeProvider.when("/create/studycourse", {
+		templateUrl: pURL+"create/studycourse.html"
+		//controller: createStudycourseCtrl
+	});
+
+	$routeProvider.when("/create/modulehandbook", {
+		templateUrl: pURL+"create/modulehandbook.html"
+		//controller: createModulehandbookCtrl
+	});
+
+	$routeProvider.when("/create/subject", {
+		templateUrl: pURL+"create/subject.html"
+		//controller: createSubjectCtrl
+	});
+
+	$routeProvider.when("/create/module", {
+		templateUrl: pURL+"create/module.html"
+		//controller: createModuleCtrl
+	});
+
+	$routeProvider.when("/create/event", {
+		templateUrl: pURL+"create/event.html"
+		//controller: createEventCtrl
+	});
+
+
+
 
 
 	/*
@@ -69,8 +142,44 @@ MMSApp.config(["$routeProvider", function($routeProvider) {
 		controller: deleteUserCtrl
 	});
 	$routeProvider.otherwise({redirectTo: "/home"});
-}]);
+});
 
+/*
+
+	activeUserFactory
+
+	-> Der eingeloggte Benutzer
+ */
+MMSApp.factory("ActiveUserFactory", function($http, $q, UserFactory) {
+	var factory = {};
+
+	var ActiveUser = {
+		address: String,
+		email: String,
+		emailVerified: Boolean,
+		employeeRights: Object,
+		firstName: String,
+		graduation: String,
+		isEmployee: Boolean,
+		lastName: String,
+		matricNum: Number,
+		password: Number,
+		phoneNum: String,
+		semester: Number,
+		talkTime: String,
+		title: String,
+		userRights: Object
+	};
+
+	factory.getActiveUser = function() {
+	};
+
+	factory.setActiveUser = function(activeUser) {
+		ActiveUser = activeUser;
+	};
+
+	return factory;
+});
 
 /*
 
@@ -92,6 +201,17 @@ MMSApp.factory("UserFactory", function($http, $q) {
 
 	var Users = [];
 
+	factory.createUser = function(user) {
+		// BENÖTIGTE FELDER - FIX THIS
+		if(user.email) {
+
+
+		} else {
+			// Error
+			console.log("Error: Es wurden nicht alle Felder ausgefüllt.");
+		}
+	};
+
 	factory.getUser = function(email) {
 
 		var url = hURL+"read/user";
@@ -105,9 +225,21 @@ MMSApp.factory("UserFactory", function($http, $q) {
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			User = data;
-			deferred.resolve(User);
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				User = data;
+				deferred.resolve(User);
+			}
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
@@ -119,9 +251,21 @@ MMSApp.factory("UserFactory", function($http, $q) {
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			Users = data;
-			deferred.resolve(Users);
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				Users = data;
+				deferred.resolve(Users);
+			}
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
@@ -139,18 +283,28 @@ MMSApp.factory("UserFactory", function($http, $q) {
 		}
 
 		var deferred = $q.defer();
-		$http.get(url).success(function(data, status) {
-			if(data.email === email && data.firstName && data.lastName) {
+		$http({
+			method: "GET",
+			url: url
+		}).success(function(data, status) {
+
+			if(data.email === email) {
 				// Success
 				User.email = data.email;
-				User.firstName = data.firstName;
-				User.lastName = data.lastName;
+				deferred.resolve(User);
+			} else if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
 			} else {
 				// ERROR
 				console.log("ERROR in factory.deleteUser");
 			}
-			deferred.resolve(User);
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
@@ -174,6 +328,17 @@ MMSApp.factory("EmployeeFactory", function($http, $q) {
 
 	var Employees = [];
 
+	factory.createEmployee = function(employee) {
+		// BENÖTIGTE FELDER - FIX THIS
+		if(employee.name) {
+
+
+		} else {
+			// Error
+			console.log("Error: Es wurden nicht alle Felder ausgefüllt.");
+		}
+	};
+
 	factory.getEmployee = function(email) {
 
 		var url = hURL+"read/employee";
@@ -187,9 +352,21 @@ MMSApp.factory("EmployeeFactory", function($http, $q) {
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			Employee = data;
-			deferred.resolve(Employee);
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				Employee = data;
+				deferred.resolve(Employee);
+			}
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
@@ -201,9 +378,21 @@ MMSApp.factory("EmployeeFactory", function($http, $q) {
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			Employees = data;
-			deferred.resolve(Employees);
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				Employees = data;
+				deferred.resolve(Employees);
+			}
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
@@ -222,14 +411,24 @@ MMSApp.factory("EmployeeFactory", function($http, $q) {
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
+
 			if(data.email === email) {
+				// Success
 				Employee.email = data.email;
+				deferred.resolve(Employee);
+			} else if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
 			} else {
 				// ERROR
 				console.log("ERROR in factory.deleteEmployee");
 			}
-			deferred.resolve(Employee);
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
@@ -254,18 +453,78 @@ MMSApp.factory("EventFactory", function($http, $q) {
 	};
 	var Events = [];
 
+	factory.createEvent = function(_event) {
+		// BENÖTIGTE FELDER - FIX THIS
+		if(_event.name && _event.lecturer_email && _event.sws) {
+
+			var url = factory.checkSingularURL("create");
+			if(url.error) {
+				return url.error;
+			}
+
+			$http({
+				method: "POST",
+				url: url,
+				data: _event,
+				headers: {
+			        	"withCredentials": true,
+			        	"X-Requested-With": false
+			        }
+			}).
+				success(function(data, status, headers, config) {
+
+					if(data.error) {
+						// Error
+						console.log("Servernachricht: "+data.error.message);
+					} else if(data === "null") {
+						// Error
+						console.log("Der Server lieferte 'null' zurück.");
+					} else {
+						if(_event.name == data.name) {
+							console.log("Event wurde erstellt.");
+						} else {
+							console.log("Event wurde nicht erstellt.");
+						}
+					}
+
+				}).
+				error(function(data, status, headers, config) {
+					console.log("Error: "+data);
+				});
+
+		} else {
+			// Error
+			console.log("Error: Es wurden nicht alle Felder ausgefüllt.");
+		}
+	};
+
 	/*
 	 * getEvent: Holt ein Event mit einer bestimmten eventID vom Server
 	 */
-	factory.getEvent = function(eventID, studycourseID, moduleHandbookID, subjectID, moduleID) {
+	factory.getEvent = function(eventID) {
 
-		var url = factory.checkSingularURL("read", studycourseID, moduleHandbookID, subjectID, moduleID, eventID);
+		var url = factory.checkSingularURL("read", eventID);
+		if(url.error) {
+			return url.error;
+		}
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			Event = data;
-			deferred.resolve(Event);
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				Event = data;
+				deferred.resolve(Event);
+			}
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
@@ -274,68 +533,87 @@ MMSApp.factory("EventFactory", function($http, $q) {
 	/*
 	 * getEvents: Holt alle Events einer bestimmten Kategorie vom Server
 	 */
-	factory.getEvents = function(moduleID, subjectID, moduleHandbookID, studycourseID) {
+	factory.getEvents = function(moduleID) {
 
 		var url = hURL+"read/events";
 
-		if(studycourseID && !moduleHandbookID && !subjectID && !moduleID) {
-			url = url+"?studycourseID="+studycourseID;
-		} else if(studycourseID && moduleHandbookID && !subjectID && !moduleID) {
-			url = url+"?studycourseID="+studycourseID+"&moduleHandbookID="+moduleHandbookID;
-		} else if(studycourseID && moduleHandbookID && subjectID && !moduleID) {
-			url = url+"?studycourseID="+studycourseID+"&moduleHandbookID="+moduleHandbookID+"&subjectID="+subjectID;
-		} else if(studycourseID && !moduleHandbookID && subjectID && moduleID) {
-			url = url+"?studycourseID="+studycourseID+"&moduleHandbookID="+moduleHandbookID+"&subjectID="+subjectID+"&moduleID="+moduleID;
+		if(moduleID) {
+			url = url+"?moduleID="+moduleID;
 		}
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			Events = data; // FIX THIS
-			deferred.resolve(Events);
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				Events = data; // FIX THIS
+				deferred.resolve(Events);
+			}
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.deleteEvent = function(eventID, studycourseID, moduleHandbookID, subjectID, moduleID) {
+	factory.deleteEvent = function(eventID) {
 
-		var url = factory.checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID, moduleID, eventID);
+		var url = factory.checkSingularURL("delete", eventID);
+		if(url.error) {
+			return url.error;
+		}
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(data.eventID === eventID && data.name) {
+			console.log(data);
+			if(data.eventID === parseInt(eventID)) {
+				// Success
+				Event = {};
 				Event.eventID = data.eventID;
-				Event.name = data.name;
+			} else if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
 			} else {
 				// ERROR
 				console.log("ERROR in factory.deleteEvent");
 			}
 			deferred.resolve(Event);
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.checkSingularURL = function(method, studycourseID, moduleHandbookID, subjectID, moduleID, eventID) {
+	factory.checkSingularURL = function(method, eventID) {
 		if(method) {
 
 			var url = hURL+method+"/event";
 
-			if(studycourseID && moduleHandbookID && subjectID && moduleID && eventID) {
-				url  = url+"?studycourseID="+studycourseID+"&moduleHandbookID="+moduleHandbookID+"&subjectID="+subjectID+"&moduleID="+moduleID+"&eventID="+eventID;
-			} else if(eventID) {
+			if(eventID) {
 				url  = url+"?eventID="+eventID;
-			} else {
-				// ERROR
-				console.log("ERROR in Eventfactory.checkSingularURL");
 			}
 
 			return url;
+
 		} else {
 			// ERROR
 			console.log("ERROR in Eventfactory.checkSingularURL");
+			return {
+				error: {
+					message: "Method in checkSingularURL wasn't definded."
+				}
+			};
 		}
 	};
 	return factory;
@@ -367,45 +645,82 @@ MMSApp.factory("ModuleFactory", function($http, $q) {
 	};
 	var Modules = [];
 
-	factory.getModule = function(moduleID, studycourseID, moduleHandbookID, subjectID) {
+	factory.createModule = function(module) {
+		// BENÖTIGTE FELDER - FIX THIS
+		if(module.name) {
 
-		var url = factory.checkSingularURL("read", studycourseID, moduleHandbookID, subjectID, moduleID);
 
-		var deferred = $q.defer();
-		$http.get(url).success(function(data, status) {
-			Module = data;
-			deferred.resolve(Module);
-		}).error(function(data, status) {
-			deferred.reject(data);
-		});
-		return deferred.promise;
+		} else {
+			// Error
+			console.log("Error: Es wurden nicht alle Felder ausgefüllt.");
+		}
 	};
 
-	factory.getModules = function(subjectID, moduleHandbookID, studycourseID) {
+	factory.getModule = function(moduleID) {
 
-		var url = hURL+"read/modules";
-
-		if(studycourseID && !moduleHandbookID && !subjectID) {
-			url = url+"?studycourseID="+studycourseID;
-		} else if(studycourseID && moduleHandbookID && !subjectID) {
-			url = url+"?studycourseID="+studycourseID+"&moduleHandbookID="+moduleHandbookID;
-		} else if(studycourseID && moduleHandbookID && subjectID) {
-			url = url+"?studycourseID="+studycourseID+"&moduleHandbookID="+moduleHandbookID+"&subjectID="+subjects_subjectID;
+		var url = factory.checkSingularURL("read", moduleID);
+		if(url.error) {
+			return url.error;
 		}
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			Modules = data;
-			deferred.resolve(Modules);
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				Module = data;
+				deferred.resolve(Module);
+			}
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.deleteModule = function(moduleID, studycourseID, moduleHandbookID, subjectID) {
+	factory.getModules = function(subjectID) {
 
-		var url = factory.checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID, moduleID);
+		var url = hURL+"read/modules";
+
+		if(subjectID) {
+			url = url+"?subjectID="+subjectID;
+		}
+
+		var deferred = $q.defer();
+		$http.get(url).success(function(data, status) {
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				Modules = data;
+				deferred.resolve(Modules);
+			}
+
+		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
+			deferred.reject(data);
+		});
+		return deferred.promise;
+	};
+
+	factory.deleteModule = function(moduleID) {
+
+		var url = factory.checkSingularURL("delete", moduleID);
+		if(url.error) {
+			return url.error;
+		}
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
@@ -413,35 +728,44 @@ MMSApp.factory("ModuleFactory", function($http, $q) {
 				Module.moduleID = data.moduleID;
 				Module.name = data.name;
 				Module.subjects_subjectID = data.subjects_subjectID;
+			} else if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
 			} else {
 				// ERROR
 				console.log("ERROR in Modulefactory.deleteModule");
 			}
 			deferred.resolve(Module);
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.checkSingularURL = function(method, studycourseID, moduleHandbookID, subjectID, moduleID) {
+	factory.checkSingularURL = function(method, moduleID) {
 		if(method) {
 
 			var url = hURL+method+"/module";
 
-			if(studycourseID && moduleHandbookID && subjectID && moduleID) {
-				url  = url+"?studycourseID="+studycourseID+"&moduleHandbookID="+moduleHandbookID+"&subjectID="+subjectID+"&moduleID="+moduleID;
-			} else if(moduleID) {
+			if(moduleID) {
 				url  = url+"?moduleID="+moduleID;
-			} else {
-				// ERROR
-				console.log("ERROR in Modulefactory.checkSingularURL");
 			}
 
 			return url;
+
 		} else {
 			// ERROR
-			console.log("ERROR in Modulefactory.checkSingularURL");
+			console.log("ERROR in Eventfactory.checkSingularURL");
+
+			return {
+				error: {
+					message: "Method in checkSingularURL wasn't definded."
+				}
+			};
 		}
 	};
 	return factory;
@@ -462,43 +786,82 @@ MMSApp.factory("SubjectFactory", function($http, $q) {
 	};
 	var Subjects = [];
 
-	factory.getSubject = function(subjectID, studycourseID, moduleHandbookID) {
+	factory.createSubject = function(subject) {
+		// BENÖTIGTE FELDER - FIX THIS
+		if(subject.name) {
 
-		var url = factory.checkSingularURL("read", studycourseID, moduleHandbookID, subjectID);
 
-		var deferred = $q.defer();
-		$http.get(url).success(function(data, status) {
-			Subject = data;
-			deferred.resolve(Subject);
-		}).error(function(data, status) {
-			deferred.reject(data);
-		});
-		return deferred.promise;
+		} else {
+			// Error
+			console.log("Error: Es wurden nicht alle Felder ausgefüllt.");
+		}
 	};
 
-	factory.getSubjects = function(moduleHandbookID, studycourseID) {
+	factory.getSubject = function(subjectID) {
 
-		var url = hURL+"read/subjects";
-
-		if(studycourseID && !moduleHandbookID) {
-			url = url+"?studycourseID="+studycourseID;
-		} else if(studycourseID && moduleHandbookID) {
-			url = url+"?studycourseID="+studycourseID+"&moduleHandbookID="+moduleHandbookID;
+		var url = factory.checkSingularURL("read", subjectID);
+		if(url.error) {
+			return url.error;
 		}
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			Subjects = data;
-			deferred.resolve(Subjects);
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				Subject = data;
+				deferred.resolve(Subject);
+			}
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.deleteSubject = function(subjectID, studycourseID, moduleHandbookID) {
+	factory.getSubjects = function(moduleHandbookID) {
 
-		var url = factory.checkSingularURL("delete", studycourseID, moduleHandbookID, subjectID);
+		var url = hURL+"read/subjects";
+
+		if(moduleHandbookID) {
+			url = url+"?moduleHandbookID="+moduleHandbookID;
+		}
+
+		var deferred = $q.defer();
+		$http.get(url).success(function(data, status) {
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				Subjects = data;
+				deferred.resolve(Subjects);
+			}
+
+		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
+			deferred.reject(data);
+		});
+		return deferred.promise;
+	};
+
+	factory.deleteSubject = function(subjectID) {
+
+		var url = factory.checkSingularURL("delete", subjectID);
+		if(url.error) {
+			return url.error;
+		}
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
@@ -506,34 +869,42 @@ MMSApp.factory("SubjectFactory", function($http, $q) {
 				Subject.subjectID = data.subjectID;
 				Subject.module_handbooks_moduleHandbookID = data.module_handbooks_moduleHandbookID;
 				Subject.name = data.name;
+			} else if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
 			} else {
 				// ERROR
 				console.log("ERROR in Subjectfactory.deleteSubject");
 			}
 			deferred.resolve(Subject);
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.checkSingularURL = function(method, studycourseID, moduleHandbookID, subjectID) {
+	factory.checkSingularURL = function(method, subjectID) {
 		if(method) {
 			var url = hURL+method+"/subject";
 
-			if(studycourseID && moduleHandbookID && subjectID) {
-				url = url+"?studycourseID="+studycourseID+"&moduleHandbookID="+moduleHandbookID+"&subjectID="+subjectID;
-			} else if(subjectID) {
+			if(subjectID) {
 				url = url+"?subjectID="+subjectID;
-			} else {
-				// ERROR
-				console.log("ERROR in Subjectfactory.checkSingularURL");
 			}
 
 			return url;
 		} else {
 			// ERROR
-				console.log("ERROR in Subjectfactory.checkSingularURL");
+			console.log("ERROR in Eventfactory.checkSingularURL");
+
+			return {
+				error: {
+					message: "Method in checkSingularURL wasn't definded."
+				}
+			};
 		}
 	};
 	return factory;
@@ -555,15 +926,41 @@ MMSApp.factory("ModuleHandbookFactory", function($http, $q) {
 	};
 	var ModuleHandbooks = [];
 
-	factory.getModuleHandbook = function(moduleHandbookID, studycourseID) {
+	factory.createModuleHandbook = function(moduleHandbook) {
+		// BENÖTIGTE FELDER - FIX THIS
+		if(moduleHandbook.name) {
 
-		var url = factory.checkSingularURL("read", studycourseID, moduleHandbookID);
+
+		} else {
+			// Error
+			console.log("Error: Es wurden nicht alle Felder ausgefüllt.");
+		}
+	};
+
+	factory.getModuleHandbook = function(moduleHandbookID) {
+
+		var url = factory.checkSingularURL("read", moduleHandbookID);
+		if(url.error) {
+			return url.error;
+		}
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			ModuleHandbook = data;
-			deferred.resolve(ModuleHandbook);
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				ModuleHandbook = data;
+				deferred.resolve(ModuleHandbook);
+			}
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
@@ -579,18 +976,33 @@ MMSApp.factory("ModuleHandbookFactory", function($http, $q) {
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			ModuleHandbooks = data;
-			deferred.resolve(ModuleHandbooks);
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				ModuleHandbooks = data;
+				deferred.resolve(ModuleHandbooks);
+			}
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
 
 	};
 
-	factory.deleteModuleHandbook = function(moduleHandbookID, studycourseID) {
+	factory.deleteModuleHandbook = function(moduleHandbookID) {
 
-		var url = factory.checkSingularURL("delete", studycourseID, moduleHandbookID);
+		var url = factory.checkSingularURL("delete", moduleHandbookID);
+		if(url.error) {
+			return url.error;
+		}
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
@@ -598,34 +1010,43 @@ MMSApp.factory("ModuleHandbookFactory", function($http, $q) {
 				ModuleHandbook.moduleHandbookID = data.moduleHandbookID;
 				ModuleHandbook.studycourses_studycourseID = data.studycourses_studycourseID;
 				ModuleHandbook.name = data.name;
+			} else if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
 			} else {
 				// ERROR
 				console.log("ERROR in ModuleHandbookfactory.checkSingularURL");
 			}
 			deferred.resolve(ModuleHandbook);
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
 	};
 
-	factory.checkSingularURL = function(method, studycourseID, moduleHandbookID) {
+	factory.checkSingularURL = function(method, moduleHandbookID) {
 		if(method) {
 			var url = hURL+method+"/modulehandbook";
 
-			if(studycourseID && moduleHandbookID) {
-				url = url+"?studycourseID="+studycourseID+"&moduleHandbookID="+moduleHandbookID;
-			} else if(moduleHandbookID) {
+			if(moduleHandbookID) {
 				url = url+"?moduleHandbookID="+moduleHandbookID;
-			} else {
-				// ERROR
-				console.log("ERROR in ModuleHandbookfactory.checkSingularURL");
 			}
 
 			return url;
+
 		} else {
 			// ERROR
-			console.log("ERROR in ModuleHandbookfactory.checkSingularURL");
+			console.log("ERROR in Eventfactory.checkSingularURL");
+
+			return {
+				error: {
+					message: "Method in checkSingularURL wasn't definded."
+				}
+			};
 		}
 	};
 	return factory;
@@ -645,15 +1066,41 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 	};
 	var Studycourses = [];
 
+	factory.createStudycourse = function(studycourse) {
+		// BENÖTIGTE FELDER - FIX THIS
+		if(studycourse.name) {
+
+
+		} else {
+			// Error
+			console.log("Error: Es wurden nicht alle Felder ausgefüllt.");
+		}
+	};
+
 	factory.getStudycourse = function(studycourseID) {
 
 		var url = factory.checkSingularURL("read", studycourseID);
+		if(url.error) {
+			return url.error;
+		}
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			Studycourse = data;
-			deferred.resolve(Studycourse);
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				Studycourse = data;
+				deferred.resolve(Studycourse);
+			}
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
@@ -666,10 +1113,21 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			console.log(data);
-			Studycourses = data;
-			deferred.resolve(data);
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				Studycourses = data;
+				deferred.resolve(data);
+			}
+
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
@@ -678,6 +1136,9 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 	factory.deleteStudycourse = function(studycourseID) {
 
 		var url = factory.checkSingularURL("delete", studycourseID);
+		if(url.error) {
+			return url.error;
+		}
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
@@ -685,12 +1146,19 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 				Studycourse.studycourseID = data.studycourseID;
 				Studycourse.name = data.name;
 				Studycourse.archived = data.archived;
+			} else if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
 			} else {
 				// ERROR
 				console.log("ERROR in Studycoursefactory.deleteStudycourse");
 			}
 			deferred.resolve(Studycourse);
 		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
 		return deferred.promise;
@@ -698,19 +1166,24 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 
 	factory.checkSingularURL = function(method, studycourseID) {
 		if(method) {
+
 			var url = hURL+method+"/studycourse";
 
 			if(studycourseID) {
 				url = url+"?studycourseID="+studycourseID;
-			} else {
-				// ERROR
-				console.log("ERROR in Studycoursefactory.checkSingularURL");
 			}
 
 			return url;
+
 		} else {
 			// ERROR
-			console.log("ERROR in Studycoursefactory.checkSingularURL");
+			console.log("ERROR in Eventfactory.checkSingularURL");
+
+			return {
+				error: {
+					message: "Method in checkSingularURL wasn't definded."
+				}
+			};
 		}
 	};
 	return factory;

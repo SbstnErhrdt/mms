@@ -12,23 +12,33 @@
       <!--Body content-->
 	    <h1>Studiengänge</h1>
 		<p class="lead"> Hier finden Sie alle Studiengänge der Universität Ulm.</p>
-
+		<div class="input-prepend pull-left">
+	      <span class="add-on">Filter:</span>
+	      <input id="prependedInput" type="text" ng-model="search.name">
+	    </div>
+		<a href="#/create/studycourse" class="btn btn-success pull-left" style="margin-left: 10px;"><i class="icon-edit icon-white"></i> Neuen Studiengang erstellen</a>
+	    <div style="clear: both;"></div>
 		<hr />
 	    <table class="table">
 	    	<thead>
 				<tr>
-					<td>#</td>
-					<td>Name</td>
-					<td>Archiviert</td>
-					<td>Aktion</td>
+					<th>#</th>
+					<th>Name</th>
+					<th>Archiviert</th>
+					<th>Aktion</th>
 				</tr>
 	    	</thead>
 	    	<tbody>
-			<tr ng-repeat="studycourse in studycourses">
+			<tr ng-repeat="studycourse in studycourses | filter: search">
 				<td>{{studycourse.studycourseID}}</td>
-				<td>{{studycourse.name}}</td>
-				<td>{{studycourse.archived}}</td>
-				<td><a href="#/delete/studycourse?studycourseID={{studycourse.studycourseID}}"><button style="margin-left: 5px;" class="btn btn-mini btn-danger" type="button">löschen</button></a></td>
+				<td><a href="#/show/studycourse?studycourseID={{studycourse.studycourseID}}">{{studycourse.name}}</a></td>
+				<td><span class="label" ng-hide="studycourse.archived">nicht archiviert</span><span class="label label-warning" ng-show="studycourse.archived">archiviert</span></td>
+				<td>
+					<a href="#/delete/studycourse?studycourseID={{studycourse.studycourseID}}" class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+					<a href="#/update/studycourse?studycourseID={{studycourse.studycourseID}}" class="btn btn-mini btn-warning"><i class="icon-refresh icon-white"></i> bearbeiten</a>
+
+
+				</td>
 			</tr>
 	    	</tbody>
 		</table>

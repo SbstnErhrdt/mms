@@ -1,0 +1,103 @@
+<!--
+ÜBERSICHT DER ATTRIBUTE
+
+DIESE MÜSSEN DARGESTELLT WERDEN
+
+var Module = {
+        duration: "Number",
+        moduleID: "Number",
+        subjects_subjectID: "Number",
+        name: "String",
+        token: "String",
+        englishTitle: "String",
+        lp: "Number",
+        sws: "Number",
+        language: "String",
+        director_email: "String",
+        requirement: "String",
+        learningTarget: "String",
+        content: "String",
+        literature: "String", // MGL: Array?!
+        archived: "boolean"
+};
+
+var Event = {
+    eventID: "Number",
+    modules_moduleID: "Number",
+    name: "String",
+    sws: "Number",
+    lecturer_email: "String",
+    archived: "boolean"
+};
+
+-->
+<div class="container-fluid">
+    <div class="row-fluid">
+        <ul class="span 12 breadcrumb">
+            <li><a href="#/home">Home</a> <span class="divider">/</span></li>
+            <li><a href="#/home">Studiengang</a> <span class="divider">/</span></li>
+            <li><a href="#/home">Fach</a> <span class="divider">/</span></li>
+            <li class="active">{{module.name}}</li>
+        </ul>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <!--Body content-->
+            <h1>{{module.name}}</h1>
+            <p class="lead">{{module.token}}</p>
+        </div>
+    </div>
+    <div class="hero-unit">
+        <div class="row-fluid">
+            <dl class="dl-horizontal span6">
+                <dt>Dauer</dt>
+                <dd>{{module.duration}}</dd>
+                <dt>englischer Titel</dt>
+                <dd>{{module.englishTitle}}</dd>
+                <dt>LP</dt>
+                <dd>{{module.lp}}</dd>
+                <dt>SWS</dt>
+                <dd>{{module.SWS}}</dd>
+                <dt>Sprache</dt>
+                <dd>{{module.language}}</dd>
+            </dl>
+            <dl class="dl-horizontal span6">
+                <dt>director_email</dt>
+                <dd>{{module.director_email}}</dd>
+                <dt>requirement</dt>
+                <dd>{{module.requirement}}</dd>
+                <dt>learningTarget</dt>
+                <dd>{{module.learningTarget}}</dd>
+                <dt>content</dt>
+                <dd>{{module.content}}</dd>
+                <dt>literature</dt>
+                <dd>{{module.literature}}</dd>
+            </dl>
+        </div>
+    </div>
+    <h4>Veranstaltungen</h4>
+    <div class="row-fluid">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <td>Name</td>
+                <td>SWS</td>
+                <td>Dozent</td>
+                <td>Ort</td>
+                <td>Zeit</td>
+            </tr>
+            </thead>
+            <tbody ng-repeat="event in events">
+            <tr>
+                <td><a href="#/show/event?eventID={{event.eventID}}">{{event.name}}</a></td>
+                <td>{{event.sws}}</td>
+                <td>{{event.lecturer_email}}</a></td>
+                <td>ORT FIX THIS!!!</td>
+                <td>ZEIT FIX THIS!!!</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="container-fluid">
+    <div class="row-fluid">
+        <ul class="span 12 breadcrumb">
+            <li><a href="#/home">Home</a> <span class="divider">/</span></li>
+            <li class="active">Veranstaltung erstellen</li>
+        </ul>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row-fluid">
+
+			<div class="span12">
+	            <h1>Veranstaltung erstellen</h1>
+	            <p class="lead">Hier k&ouml;nnen sie eine Veranstaltung erstellen</p>
+	            <form>
+				 	<div class="row-fluid">
+						<fieldset class="span4">
+							<legend>Veranstaltung-Daten</legend>
+						    <label>Name</label>
+						    <input type="text" ng-model="event.name" placeholder="Fach">
+						    <span class="help-block">Bitte w&auml;len Sie eine Veranstaltungsname.</span>
+
+						    <label>Semesterwochenstunden</label>
+						    <input type="text" ng-model="event.sws" placeholder="4" maxlength="4">
+						    <span class="help-block">Bitte w&auml;len Sie eine Stundenanzahl.</span>
+
+						    <label>Dozent</label>
+						    <select>
+							  <option>Hans Peter Reck</option>
+							  <option>Franz Hauck</option>
+							  <option>Kargl</option>
+							  <option>Prof. Dr. Dr. Peter Dadam</option>
+							  <option>Uwe</option>
+							  <option>OGB</option>
+							</select>
+						    <span class="help-block">Bitte w&auml;len Sie den Dozenten.</span>
+
+						    <label>Beschreibung</label>
+						    <textarea rows="5" ng-model="event.content" placeholder="Beschreibung der Veranstaltung"></textarea>
+						    <span class="help-block">Bitte w&auml;len Sie eine Beschreibung der Veranstaltung.</span>
+
+						</fieldset>
+				 	</div>
+				 	<div class="row-fluid">
+
+						<div class="span12">
+							<hr />
+							<input type="submit" name="submit" class="btn btn-success" value="Veranstaltung erstellen" />
+						</div>
+				 	</div>
+	             </form>
+        	</div>
+
+    </div>
+</div>

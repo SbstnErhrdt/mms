@@ -1,0 +1,36 @@
+<div class="container-fluid">
+	<div class="row-fluid">
+		<ul class="span 12 breadcrumb">
+			<li><a href="#/home">Home</a> <span class="divider">/</span></li>
+			<li class="active">Benutzer</li>
+		</ul>
+	</div>
+</div>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+		<div class="well sidebar-nav">
+			<ul class="nav nav-list">
+				<li class="nav-header">Veranstaltungen</li>
+				<li><a href="">Benutzer</a><li>
+				<li><a href="">Mitarbeiter</a><li>
+				<li><a href="">Administratoren</a><li>
+			</ul>
+		</div><!--/.well -->
+	</div><!--/span-->
+	<div class="span7">
+		<!--Body content-->
+		<h1>{{user.email}}</h1>
+		<p>
+			{{user.title}} {{user.firstName}} {{user.lastName}}
+		</p>
+		<p>
+			{{user.email}}
+		</p>
+		<p>
+			{{user.graduation}}
+		</p>
+
+	</div>
+  </div>
+</div>

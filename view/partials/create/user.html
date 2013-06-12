@@ -1,0 +1,73 @@
+<!--
+ÜBERSICHT DER ATTRIBUTE
+
+DIESE MÜSSEN ALS INPUT BESCHREIBTBAR SEIN
+
+var User = {
+		firstName: "String",
+		lastName: "String",
+		title: "String",
+		email: "String",
+		graduation: "String",
+		matricNum: "Number",
+		semester: "Number"
+};
+
+
+SONDERFALL PASSWORT!!!
+-->
+<div class="container-fluid">
+	<div class="row-fluid">
+		<ul class="span 12 breadcrumb">
+			<li><a href="#/home">Home</a> <span class="divider">/</span></li>
+			<li class="active">Benutzer</li>
+		</ul>
+	</div>
+</div>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+		<div class="well sidebar-nav">
+			<ul class="nav nav-list">
+				<li class="nav-header">Veranstaltungen</li>
+				<li><a href="">Benutzer</a><li>
+				<li><a href="">Mitarbeiter</a><li>
+				<li><a href="">Administratoren</a><li>
+			</ul>
+		</div><!--/.well -->
+	</div><!--/span-->
+	<div class="span7">
+		<!--Body content-->
+		<h1>Benutzer erstellen</h1>
+		<p class="lead"> Hier k&ouml;nnen Sie einen Benutzer erstellen.</p>
+
+			<form>
+				  <fieldset>
+				    <legend>Benutzer Daten</legend>
+				    <label>Name</label>
+				    <input type="text" name="firstName" placeholder="Vorname">
+				    <span class="help-block">Bitte w&auml;len Sie einen Vornamen.</span>
+
+				    <label>Nachname</label>
+				    <input type="text" name="lastName" placeholder="Nachname">
+				    <span class="help-block">Bitte w&auml;len Sie einen Vornamen.</span>
+
+				    <label>Abschluss w&auml;hlen</label>
+				    <select>
+					  <option>Bachelor</option>
+					  <option>Master</option>
+					  <option>Diplom</option>
+					  <option>Lehramt</option>
+					</select>
+					<span class="help-block">Bitte w&auml;len Sie einen Typ.</span>
+
+
+				  </fieldset>
+				  <hr />
+				  <input type="submit" name="submit" class="btn btn-success" value="Benutzer erstellen" />
+
+			</form>
+
+	</div>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<!--
+ÜBERSICHT DER ATTRIBUTE
+
+DIESE MÜSSEN DARGESTELLT WERDEN
+
+var Subject = {
+	subjectID: "Number",
+	module_handbooks_moduleHandbookID: "Number",
+	name: "String",
+	archived: "boolean"
+};
+
+var Module = {
+		duration: "Number",
+		moduleID: "Number",
+		subjects_subjectID: "Number",
+		name: "String",
+		token: "String",
+		englishTitle: "String",
+		lp: "Number",
+		sws: "Number",
+		language: "String",
+		director_email: "String",
+		requirement: "String",
+		learningTarget: "String",
+		content: "String",
+		literature: "String", // MGL: Array?!
+		archived: "boolean"
+};
+
+-->
+<div class="container-fluid">
+	<div class="row-fluid">
+		<ul class="span 12 breadcrumb">
+		<li><a href="#/home">Home</a> <span class="divider">/</span></li>
+		<li><a href="#/home">Studiengang</a> <span class="divider">/</span></li>
+		<li><a href="#/home">Modulhandbuch</a> <span class="divider">/</span></li>
+		<li class="active">{{subject.name}}</li>
+		</ul>
+	</div>
+</div>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="alert alert-warning">
+				<strong>Achtung!</strong>
+				<p>Dieses Fach ist archiviert.</p>
+			</div>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12">
+			<h1>{{subject.name}}</h1>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12">
+			<h2>Alle Module von SUBJECT</h2>
+			<ul ng-repeat="module in modules">
+				<li><a href="#/show/module?moduleID={{module.moduleID}}">{{module.name}}</a></li>
+			</ul>
+		</div>
+
+	</div>
+</div>

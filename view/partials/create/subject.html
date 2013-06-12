@@ -1,0 +1,40 @@
+<div class="container-fluid">
+    <div class="row-fluid">
+        <ul class="span 12 breadcrumb">
+            <li><a href="#/home">Home</a> <span class="divider">/</span></li>
+            <li class="active">Fach erstellen</li>
+        </ul>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row-fluid">
+
+			<div class="span12">
+	            <h1>Fach erstellen</h1>
+	            <p class="lead">Hier k&ouml;nnen sie ein Fach erstellen</p>
+	            <form>
+				 	<div class="row-fluid">
+						<fieldset class="span4">
+							<legend>Fach-Daten</legend>
+						    <label>Name</label>
+						    <input type="text" ng-model="subject.name" placeholder="Fach">
+						    <span class="help-block">Bitte w&auml;len Sie einen Fachnamen.</span>
+
+						    <label>Beschreibung</label>
+						    <textarea rows="5" ng-model="subject.content" placeholder="Beschreibung des Fachs"></textarea>
+						    <span class="help-block">Bitte w&auml;len Sie eine Beschreibung des Fachs.</span>
+
+						</fieldset>
+				 	</div>
+				 	<div class="row-fluid">
+
+						<div class="span12">
+							<hr />
+							<input type="submit" name="submit" class="btn btn-success" value="Benutzer erstellen" />
+						</div>
+				 	</div>
+	             </form>
+        	</div>
+
+    </div>
+</div>

@@ -1,0 +1,55 @@
+<!--
+ÜBERSICHT DER ATTRIBUTE
+
+DIESE MÜSSEN DARGESTELLT WERDEN
+
+var ModuleHandbook = {
+		moduleHandbookID: "Number",
+		studycourses_studycourseID: "Number",
+		name: "String",
+		semester: "Number",
+		archived: "boolean"
+};
+
+var Subject = {
+	subjectID: "Number",
+	module_handbooks_moduleHandbookID: "Number",
+	name: "String",
+	archived: "boolean"
+};
+
+-->
+<div class="container-fluid">
+	<div class="row-fluid">
+		<ul class="span 12 breadcrumb">
+			<li><a href="#/home">Home</a> <span class="divider">/</span></li>
+			<li><a href="#/STUDYCOURSE">Studycourse</a> <span class="divider">/</span></li>
+			<li class="active">{{moduleHandbook.name}}</li>
+		</ul>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="alert alert-warning">
+				<strong>Achtung!</strong>
+				<p>Dieses Modulhandbuch ist archiviert.</p>
+			</div>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12">
+			<h1>{{moduleHandbook.name}}</h1>
+			<h3>{{moduleHandbook.semester}}</h3>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12">
+			<h2>Alle Subjects von MODULHANDBOOK</h2>
+			<ul ng-repeat="subject in subjects">
+				<li><a href="#/show/subject?subjectID={{subject.subjectID}}">{{subject.name}}</a></li>
+			</ul>
+		</div>
+	</div>
+</div>

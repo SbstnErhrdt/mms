@@ -1,6 +1,6 @@
 <div class="container-fluid">
 	<div class="row-fluid">
-		<ul class="span 12 breadcrumb">
+		<ul class="span12 breadcrumb">
 			<li><a href="#/home">Home</a> <span class="divider">/</span></li>
 			<li class="active">Benutzer</li>
 		</ul>
@@ -11,14 +11,14 @@
 		<div class="span2">
 		<div class="well sidebar-nav">
 			<ul class="nav nav-list">
-				<li class="nav-header">Veranstaltungen</li>
+				<li class="nav-header">Benutzerrollen</li>
 				<li><a href="">Benutzer</a><li>
 				<li><a href="">Mitarbeiter</a><li>
 				<li><a href="">Administratoren</a><li>
 			</ul>
 		</div><!--/.well -->
 	</div><!--/span-->
-	<div class="span7">
+	<div class="span10">
 		<!--Body content-->
 		<h1>Benutzer</h1>
 		<p class="lead"> Hier finden Sie alle Benutzer des MMS</p>
@@ -27,18 +27,19 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<td>Email</td>
-					<td>Vorname</td>
-					<td>Nachname</td>
-					<td>Aktion</td>
+					<th>Email</th>
+					<th>Vorname</th>
+					<th>Nachname</th>
+					<th>Aktion</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="user in users">
-					<td>{{user.email}}</td>
+					<td><a href="#/show/user?email={{user.email}}">{{user.email}}</a></td>
 					<td>{{user.firstName}}</td>
 					<td>{{user.lastName}}</td>
-					<td><a href="#/delete/user?email={{user.email}}"><button style="margin-left: 5px;" class="btn btn-mini btn-danger" type="button">löschen</button></a></td>
+					<td><a href="#/delete/user?email={{user.email}}"class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+						<a href="#/update/user?email={{user.email}}" class="btn btn-mini btn-warning"><i class="icon-refresh icon-white"></i> bearbeiten</a></td>
 				</tr>
 			</tbody>
 		</table>

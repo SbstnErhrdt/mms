@@ -5,43 +5,40 @@
 			<li class="active">Module</li>
 		</ul>
 	</div>
-</div>
-<div class="container-fluid">
 	<div class="row-fluid">
-		<div class="span2">
-		<div class="well sidebar-nav">
-			<ul class="nav nav-list">
-				<li class="nav-header">Fächer</li>
-				<li ng-repeat="subject in subjects">
-					<a href="#/show/modules?subjectID={{subject.subjectID}}">{{subject.name}}</a>
-				</li>
-			</ul>
-		</div><!--/.well -->
-	</div><!--/span-->
-	<div class="span7">
-		<!--Body content-->
-		<h1>Module</h1>
-		<p class="lead"> Hier finden Sie alle Module der Universität Ulm</p>
+		<div class="span12">
+			<!--Body content-->
+			<h1>Module</h1>
+			<p class="lead"> Hier finden Sie alle Module der Universität Ulm</p>
+			<div class="input-prepend pull-left">
+		      <span class="add-on">Filter:</span>
+		      <input id="prependedInput" type="text" ng-model="search.name">
+		    </div>
+			<a href="#/create/module" class="btn btn-success pull-left" style="margin-left: 10px;"><i class="icon-edit icon-white"></i> Neues Modulhandbuch erstellen</a>
+		    <div style="clear: both;"></div>
+			<hr />
+			<table class="table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Name</th>
+						<th>Archiviert</th>
+						<th>Aktion</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="module in modules">
+						<td>{{module.moduleID}}</td>
+						<td><a href="#/show/module?moduleID={{module.moduleID}}">{{module.name}}</a></td>
+						<td><span class="label" ng-hide="module.archived">nicht archiviert</span><span class="label label-warning" ng-show="module.archived">archiviert</span></td>
+						<td>
+							<a href="#/delete/module?moduleID={{module.moduleID}}"class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+							<a href="#/update/module?moduleID={{module.moduleID}}" class="btn btn-mini btn-warning"><i class="icon-refresh icon-white"></i> bearbeiten</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
-		<hr />
-		<table class="table">
-			<thead>
-				<tr>
-					<td>#</td>
-					<td>Name</td>
-					<td>Archiviert</td>
-					<td>Aktion</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="module in modules">
-					<td>{{module.moduleID}}</td>
-					<td>{{module.name}}</td>
-					<td>{{module.archived}}</td>
-					<td><a href="#/delete/module?moduleID={{module.moduleID}}"><button style="margin-left: 5px;" class="btn btn-mini btn-danger" type="button">löschen</button></a></td>
-				</tr>
-			</tbody>
-		</table>
 	</div>
-  </div>
 </div>
