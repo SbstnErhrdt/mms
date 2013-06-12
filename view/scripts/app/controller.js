@@ -4,19 +4,8 @@
 	I DREH EICH OIGAHENDIG S KNICK ROM A WENN IH
 */
 
-function activeUserCtrl($scope, $cookies, ActiveUserFactory) {
-	if($cookies['JSESSIONID']) {
-		console.log("DEBUG: loged in");
-		$scope.activeUser = ActiveUserFactory.getActiveUser();
-		console.log(ActiveUserFactory.getActiveUser());
-	} else {
-		console.log("DEBUG: NOT loged in");
-		ActiveUserFactory.setActiveUser({});
-		$scope.activeUser = {};
-	}
-}
+function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 
-function homeCtrl($scope, $http, $cookies, $location, ActiveUserFactory) {
 	$scope.login = function() {
 		if($scope.email && $scope.password) {
 			$http({
@@ -38,7 +27,6 @@ function homeCtrl($scope, $http, $cookies, $location, ActiveUserFactory) {
 		        	} else {
 		        		if(data[1].jsessionID) {
 		        			$cookies.JSESSIONID = data[1].jsessionID;
-		        			ActiveUserFactory.setActiveUser(data[0]);
 		        			$location.path("/overview");
 		        		} else {
 		        			// Error
@@ -55,6 +43,24 @@ function homeCtrl($scope, $http, $cookies, $location, ActiveUserFactory) {
 			console.log("Es wurden nicht alle Felder ausgefüllt.");
 		}
 	};		
+
+	if($cookies['JSESSIONID']) {
+		console.log("DEBUG: loged in");
+
+		ActiveUserFactory.getActiveUser().then(function(activeUser) {
+			$scope.activeUser = activeUser;
+		}, function(error) {
+			console.log("Error: "+error);
+		});
+	} else {
+		console.log("DEBUG: NOT loged in");
+		ActiveUserFactory.setActiveUser({});
+		$scope.activeUser = {};
+	}
+}
+
+function homeCtrl($scope, $http, $cookies, $location, ActiveUserFactory) {
+	
 }
 
 function overviewCtrl($scope) {
@@ -99,22 +105,12 @@ function showStudycourseCtrl($scope, $routeParams, StudycourseFactory, ModuleHan
 
 function deleteStudycourseCtrl($scope, $routeParams, $location, StudycourseFactory) {
 	StudycourseFactory.deleteStudycourse($routeParams.studycourseID).then(function(studycourse) {
-		if($routeParams.studycourseID === studycourse.studycourseID) {
-			StudycourseFactory.getStudycourses().then(function(studycourses) {
-				for(var i = 0; i < studycourses.length; i++) {
-					if(studycourses[i].studycourseID === $routeParams.studycourseID) {
-						studycourses.splice(i, 1);
-						break;
-					}
-				}
-				$location.url("/show/studycourses");
-				$scope.studycourses = studycourses;
-			}, function(error) {
-				console.log("Error: "+error);
-			});
+		if(parseInt($routeParams.studycourseID) === studycourse.studycourseID) {
+			$location.path("/show/studycourses");
 		} else {
 			// ERROR
 			console.log("Error: Couldn't delete Studycourse");
+			$location.path("/show/studycourses");
 		}
 	}, function(error) {
 		console.log("Error: "+error);
@@ -159,22 +155,12 @@ function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, Sub
 
 function deleteModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandbookFactory) {
 	ModuleHandbookFactory.deleteModuleHandbook($routeParams.modulehandbookID).then(function(moduleHandbook) {
-		if($routeParams.modulehandbookID === moduleHandbook.moduleHandbookID) {
-			ModuleHandbookFactory.getModuleHandbooks().then(function(moduleHandbooks) {
-				for(var i = 0; i < moduleHandbooks.length; i++) {
-					if(moduleHandbooks[i].modulehandbookID === $routeParams.modulehandbookID) {
-						moduleHandbooks[i].splice(i, 1);
-						break;
-					}
-				}
-				$location.url("/show/modulehandbooks");
-				$scope.moduleHandbooks = moduleHandbooks;
-			}, function(error) {
-				console.log("Error: "+error);
-			});
+		if(parseInt($routeParams.modulehandbookID) === moduleHandbook.moduleHandbookID) {
+			$location.url("/show/modulehandbooks");
 		} else {
 			// ERROR
 			console.log("Error: Couldn't delete Modulehandbook");
+			$location.url("/show/modulehandbooks");
 		}
 	}, function(error) {
 		console.log("Error: "+error);
@@ -218,22 +204,12 @@ function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory) {
 
 function deleteSubjectCtrl($scope, $routeParams, $location, SubjectFactory) {
 	SubjectFactory.deleteSubject($routeParams.subjectID).then(function(subject) {
-		if($routeParams.subjectID === subject.subjectID) {
-			SubjectFactory.getSubjects().then(function(subjects) {
-				for(var i = 0; i < subjects.length; i++) {
-					if(subjects[i].subjectID === $routeParams.subjectID) {
-						subjects.splice(i, 1);
-						break
-					}
-				}
-				$location.url("/show/subjects");
-				$scope.subjects = subjects;
-			}, function(error) {
-				console.log("Error: "+error);
-			});
+		if(parseInt($routeParams.subjectID) === subject.subjectID) {
+			$location.path("/show/subjects");
 		} else {
 			// ERROR
 			console.log("Error: Couldn't delete Subject");
+			$location.path("/show/subjects");
 		}
 	}, function(error) {
 		console.log("Error: "+error);
@@ -282,6 +258,7 @@ function deleteModuleCtrl($scope, $routeParams, $location, ModuleFactory) {
 		} else {
 			// ERROR
 			console.log("Error: Couldn't delete Module");
+			$location.path("/show/modules");
 		}
 	}, function(error) {
 		console.log("Error: "+error);
@@ -318,16 +295,29 @@ function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory) {
 	}
 }
 
-function createEventCtrl($scope, EventFactory) {
+function createEventCtrl($scope, $location, EventFactory, ModuleFactory) {
+
+	// Laden
+	ModuleFactory.getModules().then(function(modules) {
+		$scope.modules = modules;
+	}, function(error) {
+		console.log("Error: "+error);
+	});
+
+	// Abschicken
 	$scope.createEvent = function() {
+
+
 		var _event = {
-			moduleIDs: [2],
-			name: "Türsteherrei",
-			sws: 3,
-			lecturer_email: "Harkan@Oehmer.de"
+			moduleIDs: [parseInt($scope.event.moduleID.split("-")[0])],
+			name: $scope.event.name,
+			sws: $scope.event.sws,
+			lecturer_email: $scope.event.lecturer
 		};
-		console.log(_event);
+		
+
 		EventFactory.createEvent(_event);
+		$location.path("/show/events");
 	};
 }
 
@@ -339,6 +329,7 @@ function deleteEventCtrl($scope, $routeParams, $location, EventFactory) {
 		} else {
 			// ERROR
 			console.log("Error: Couldn't delete Event");
+			$location.path("/show/events");
 		}
 	}, function(error) {
 		console.log("Error: "+error);
@@ -376,6 +367,7 @@ function deleteUserCtrl($scope, $routeParams, $location, UserFactory) {
 		} else {
 			// ERROR
 			console.log("Error: Couldn't delete User");
+			$location.path("/show/users");
 		}
 	}, function(error) {
 		console.log("Error: "+error);

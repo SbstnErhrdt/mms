@@ -23,6 +23,23 @@
 	</head>
 
 	<body ng-controller="activeUserCtrl">
+		<div id="loginBar" class="loginBar">
+			<h5>Login</h5>
+			<div>
+				<form>
+					<label class="control-label" for="inputPassword">Password</label>
+					<input type="text" id="inputEmail" placeholder="Email" ng-model="email" required>
+					<label class="control-label" for="inputPassword">Password</label>
+					<input type="password" id="inputPassword" placeholder="Password" ng-model="password" required><br />
+					<label class="checkbox">
+			        <input type="checkbox"> Remember me
+					</label>
+					<button class="btn btn-medium" type="button" ng-click="login()">Login</button>
+				    <hr />
+				    <p> Noch nicht registriert ? <a id="regi" href="#">Hier</a> registrieren. </p>
+				</form>
+			</div>
+		</div>
 		<div ng-controller="navigationCtrl" class="navbar navbar-inverse navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container-fluid">
@@ -58,6 +75,9 @@
 								{{activeUser.fistName}}
 								<a href="#" ng-click="logout()">Logout</a>
 							</li>
+							<li>
+								<a href="#" id="loginClick">Login</a>
+							</li>
 						</ul>
 					</div><!--/.nav-collapse -->
 				</div>
@@ -91,5 +111,23 @@
 
 	<script type="text/javascript" src="scripts/app/app.js"></script>
 	<script type="text/javascript" src="scripts/app/controller.js"></script>
+
+	<script type="text/javascript">
+		var i = 0;
+
+
+			$('#loginClick').click(function() {
+				if (i % 2 === 0) {
+					i++;
+					$('#loginBar').animate({right: "0%"});
+				 } else {
+				 	i++;
+				 	$('#loginBar').animate({right: "-30%"});
+				 }
+		  	});
+
+
+	</script>
+
 	</body>
 </html>

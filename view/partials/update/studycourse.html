@@ -2,7 +2,7 @@
     <div class="row-fluid">
         <ul class="span 12 breadcrumb">
             <li><a href="#/home">Home</a> <span class="divider">/</span></li>
-            <li class="active">Studienang erstellen</li>
+            <li class="active">{{studycourse.name}} bearbeiten</li>
         </ul>
     </div>
 </div>
@@ -17,11 +17,11 @@
 						<fieldset class="span4">
 							<legend>Studienang-Daten</legend>
 						    <label>Name*</label>
-						    <input type="text" ng-model="studycourse.name" placeholder="Studiengang" required>
+						    <input type="text" ng-model="studycourse.name" required>
 						    <span class="help-block">Bitte w&auml;len Sie einen Studienangnamen.</span>
 
 						    <label>Beschreibung</label>
-						    <textarea rows="5" ng-model="studycourse.content" placeholder="Beschreibung des Studiengangs"></textarea>
+						    <textarea rows="5" ng-model="studycourse.content"></textarea>
 						    <span class="help-block">Bitte w&auml;len Sie eine Beschreibung des Studiengangs.</span>
 
 						</fieldset>

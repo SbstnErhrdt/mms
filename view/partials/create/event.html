@@ -16,16 +16,22 @@
 				 	<div class="row-fluid">
 						<fieldset class="span4">
 							<legend>Veranstaltung-Daten</legend>
-						    <label>Name</label>
-						    <input type="text" ng-model="event.name" placeholder="Fach">
+						    <label>Name*</label>
+						    <input type="text" ng-model="event.name" placeholder="Fach" required>
 						    <span class="help-block">Bitte w&auml;len Sie eine Veranstaltungsname.</span>
+
+						    <label>Zugehöriges Modul*</label>
+						    <select ng-model="event.moduleID">
+							  	<option ng-repeat="module in modules">{{module.moduleID}} - {{module.name}}</option>
+							</select>
+						    <span class="help-block">Bitte w&auml;len Sie den Dozenten.</span>
 
 						    <label>Semesterwochenstunden</label>
 						    <input type="text" ng-model="event.sws" placeholder="4" maxlength="4">
 						    <span class="help-block">Bitte w&auml;len Sie eine Stundenanzahl.</span>
 
 						    <label>Dozent</label>
-						    <select>
+						    <select ng-model="event.lecturer">
 							  <option>Hans Peter Reck</option>
 							  <option>Franz Hauck</option>
 							  <option>Kargl</option>
@@ -45,7 +51,7 @@
 
 						<div class="span12">
 							<hr />
-							<input type="submit" name="submit" class="btn btn-success" value="Veranstaltung erstellen" />
+							<input ng-click="createEvent()" type="submit" name="submit" class="btn btn-success" value="Veranstaltung erstellen" />
 						</div>
 				 	</div>
 	             </form>

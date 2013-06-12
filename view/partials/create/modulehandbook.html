@@ -17,13 +17,13 @@
 				 	<div class="row-fluid">
 						<fieldset class="span4">
 							<legend>Modulhandbuch-Daten</legend>
-						    <label>Name</label>
-						    <input type="text" ng-model="modulehandbook.name" placeholder="Studiengang">
-						    <span class="help-block">Bitte w&auml;len Sie einen Studienangnamen.</span>
+						    <label>Name*</label>
+						    <input type="text" ng-model="modulehandbook.name" placeholder="Modulhandbuch" required>
+						    <span class="help-block">Bitte w&auml;len Sie einen Modulhandbuchnamen.</span>
 
 						    <label>Beschreibung</label>
-						    <textarea rows="5" ng-model="modulehandbook.content" placeholder="Beschreibung des Modulhandbuch"></textarea>
-						    <span class="help-block">Bitte w&auml;len Sie eine Beschreibung des Studiengangs.</span>
+						    <textarea rows="5" ng-model="modulehandbook.content" placeholder="Beschreibung des Modulhandbuchs"></textarea>
+						    <span class="help-block">Bitte w&auml;len Sie eine Beschreibung das Modulhandbuch.</span>
 
 						</fieldset>
 				 	</div>
