@@ -552,7 +552,7 @@ public class UserDbController extends DbController {
 	public boolean verifyUserHash(String email, String hash) {
 		
 		String query = "SELECT * FROM user_hashes " +
-				"WHERE users_email=? AND " +
+				"WHERE users_email=? AND "+
 				"hash=?;";
 		
 		System.out.println(query);
@@ -560,7 +560,7 @@ public class UserDbController extends DbController {
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
-			
+		
 			ps.setString(1, email);
 			ps.setString(2, hash);
 			

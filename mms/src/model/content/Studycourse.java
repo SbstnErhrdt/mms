@@ -1,5 +1,7 @@
 package model.content;
 
+import util.Utilities;
+
 public class Studycourse extends Content {
 	
 	private int studycourseID, current_moduleHandbook;
@@ -18,13 +20,13 @@ public class Studycourse extends Content {
 	
 	@Override
 	public String toValues() {
-		String value = arrayToString(toValuesArray());
+		String value = Utilities.arrayToString(toValuesArray());
 		return value;
 	}
 
 	@Override
 	public String toValueNames() {
-		String value = arrayToString(toValueNamesArray());
+		String value = Utilities.arrayToString(toValueNamesArray());
 		return value;
 	}
 	

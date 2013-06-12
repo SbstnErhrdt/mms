@@ -3,6 +3,8 @@ package model.content;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.Utilities;
+
 public class Subject extends Content {
 
 	/*	DATABASE
@@ -12,7 +14,6 @@ public class Subject extends Content {
 	 *  archived bool
 	 */
 		
-	private List<Module> modules = new ArrayList<Module>();
 	private int subjectID, moduleHandbooks_moduleHandbookID, studycourses_studycourseID;
 	
 	
@@ -34,47 +35,17 @@ public class Subject extends Content {
 	public Subject(int subjectID) {
 		this.subjectID = subjectID;
 	}
-
-
-	// Modules
-	public List<Module> getModules(Subject subject) {		
-		return this.modules;		
-	}
-	
-	public void setModules(List<Module> modules) {
-		this.modules = modules;
-	}
-	
-	// MODULES
-	public List<Module> getModulList() {
-		return modules;
-	}
-	
-	public void setEventList(List<Module> modules ) {
-		this.modules = modules;
-	}
-	// ADD MODULE
-	public void addModule(Module module) {
-		modules.add(module);
-	}
-	// REMOVE MODULES
-	public void removeModule(Module module) {
-		modules.remove(module);
-	}
-	
-	
-	
 	
 	@Override
 	public String toValues() {
-		String value = arrayToString(toValuesArray());
+		String value = Utilities.arrayToString(toValuesArray());
 		return value;
 	}
 
 	
 	@Override
 	public String toValueNames() {
-		String value = arrayToString(toValueNamesArray());
+		String value = Utilities.arrayToString(toValueNamesArray());
 		return value;
 	}
 

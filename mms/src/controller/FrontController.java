@@ -60,6 +60,7 @@ public class FrontController extends HttpServlet {
 		response.setHeader("Access-Control-Allow-Origin", "http://sopra.ex-studios.net");
 		response.setHeader("Access-Control-Allow-Headers", "accept, origin, x-requested-with, content-type");
 		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setHeader("Access-Control-Max-Age", "15");
 		response.setHeader("Content-Type", "charset=utf-8");
 	
@@ -67,7 +68,7 @@ public class FrontController extends HttpServlet {
 			if(!userRoutes.verifyUserHash(request, response)) {
 				System.out.println("no valid hash found");
 				return;
-			}
+			} else System.out.println("user has valid hash");
 		} 
 		/*
 		else {
@@ -164,6 +165,7 @@ public class FrontController extends HttpServlet {
 		response.setHeader("Access-Control-Allow-Origin", "http://sopra.ex-studios.net");
 		response.setHeader("Access-Control-Allow-Headers", "accept, origin, x-requested-with, content-type");
 		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setHeader("Access-Control-Max-Age", "15");
 		response.setHeader("Content-Type", "charset=utf-8");
     
@@ -172,6 +174,8 @@ public class FrontController extends HttpServlet {
 		} else if(!userRoutes.verifyUserHash(request, response)) {
 			System.out.println("no valid hash found");
 			return;
+		} else {
+			System.out.println("user has valid hash");
 		}
 				
 		// ####################################################
@@ -179,7 +183,7 @@ public class FrontController extends HttpServlet {
 		// ####################################################
 		
 		// create Event
-		else if(path.equals("/create/event")) {
+		if(path.equals("/create/event")) {
 			contentRoutes.createEvent(request, response);
 		// update Event
 		} else if(path.equals("/update/event")) {

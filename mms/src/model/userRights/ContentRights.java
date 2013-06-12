@@ -8,7 +8,6 @@ public class ContentRights implements DbControllable {
 	
 	
 	public ContentRights() {
-		
 	}
 	
 	// Getter

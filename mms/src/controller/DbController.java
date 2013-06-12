@@ -10,8 +10,8 @@ public class DbController {
 
 	protected DbController() {
 		String url = "jdbc:mysql://localhost:3306/sopra";
-		String user = "sopra";
-		String pw = "sopra";
+		String user = "sopratest";
+		String pw = "sopratest";
 
 		String treiber = "org.gjt.mm.mysql.Driver";
 

@@ -2,6 +2,8 @@ package model.content;
 
 import java.util.ArrayList;
 
+import util.Utilities;
+
 public class Event extends Content {
 
 	
@@ -48,7 +50,7 @@ public class Event extends Content {
 
 	@Override
 	public String toValueNames() {
-		String value = arrayToString(toValueNamesArray());
+		String value = Utilities.arrayToString(toValueNamesArray());
 		return value;
 	}
 	
@@ -62,7 +64,7 @@ public class Event extends Content {
 
 	@Override
 	public String toValues() {
-		String value = arrayToString(toValuesArray());
+		String value = Utilities.arrayToString(toValuesArray());
 		return value;
 	}
 

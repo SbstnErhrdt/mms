@@ -241,12 +241,6 @@ public class Test {
 		System.out.println(modules);
 		
 		
-		
-		
-		System.out.println(udbc.insertUserHash("email@ex-studios.net", new UserRoutes().createRandomHash()));	
-		
-		
-		System.out.println(udbc.verifyUserHash("email@ex-studios.net", "fzuactwatfuai46238419hujkk"));
 	
 		System.out.println(gson.toJson(event));
 		
@@ -261,5 +255,27 @@ public class Test {
 		System.out.println(gson.toJson(je));
 		
 		System.out.println(gson.toJson(jc));
+		
+		System.out.println(cdbc.getModuleHandbook(1));
+		
+		
+		json = gson.toJson(event);
+		
+		System.out.println(json);
+		
+		json = "{\"moduleIDs\":[2],\"name\":\"Tuerrsteherrei\",\"sws\":3,\"lecturer_email\":\"Harkan@Oehmer.de\"}";
+		
+		System.out.println(json);
+		
+		event = gson.fromJson(json, Event.class);
+		
+		
+		System.out.println(event);
+		
+		
+		
+		cdbc.createEvent(event);
+	
+		
 	}
 }

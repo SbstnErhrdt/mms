@@ -18,7 +18,8 @@ public class User implements DbControllable {
 	 * 
 	 * */
 	
-	protected String firstName, lastName, title, email, graduation, password;
+	protected String firstName, lastName, title, email, graduation;
+	protected transient String password;
 	protected boolean isEmployee = false;
 	protected boolean emailVerified;
 	protected int matricNum, semester;	

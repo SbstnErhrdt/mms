@@ -3,6 +3,8 @@ package model.content;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.Utilities;
+
 import model.content.Subject;
 
 public class ModuleHandbook extends Content {
@@ -17,9 +19,6 @@ public class ModuleHandbook extends Content {
 	
 	private String semester;
 	private int moduleHandbookID, studycourses_studycourseID;
-	private List<Subject> subjects = new ArrayList<Subject>();
-	
-	
 	
 	// Konstruktor
 	public ModuleHandbook (int moduleHandbookID, String name, int studycourses_studycourseID, String semester,boolean archived) {
@@ -51,35 +50,16 @@ public class ModuleHandbook extends Content {
 		this.archived = archived;
 	}
 
-	// SUBJECTS
-	public List<Subject> getSubjectList() {
-		return subjects;
-	}
-	
-	public void setSubjectList(List<Subject> subjects ) {
-		this.subjects = subjects;
-	}
-	// ADD SUBJECT
-	public void addSubject(Subject subject) {
-		subjects.add(subject);
-	}
-	// REMOVE SUBJECT
-	public void removeSubject(Subject subject) {
-		subjects.remove(subject);
-	}
-	
-	
-	
 	@Override
 	public String toValues() {
-		String value = arrayToString(toValuesArray());
+		String value = Utilities.arrayToString(toValuesArray());
 		return value;
 	}
 
 	
 	@Override
 	public String toValueNames() {
-		String value = arrayToString(toValueNamesArray());
+		String value = Utilities.arrayToString(toValueNamesArray());
 		return value;
 	}
 	

@@ -52,14 +52,12 @@ public class ContentRoutes extends Routes{
 		if(request.getParameter("eventID") != null) {
 			int eventID = Integer.parseInt(request.getParameter("eventID"));
 			if(db.deleteEvent(new Event(eventID))) {
-				json = gson.toJson(eventID);
+				json = "{\"eventID\":"+eventID+"}";
 			}
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"unspecified eventID\", "+
-						"\"method\" : \"deleteEvent(...)\""+
-					" }}";
+			json = gson.toJson(new JsonContent(new JsonError(
+					"unspecified eventID in query", 
+					"deleteEvent(...)")));
 		}
 		try {
 			response.getWriter().write(json);
@@ -96,11 +94,9 @@ public class ContentRoutes extends Routes{
 			Module module = db.getModule(moduleID);
 			json = gson.toJson(module);
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"unspecified moduleID\", "+
-						"\"method\" : \"readModule(...)\""+
-					" }}";
+			json = gson.toJson(new JsonContent(new JsonError(
+					"unspecified moduleID in query", 
+					"readModule(...)")));
 		}
 			
 		try {
@@ -117,14 +113,12 @@ public class ContentRoutes extends Routes{
 		if(request.getParameter("moduleID") != null) {
 			int moduleID = Integer.parseInt(request.getParameter("moduleID"));
 			if(db.deleteModule(new Module(moduleID))) {
-				json = gson.toJson(moduleID);
+				json = "{\"moduleID\":"+moduleID+"}";
 			}
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"unspecified moduleID\", "+
-						"\"method\" : \"deleteModule(...)\""+
-					" }}";		
+			json = gson.toJson(new JsonContent(new JsonError(
+					"unspecified moduleID in query", 
+					"deleteModule(...)")));
 		}
 		try {
 			response.getWriter().write(json);
@@ -165,11 +159,9 @@ public class ContentRoutes extends Routes{
 			
 			json = gson.toJson(subject);
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"unspecified subjectID\", "+
-						"\"method\" : \"readSubject(...)\""+
-					" }}";		
+			json = gson.toJson(new JsonContent(new JsonError(
+					"unspecified subjectID in query", 
+					"readSubject(...)")));
 		}
 			
 		try {
@@ -185,14 +177,12 @@ public class ContentRoutes extends Routes{
 		if(request.getParameter("subjectID") != null) {		
 			int subjectID = Integer.parseInt(request.getParameter("subjectID"));
 			if(db.deleteSubject(new Subject(subjectID))) {
-				json = gson.toJson(subjectID);
+				json = "{\"subjectID\":"+subjectID+"}";
 			}
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"unspecified subjectID\", "+
-						"\"method\" : \"deleteSubject(...)\""+
-					" }}";		
+			json = gson.toJson(new JsonContent(new JsonError(
+					"unspecified subjectID in query", 
+					"deleteSubject(...)")));
 		}
 		
 		try {
@@ -237,11 +227,9 @@ public class ContentRoutes extends Routes{
 		
 			json = gson.toJson(studycourse);
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"unspecified studycourseID\", "+
-						"\"method\" : \"readStudycourse(...)\""+
-					" }}";
+			json = gson.toJson(new JsonContent(new JsonError(
+					"unspecified studycourseID in query", 
+					"readStudycourse(...)")));
 		}
 		
 		try {
@@ -257,14 +245,12 @@ public class ContentRoutes extends Routes{
 		if(request.getParameter("studycourseID") != null) {		
 			int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
 			if(db.deleteStudycourse(new Studycourse(studycourseID))) {
-				json = gson.toJson(studycourseID);
+				json = "{\"studycourseID\":"+studycourseID+"}";
 			}
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"unspecified studycourseID\", "+
-						"\"method\" : \"deleteStudycourse(...)\""+
-					" }}";
+			json = gson.toJson(new JsonContent(new JsonError(
+					"unspecified studycourseID in query", 
+					"deleteStudycourse(...)")));
 		}
 		
 		try {
@@ -298,11 +284,9 @@ public class ContentRoutes extends Routes{
 		
 			json = gson.toJson(moduleHandbook);
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"unspecified moduleHandbookID\", "+
-						"\"method\" : \"readModuleHandbook(...)\""+
-					" }}";
+			json = gson.toJson(new JsonContent(new JsonError(
+					"unspecified moduleHandbookID in query", 
+					"readModuleHandbook(...)")));
 		}
 		
 		try {
@@ -319,14 +303,12 @@ public class ContentRoutes extends Routes{
 		if(request.getParameter("moduleHandbookID") != null) {						
 			int moduleHandbookID = Integer.parseInt(request.getParameter("moduleHandbookID"));
 			if(db.deleteModuleHandbook(new ModuleHandbook(moduleHandbookID))) {
-				json = gson.toJson(moduleHandbookID);
+				json = "{\"moduleHandbookID\":"+moduleHandbookID+"}";
 			}
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"unspecified moduleHandbookID\", "+
-						"\"method\" : \"deleteModuleHandbook(...)\""+
-					" }}";
+			json = gson.toJson(new JsonContent(new JsonError(
+					"unspecified moduleHandbookID in query", 
+					"deleteModuleHandbook(...)")));
 		}
 		
 		try {
@@ -366,16 +348,22 @@ public class ContentRoutes extends Routes{
 			HttpServletResponse response) {
 		
 		String json = getRequestBody(request);
-		
+	
 		Event event = gson.fromJson(json, Event.class);
 		
 		if(db.createEvent(event)) {
+			
 			json = gson.toJson(event);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		} else {
+			json = gson.toJson(new JsonContent(new JsonError(
+					"d.createEvent(event) failed", 
+					"createEvent(...)")));
+		}
+
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

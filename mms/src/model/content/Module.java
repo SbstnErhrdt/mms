@@ -2,6 +2,8 @@ package model.content;
 
 import java.util.ArrayList;
 
+import util.Utilities;
+
 public class Module extends Content {
 
 	/*	DATABASE
@@ -181,14 +183,14 @@ public class Module extends Content {
 	
 	@Override
 	public String toValues() {
-		String value = arrayToString(toValuesArray());
+		String value = Utilities.arrayToString(toValuesArray());
 		return value;
 	}
 
 	
 	@Override
 	public String toValueNames() {
-		String value = arrayToString(toValueNamesArray());
+		String value = Utilities.arrayToString(toValueNamesArray());
 		return value;
 	}
 
@@ -201,7 +203,7 @@ public class Module extends Content {
 
 	@Override
 	public String[] toValueNamesArray() {
-		String[] valueNames = {"moduleID", "name", "token", "englishTitle", "lp", "sws", "language",
+		String[] valueNames = {"name", "token", "englishTitle", "lp", "sws", "language",
 			"duration", "director_email", "requirement", "learningTarget", "content", "literature", "archived"}; 
 		return valueNames;
 	}

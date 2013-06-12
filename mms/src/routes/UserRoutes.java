@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.catalina.Session;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import controller.UserDbController;
 
@@ -36,11 +37,9 @@ public class UserRoutes extends Routes {
 			User user = db.getUser(new User(email));
 			json = gson.toJson(user);
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"unspecified email\", "+
-						"\"method\" : \"readUser(...)\""+
-					" }}";	
+			json = gson.toJson(new JsonContent(new JsonError(
+							"unspecified email parameter in query", 
+							"readUser(...)")));
 		}
 			
 		try {
@@ -58,19 +57,15 @@ public class UserRoutes extends Routes {
 			User user = new User(email);
 			if(db.deleteUser(user))	json = gson.toJson(user);
 			else {
-				json = "{"+
-						"\"error\": { "+
-							"\"message\": \"db.deleteUser(user) failed\", "+
-							"\"method\" : \"deleteUser(...)\""+
-						" }}";
+				json = gson.toJson(new JsonContent(new JsonError(
+						"db.deleteUser(user) failed", 
+						"deleteUser(...)")));
 			}
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"unspecified email\", "+
-						"\"method\" : \"deleteUser(...)\""+
-					" }}";	
-		}
+			json = gson.toJson(new JsonContent(new JsonError(
+					"unspecified email parameter in query", 
+					"deleteUser(...)")));
+			}
 		
 		try {
 			response.getWriter().write(json);
@@ -104,11 +99,9 @@ public class UserRoutes extends Routes {
 		if(db.createUser(user)) {
 			json = gson.toJson(user);
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"db.createUser(user) failed\", "+
-						"\"method\" : \"createUser(...)\""+
-					" }}";	
+			json = gson.toJson(new JsonContent(new JsonError(
+					"db.createUser(user) failed", 
+					"createUser(...)")));
 		}
 		
 		try {
@@ -127,11 +120,9 @@ public class UserRoutes extends Routes {
 		if(db.updateUser(user)) {
 			json = gson.toJson(user);
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"db.updateUser(user) failed\", "+
-						"\"method\" : \"updateUser(...)\""+
-					" }}";	
+			json = gson.toJson(new JsonContent(new JsonError(
+					"db.updateUser(user) failed", 
+					"updateUser(...)")));
 		}
 		
 		try {
@@ -148,56 +139,80 @@ public class UserRoutes extends Routes {
 		if(request.getParameter("email") != null) {
 			String email = request.getParameter("email");
 			json = getRequestBody(request);
-			User user = gson.fromJson(json, User.class);
+			System.out.println(json);
+			JsonObject obj = gson.fromJson(json, JsonObject.class);
+			
+			String userEmail = obj.get("email").getAsString();
+			String userPassword = obj.get("password").getAsString();
+			
+			System.out.println("email: "+userEmail+", password: "+userPassword);
+			
+			User user = new User(userEmail, userPassword);
+			
+			System.out.println(user);
 			
 			user = db.verifyUser(user);
+		
+			System.out.println("DEBUG1");
+			
+			System.out.println(user);
 			
 			if(user != null) {
-				if(user.getEmail().equals(email)) {
-					System.out.println("user verified!");
+				user = db.getUser(user);				
+				if(!user.getUserRights().getCanLogin()){
+					System.out.println("DEBUG3");
+					
+					// User cannot login (email not verified)
+					System.out.println("user "+user+" cannot login (email not verified)");
+					json = gson.toJson(new JsonContent(new JsonError("user cannot login (email not verified)", "login(...)")));
+				} else if(user.getEmail().equals(email)) {
+					System.out.println("DEBUG4");
+					
+					System.out.println("user "+user+" verified!");
 					
 					HttpSession session = request.getSession();
 				
 					String sessionID = session.getId();
 					if(db.insertUserHash(email, sessionID)) {
+						System.out.println("DEBUG5");
+						
 						json = "[" + gson.toJson(db.getUser(user));
 						
 						json += ", {\"jsessionID\" : "+"\""+sessionID+"\"}]";
+						
+						System.out.println(json);
 				
 						// write email in session
-						session.setAttribute("email", "test");
+						session.setAttribute("email", email);
 						
 						System.out.println("user "+user+" logged in successfully");
 					} else {
-						json = "{"+
-								"\"error\": { "+
-									"\"message\": \"db.insertUserHash(email, hash) failed\", "+
-									"\"method\" : \"login(...)\""+
-								" }}";
+						System.out.println("DEBUG6");
+						
+						json = gson.toJson(new JsonContent(new JsonError("db.insertUserHash(email, hash) failed", 
+								"login(...)")));
 					}
 				} else {
-					System.out.println("wrong email parameter.");
+					System.out.println("DEBUG7");
 					
-					json = "{"+
-							"\"error\": { "+
-								"\"message\": \"wrong email parameter\", "+
-								"\"method\" : \"login(...)\""+
-							" }}";
+					System.out.println("wrong email parameter.");
+					json = gson.toJson(new JsonContent(new JsonError("wrong email parameter in query", 
+							"login(...)")));
 				}
 			} else {
-				json = "{"+
-						"\"error\": { "+
-							"\"message\": \"wrong email or password\", "+
-							"\"method\" : \"login(...)\""+
-						" }}";
-			}
+				System.out.println("DEBUG8");
+				
+				json = gson.toJson(new JsonContent(new JsonError("wrong email or password", 
+						"login(...)")));
+				}
 		} else {
-			json = "{"+
-					"\"error\": { "+
-						"\"message\": \"unspecified email parameter\", "+
-						"\"method\" : \"login(...)\""+
-					" }}";
+			System.out.println("DEBUG9");
+			
+			json = gson.toJson(new JsonContent(new JsonError("unspecified email parameter in query", 
+					"login(...)")));
 		}
+		System.out.println("DEBUG10");
+		
 		
 		try {
 			response.getWriter().write(json);
@@ -206,46 +221,33 @@ public class UserRoutes extends Routes {
 		}
 	}
 
-	public String createRandomHash() {
-		double randomDouble = Math.random()+Math.random();
-		return ""+randomDouble;
-	}
-
 	public boolean verifyUserHash(HttpServletRequest request, HttpServletResponse response) {
 		Cookie[] cookies = request.getCookies();
-		
-		String email = "";
+	
 		String hash = "";
+		String email = "";
 		
 		if(cookies == null) {
-			String json = "{"+
-					"\"error\": { "+
-					"\"message\": \"no valid hash found (request.getCookies() == null)\", "+
-					"\"method\" : \"verifyUserHash(...)\""+
-				" }}";
+			String json = gson.toJson(new JsonContent(new JsonError(
+					"no valid hash found (request.getCookies() == null)", 
+					"verifyUserHash(...)")));
 			try {
 				response.getWriter().write(json);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			return false;
-		} else {
-		
-			for(Cookie c : cookies) {
-				if(c.getName().equals("email")) {
-					email = c.getValue();
-				} else if(c.getName().equals("hash")) {
-					hash = c.getValue();
-				}
-			}
+		} else {	
+			hash = request.getSession().getId();
+			email = (String) request.getSession().getAttribute("email");
+			
+			System.out.println("email="+email+", hash="+hash);
 			
 			if(db.verifyUserHash(email, hash)) return true;
 			else {
-				String json = "{"+
-						"\"error\": { "+
-						"\"message\": \"no valid hash found\", "+
-						"\"method\" : \"verifyUserHash(...)\""+
-					" }}";
+				String json = gson.toJson(new JsonContent(new JsonError(
+						"no valid hash found", 
+						"verifyUserHash(...)")));
 				try {
 					response.getWriter().write(json);
 				} catch (IOException e) {

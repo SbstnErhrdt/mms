@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import util.Utilities;
+
 // IMPORT MODLES
 import model.content.Event;
 import model.content.Module;
@@ -22,8 +24,8 @@ public class ContentDbController extends DbController {
 	public boolean createEvent(Event event) {
 
 		// GET VALUENAMES & VALUES
-		String values = event.toValues();
-		String valueNames = event.toValueNames();
+		String[] valuesArray = event.toValuesArray().
+		String valueNames = Utilities.arrayToString(event.)
 
 		// QUERY
 		String query = "INSERT INTO events (" + valueNames + ") VALUES ("
@@ -745,8 +747,8 @@ public class ContentDbController extends DbController {
 
 			if (rs.next()) {
 				newModuleHandbook = new ModuleHandbook(
-						rs.getInt(1), rs.getString(3), rs.getInt(4),
-						rs.getString(5), rs.getBoolean(6));
+						rs.getInt(1), rs.getString(2), rs.getInt(3),
+						rs.getString(4), rs.getBoolean(5));
 				rs.close();
 				return newModuleHandbook;
 
