@@ -203,7 +203,7 @@ public class Module extends Content {
 
 	@Override
 	public String[] toValueNamesArray() {
-		String[] valueNames = {"name", "token", "englishTitle", "lp", "sws", "language",
+		String[] valueNames = {"moduleID", "name", "token", "englishTitle", "lp", "sws", "language",
 			"duration", "director_email", "requirement", "learningTarget", "content", "literature", "archived"}; 
 		return valueNames;
 	}

@@ -581,4 +581,34 @@ public class UserDbController extends DbController {
 			}
 		}
 	}
+	
+	public String getHashEmail(String hash) {
+		String query = "SELECT users_email FROM user_hashes " +
+				"WHERE hash=?;";
+		
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setString(1, hash);
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			if(rs.next()) return rs.getString(1);
+			else return null;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

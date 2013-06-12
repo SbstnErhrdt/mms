@@ -3,7 +3,9 @@ package controller;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import util.Utilities;
 
@@ -24,20 +26,33 @@ public class ContentDbController extends DbController {
 	public boolean createEvent(Event event) {
 
 		// GET VALUENAMES & VALUES
-		String[] valuesArray = event.toValuesArray().
-		String valueNames = Utilities.arrayToString(event.)
-
+		String[] valuesArray = event.toValuesArray();
+		String[] valueNamesArray = event.toValueNamesArray();
+		
+		String[] newValuesArray = Arrays.copyOfRange(valuesArray, 1, valuesArray.length);
+		String[] newValuesNamesArray = Arrays.copyOfRange(valueNamesArray, 1, valueNamesArray.length);
+		
+		String values = Utilities.arrayToString(newValuesArray);
+		String valueNames =  Utilities.arrayToString(newValuesNamesArray);
+		
 		// QUERY
-		String query = "INSERT INTO events (" + valueNames + ") VALUES ("
-				+ values + ");";
+		String query = "INSERT INTO events (" +valueNames+ ") VALUES ("+values+");";
+		
 		System.out.println("db:createEvent " + query);
+		
 		try {
-			db.createStatement().executeUpdate(query);
+			Statement stmt = db.createStatement();	
+			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.next()) {
+				event.setID(rs.getInt(1));
+			    System.out.println("Generated eventID: " + event.getID());	    
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
-		}
-		
+		} 
+				
 		// CREATE ENTRY IN TABLE EVENTS_MODULES
 		query = "INSERT INTO events_modules(eventID, moduleID) VALUES ("+event.getID()+", ?);";
 		System.out.println(query);
@@ -242,20 +257,32 @@ public class ContentDbController extends DbController {
 	public boolean createModule(Module module) {
 
 		// GET VALUENAMES & VALUES
-		String values = module.toValues();
-		String valueNames = module.toValueNames();
-
+		String[] valuesArray = module.toValuesArray();
+		String[] valueNamesArray = module.toValueNamesArray();
+		
+		String[] newValuesArray = Arrays.copyOfRange(valuesArray, 1, valuesArray.length);
+		String[] newValuesNamesArray = Arrays.copyOfRange(valueNamesArray, 1, valueNamesArray.length);
+		
+		String values = Utilities.arrayToString(newValuesArray);
+		String valueNames =  Utilities.arrayToString(newValuesNamesArray);
+		
 		// QUERY
-		String query = "INSERT INTO modules (" + valueNames + ") VALUES ("
-				+ values + ");";
+		String query = "INSERT INTO modules (" +valueNames+ ") VALUES ("+values+");";
+		
 		System.out.println("db:createModule " + query);
+		
 		try {
-			db.createStatement().executeUpdate(query);
+			Statement stmt = db.createStatement();	
+			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.next()) {
+				module.setID(rs.getInt(1));
+			    System.out.println("Generated eventID: " + module.getID());	    
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
-		}
-		
+		} 
 		// CREATE ENTRY IN TABLE modules_subjects
 		query = "INSERT INTO modules_subjects(moduleID, subjectID) VALUES ("+module.getID()+", ?)";
 		System.out.println(query);
@@ -396,7 +423,7 @@ public class ContentDbController extends DbController {
 	public boolean deleteModule(Module module) {
 
 		String query = "DELETE FROM modules ";
-		query += "WHERE eventID = " + module.getID() + ";";
+		query += "WHERE moduleID = " + module.getID() + ";";
 		System.out.println("db:deleteModule " + query);
 		try {
 			db.createStatement().executeUpdate(query);
