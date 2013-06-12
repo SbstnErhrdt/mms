@@ -64,25 +64,24 @@ public class FrontController extends HttpServlet {
 		response.setHeader("Access-Control-Max-Age", "15");
 		response.setHeader("Content-Type", "charset=utf-8");
 	
-		if(path.startsWith("/delete")) {
+		if(path.startsWith("/delete") || path.equals("/read/activeUser")) {
 			if(!userRoutes.verifyUserHash(request, response)) {
 				System.out.println("no valid hash found");
 				return;
 			} else System.out.println("user has valid hash");
 		} 
-		/*
-		else {
-			response.getWriter().write("sessionID: "+request.getSession().getId()+", email: "+request.getSession().getAttribute("email"));
-			return;
+	
+		// active User
+		if(path.equals("/read/activeUser")) {
+			userRoutes.readActiveUser(request, response);
 		}
-		*/
 		
 		// ####################################################
 		// Content
 		// ####################################################
 		
 		// read Event
-		if(path.equals("/read/event")) {
+		else if(path.equals("/read/event")) {
 			contentRoutes.readEvent(request, response);
 		// delete Event
 		} else if(path.equals("/delete/event")) {
@@ -171,6 +170,8 @@ public class FrontController extends HttpServlet {
     
 		if(path.equals("/login")) {
 			userRoutes.login(request, response);
+		} else if(path.equals("/register")) { 
+			userRoutes.register(request, response);
 		} else if(!userRoutes.verifyUserHash(request, response)) {
 			System.out.println("no valid hash found");
 			return;

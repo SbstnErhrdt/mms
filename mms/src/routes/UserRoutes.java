@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import controller.UserDbController;
 
 import model.User;
+import model.userRights.UserRights;
 
 public class UserRoutes extends Routes {
 	private UserDbController db;
@@ -255,6 +256,64 @@ public class UserRoutes extends Routes {
 				}
 				return false;
 			}
+		}
+	}
+
+	public void register(HttpServletRequest request,
+			HttpServletResponse response) {
+		String json = getRequestBody(request);
+		
+		User user = gson.fromJson(json, User.class);
+		
+		if(user == null) {
+			json = gson.toJson(new JsonContent(new JsonError(
+					"user object is null", 
+					"register(...)")));
+		} else {
+			if(user.isEmployee()) {
+				json = gson.toJson(new JsonContent(new JsonError(
+						"cannot register users who are employees", 
+						"register(...)")));
+			} else {
+				user.setUserRights(new UserRights(false));	// canLogin == false
+				db.createUser(user);
+				json = gson.toJson(user);
+			}
+		}
+		try { 
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void readActiveUser(HttpServletRequest request,
+			HttpServletResponse response) {
+		String json;
+		
+		String sessionID = request.getSession().getId();
+		
+		String email = db.getHashEmail(sessionID);
+		
+		if(email == null) {
+			json = gson.toJson(new JsonContent(new JsonError(
+					"no email found for this sessionID", 
+					"readActiveUser(...)")));
+		} else {
+			User user = db.getUser(new User(email));
+			
+			if(user != null) {
+				json = gson.toJson(user);
+			} else {
+				json = gson.toJson(new JsonContent(new JsonError(
+						"no user found for this email", 
+						"readActiveUser(...)")));
+			}
+		}
+		try { 
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
