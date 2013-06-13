@@ -539,8 +539,14 @@ public class ContentDbController extends DbController {
 	public boolean createSubject(Subject subject) {
 
 		// GET VALUENAMES & VALUES
-		String values = subject.toValues();
-		String valueNames = subject.toValueNames();
+		String[] valuesArray = subject.toValuesArray();
+		String[] valueNamesArray = subject.toValueNamesArray();
+		
+		String[] newValuesArray = Arrays.copyOfRange(valuesArray, 1, valuesArray.length);
+		String[] newValuesNamesArray = Arrays.copyOfRange(valueNamesArray, 1, valueNamesArray.length);
+		
+		String values = Utilities.arrayToString(newValuesArray);
+		String valueNames =  Utilities.arrayToString(newValuesNamesArray);
 
 		// QUERY
 		String query = "INSERT INTO subjects (" + valueNames + ") VALUES ("
@@ -715,8 +721,14 @@ public class ContentDbController extends DbController {
 	public boolean createModuleHandbook(ModuleHandbook moduleHandbook) {
 
 		// GET VALUENAMES & VALUES
-		String values = moduleHandbook.toValues();
-		String valueNames = moduleHandbook.toValueNames();
+		String[] valuesArray = moduleHandbook.toValuesArray();
+		String[] valueNamesArray = moduleHandbook.toValueNamesArray();
+		
+		String[] newValuesArray = Arrays.copyOfRange(valuesArray, 1, valuesArray.length);
+		String[] newValuesNamesArray = Arrays.copyOfRange(valueNamesArray, 1, valueNamesArray.length);
+		
+		String values = Utilities.arrayToString(newValuesArray);
+		String valueNames =  Utilities.arrayToString(newValuesNamesArray);
 
 		// QUERY
 		String query = "INSERT INTO module_handbooks (" + valueNames
@@ -840,8 +852,14 @@ public class ContentDbController extends DbController {
 	public boolean createStudycourse(Studycourse studycourse) {
 
 		// GET VALUENAMES & VALUES
-		String values = studycourse.toValues();
-		String valueNames = studycourse.toValueNames();
+		String[] valuesArray = studycourse.toValuesArray();
+		String[] valueNamesArray = studycourse.toValueNamesArray();
+		
+		String[] newValuesArray = Arrays.copyOfRange(valuesArray, 1, valuesArray.length);
+		String[] newValuesNamesArray = Arrays.copyOfRange(valueNamesArray, 1, valueNamesArray.length);
+		
+		String values = Utilities.arrayToString(newValuesArray);
+		String valueNames =  Utilities.arrayToString(newValuesNamesArray);
 
 		// QUERY
 		String query = "INSERT INTO studycourses (" + valueNames

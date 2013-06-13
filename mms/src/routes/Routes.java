@@ -8,9 +8,16 @@ import java.io.InputStreamReader;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import controller.UserDbController;
+
+import model.User;
+
 public abstract class Routes {
+	
+	private UserDbController db;
+	
 	public Routes() {
-		
+		db = new UserDbController();
 	}
 	
 	protected String getRequestBody(HttpServletRequest request) {
@@ -42,7 +49,6 @@ public abstract class Routes {
 		
 		return stringBuilder.toString();
 	}
-	
 	protected String getCookieEmail(HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
 		
@@ -59,6 +65,13 @@ public abstract class Routes {
 		}
 		
 		return email;
-		
 	}
+	
+	protected User getActorUser(HttpServletRequest request) {
+		String actorEmail = (String) request.getSession().getAttribute("email");
+		User actorUser = db.getUser(new User(actorEmail));
+		System.out.println("actor: "+actorUser);
+		return actorUser;
+	}
+	
 }
