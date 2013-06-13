@@ -19,18 +19,15 @@ public class Subject extends Content {
 	
 	// Konstruktor
 	public Subject (int subjectID, int studycourses_studycourseID, int moduleHandbooks_moduleHandbookID,
-			String name, boolean archived) {
+			String name, boolean archived, String content, boolean enabled) {
 		this.subjectID = subjectID; 
 		this.studycourses_studycourseID = studycourses_studycourseID;
 		this.moduleHandbooks_moduleHandbookID = moduleHandbooks_moduleHandbookID;
 		this.name = name;
 		this.archived = archived;
+		this.content = content;
+		this.enabled = enabled;
 	}
-	
-	
-	// Getter & Setter
-
-	// entfallen - vererbung
 	
 	public Subject(int subjectID) {
 		this.subjectID = subjectID;
@@ -51,14 +48,18 @@ public class Subject extends Content {
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {""+subjectID, ""+studycourses_studycourseID, ""+moduleHandbooks_moduleHandbookID, "'"+name+"'",""+archived };
+		String[] values = {""+subjectID, ""+studycourses_studycourseID, 
+				""+moduleHandbooks_moduleHandbookID, "'"+name+"'",
+				""+archived, "'"+content+"'", ""+enabled};
 		return values;
 	}
 
 	@Override
 	public String[] toValueNamesArray() {
 		// TODO Auto-generated method stub
-		String[] values = {"subjectID", "studycourses_studycourseID", "module_handbooks_moduleHandbookID", "name", "archived"};
+		String[] values = {"subjectID", "studycourses_studycourseID", 
+				"module_handbooks_moduleHandbookID", "name", "archived", 
+				"content", "enabled"};
 		return values;
 	}
 

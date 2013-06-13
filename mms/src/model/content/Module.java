@@ -24,14 +24,14 @@ public class Module extends Content {
 	 */
 	
 	private int moduleID, duration;
-	private String token, englishTitle, lp, sws, language, director_email, requirement, learningTarget, content, literature; 
+	private String token, englishTitle, lp, sws, language, director_email, requirement, learningTarget, literature; 
 	
 	// PARENT SUBJECTS
 	private ArrayList<Integer> subjectIDs;
 	
 	// Konstruktor
 	public Module(int moduleID, String name, ArrayList<Integer> subjectIDs, String token, String englishTitle, String lp, String sws, 
-			String language, int duration, String director_email, String requirement, String learningTarget, String content, String literature, boolean archived) {
+			String language, int duration, String director_email, String requirement, String learningTarget, String content, String literature, boolean archived, boolean enabled) {
 		this.moduleID = moduleID;
 		this.name = name;
 		this.subjectIDs = subjectIDs;
@@ -47,6 +47,7 @@ public class Module extends Content {
 		this.content = content;
 		this.literature = literature;
 		this.archived = archived;
+		this.enabled = enabled;
 	}
 	
 	public Module(int moduleID) {
@@ -70,17 +71,7 @@ public class Module extends Content {
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
-
-
-	public String getName() {
-		return name;
-	}
-
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
+	
 
 	public String getToken() {
 		return token;
@@ -161,17 +152,6 @@ public class Module extends Content {
 		this.learningTarget = learningTarget;
 	}
 
-
-	public String getContent() {
-		return content;
-	}
-
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-
 	public String getLiterature() {
 		return literature;
 	}
@@ -197,14 +177,16 @@ public class Module extends Content {
 	@Override
 	public String[] toValuesArray() {
 		String[] values = {""+moduleID, "'"+name+"'", "'"+token+"'", "'"+englishTitle+"'", "'"+lp+"'", ""+sws, "'"+language+"'",
-				""+duration, "'"+director_email+"'", "'"+requirement+"'", "'"+learningTarget+"'", "'"+content+"'", "'"+literature+"'", ""+archived}; 
+				""+duration, "'"+director_email+"'", "'"+requirement+"'", "'"+learningTarget+"'", "'"+content+"'", "'"+literature+"'", 
+				""+archived, ""+enabled}; 
 		return values;
 	}
 
 	@Override
 	public String[] toValueNamesArray() {
 		String[] valueNames = {"moduleID", "name", "token", "englishTitle", "lp", "sws", "language",
-			"duration", "director_email", "requirement", "learningTarget", "content", "literature", "archived"}; 
+			"duration", "director_email", "requirement", "learningTarget", "content", "literature", 
+			"archived", "enabled"}; 
 		return valueNames;
 	}
 	

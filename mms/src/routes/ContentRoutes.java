@@ -1010,4 +1010,8 @@ public class ContentRoutes extends Routes{
 			}
 		}
 	}
+
+	public void closeConnection() {
+		db.closeConnection();		
+	}
 }

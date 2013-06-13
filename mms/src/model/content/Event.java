@@ -25,13 +25,17 @@ public class Event extends Content {
 		this.eventID = eventID;
 	}
 	
-	public Event(int eventID, ArrayList<Integer> moduleIDs, String name, int sws, String lecturer_email, boolean archived) {
+	public Event(int eventID, ArrayList<Integer> moduleIDs, String name, 
+			int sws, String lecturer_email, boolean archived, String content, 
+			boolean enabled) {
 		this.eventID = eventID;
 		this.moduleIDs = moduleIDs;
 		this.name = name;
 		this.sws = sws;
 		this.lecturer_email = lecturer_email;
 		this.archived = archived;
+		this.content = content;
+		this.enabled = enabled;
 	}
 	
 	// Getter & Setter
@@ -70,13 +74,14 @@ public class Event extends Content {
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {""+eventID, "'"+name+"'", ""+sws, ""+"'"+lecturer_email+"'", ""+archived};
+		String[] values = {""+eventID, "'"+name+"'", ""+sws, ""+"'"+lecturer_email+"'", 
+				""+archived, "'"+content+"'", ""+enabled};
 		return values;
 	}
 
 	@Override
 	public String[] toValueNamesArray() {
-		String[] valueNames = {"eventID", "name", "sws", "lecturer_email", "archived"};
+		String[] valueNames = {"eventID", "name", "sws", "lecturer_email", "archived", "content", "enabled"};
 		return valueNames;
 	}
 	

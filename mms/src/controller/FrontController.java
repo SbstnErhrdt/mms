@@ -51,11 +51,13 @@ public class FrontController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		UserRoutes userRoutes = null;
+		ContentRoutes contentRoutes = null;
 		try {
 			String path = request.getServletPath();
 			System.out.println("GET-Request, Path: " + path);
-			UserRoutes userRoutes = new UserRoutes();
-			ContentRoutes contentRoutes = new ContentRoutes();		
+			userRoutes = new UserRoutes();
+			contentRoutes = new ContentRoutes();		
 			
 			// set Headers
 			response.setHeader("Access-Control-Allow-Origin", "http://sopra.ex-studios.net");
@@ -68,6 +70,9 @@ public class FrontController extends HttpServlet {
 			if(path.startsWith("/delete") || path.equals("/read/activeUser")) {
 				if(!userRoutes.verifyUserHash(request, response)) {
 					System.out.println("no valid hash found");
+					System.out.println("closing database connections");
+					userRoutes.closeConnection();
+					contentRoutes.closeConnection();
 					return;
 				} else System.out.println("user has valid hash");
 			} 
@@ -152,6 +157,10 @@ public class FrontController extends HttpServlet {
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
+		} finally {
+			System.out.println("closing database connections");
+			userRoutes.closeConnection();
+			contentRoutes.closeConnection();
 		}
 	}
 
@@ -159,11 +168,13 @@ public class FrontController extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		UserRoutes userRoutes = null;
+		ContentRoutes contentRoutes = null;
 		try {
 			String path = request.getServletPath();
 			System.out.println("POST-Request, Path: " + path);
-			UserRoutes userRoutes = new UserRoutes();
-			ContentRoutes contentRoutes = new ContentRoutes();
+			userRoutes = new UserRoutes();
+			contentRoutes = new ContentRoutes();
 		
 			// set Headers
 			response.setHeader("Access-Control-Allow-Origin", "http://sopra.ex-studios.net");
@@ -179,6 +190,9 @@ public class FrontController extends HttpServlet {
 				userRoutes.register(request, response);
 			} else if(!userRoutes.verifyUserHash(request, response)) {
 				System.out.println("no valid hash found");
+				System.out.println("closing database connections");
+				userRoutes.closeConnection();
+				contentRoutes.closeConnection();
 				return;
 			} else {
 				System.out.println("user has valid hash");
@@ -241,6 +255,10 @@ public class FrontController extends HttpServlet {
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
+		} finally {
+			System.out.println("closing database connections");
+			userRoutes.closeConnection();
+			contentRoutes.closeConnection();
 		}
 	}
 

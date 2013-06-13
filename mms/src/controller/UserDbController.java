@@ -241,6 +241,7 @@ public class UserDbController extends DbController {
 				user.setSemester(rs.getInt(8));		// semester
 			} else {
 				System.out.println("No user found with this email.");
+				rs.close();
 				return null;
 			}
 			rs.close();
@@ -461,6 +462,7 @@ public class UserDbController extends DbController {
 				String email = rs.getString(1);		// email
 				users.add(getUser(new User(email)));
 			}
+			rs.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -567,8 +569,13 @@ public class UserDbController extends DbController {
 			ResultSet rs = ps.executeQuery();
 			db.commit();
 			
-			if(rs.next()) return true;
-			else return false;
+			if(rs.next())  {
+				rs.close();
+				return true;
+			} else {
+				rs.close();
+				return false;
+			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -597,8 +604,14 @@ public class UserDbController extends DbController {
 			ResultSet rs = ps.executeQuery();
 			db.commit();
 			
-			if(rs.next()) return rs.getString(1);
-			else return null;
+			if(rs.next()) {
+				String email = rs.getString(1);
+				rs.close();
+				return email;
+			} else {
+				rs.close();
+				return null;
+			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

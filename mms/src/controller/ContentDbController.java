@@ -48,6 +48,8 @@ public class ContentDbController extends DbController {
 				event.setID(rs.getInt(1));
 			    System.out.println("Generated eventID: " + event.getID());	    
 			}
+			stmt.close();
+			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -159,7 +161,7 @@ public class ContentDbController extends DbController {
 			if (rs.next()) {
 				newEvent = new Event(rs.getInt(1), new ArrayList<Integer>(),
 						rs.getString(2), rs.getInt(3), rs.getString(4),
-						rs.getBoolean(5));
+						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
 				rs.close();
 
 			} else {
@@ -182,6 +184,7 @@ public class ContentDbController extends DbController {
 				moduleIDs.add(rs.getInt(1));
 			}
 			newEvent.setModuleIDs(moduleIDs);
+			rs.close();
 			return newEvent;
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -220,7 +223,7 @@ public class ContentDbController extends DbController {
 				event = null;
 				event = new Event(eventID, new ArrayList<Integer>(),
 						rs.getString(2), rs.getInt(3), rs.getString(4),
-						rs.getBoolean(5));
+						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
 				
 				// moduleIDs
 				ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
@@ -279,6 +282,8 @@ public class ContentDbController extends DbController {
 				module.setID(rs.getInt(1));
 			    System.out.println("Generated eventID: " + module.getID());	    
 			}
+			stmt.close();
+			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -390,12 +395,13 @@ public class ContentDbController extends DbController {
 						rs.getString(5), rs.getString(6), rs.getString(7),
 						rs.getInt(8), rs.getString(9), rs.getString(10),
 						rs.getString(11), rs.getString(12), rs.getString(13),
-						rs.getBoolean(14));
-				rs.close();
+						rs.getBoolean(14), rs.getBoolean(15));
 			} else {
 				System.out.println("No Event found with this ID.");
+				rs.close();
 				return null;
 			}
+			rs.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -412,6 +418,7 @@ public class ContentDbController extends DbController {
 				subjectIDs.add(rs.getInt(1));
 			}
 			newModule.setSubjectIDs(subjectIDs);
+			rs.close();
 			return newModule;
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -453,7 +460,7 @@ public class ContentDbController extends DbController {
 						rs.getString(5), rs.getString(6), rs.getString(7),
 						rs.getInt(8), rs.getString(9), rs.getString(10),
 						rs.getString(11), rs.getString(12), rs.getString(13),
-						rs.getBoolean(14));
+						rs.getBoolean(14), rs.getBoolean(15));
 				
 				// subjectIDs
 				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
@@ -465,6 +472,7 @@ public class ContentDbController extends DbController {
 					while(rs1.next()) {
 						subjectIDs.add(rs1.getInt(1)); 	// subjectID
 					}
+					rs1.close();
 					module.setSubjectIDs(subjectIDs);
 				} catch(SQLException e) {
 					e.printStackTrace();
@@ -503,7 +511,7 @@ public class ContentDbController extends DbController {
 				event = null;
 				event = new Event(eventID, new ArrayList<Integer>(),
 						rs.getString(2), rs.getInt(3), rs.getString(4),
-						rs.getBoolean(5));
+						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
 				
 				// moduleIDs
 				ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
@@ -602,12 +610,13 @@ public class ContentDbController extends DbController {
 
 			if (rs.next()) {
 				newSubject = new Subject(rs.getInt(1), rs.getInt(2), rs.getInt(3),
-						rs.getString(4), rs.getBoolean(5));
+						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
 				rs.close();
 				return newSubject;
 
 			} else {
 				System.out.println("No Subject found with this ID.");
+				rs.close();
 				return null;
 			}
 
@@ -647,7 +656,7 @@ public class ContentDbController extends DbController {
 			while (rs.next()) {
 				subject = null;
 				subject = new Subject(rs.getInt(1), rs.getInt(2),rs.getInt(3), 
-						rs.getString(4), rs.getBoolean(5));
+						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
 
 				subjects.add(subject);
 			}
@@ -684,7 +693,7 @@ public class ContentDbController extends DbController {
 						rs.getString(5), rs.getString(6), rs.getString(7),
 						rs.getInt(8), rs.getString(9), rs.getString(10),
 						rs.getString(11), rs.getString(12), rs.getString(13),
-						rs.getBoolean(14));
+						rs.getBoolean(14), rs.getBoolean(15));
 				
 				// subjectIDs
 				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
@@ -696,6 +705,7 @@ public class ContentDbController extends DbController {
 					while(rs1.next()) {
 						subjectIDs.add(rs1.getInt(1)); 	// subjectID
 					}
+					rs1.close();
 					module.setSubjectIDs(subjectIDs);
 				} catch(SQLException e) {
 					e.printStackTrace();
@@ -787,12 +797,13 @@ public class ContentDbController extends DbController {
 			if (rs.next()) {
 				newModuleHandbook = new ModuleHandbook(
 						rs.getInt(1), rs.getString(2), rs.getInt(3),
-						rs.getString(4), rs.getBoolean(5));
+						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
 				rs.close();
 				return newModuleHandbook;
 
 			} else {
 				System.out.println("No ModuleHandbook found with this ID.");
+				rs.close();
 				return null;
 			}
 
@@ -835,8 +846,9 @@ public class ContentDbController extends DbController {
 			while(rs.next()) {
 				moduleHandbooks.add(new ModuleHandbook(rs.getInt(1),
 						rs.getString(2), rs.getInt(3), 
-						rs.getString(4), rs.getBoolean(5)));
+						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7)));
 			}
+			rs.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -916,12 +928,14 @@ public class ContentDbController extends DbController {
 
 			if (rs.next()) {
 				newStudycourse = new Studycourse(
-						rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getBoolean(4));
+						rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getBoolean(4),
+						rs.getString(5), rs.getBoolean(6));
 				rs.close();
 				return newStudycourse;
 
 			} else {
 				System.out.println("No Studycourse found with this ID.");
+				rs.close();
 				return null;
 			}
 
@@ -964,7 +978,7 @@ public class ContentDbController extends DbController {
 			while (rs.next()) {
 				subject = null;
 				subject = new Subject(rs.getInt(1), rs.getInt(2),rs.getInt(3), 
-						rs.getString(4), rs.getBoolean(5));
+						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
 
 				subjects.add(subject);
 			}
@@ -993,7 +1007,7 @@ public class ContentDbController extends DbController {
 			while (rs.next()) {
 				subject = null;
 				subject = new Subject(rs.getInt(1), rs.getInt(2), rs.getInt(2), 
-						rs.getString(3), rs.getBoolean(4));
+						rs.getString(3), rs.getBoolean(4), rs.getString(5), rs.getBoolean(6));
 				subjects.add(subject);
 			}
 
@@ -1022,8 +1036,9 @@ public class ContentDbController extends DbController {
 			
 			while(rs.next()) {
 				studycourses.add(new Studycourse(rs.getInt(1), rs.getInt(2), 
-						rs.getString(3), rs.getBoolean(4)));
+						rs.getString(3), rs.getBoolean(4), rs.getString(5), rs.getBoolean(6)));
 			}
+			rs.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -1046,8 +1061,9 @@ public class ContentDbController extends DbController {
 			while(rs.next()) {
 				moduleHandbooks.add(new ModuleHandbook(rs.getInt(1),
 						rs.getString(2), rs.getInt(3), 
-						rs.getString(4), rs.getBoolean(5)));
+						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7)));
 			}
+			rs.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}

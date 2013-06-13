@@ -119,14 +119,14 @@ public class Test {
 		moduleIDs.add(1);
 		moduleIDs.add(2);
 		
-		Event event = new Event(5, moduleIDs, "Ana IIa", 4, "gerhard.baur@uni-ulm.de", false);
+		Event event = new Event(5, moduleIDs, "Ana IIa", 4, "gerhard.baur@uni-ulm.de", false, "test", true);
 		
 		ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
 		subjectIDs.add(1);
 		subjectIDs.add(2);
 		
 		Module module = new Module(3, "Testmodul3", subjectIDs, "", "", "5 LP", "3", 
-				"Deutsch", 2, "gerhard.baur@uni-ulm.de", "", "", "", "", false);
+				"Deutsch", 2, "gerhard.baur@uni-ulm.de", "", "", "", "", false, true);
 		
 		
 		ContentDbController cdbc = new ContentDbController();
@@ -230,7 +230,7 @@ public class Test {
 		System.out.println(subjects);
 		
 		
-		event = new Event(6, moduleIDs, "Ana I", 8, "gerhard.baur@uni-ulm.de", false);
+		event = new Event(6, moduleIDs, "Ana I", 8, "gerhard.baur@uni-ulm.de", false, "test", true);
 		
 		cdbc.createEvent(event);
 		

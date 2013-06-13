@@ -258,21 +258,14 @@ public class UserRoutes extends Routes {
 			System.out.println(user);
 			
 			user = db.verifyUser(user);
-		
-			System.out.println("DEBUG1");
-			
-			System.out.println(user);
 			
 			if(user != null) {
 				user = db.getUser(user);				
-				if(!user.getUserRights().getCanLogin()){
-					System.out.println("DEBUG3");
-					
+				if(!user.getUserRights().getCanLogin()){					
 					// User cannot login (email not verified)
 					System.out.println("user "+user+" cannot login (email not verified)");
 					json = gson.toJson(new JsonContent(new JsonError("user cannot login (email not verified)", "login(...)")));
 				} else if(user.getEmail().equals(email)) {
-					System.out.println("DEBUG4");
 					
 					System.out.println("user "+user+" verified!");
 					
@@ -292,33 +285,23 @@ public class UserRoutes extends Routes {
 						session.setAttribute("email", email);
 						
 						System.out.println("user "+user+" logged in successfully");
-					} else {
-						System.out.println("DEBUG6");
-						
+					} else {						
 						json = gson.toJson(new JsonContent(new JsonError("db.insertUserHash(email, hash) failed", 
 								"login(...)")));
 					}
-				} else {
-					System.out.println("DEBUG7");
-					
+				} else {					
 					System.out.println("wrong email parameter.");
 					json = gson.toJson(new JsonContent(new JsonError("wrong email parameter in query", 
 							"login(...)")));
 				}
-			} else {
-				System.out.println("DEBUG8");
-				
+			} else {				
 				json = gson.toJson(new JsonContent(new JsonError("wrong email or password", 
 						"login(...)")));
 				}
-		} else {
-			System.out.println("DEBUG9");
-			
+		} else {			
 			json = gson.toJson(new JsonContent(new JsonError("unspecified email parameter in query", 
 					"login(...)")));
-		}
-		System.out.println("DEBUG10");
-		
+		}		
 		
 		try {
 			response.getWriter().write(json);
@@ -420,5 +403,9 @@ public class UserRoutes extends Routes {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void closeConnection() {
+		db.closeConnection();
 	}
 }

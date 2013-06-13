@@ -7,7 +7,25 @@ import util.Utilities;
 public class Content implements DbControllable {
 
 	protected String name;
-	protected boolean archived;
+	protected boolean archived, enabled;
+	protected String content;
+
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 
 	public String getName() {
 		return name;

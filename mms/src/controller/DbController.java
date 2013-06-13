@@ -2,6 +2,7 @@ package controller;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DbController {
 
@@ -32,6 +33,14 @@ public class DbController {
 			return instance;
 		} else
 			return instance;
-
+	}
+	
+	public void closeConnection() {
+		try {
+			db.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

@@ -21,12 +21,15 @@ public class ModuleHandbook extends Content {
 	private int moduleHandbookID, studycourses_studycourseID;
 	
 	// Konstruktor
-	public ModuleHandbook (int moduleHandbookID, String name, int studycourses_studycourseID, String semester,boolean archived) {
+	public ModuleHandbook (int moduleHandbookID, String name, int studycourses_studycourseID, 
+			String semester, boolean archived, String content, boolean enabled) {
 		this.moduleHandbookID = moduleHandbookID;
 		this.name = name;
 		this.studycourses_studycourseID = studycourses_studycourseID;
 		this.semester = semester;
 		this.archived = archived;
+		this.content = content;
+		this.enabled = enabled;
 	}
 	
 	public ModuleHandbook(int moduleHandbookID) {
@@ -66,13 +69,17 @@ public class ModuleHandbook extends Content {
 	
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {moduleHandbookID+"", "'"+name+"'",  studycourses_studycourseID+"",  "'"+semester+"'",  archived+""};
+		String[] values = {moduleHandbookID+"", "'"+name+"'", 
+				studycourses_studycourseID+"",  "'"+semester+"'",  
+				archived+"", ""+"'"+content+"'", ""+enabled};
 		return values;
 	}
 
 	@Override
 	public String[] toValueNamesArray() {
-		String[] values = {"moduleHandbookID", "name", "studycourses_studycourseID", "semester", "archived"};
+		String[] values = {"moduleHandbookID", "name", 
+				"studycourses_studycourseID", "semester", 
+				"archived", "content", "enabled"};
 		return values;
 	}
 
