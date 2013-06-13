@@ -243,12 +243,12 @@ public class UserRoutes extends Routes {
 		String json;
 		
 		if(request.getParameter("email") != null) {
-			String email = request.getParameter("email");
+			String email = request.getParameter("email").toLowerCase();
 			json = getRequestBody(request);
 			System.out.println(json);
 			JsonObject obj = gson.fromJson(json, JsonObject.class);
 			
-			String userEmail = obj.get("email").getAsString();
+			String userEmail = obj.get("email").getAsString().toLowerCase();
 			String userPassword = obj.get("password").getAsString();
 			
 			System.out.println("email: "+userEmail+", password: "+userPassword);

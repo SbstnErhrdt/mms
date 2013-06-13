@@ -28,7 +28,7 @@ public class User implements DbControllable {
 	
 	// Konstruktor 
 	public User(String email, String password) {
-		this.email = email;
+		this.email = email.toLowerCase();
 		this.password = password;
 	}
 	
