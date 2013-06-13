@@ -15,13 +15,7 @@ public class Event extends Content {
 	 * BOOL archived
 	 */
 	
-	
-	private String lecturer_email, room, place, type;
-	public String getRoom() {
-		return room;
-	}
-
-	
+	private String lecturer_email, room, place, type;	
 
 	private int eventID, sws;
 	private ArrayList<Integer> moduleIDs;
@@ -48,6 +42,10 @@ public class Event extends Content {
 	}
 	
 	// Getter & Setter
+	public String getRoom() {
+		return room;
+	}
+	
 	public void setRoom(String room) {
 		this.room = room;
 	}
