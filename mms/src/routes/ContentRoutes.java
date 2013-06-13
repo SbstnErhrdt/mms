@@ -6,15 +6,22 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import model.Employee;
+import model.User;
 import model.content.Event;
 import model.content.Module;
 import model.content.ModuleHandbook;
 import model.content.Studycourse;
 import model.content.Subject;
+import model.userRights.EventRights;
+import model.userRights.ModuleRights;
+import model.userRights.StudycourseRights;
+import model.userRights.SubjectRights;
 
 import com.google.gson.Gson;
 
 import controller.ContentDbController;
+import controller.UserDbController;
 
 public class ContentRoutes extends Routes{
 	private ContentDbController db;
@@ -49,8 +56,66 @@ public class ContentRoutes extends Routes{
 	public void deleteEvent(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
+		
+		User actorUser = getActorUser(request);
+		
 		if(request.getParameter("eventID") != null) {
 			int eventID = Integer.parseInt(request.getParameter("eventID"));
+			
+			// check rights
+			if(actorUser.isEmployee()) {
+				Employee actorEmployee = (Employee) actorUser;
+				if(actorEmployee.getEmployeeRights().isAdmin()) {
+					System.out.println("actorUser is admin");
+				} else {
+					ArrayList<EventRights> actorUserEventRightsList = actorEmployee.getEmployeeRights().getEventRightsList();
+					if(actorUserEventRightsList.isEmpty()) {
+						json = gson.toJson(new JsonContent(new JsonError(
+								"not allowed to delete this event (actorUser has no EventRights)", 
+								"deleteEvent(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+					boolean canDelete = false;
+					for(EventRights er : actorUserEventRightsList) {
+						if(er.getEventID() == eventID) {
+							if(er.getCanDelete()) {
+								System.out.println("actorUser is allowed to delete this event");
+								canDelete = true;
+							} else {
+								System.out.println("actorUser is not allowed to delete this event");
+								canDelete = false;
+							}
+						}
+					}
+					if(!canDelete) {	// no entry found or canDelete=false
+						json = gson.toJson(new JsonContent(new JsonError(
+								"not allowed to delete this event (no fitting EventRights found or canDelete=false)", 
+								"deleteEvent(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+				}
+			} else {
+				json = gson.toJson(new JsonContent(new JsonError(
+						"not allowed to delete this event (actorUser is no employee)", 
+						"deleteEvent(...)")));		
+				try {
+					response.getWriter().write(json);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return;
+			}
+			
 			if(db.deleteEvent(new Event(eventID))) {
 				json = "{\"eventID\":"+eventID+"}";
 			}
@@ -109,9 +174,67 @@ public class ContentRoutes extends Routes{
 
 	public void deleteModule(HttpServletRequest request,
 			HttpServletResponse response) {
+		
+		User actorUser = getActorUser(request);
+		
 		String json = "";
 		if(request.getParameter("moduleID") != null) {
 			int moduleID = Integer.parseInt(request.getParameter("moduleID"));
+			
+			// check rights
+			if(actorUser.isEmployee()) {
+				Employee actorEmployee = (Employee) actorUser;
+				if(actorEmployee.getEmployeeRights().isAdmin()) {
+					System.out.println("actorUser is admin");
+				} else {
+					ArrayList<ModuleRights> actorUserModuleRightsList = actorEmployee.getEmployeeRights().getModuleRightsList();
+					if(actorUserModuleRightsList.isEmpty()) {
+						json = gson.toJson(new JsonContent(new JsonError(
+								"not allowed to delete this module (actorUser has no ModuleRights)", 
+								"deleteModule(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+					boolean canDelete = false;
+					for(ModuleRights mr : actorUserModuleRightsList) {
+						if(mr.getModuleID() == moduleID) {
+							if(mr.getCanDelete()) {
+								System.out.println("actorUser is allowed to delete this module");
+								canDelete = true;
+							} else {
+								System.out.println("actorUser is not allowed to delete this module");
+								canDelete = false;
+							}
+						}
+					}
+					if(!canDelete) {	// no entry found or canDelete=false
+						json = gson.toJson(new JsonContent(new JsonError(
+								"not allowed to delete this module (no fitting ModuleRights found or canDelete=false)", 
+								"deleteModule(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+				}
+			} else {
+				json = gson.toJson(new JsonContent(new JsonError(
+						"not allowed to delete this module (actorUser is no employee)", 
+						"deleteModule(...)")));		
+				try {
+					response.getWriter().write(json);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return;
+			}
+						
 			if(db.deleteModule(new Module(moduleID))) {
 				json = "{\"moduleID\":"+moduleID+"}";
 			}
@@ -174,8 +297,66 @@ public class ContentRoutes extends Routes{
 	public void deleteSubject(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
+		
+		User actorUser = getActorUser(request);
+		
 		if(request.getParameter("subjectID") != null) {		
 			int subjectID = Integer.parseInt(request.getParameter("subjectID"));
+			
+			// check rights
+			if(actorUser.isEmployee()) {
+				Employee actorEmployee = (Employee) actorUser;
+				if(actorEmployee.getEmployeeRights().isAdmin()) {
+					System.out.println("actorUser is admin");
+				} else {
+					ArrayList<SubjectRights> actorUserSubjectRightsList = actorEmployee.getEmployeeRights().getSubjectRightsList();
+					if(actorUserSubjectRightsList.isEmpty()) {
+						json = gson.toJson(new JsonContent(new JsonError(
+								"not allowed to delete this subject (actorUser has no SubjectRights)", 
+								"deleteSubject(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+					boolean canDelete = false;
+					for(SubjectRights sr : actorUserSubjectRightsList) {
+						if(sr.getSubjectID() == subjectID) {
+							if(sr.getCanDelete()) {
+								System.out.println("actorUser is allowed to delete this subject");
+								canDelete = true;
+							} else {
+								System.out.println("actorUser is not allowed to delete this subject");
+								canDelete = false;
+							}
+						}
+					}
+					if(!canDelete) {	// no entry found or canDelete=false
+						json = gson.toJson(new JsonContent(new JsonError(
+								"not allowed to delete this subject (no fitting SubjectRights found or canDelete=false)", 
+								"deleteSubject(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+				}
+			} else {
+				json = gson.toJson(new JsonContent(new JsonError(
+						"not allowed to delete this subject (actorUser is no employee)", 
+						"deleteSubject(...)")));		
+				try {
+					response.getWriter().write(json);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return;
+			}
+					
 			if(db.deleteSubject(new Subject(subjectID))) {
 				json = "{\"subjectID\":"+subjectID+"}";
 			}
@@ -242,8 +423,66 @@ public class ContentRoutes extends Routes{
 	public void deleteStudycourse(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
+		
+		User actorUser = getActorUser(request);
+		
 		if(request.getParameter("studycourseID") != null) {		
 			int studycourseID = Integer.parseInt(request.getParameter("studycourseID"));
+			
+			// check rights
+			if(actorUser.isEmployee()) {
+				Employee actorEmployee = (Employee) actorUser;
+				if(actorEmployee.getEmployeeRights().isAdmin()) {
+					System.out.println("actorUser is admin");
+				} else {
+					ArrayList<StudycourseRights> actorUserStudycourseRightsList = actorEmployee.getEmployeeRights().getStudycourseRightsList();
+					if(actorUserStudycourseRightsList.isEmpty()) {
+						json = gson.toJson(new JsonContent(new JsonError(
+								"not allowed to delete this studycourse (actorUser has no StudycourseRights)", 
+								"deleteStudycourse(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+					boolean canDelete = false;
+					for(StudycourseRights scr : actorUserStudycourseRightsList) {
+						if(scr.getStudycourseID() == studycourseID) {
+							if(scr.getCanDelete()) {
+								System.out.println("actorUser is allowed to delete this studycourse");
+								canDelete = true;
+							} else {
+								System.out.println("actorUser is not allowed to delete this studycourse");
+								canDelete = false;
+							}
+						}
+					}
+					if(!canDelete) {	// no entry found or canDelete=false
+						json = gson.toJson(new JsonContent(new JsonError(
+								"not allowed to delete this studycourse (no fitting StudycourseRights found or canDelete=false)", 
+								"deleteStudycourse(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+				}
+			} else {
+				json = gson.toJson(new JsonContent(new JsonError(
+						"not allowed to delete this studycourse (actorUser is no employee)", 
+						"deleteStudycourse(...)")));		
+				try {
+					response.getWriter().write(json);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return;
+			}			
+			
 			if(db.deleteStudycourse(new Studycourse(studycourseID))) {
 				json = "{\"studycourseID\":"+studycourseID+"}";
 			}

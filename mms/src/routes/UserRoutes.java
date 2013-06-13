@@ -15,6 +15,7 @@ import com.google.gson.JsonObject;
 
 import controller.UserDbController;
 
+import model.Employee;
 import model.User;
 import model.userRights.UserRights;
 
@@ -53,8 +54,44 @@ public class UserRoutes extends Routes {
 	public void deleteUser(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json;
+		
+		User actorUser = getActorUser(request);
+		
+		boolean hasRights = false;
+		
+		// check rights
+		if(actorUser.isEmployee()) {
+			Employee actorEmployee = (Employee) actorUser;
+			if(!actorEmployee.getEmployeeRights().isAdmin()) {
+				hasRights = false;
+				System.out.println("actorUser is no admin");
+			} else {
+				hasRights = true;
+				System.out.println("actorUser is admin");
+			}
+		}
+		
 		if(request.getParameter("email") != null) {
 			String email = request.getParameter("email");
+			
+			// check rights
+			if(!hasRights) {
+				if(!email.equals(actorUser.getEmail())) {
+					System.out.println("actorUser does not equal user to delete");
+					json = gson.toJson(new JsonContent(new JsonError(
+							"not allowed to delete this user (actorUser is no admin and does not equal user to delete)", 
+							"deleteUser(...)")));		
+					try {
+						response.getWriter().write(json);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
+				} else {
+					System.out.println("actorUser equals user to delete");
+				}
+			}
+			
 			User user = new User(email);
 			if(db.deleteUser(user))	json = gson.toJson(user);
 			else {
@@ -93,7 +130,40 @@ public class UserRoutes extends Routes {
 
 	public void createUser(HttpServletRequest request,
 			HttpServletResponse response) {		
-		String json = getRequestBody(request);
+		String json;
+		
+		User actorUser = getActorUser(request);
+
+		// check rights
+		if(actorUser.isEmployee()) {
+			Employee actorEmployee = (Employee) actorUser;
+			if(!actorEmployee.getEmployeeRights().isAdmin()) {
+				System.out.println("actorUser is no admin");
+				json = gson.toJson(new JsonContent(new JsonError(
+						"not allowed to create users (actorUser is no admin)", 
+						"createUser(...)")));
+				try { 
+					response.getWriter().write(json);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return;
+			} else {
+				System.out.println("actorUser is admin");
+			}
+		} else {
+			json = gson.toJson(new JsonContent(new JsonError(
+					"not allowed to create users (actorUser is employee (and therefore no admin))", 
+					"createUser(...)")));
+			try { 
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
+		
+		json = getRequestBody(request);
 		
 		User user = gson.fromJson(json, User.class);
 		
@@ -114,9 +184,44 @@ public class UserRoutes extends Routes {
 
 	public void updateUser(HttpServletRequest request,
 			HttpServletResponse response) {
+		
+		User actorUser = getActorUser(request);
+		
+		boolean hasRights = false;
+		
+		// check rights
+		if(actorUser.isEmployee()) {
+			Employee actorEmployee = (Employee) actorUser;
+			if(!actorEmployee.getEmployeeRights().isAdmin()) {
+				hasRights = false;
+				System.out.println("actorUser is no admin");
+			} else {
+				hasRights = true;
+				System.out.println("actorUser is admin");
+			}
+		}
+		
 		String json = getRequestBody(request);
 		
 		User user = gson.fromJson(json, User.class);
+		
+		// check rights
+		if(!hasRights) {
+			if(!user.getEmail().equals(actorUser.getEmail())) {
+				System.out.println("actorUser does not equal user to delete");
+				json = gson.toJson(new JsonContent(new JsonError(
+						"not allowed to delete this user (actorUser is no admin and does not equal user to update)", 
+						"updateUser(...)")));		
+				try {
+					response.getWriter().write(json);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return;
+			} else {
+				System.out.println("actorUser equals user to delete");
+			}
+		}
 		
 		if(db.updateUser(user)) {
 			json = gson.toJson(user);
