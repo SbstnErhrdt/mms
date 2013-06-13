@@ -600,21 +600,46 @@ public class ContentRoutes extends Routes{
 			if(actorEmployee.getEmployeeRights().isAdmin()) {
 				System.out.println("actorUser is admin");
 			} else {
-				System.out.println("actorUser is no employee");
-				json = gson.toJson(new JsonContent(new JsonError(
-						"not allowed to create events (actorUser is no employee)", 
-						"createEvent(...)")));		
-				try {
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
+				System.out.println("actorUser is no admin");
+				
+				ArrayList<Integer> moduleIDs = event.getModuleIDs();
+				
+				ArrayList<ModuleRights> actorUserModuleRightsList = actorEmployee.getEmployeeRights().getModuleRightsList();
+				ArrayList<Integer> allowedModuleIDs = new ArrayList<Integer>();
+				
+				boolean canCreateChilds = false;
+				for(int moduleID : moduleIDs) {
+					for(ModuleRights mr : actorUserModuleRightsList) {
+						if(moduleID == mr.getModuleID()) {
+							if(mr.getCanCreateChilds()) {
+								System.out.println("actorUser is allowed to create childs for one of the modules (moduleID: "+moduleID+")");
+								allowedModuleIDs.add(moduleID);
+								canCreateChilds = true;
+							} else {
+								System.out.println("actorUser is not allowed to create childs for one of the modules (moduleID: "+moduleID+")");
+							}
+						}
+					}
 				}
-				return;
+				if(!canCreateChilds) {
+					json = gson.toJson(new JsonContent(new JsonError(
+							"actorUser is not allowed to create events for any of these moduleIDs (moduleIDs: "+moduleIDs+")", 
+							"createEvent(...)")));		
+					try {
+						response.getWriter().write(json);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
+				} else {
+					// only set moduleIDs the actorUser is allowed to create childs for
+					event.setModuleIDs(allowedModuleIDs);
+				}
 			}
 		} else {
 			json = gson.toJson(new JsonContent(new JsonError(
-					"not allowed to delete this event (actorUser is no employee)", 
-					"deleteEvent(...)")));		
+					"actorUser is not allowed to create Events (actorUser is no employee)", 
+					"createEvent(...)")));		
 			try {
 				response.getWriter().write(json);
 			} catch (IOException e) {
@@ -623,8 +648,6 @@ public class ContentRoutes extends Routes{
 			return;
 		}
 
-		
-		
 		if(db.createEvent(event)) {
 			
 			json = gson.toJson(event);
@@ -721,6 +744,65 @@ public class ContentRoutes extends Routes{
 		
 		Module module = gson.fromJson(json, Module.class);
 		
+		User actorUser = getActorUser(request);
+		
+		// check rights
+		if(actorUser.isEmployee()) {
+			Employee actorEmployee = (Employee) actorUser;
+			if(actorEmployee.getEmployeeRights().isAdmin()) {
+				System.out.println("actorUser is admin");
+			} else {
+				System.out.println("actorUser is no admin");
+				
+				ArrayList<Integer> subjectIDs = module.getSubjectIDs();
+				
+				ArrayList<SubjectRights> actorUserSubjectRightsList = actorEmployee.getEmployeeRights().getSubjectRightsList();
+				ArrayList<Integer> allowedSubjectIDs = new ArrayList<Integer>();
+				
+				boolean canCreateChilds = false;
+				for(int subjectID : subjectIDs) {
+					for(SubjectRights sr : actorUserSubjectRightsList) {
+						if(subjectID == sr.getSubjectID()) {
+							if(sr.getCanCreateChilds()) {
+								System.out.println("actorUser is allowed to create " +
+										"childs for one of the subjects (subjectID: "+subjectID+")");
+								allowedSubjectIDs.add(subjectID);
+								canCreateChilds = true;
+							} else {
+								System.out.println("actorUser is not allowed to create " +
+										"childs for one of the subjects (subjectID: "+subjectID+")");
+							}
+						}
+					}
+				}
+				if(!canCreateChilds) {
+					json = gson.toJson(new JsonContent(new JsonError(
+							"actorUser is not allowed to create modules for any of these subjectIDs " +
+							"(subjectIDs: "+subjectIDs+")", 
+							"createModule(...)")));		
+					try {
+						response.getWriter().write(json);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
+				} else {
+					// only set moduleIDs the actorUser is allowed to create childs for
+					module.setSubjectIDs(allowedSubjectIDs);
+				}
+			}
+		} else {
+			json = gson.toJson(new JsonContent(new JsonError(
+					"actorUser is not allowed to create modules (actorUser is no employee)", 
+					"createModule(...)")));		
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		}		
+		
 		if(db.createModule(module)) {
 			json = gson.toJson(module);
 			try {
@@ -809,6 +891,58 @@ public class ContentRoutes extends Routes{
 		
 		Subject subject = gson.fromJson(json, Subject.class);
 		
+		User actorUser = getActorUser(request);
+		
+		// check rights
+		if(actorUser.isEmployee()) {
+			Employee actorEmployee = (Employee) actorUser;
+			if(actorEmployee.getEmployeeRights().isAdmin()) {
+				System.out.println("actorUser is admin");
+			} else {
+				System.out.println("actorUser is no admin");
+				
+				int studycourseID = subject.getStudycourses_studycourseID();
+				
+				ArrayList<StudycourseRights> actorUserStudycourseRightsList = actorEmployee.getEmployeeRights().getStudycourseRightsList();
+				
+				boolean canCreateChilds = false;
+				for(StudycourseRights scr : actorUserStudycourseRightsList) {
+					if(studycourseID == scr.getStudycourseID()) {
+						if(scr.getCanCreateChilds()) {
+							System.out.println("actorUser is allowed to create " +
+									"childs for this studycourses (studycourseID: "+studycourseID+")");
+							canCreateChilds = true;
+						} else {
+							System.out.println("actorUser is not allowed to create " +
+									"childs for this studycourses (studycourseID: "+studycourseID+")");
+						}
+					}
+				}
+				if(!canCreateChilds) {
+					json = gson.toJson(new JsonContent(new JsonError(
+							"actorUser is not allowed to create subjects for this studycourseID " +
+							"(studycourseID: "+studycourseID+")", 
+							"createSubject(...)")));		
+					try {
+						response.getWriter().write(json);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
+				} 
+			}
+		} else {
+			json = gson.toJson(new JsonContent(new JsonError(
+					"actorUser is not allowed to create subjects (actorUser is no employee)", 
+					"createSubject(...)")));		
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		}		
+				
 		if(db.createSubject(subject)) {
 			json = gson.toJson(subject);
 			try {
@@ -896,6 +1030,38 @@ public class ContentRoutes extends Routes{
 		String json = getRequestBody(request);
 		
 		Studycourse studycourse = gson.fromJson(json, Studycourse.class);
+		
+		User actorUser = getActorUser(request);
+		
+		// check rights (only admins can create studycourses)
+		if(actorUser.isEmployee()) {
+			Employee actorEmployee = (Employee) actorUser;
+			if(!actorEmployee.getEmployeeRights().isAdmin()) {
+				System.out.println("user is no admin");
+				
+				json = gson.toJson(new JsonContent(new JsonError(
+						"actorUser is not allowed to create studycourses (actorUser is no admin)", 
+						"createStudycourse(...)")));
+				try {
+					response.getWriter().write(json);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return;
+			}
+		} else {
+			System.out.println("user is no employee");	
+			json = gson.toJson(new JsonContent(new JsonError(
+					"actorUser is not allowed to create studycourses " +
+					"(actorUser is no employee and therefore no admin)", 
+					"createStudycourse(...)")));
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
 		
 		if(db.createStudycourse(studycourse)) {
 			json = gson.toJson(studycourse);

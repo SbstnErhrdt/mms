@@ -2,6 +2,7 @@ package model.userRights;
 
 public class StudycourseRights extends ContentRights {
 	private int studycourseID;
+	private boolean canCreateChilds;
 
 	public int getStudycourseID() {
 		return studycourseID;
@@ -11,15 +12,21 @@ public class StudycourseRights extends ContentRights {
 		this.studycourseID = studycourseID;
 	}
 	
+	public boolean getCanCreateChilds() {
+		return canCreateChilds;
+	}
+
+	public void setCanCreateChilds(boolean canCreateChilds) {
+		this.canCreateChilds = canCreateChilds;
+	}	
+	
 	public String[] toValueNamesArray() {
-		String[] valueNames = super.toValueNamesArray();
-		valueNames[3] = "studycourseID";
+		String[] valueNames = {"studycourseID", "canEdit", "canDelete", "canCreateChilds"};
 		return valueNames;
 	}
 	
 	public String[] toValuesArray() {
-		String[] values = super.toValuesArray();
-		values[3] = "" + studycourseID;
+		String[] values = {""+studycourseID, ""+canEdit, ""+canDelete, ""+canCreateChilds};
 		return values;
 	}
 	

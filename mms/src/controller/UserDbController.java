@@ -339,10 +339,10 @@ public class UserDbController extends DbController {
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			while(rs.next()) {
-				eventRights.setCanEdit(rs.getBoolean(1)); 	// canEdit
-				eventRights.setCanCreate(rs.getBoolean(2)); // canCreate
+				eventRights.setEventID(rs.getInt(1)); 		// eventID
+				eventRights.setCanEdit(rs.getBoolean(2)); 	// canEdit
 				eventRights.setCanDelete(rs.getBoolean(3)); // canDelete
-				eventRights.setEventID(rs.getInt(4)); 		// eventID
+				
 				eventRightsList.add(eventRights);
 				eventRights = new EventRights();
 			} 
@@ -369,10 +369,10 @@ public class UserDbController extends DbController {
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			while(rs.next()) {
-				moduleRights.setCanEdit(rs.getBoolean(1)); 	// canEdit
-				moduleRights.setCanCreate(rs.getBoolean(2)); // canCreate
+				moduleRights.setModuleID(rs.getInt(1)); 	// moduleID
+				moduleRights.setCanEdit(rs.getBoolean(2)); 	// canEdit
 				moduleRights.setCanDelete(rs.getBoolean(3));// canDelete
-				moduleRights.setModuleID(rs.getInt(4)); 	// moduleID
+				moduleRights.setCanCreateChilds(rs.getBoolean(4)); // canCreateChilds
 				moduleRightsList.add(moduleRights);
 				moduleRights = new ModuleRights();
 			} 
@@ -399,10 +399,10 @@ public class UserDbController extends DbController {
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			while(rs.next()) {
-				subjectRights.setCanEdit(rs.getBoolean(1)); 	// canEdit
-				subjectRights.setCanCreate(rs.getBoolean(2)); 	// canCreate
+				subjectRights.setSubjectID(rs.getInt(1)); 		// subjectID
+				subjectRights.setCanEdit(rs.getBoolean(2)); 	// canEdit
 				subjectRights.setCanDelete(rs.getBoolean(3));	// canDelete
-				subjectRights.setSubjectID(rs.getInt(4)); 		// subjectID
+				subjectRights.setCanCreateChilds(rs.getBoolean(4)); // canCreateChilds
 				subjectRightsList.add(subjectRights);
 				subjectRights = new SubjectRights();
 			} 
@@ -429,10 +429,10 @@ public class UserDbController extends DbController {
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			while(rs.next()) {
-				studycourseRights.setCanEdit(rs.getBoolean(1)); 	// canEdit
-				studycourseRights.setCanCreate(rs.getBoolean(2)); 	// canCreate
+				studycourseRights.setStudycourseID(rs.getInt(1)); 	// studycourseID
+				studycourseRights.setCanEdit(rs.getBoolean(2)); 	// canEdit
 				studycourseRights.setCanDelete(rs.getBoolean(3));	// canDelete
-				studycourseRights.setStudycourseID(rs.getInt(4)); 	// studycourseID
+				studycourseRights.setCanCreateChilds(rs.getBoolean(4)); // canCreateChilds
 				studycourseRightsList.add(studycourseRights);
 				studycourseRights = new StudycourseRights();
 			} 

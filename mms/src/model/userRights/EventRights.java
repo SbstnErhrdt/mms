@@ -12,14 +12,12 @@ public class EventRights extends ContentRights {
 	}
 	
 	public String[] toValueNamesArray() {
-		String[] valueNames = super.toValueNamesArray();
-		valueNames[3] = "eventID";
+		String[] valueNames = {"eventID", "canEdit", "canDelete"};
 		return valueNames;
 	}
 	
 	public String[] toValuesArray() {
-		String[] values = super.toValuesArray();
-		values[3] = "" + eventID;
+		String[] values = {""+eventID, ""+canEdit, ""+canDelete};
 		return values;
 	}
 	

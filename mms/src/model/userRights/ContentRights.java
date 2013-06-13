@@ -4,7 +4,7 @@ import util.Utilities;
 import model.DbControllable;
 
 public class ContentRights implements DbControllable {
-	private boolean canEdit, canCreate, canDelete;
+	protected boolean canEdit, canDelete;
 	
 	
 	public ContentRights() {
@@ -15,10 +15,6 @@ public class ContentRights implements DbControllable {
 		return canEdit;
 	}
 	
-	public boolean getCanCreate() {
-		return canCreate;
-	}
-	
 	public boolean getCanDelete() {
 		return canDelete;
 	}
@@ -26,10 +22,6 @@ public class ContentRights implements DbControllable {
 	// Setter
 	public void setCanEdit(boolean canEdit) {
 		this.canEdit = canEdit;
-	}
-	
-	public void setCanCreate(boolean canCreate) {
-		this.canCreate = canCreate;
 	}
 	
 	public void setCanDelete(boolean canDelete) {
@@ -48,14 +40,14 @@ public class ContentRights implements DbControllable {
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {""+canEdit, ""+canCreate, ""+canDelete, "ID"};
-		return values;
+		// nothing (overwritten later)
+		return null;
 	}
 
 	@Override
 	public String[] toValueNamesArray() {
-		String[] valueNames = {"canEdit", "canCreate", "canDelete", "ID"};
-		return valueNames;
+		// nothing (overwritten later)
+		return null;
 	}
 	
 	public String toString() {

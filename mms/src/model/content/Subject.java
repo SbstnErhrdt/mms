@@ -71,5 +71,22 @@ public class Subject extends Content {
 
 	public void setID(int subjectID) {
 		this.subjectID = subjectID;
+	}
+
+	public int getModuleHandbooks_moduleHandbookID() {
+		return moduleHandbooks_moduleHandbookID;
+	}
+
+	public void setModuleHandbooks_moduleHandbookID(
+			int moduleHandbooks_moduleHandbookID) {
+		this.moduleHandbooks_moduleHandbookID = moduleHandbooks_moduleHandbookID;
+	}
+
+	public int getStudycourses_studycourseID() {
+		return studycourses_studycourseID;
+	}
+
+	public void setStudycourses_studycourseID(int studycourses_studycourseID) {
+		this.studycourses_studycourseID = studycourses_studycourseID;
 	}	
 }

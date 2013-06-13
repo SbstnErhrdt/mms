@@ -37,7 +37,6 @@ public class Test {
 		
 		EventRights eventRights = new EventRights();
 		eventRights.setEventID(5);
-		eventRights.setCanCreate(true);
 		eventRights.setCanEdit(true);
 		eventRights.setCanDelete(false);
 		
@@ -45,7 +44,6 @@ public class Test {
 		
 		eventRights = new EventRights();
 		eventRights.setEventID(6);
-		eventRights.setCanCreate(false);
 		eventRights.setCanEdit(true);
 		eventRights.setCanDelete(false);
 		
@@ -56,7 +54,7 @@ public class Test {
 		
 		ModuleRights moduleRights = new ModuleRights();
 		moduleRights.setModuleID(1);
-		moduleRights.setCanCreate(true);
+		moduleRights.setCanCreateChilds(true);
 		moduleRights.setCanEdit(true);
 		moduleRights.setCanDelete(false);
 		
@@ -64,7 +62,7 @@ public class Test {
 		
 		SubjectRights sR = new SubjectRights();
 		sR.setSubjectID(1);
-		sR.setCanCreate(true);
+		sR.setCanCreateChilds(true);
 		sR.setCanEdit(true);
 		sR.setCanDelete(false);
 		
@@ -72,7 +70,7 @@ public class Test {
 		
 		StudycourseRights scR = new StudycourseRights();
 		scR.setStudycourseID(1);
-		scR.setCanCreate(true);
+		scR.setCanCreateChilds(true);
 		scR.setCanEdit(true);
 		scR.setCanDelete(false);
 		
