@@ -25,13 +25,15 @@ public class Module extends Content {
 	
 	private int moduleID, duration;
 	private String token, englishTitle, lp, sws, language, director_email, requirement, learningTarget, literature; 
+	private boolean isCritical;
 	
 	// PARENT SUBJECTS
 	private ArrayList<Integer> subjectIDs;
 	
 	// Konstruktor
 	public Module(int moduleID, String name, ArrayList<Integer> subjectIDs, String token, String englishTitle, String lp, String sws, 
-			String language, int duration, String director_email, String requirement, String learningTarget, String content, String literature, boolean archived, boolean enabled) {
+			String language, int duration, String director_email, String requirement, String learningTarget, String content, String literature, 
+			boolean archived, boolean enabled, boolean isCritical) {
 		this.moduleID = moduleID;
 		this.name = name;
 		this.subjectIDs = subjectIDs;
@@ -48,13 +50,22 @@ public class Module extends Content {
 		this.literature = literature;
 		this.archived = archived;
 		this.enabled = enabled;
+		this.isCritical = isCritical;
 	}
-	
+
+	// Getter & Setter
+	public boolean isCritical() {
+		return isCritical;
+	}
+
+	public void setCritical(boolean isCritical) {
+		this.isCritical = isCritical;
+	}
+
 	public Module(int moduleID) {
 		this.moduleID = moduleID;
 	}
 
-	// Getter & Setter
 	public ArrayList<Integer> getSubjectIDs() {
 		return subjectIDs;
 	}
@@ -178,7 +189,7 @@ public class Module extends Content {
 	public String[] toValuesArray() {
 		String[] values = {""+moduleID, "'"+name+"'", "'"+token+"'", "'"+englishTitle+"'", "'"+lp+"'", ""+sws, "'"+language+"'",
 				""+duration, "'"+director_email+"'", "'"+requirement+"'", "'"+learningTarget+"'", "'"+content+"'", "'"+literature+"'", 
-				""+archived, ""+enabled}; 
+				""+archived, ""+enabled, ""+isCritical}; 
 		return values;
 	}
 
@@ -186,7 +197,7 @@ public class Module extends Content {
 	public String[] toValueNamesArray() {
 		String[] valueNames = {"moduleID", "name", "token", "englishTitle", "lp", "sws", "language",
 			"duration", "director_email", "requirement", "learningTarget", "content", "literature", 
-			"archived", "enabled"}; 
+			"archived", "enabled", "isCritical"}; 
 		return valueNames;
 	}
 	

@@ -161,7 +161,8 @@ public class ContentDbController extends DbController {
 			if (rs.next()) {
 				newEvent = new Event(rs.getInt(1), new ArrayList<Integer>(),
 						rs.getString(2), rs.getInt(3), rs.getString(4),
-						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
+						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), rs.getString(8), 
+						rs.getString(9), rs.getString(10));
 				rs.close();
 
 			} else {
@@ -223,7 +224,8 @@ public class ContentDbController extends DbController {
 				event = null;
 				event = new Event(eventID, new ArrayList<Integer>(),
 						rs.getString(2), rs.getInt(3), rs.getString(4),
-						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
+						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), rs.getString(8), 
+						rs.getString(9), rs.getString(10));
 				
 				// moduleIDs
 				ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
@@ -395,7 +397,7 @@ public class ContentDbController extends DbController {
 						rs.getString(5), rs.getString(6), rs.getString(7),
 						rs.getInt(8), rs.getString(9), rs.getString(10),
 						rs.getString(11), rs.getString(12), rs.getString(13),
-						rs.getBoolean(14), rs.getBoolean(15));
+						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16));
 			} else {
 				System.out.println("No Event found with this ID.");
 				rs.close();
@@ -460,7 +462,7 @@ public class ContentDbController extends DbController {
 						rs.getString(5), rs.getString(6), rs.getString(7),
 						rs.getInt(8), rs.getString(9), rs.getString(10),
 						rs.getString(11), rs.getString(12), rs.getString(13),
-						rs.getBoolean(14), rs.getBoolean(15));
+						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16));
 				
 				// subjectIDs
 				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
@@ -511,7 +513,8 @@ public class ContentDbController extends DbController {
 				event = null;
 				event = new Event(eventID, new ArrayList<Integer>(),
 						rs.getString(2), rs.getInt(3), rs.getString(4),
-						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
+						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), rs.getString(8), 
+						rs.getString(9), rs.getString(10));
 				
 				// moduleIDs
 				ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
@@ -693,7 +696,7 @@ public class ContentDbController extends DbController {
 						rs.getString(5), rs.getString(6), rs.getString(7),
 						rs.getInt(8), rs.getString(9), rs.getString(10),
 						rs.getString(11), rs.getString(12), rs.getString(13),
-						rs.getBoolean(14), rs.getBoolean(15));
+						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16));
 				
 				// subjectIDs
 				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();

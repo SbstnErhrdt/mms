@@ -16,7 +16,13 @@ public class Event extends Content {
 	 */
 	
 	
-	private String lecturer_email;
+	private String lecturer_email, room, place, type;
+	public String getRoom() {
+		return room;
+	}
+
+	
+
 	private int eventID, sws;
 	private ArrayList<Integer> moduleIDs;
 	
@@ -27,7 +33,7 @@ public class Event extends Content {
 	
 	public Event(int eventID, ArrayList<Integer> moduleIDs, String name, 
 			int sws, String lecturer_email, boolean archived, String content, 
-			boolean enabled) {
+			boolean enabled, String room, String place, String type) {
 		this.eventID = eventID;
 		this.moduleIDs = moduleIDs;
 		this.name = name;
@@ -36,9 +42,32 @@ public class Event extends Content {
 		this.archived = archived;
 		this.content = content;
 		this.enabled = enabled;
+		this.room = room;
+		this.place = place;
+		this.type = type;	
 	}
 	
 	// Getter & Setter
+	public void setRoom(String room) {
+		this.room = room;
+	}
+
+	public String getPlace() {
+		return place;
+	}
+
+	public void setPlace(String place) {
+		this.place = place;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+	
 	public int getSws() {
 		return sws;
 	}
@@ -75,13 +104,14 @@ public class Event extends Content {
 	@Override
 	public String[] toValuesArray() {
 		String[] values = {""+eventID, "'"+name+"'", ""+sws, ""+"'"+lecturer_email+"'", 
-				""+archived, "'"+content+"'", ""+enabled};
+				""+archived, "'"+content+"'", ""+enabled, "'"+room+"'", "'"+place+"'", "'"+type+"'"};
 		return values;
 	}
 
 	@Override
 	public String[] toValueNamesArray() {
-		String[] valueNames = {"eventID", "name", "sws", "lecturer_email", "archived", "content", "enabled"};
+		String[] valueNames = {"eventID", "name", "sws", "lecturer_email", "archived", 
+				"content", "enabled", "room", "place", "type"};
 		return valueNames;
 	}
 	
