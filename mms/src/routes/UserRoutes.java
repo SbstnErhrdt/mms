@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.catalina.Session;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -18,6 +16,8 @@ import controller.UserDbController;
 import model.Employee;
 import model.User;
 import model.userRights.UserRights;
+
+import util.Utilities;
 
 public class UserRoutes extends Routes {
 	private UserDbController db;
@@ -153,7 +153,7 @@ public class UserRoutes extends Routes {
 			}
 		} else {
 			json = gson.toJson(new JsonContent(new JsonError(
-					"not allowed to create users (actorUser is employee (and therefore no admin))", 
+					"not allowed to create users (actorUser is no employee (and therefore no admin))", 
 					"createUser(...)")));
 			try { 
 				response.getWriter().write(json);
@@ -167,7 +167,12 @@ public class UserRoutes extends Routes {
 		
 		User user = gson.fromJson(json, User.class);
 		
-		if(db.createUser(user)) {
+		// validate email
+		if(!Utilities.validateEmail(user.getEmail())) {
+			json = gson.toJson(new JsonContent(new JsonError(
+					"user to create has invalid email", 
+					"createUser(...)")));
+		} else if(db.createUser(user)) {
 			json = gson.toJson(user);
 		} else {
 			json = gson.toJson(new JsonContent(new JsonError(
@@ -355,14 +360,19 @@ public class UserRoutes extends Routes {
 		
 		if(user == null) {
 			json = gson.toJson(new JsonContent(new JsonError(
-					"user object is null", 
+					"registration failed (user object is null)", 
 					"register(...)")));
 		} else {
 			if(user.isEmployee()) {
 				json = gson.toJson(new JsonContent(new JsonError(
-						"cannot register users who are employees", 
+						"registration failed (cannot register users who are employees)", 
+						"register(...)")));
+			} else if(!Utilities.validateEmail(user.getEmail())) {
+				json = gson.toJson(new JsonContent(new JsonError(
+						"registration failed (invalid email)", 
 						"register(...)")));
 			} else {
+				// overwrite userRights if any, so the user can't register with advanced rights
 				user.setUserRights(new UserRights(false));	// canLogin == false
 				db.createUser(user);
 				json = gson.toJson(user);
