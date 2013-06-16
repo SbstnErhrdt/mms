@@ -31,6 +31,10 @@ public class UserRoutes extends Routes {
 	// GET Methods
 	// ####################################################
 	
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void readUser(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json;
@@ -39,7 +43,7 @@ public class UserRoutes extends Routes {
 			User user = db.getUser(new User(email));
 			json = gson.toJson(user);
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"unspecified email parameter in query", 
 							"readUser(...)")));
 		}
@@ -51,6 +55,10 @@ public class UserRoutes extends Routes {
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void deleteUser(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json;
@@ -78,7 +86,7 @@ public class UserRoutes extends Routes {
 			if(!hasRights) {
 				if(!email.equals(actorUser.getEmail())) {
 					System.out.println("actorUser does not equal user to delete");
-					json = gson.toJson(new JsonContent(new JsonError(
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"not allowed to delete this user (actorUser is no admin and does not equal user to delete)", 
 							"deleteUser(...)")));		
 					try {
@@ -95,12 +103,12 @@ public class UserRoutes extends Routes {
 			User user = new User(email);
 			if(db.deleteUser(user))	json = gson.toJson(user);
 			else {
-				json = gson.toJson(new JsonContent(new JsonError(
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"db.deleteUser(user) failed", 
 						"deleteUser(...)")));
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified email parameter in query", 
 					"deleteUser(...)")));
 			}
@@ -112,9 +120,13 @@ public class UserRoutes extends Routes {
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void readUsers(HttpServletRequest request,
 			HttpServletResponse response) {
-		ArrayList<User> users = db.readUsers();		
+		ArrayList<User> users = db.readReducedUsers();		
 		String json = gson.toJson(users);
 		
 		try {
@@ -128,6 +140,10 @@ public class UserRoutes extends Routes {
 	// POST Methods
 	// ####################################################
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void createUser(HttpServletRequest request,
 			HttpServletResponse response) {		
 		String json;
@@ -139,7 +155,7 @@ public class UserRoutes extends Routes {
 			Employee actorEmployee = (Employee) actorUser;
 			if(!actorEmployee.getEmployeeRights().isAdmin()) {
 				System.out.println("actorUser is no admin");
-				json = gson.toJson(new JsonContent(new JsonError(
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to create users (actorUser is no admin)", 
 						"createUser(...)")));
 				try { 
@@ -152,7 +168,7 @@ public class UserRoutes extends Routes {
 				System.out.println("actorUser is admin");
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to create users (actorUser is no employee (and therefore no admin))", 
 					"createUser(...)")));
 			try { 
@@ -169,13 +185,13 @@ public class UserRoutes extends Routes {
 		
 		// validate email
 		if(!Utilities.validateEmail(user.getEmail())) {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"user to create has invalid email", 
 					"createUser(...)")));
 		} else if(db.createUser(user)) {
 			json = gson.toJson(user);
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"db.createUser(user) failed", 
 					"createUser(...)")));
 		}
@@ -187,6 +203,10 @@ public class UserRoutes extends Routes {
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void updateUser(HttpServletRequest request,
 			HttpServletResponse response) {
 		
@@ -214,7 +234,7 @@ public class UserRoutes extends Routes {
 		if(!hasRights) {
 			if(!user.getEmail().equals(actorUser.getEmail())) {
 				System.out.println("actorUser does not equal user to delete");
-				json = gson.toJson(new JsonContent(new JsonError(
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to delete this user (actorUser is no admin and does not equal user to update)", 
 						"updateUser(...)")));		
 				try {
@@ -231,7 +251,7 @@ public class UserRoutes extends Routes {
 		if(db.updateUser(user)) {
 			json = gson.toJson(user);
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"db.updateUser(user) failed", 
 					"updateUser(...)")));
 		}
@@ -243,6 +263,10 @@ public class UserRoutes extends Routes {
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void login(HttpServletRequest request, HttpServletResponse response) {
 		
 		String json;
@@ -269,7 +293,7 @@ public class UserRoutes extends Routes {
 				if(!user.getUserRights().getCanLogin()){					
 					// User cannot login (email not verified)
 					System.out.println("user "+user+" cannot login (email not verified)");
-					json = gson.toJson(new JsonContent(new JsonError("user cannot login (email not verified)", "login(...)")));
+					json = gson.toJson(new JsonErrorContainer(new JsonError("user cannot login (email not verified)", "login(...)")));
 				} else if(user.getEmail().equals(email)) {
 					
 					System.out.println("user "+user+" verified!");
@@ -291,20 +315,20 @@ public class UserRoutes extends Routes {
 						
 						System.out.println("user "+user+" logged in successfully");
 					} else {						
-						json = gson.toJson(new JsonContent(new JsonError("db.insertUserHash(email, hash) failed", 
+						json = gson.toJson(new JsonErrorContainer(new JsonError("db.insertUserHash(email, hash) failed", 
 								"login(...)")));
 					}
 				} else {					
 					System.out.println("wrong email parameter.");
-					json = gson.toJson(new JsonContent(new JsonError("wrong email parameter in query", 
+					json = gson.toJson(new JsonErrorContainer(new JsonError("wrong email parameter in query", 
 							"login(...)")));
 				}
 			} else {				
-				json = gson.toJson(new JsonContent(new JsonError("wrong email or password", 
+				json = gson.toJson(new JsonErrorContainer(new JsonError("wrong email or password", 
 						"login(...)")));
 				}
 		} else {			
-			json = gson.toJson(new JsonContent(new JsonError("unspecified email parameter in query", 
+			json = gson.toJson(new JsonErrorContainer(new JsonError("unspecified email parameter in query", 
 					"login(...)")));
 		}		
 		
@@ -315,6 +339,11 @@ public class UserRoutes extends Routes {
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	public boolean verifyUserHash(HttpServletRequest request, HttpServletResponse response) {
 		Cookie[] cookies = request.getCookies();
 	
@@ -322,7 +351,7 @@ public class UserRoutes extends Routes {
 		String email = "";
 		
 		if(cookies == null) {
-			String json = gson.toJson(new JsonContent(new JsonError(
+			String json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"no valid hash found (request.getCookies() == null)", 
 					"verifyUserHash(...)")));
 			try {
@@ -339,7 +368,7 @@ public class UserRoutes extends Routes {
 			
 			if(db.verifyUserHash(email, hash)) return true;
 			else {
-				String json = gson.toJson(new JsonContent(new JsonError(
+				String json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"no valid hash found", 
 						"verifyUserHash(...)")));
 				try {
@@ -352,6 +381,10 @@ public class UserRoutes extends Routes {
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void register(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = getRequestBody(request);
@@ -359,16 +392,16 @@ public class UserRoutes extends Routes {
 		User user = gson.fromJson(json, User.class);
 		
 		if(user == null) {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"registration failed (user object is null)", 
 					"register(...)")));
 		} else {
 			if(user.isEmployee()) {
-				json = gson.toJson(new JsonContent(new JsonError(
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"registration failed (cannot register users who are employees)", 
 						"register(...)")));
 			} else if(!Utilities.validateEmail(user.getEmail())) {
-				json = gson.toJson(new JsonContent(new JsonError(
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"registration failed (invalid email)", 
 						"register(...)")));
 			} else {
@@ -385,6 +418,10 @@ public class UserRoutes extends Routes {
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void readActiveUser(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json;
@@ -394,7 +431,7 @@ public class UserRoutes extends Routes {
 		String email = db.getHashEmail(sessionID);
 		
 		if(email == null) {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"no email found for this sessionID", 
 					"readActiveUser(...)")));
 		} else {
@@ -403,7 +440,7 @@ public class UserRoutes extends Routes {
 			if(user != null) {
 				json = gson.toJson(user);
 			} else {
-				json = gson.toJson(new JsonContent(new JsonError(
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"no user found for this email", 
 						"readActiveUser(...)")));
 			}
@@ -415,6 +452,9 @@ public class UserRoutes extends Routes {
 		}
 	}
 
+	/**
+	 * closes database connection 
+	 */
 	public void closeConnection() {
 		db.closeConnection();
 	}

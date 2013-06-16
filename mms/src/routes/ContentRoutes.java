@@ -37,6 +37,10 @@ public class ContentRoutes extends Routes{
 	// GET Methods
 	// ####################################################
 	
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void readEvent(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
@@ -46,7 +50,7 @@ public class ContentRoutes extends Routes{
 			Event event = db.getEvent(eventID);
 			json = gson.toJson(event);
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError("unspecified eventID", "readEvent(...)")));
+			json = gson.toJson(new JsonErrorContainer(new JsonError("unspecified eventID", "readEvent(...)")));
 		}
 		try {
 			response.getWriter().write(json);
@@ -55,6 +59,10 @@ public class ContentRoutes extends Routes{
 		}
 	}
 	
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void deleteEvent(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
@@ -72,7 +80,7 @@ public class ContentRoutes extends Routes{
 				} else {
 					ArrayList<EventRights> actorUserEventRightsList = actorEmployee.getEmployeeRights().getEventRightsList();
 					if(actorUserEventRightsList.isEmpty()) {
-						json = gson.toJson(new JsonContent(new JsonError(
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this event (eventID: "+eventID+") (actorUser has no EventRights)", 
 								"deleteEvent(...)")));		
 						try {
@@ -95,7 +103,7 @@ public class ContentRoutes extends Routes{
 						}
 					}
 					if(!canDelete) {	// no entry found or canDelete=false
-						json = gson.toJson(new JsonContent(new JsonError(
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this event (eventID: "+eventID+") (no fitting EventRights found or canDelete=false)", 
 								"deleteEvent(...)")));		
 						try {
@@ -107,7 +115,7 @@ public class ContentRoutes extends Routes{
 					}
 				}
 			} else {
-				json = gson.toJson(new JsonContent(new JsonError(
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to delete this event (eventID: "+eventID+") (actorUser is no employee)", 
 						"deleteEvent(...)")));		
 				try {
@@ -122,7 +130,7 @@ public class ContentRoutes extends Routes{
 				json = "{\"eventID\":"+eventID+"}";
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified eventID in query", 
 					"deleteEvent(...)")));
 		}
@@ -133,6 +141,10 @@ public class ContentRoutes extends Routes{
 		}
 	}
 	
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void readEvents(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
@@ -153,6 +165,10 @@ public class ContentRoutes extends Routes{
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void readModule(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
@@ -161,7 +177,7 @@ public class ContentRoutes extends Routes{
 			Module module = db.getModule(moduleID);
 			json = gson.toJson(module);
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified moduleID in query", 
 					"readModule(...)")));
 		}
@@ -174,6 +190,10 @@ public class ContentRoutes extends Routes{
 		
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void deleteModule(HttpServletRequest request,
 			HttpServletResponse response) {
 		
@@ -191,7 +211,7 @@ public class ContentRoutes extends Routes{
 				} else {
 					ArrayList<ModuleRights> actorUserModuleRightsList = actorEmployee.getEmployeeRights().getModuleRightsList();
 					if(actorUserModuleRightsList.isEmpty()) {
-						json = gson.toJson(new JsonContent(new JsonError(
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this module (moduleID: "+moduleID+") (actorUser has no ModuleRights)", 
 								"deleteModule(...)")));		
 						try {
@@ -214,7 +234,7 @@ public class ContentRoutes extends Routes{
 						}
 					}
 					if(!canDelete) {	// no entry found or canDelete=false
-						json = gson.toJson(new JsonContent(new JsonError(
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this module (moduleID: "+moduleID+") (no fitting ModuleRights found or canDelete=false)", 
 								"deleteModule(...)")));		
 						try {
@@ -226,7 +246,7 @@ public class ContentRoutes extends Routes{
 					}
 				}
 			} else {
-				json = gson.toJson(new JsonContent(new JsonError(
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to delete this module (moduleID: "+moduleID+") (actorUser is no employee)", 
 						"deleteModule(...)")));		
 				try {
@@ -241,7 +261,7 @@ public class ContentRoutes extends Routes{
 				json = "{\"moduleID\":"+moduleID+"}";
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified moduleID in query", 
 					"deleteModule(...)")));
 		}
@@ -252,6 +272,10 @@ public class ContentRoutes extends Routes{
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void readModules(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
@@ -273,6 +297,10 @@ public class ContentRoutes extends Routes{
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void readSubject(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
@@ -284,7 +312,7 @@ public class ContentRoutes extends Routes{
 			
 			json = gson.toJson(subject);
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified subjectID in query", 
 					"readSubject(...)")));
 		}
@@ -296,6 +324,10 @@ public class ContentRoutes extends Routes{
 		}	
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void deleteSubject(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
@@ -313,7 +345,7 @@ public class ContentRoutes extends Routes{
 				} else {
 					ArrayList<SubjectRights> actorUserSubjectRightsList = actorEmployee.getEmployeeRights().getSubjectRightsList();
 					if(actorUserSubjectRightsList.isEmpty()) {
-						json = gson.toJson(new JsonContent(new JsonError(
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this subject (subjectID: "+subjectID+") (actorUser has no SubjectRights)", 
 								"deleteSubject(...)")));		
 						try {
@@ -336,7 +368,7 @@ public class ContentRoutes extends Routes{
 						}
 					}
 					if(!canDelete) {	// no entry found or canDelete=false
-						json = gson.toJson(new JsonContent(new JsonError(
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this subject (subjectID: "+subjectID+") (no fitting SubjectRights found or canDelete=false)", 
 								"deleteSubject(...)")));		
 						try {
@@ -348,7 +380,7 @@ public class ContentRoutes extends Routes{
 					}
 				}
 			} else {
-				json = gson.toJson(new JsonContent(new JsonError(
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to delete this subject (subjectID: "+subjectID+") (actorUser is no employee)", 
 						"deleteSubject(...)")));		
 				try {
@@ -363,7 +395,7 @@ public class ContentRoutes extends Routes{
 				json = "{\"subjectID\":"+subjectID+"}";
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified subjectID in query", 
 					"deleteSubject(...)")));
 		}
@@ -375,6 +407,10 @@ public class ContentRoutes extends Routes{
 		}		
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void readSubjects(HttpServletRequest request,
 			HttpServletResponse response) {
 		ArrayList<Subject> subjects = null;
@@ -400,6 +436,10 @@ public class ContentRoutes extends Routes{
 		
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void readStudycourse(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
@@ -410,7 +450,7 @@ public class ContentRoutes extends Routes{
 		
 			json = gson.toJson(studycourse);
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified studycourseID in query", 
 					"readStudycourse(...)")));
 		}
@@ -422,6 +462,10 @@ public class ContentRoutes extends Routes{
 		}	
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void deleteStudycourse(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
@@ -439,7 +483,7 @@ public class ContentRoutes extends Routes{
 				} else {
 					ArrayList<StudycourseRights> actorUserStudycourseRightsList = actorEmployee.getEmployeeRights().getStudycourseRightsList();
 					if(actorUserStudycourseRightsList.isEmpty()) {
-						json = gson.toJson(new JsonContent(new JsonError(
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this studycourse (studycourseID: "+studycourseID+") (actorUser has no StudycourseRights)", 
 								"deleteStudycourse(...)")));		
 						try {
@@ -462,7 +506,7 @@ public class ContentRoutes extends Routes{
 						}
 					}
 					if(!canDelete) {	// no entry found or canDelete=false
-						json = gson.toJson(new JsonContent(new JsonError(
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this studycourse (studycourseID: "+studycourseID+") (no fitting StudycourseRights found or canDelete=false)", 
 								"deleteStudycourse(...)")));		
 						try {
@@ -474,7 +518,7 @@ public class ContentRoutes extends Routes{
 					}
 				}
 			} else {
-				json = gson.toJson(new JsonContent(new JsonError(
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to delete this studycourse (studycourseID: "+studycourseID+") (actorUser is no employee)", 
 						"deleteStudycourse(...)")));		
 				try {
@@ -489,7 +533,7 @@ public class ContentRoutes extends Routes{
 				json = "{\"studycourseID\":"+studycourseID+"}";
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified studycourseID in query", 
 					"deleteStudycourse(...)")));
 		}
@@ -501,6 +545,10 @@ public class ContentRoutes extends Routes{
 		}		
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void readStudycourses(HttpServletRequest request,
 			HttpServletResponse response) {
 
@@ -515,6 +563,10 @@ public class ContentRoutes extends Routes{
 		}	
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void readModuleHandbook(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
@@ -525,7 +577,7 @@ public class ContentRoutes extends Routes{
 		
 			json = gson.toJson(moduleHandbook);
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified moduleHandbookID in query", 
 					"readModuleHandbook(...)")));
 		}
@@ -538,6 +590,10 @@ public class ContentRoutes extends Routes{
 		
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void deleteModuleHandbook(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
@@ -547,7 +603,7 @@ public class ContentRoutes extends Routes{
 				json = "{\"moduleHandbookID\":"+moduleHandbookID+"}";
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified moduleHandbookID in query", 
 					"deleteModuleHandbook(...)")));
 		}
@@ -559,6 +615,10 @@ public class ContentRoutes extends Routes{
 		}		
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void readModuleHandbooks(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = "";
@@ -585,6 +645,10 @@ public class ContentRoutes extends Routes{
 	// POST Methods
 	// ####################################################
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void createEvent(HttpServletRequest request,
 			HttpServletResponse response) {
 		
@@ -622,7 +686,7 @@ public class ContentRoutes extends Routes{
 					}
 				}
 				if(!canCreateChilds) {
-					json = gson.toJson(new JsonContent(new JsonError(
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"actorUser is not allowed to create events for any of these moduleIDs (moduleIDs: "+moduleIDs+")", 
 							"createEvent(...)")));		
 					try {
@@ -637,7 +701,7 @@ public class ContentRoutes extends Routes{
 				}
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"actorUser is not allowed to create Events (actorUser is no employee)", 
 					"createEvent(...)")));		
 			try {
@@ -652,7 +716,7 @@ public class ContentRoutes extends Routes{
 			
 			json = gson.toJson(event);
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"d.createEvent(event) failed", 
 					"createEvent(...)")));
 		}
@@ -664,6 +728,10 @@ public class ContentRoutes extends Routes{
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void updateEvent(HttpServletRequest request,
 			HttpServletResponse response) {		
 		String json = getRequestBody(request);
@@ -680,7 +748,7 @@ public class ContentRoutes extends Routes{
 			} else {
 				ArrayList<EventRights> actorUserEventRightsList = actorEmployee.getEmployeeRights().getEventRightsList();
 				if(actorUserEventRightsList.isEmpty()) {
-					json = gson.toJson(new JsonContent(new JsonError(
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"not allowed to update this event (eventID: "+event.getID()+") (actorUser has no EventRights)", 
 							"updateEvent(...)")));		
 					try {
@@ -703,7 +771,7 @@ public class ContentRoutes extends Routes{
 					}
 				}
 				if(!canUpdate) {	// no entry found or canUpdate=false
-					json = gson.toJson(new JsonContent(new JsonError(
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"not allowed to update this event (eventID: "+event.getID()+") (no fitting EventRights found or canDelete=false)", 
 							"updateEvent(...)")));		
 					try {
@@ -715,7 +783,7 @@ public class ContentRoutes extends Routes{
 				}
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to update this event (eventID: "+event.getID()+") (actorUser is no employee)", 
 					"updateEvent(...)")));		
 			try {
@@ -738,6 +806,10 @@ public class ContentRoutes extends Routes{
 	}
 	
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void createModule(HttpServletRequest request,
 			HttpServletResponse response) {		
 		String json = getRequestBody(request);
@@ -776,7 +848,7 @@ public class ContentRoutes extends Routes{
 					}
 				}
 				if(!canCreateChilds) {
-					json = gson.toJson(new JsonContent(new JsonError(
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"actorUser is not allowed to create modules for any of these subjectIDs " +
 							"(subjectIDs: "+subjectIDs+")", 
 							"createModule(...)")));		
@@ -792,7 +864,7 @@ public class ContentRoutes extends Routes{
 				}
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"actorUser is not allowed to create modules (actorUser is no employee)", 
 					"createModule(...)")));		
 			try {
@@ -813,6 +885,10 @@ public class ContentRoutes extends Routes{
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void updateModule(HttpServletRequest request,
 			HttpServletResponse response) {		
 		String json = getRequestBody(request);
@@ -829,7 +905,7 @@ public class ContentRoutes extends Routes{
 			} else {
 				ArrayList<ModuleRights> actorUserModuleRightsList = actorEmployee.getEmployeeRights().getModuleRightsList();
 				if(actorUserModuleRightsList.isEmpty()) {
-					json = gson.toJson(new JsonContent(new JsonError(
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"not allowed to update this module (moduleID: "+module.getID()+") (actorUser has no ModuleRights)", 
 							"updateModule(...)")));		
 					try {
@@ -852,7 +928,7 @@ public class ContentRoutes extends Routes{
 					}
 				}
 				if(!canUpdate) {	// no entry found or canDelete=false
-					json = gson.toJson(new JsonContent(new JsonError(
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"not allowed to update this module (moduleID: "+module.getID()+") (no fitting ModuleRights found or canDelete=false)", 
 							"updateModule(...)")));		
 					try {
@@ -864,7 +940,7 @@ public class ContentRoutes extends Routes{
 				}
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to delete this module (moduleID: "+module.getID()+") (actorUser is no employee)", 
 					"updateModule(...)")));		
 			try {
@@ -885,6 +961,10 @@ public class ContentRoutes extends Routes{
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void createSubject(HttpServletRequest request,
 			HttpServletResponse response) {		
 		String json = getRequestBody(request);
@@ -919,7 +999,7 @@ public class ContentRoutes extends Routes{
 					}
 				}
 				if(!canCreateChilds) {
-					json = gson.toJson(new JsonContent(new JsonError(
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"actorUser is not allowed to create subjects for this studycourseID " +
 							"(studycourseID: "+studycourseID+")", 
 							"createSubject(...)")));		
@@ -932,7 +1012,7 @@ public class ContentRoutes extends Routes{
 				} 
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"actorUser is not allowed to create subjects (actorUser is no employee)", 
 					"createSubject(...)")));		
 			try {
@@ -953,6 +1033,10 @@ public class ContentRoutes extends Routes{
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void updateSubject(HttpServletRequest request,
 			HttpServletResponse response) {		
 		String json = getRequestBody(request);
@@ -969,7 +1053,7 @@ public class ContentRoutes extends Routes{
 			} else {
 				ArrayList<SubjectRights> actorUserSubjectRightsList = actorEmployee.getEmployeeRights().getSubjectRightsList();
 				if(actorUserSubjectRightsList.isEmpty()) {
-					json = gson.toJson(new JsonContent(new JsonError(
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"not allowed to update this subject (subjectID: "+subject.getID()+") (actorUser has no SubjectRights)", 
 							"updateSubject(...)")));		
 					try {
@@ -992,7 +1076,7 @@ public class ContentRoutes extends Routes{
 					}
 				}
 				if(!canUpdate) {	// no entry found or canDelete=false
-					json = gson.toJson(new JsonContent(new JsonError(
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"not allowed to update this subject (subjectID: "+subject.getID()+") (no fitting SubjectRights found or canDelete=false)", 
 							"updateSubject(...)")));		
 					try {
@@ -1004,7 +1088,7 @@ public class ContentRoutes extends Routes{
 				}
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to update this subject (subjectID: "+subject.getID()+") (actorUser is no employee)", 
 					"updateSubject(...)")));		
 			try {
@@ -1025,6 +1109,10 @@ public class ContentRoutes extends Routes{
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void createStudycourse(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = getRequestBody(request);
@@ -1039,7 +1127,7 @@ public class ContentRoutes extends Routes{
 			if(!actorEmployee.getEmployeeRights().isAdmin()) {
 				System.out.println("user is no admin");
 				
-				json = gson.toJson(new JsonContent(new JsonError(
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"actorUser is not allowed to create studycourses (actorUser is no admin)", 
 						"createStudycourse(...)")));
 				try {
@@ -1051,7 +1139,7 @@ public class ContentRoutes extends Routes{
 			}
 		} else {
 			System.out.println("user is no employee");	
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"actorUser is not allowed to create studycourses " +
 					"(actorUser is no employee and therefore no admin)", 
 					"createStudycourse(...)")));
@@ -1073,6 +1161,10 @@ public class ContentRoutes extends Routes{
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void updateStudycourse(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = getRequestBody(request);
@@ -1089,7 +1181,7 @@ public class ContentRoutes extends Routes{
 			} else {
 				ArrayList<StudycourseRights> actorUserStudycourseRightsList = actorEmployee.getEmployeeRights().getStudycourseRightsList();
 				if(actorUserStudycourseRightsList.isEmpty()) {
-					json = gson.toJson(new JsonContent(new JsonError(
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"not allowed to delete this studycourse (studycourseID: "+studycourse.getID()+") (actorUser has no StudycourseRights)", 
 							"updateStudycourse(...)")));		
 					try {
@@ -1112,7 +1204,7 @@ public class ContentRoutes extends Routes{
 					}
 				}
 				if(!canUpdate) {	// no entry found or canDelete=false
-					json = gson.toJson(new JsonContent(new JsonError(
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"not allowed to update this studycourse (studycourseID: "+studycourse.getID()+") (no fitting StudycourseRights found or canDelete=false)", 
 							"updateStudycourse(...)")));		
 					try {
@@ -1124,7 +1216,7 @@ public class ContentRoutes extends Routes{
 				}
 			}
 		} else {
-			json = gson.toJson(new JsonContent(new JsonError(
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to update this studycourse (studycourseID:"+studycourse.getID()+") (actorUser is no employee)", 
 					"updateStudycourse(...)")));		
 			try {
@@ -1145,6 +1237,10 @@ public class ContentRoutes extends Routes{
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void createModuleHandbook(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = getRequestBody(request);
@@ -1161,6 +1257,10 @@ public class ContentRoutes extends Routes{
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void updateModuleHandbook(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json = getRequestBody(request);
@@ -1177,6 +1277,9 @@ public class ContentRoutes extends Routes{
 		}
 	}
 
+	/**
+	 * closes database connection
+	 */
 	public void closeConnection() {
 		db.closeConnection();		
 	}

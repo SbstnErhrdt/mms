@@ -32,6 +32,12 @@ public class User implements DbControllable {
 		this.password = password;
 	}
 	
+	public User(String email, String firstName, String lastName) {
+		this.email = email.toLowerCase();
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
+	
 	// Konstruktor 
 	public User(String firstName, String lastName, String title, String email,
 			String graduation, String password, int matricNum, int semester,
@@ -40,7 +46,7 @@ public class User implements DbControllable {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.title = title;
-		this.email = email;
+		this.email = email.toLowerCase();
 		this.graduation = graduation;
 		this.password = password;
 		this.matricNum = matricNum;

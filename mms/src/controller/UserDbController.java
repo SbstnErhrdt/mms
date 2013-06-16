@@ -471,6 +471,23 @@ public class UserDbController extends DbController {
 		return users;
 	}
 	
+	public ArrayList<User> readReducedUsers() {
+		ArrayList<User> users = new ArrayList<User>();
+		String query = "SELECT email, firstName, lastName FROM users;";
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);		
+			while(rs.next()) {
+				users.add(new User(rs.getString(1), rs.getString(2), rs.getString(3)));
+			}
+			rs.close();
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return null;
+		}	
+		return users;
+	}
+	
 	public User verifyUser(User user) {
 		String query = "SELECT " + user.toValueNames() +
 				" FROM users WHERE email ='"+ user.getEmail()+"'" +

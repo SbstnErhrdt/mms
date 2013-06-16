@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-import routes.JsonContent;
+import routes.JsonErrorContainer;
 import routes.JsonError;
 import routes.UserRoutes;
 
@@ -250,7 +250,7 @@ public class Test {
 		
 		JsonError je = new JsonError("unspecified eventID", "readEvent(...)");
 		
-		JsonContent jc = new JsonContent(je);
+		JsonErrorContainer jc = new JsonErrorContainer(je);
 		
 		System.out.println(gson.toJson(je));
 		
