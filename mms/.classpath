@@ -15,5 +15,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="res/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="res/javax.mail.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
