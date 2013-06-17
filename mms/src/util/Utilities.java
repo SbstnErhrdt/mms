@@ -1,5 +1,6 @@
 package util;
 
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,5 +20,17 @@ public class Utilities {
 	public static boolean validateEmail(String email) {
 		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
 		return matcher.find();
+	}
+	
+	public static String createRandomHash() {
+		char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789".toCharArray();
+		StringBuilder sb = new StringBuilder();
+		Random random = new Random();
+		for (int i = 0; i < 30; i++) {
+		    char c = chars[random.nextInt(chars.length)];
+		    sb.append(c);
+		}
+		String output = sb.toString();
+		return output;
 	}
 }

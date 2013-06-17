@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import controller.EmailController;
 import controller.UserDbController;
 
 import model.Employee;
@@ -389,13 +390,18 @@ public class UserRoutes extends Routes {
 			HttpServletResponse response) {
 		String json = getRequestBody(request);
 		
-		User user = gson.fromJson(json, User.class);
+		JsonObject obj = gson.fromJson(json, JsonObject.class);
 		
+		String password = obj.get("password").getAsString();
+		
+		User user = gson.fromJson(json, User.class);
+				
 		if(user == null) {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"registration failed (user object is null)", 
 					"register(...)")));
 		} else {
+			user.setPassword(password);	// set password manually
 			if(user.isEmployee()) {
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"registration failed (cannot register users who are employees)", 
@@ -405,10 +411,29 @@ public class UserRoutes extends Routes {
 						"registration failed (invalid email)", 
 						"register(...)")));
 			} else {
+				String email = user.getEmail();
+				String hash = Utilities.createRandomHash();
+				
 				// overwrite userRights if any, so the user can't register with advanced rights
 				user.setUserRights(new UserRights(false));	// canLogin == false
-				db.createUser(user);
-				json = gson.toJson(user);
+				
+				if(!EmailController.sendEmail(email, hash)) {
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
+							"registration failed (sendEmail(...) to users email address failed)", 
+							"register(...)")));
+				} else if(db.createUser(user)) {			
+					if(db.insertConfirmationHash(email, hash)) {
+						json = gson.toJson(user);
+					} else {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"registration failed (db.insertConfirmationHash(email, hash) failed)", 
+								"register(...)")));
+					}
+				} else {
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
+							"registration failed (db.createUser(user) failed)", 
+							"register(...)")));
+				}
 			}
 		}
 		try { 
@@ -452,6 +477,38 @@ public class UserRoutes extends Routes {
 		}
 	}
 
+	public void confirmEmail(HttpServletRequest request,
+			HttpServletResponse response) {
+		
+		String json = "";
+		
+		if(request.getParameter("token") != null) {
+			String token = request.getParameter("token");
+			
+			String email = db.getConfirmationEmail(token);
+			
+			if(email != null) {
+				db.deleteConfirmationHash(email);
+				json = "{\"success\":true}";
+				
+			} else {
+				json = "{\"success\":false}";
+			}
+			
+		} else { 
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"unspecified token parameter in query", 
+					"confirmEmail(...)")));
+		}
+		
+		try { 
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	/**
 	 * closes database connection 
 	 */

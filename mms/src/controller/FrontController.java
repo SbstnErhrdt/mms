@@ -77,6 +77,8 @@ public class FrontController extends HttpServlet {
 				} else System.out.println("user has valid hash");
 			} 
 		
+			
+			
 			// active User
 			if(path.equals("/read/activeUser")) {
 				userRoutes.readActiveUser(request, response);
@@ -155,6 +157,12 @@ public class FrontController extends HttpServlet {
 			} else if(path.equals("/read/users")) {
 				userRoutes.readUsers(request, response);
 			}
+			
+			// confirm email
+			else if(path.equals("/confirm")) {
+				userRoutes.confirmEmail(request, response);
+			}
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {

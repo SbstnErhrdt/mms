@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import routes.JsonErrorContainer;
 import routes.JsonError;
 import routes.UserRoutes;
+import util.Utilities;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -27,6 +28,10 @@ import controller.UserDbController;
 
 public class Test {
 	public static void main(String[] args) {
+		
+		System.out.println(""+Utilities.createRandomHash());
+		
+		
 		UserDbController udbc = new UserDbController();
 		
 		Employee emp = new Employee("email@ex-studios.net", "1234", "Sebastian", "Sehrhardt", "Herr Dipl. Ing.",

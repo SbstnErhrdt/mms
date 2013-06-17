@@ -21,6 +21,8 @@ public class UserDbController extends DbController {
 	}
 	
 	public boolean createUser(User user) {
+		user.setEmail(user.getEmail().toLowerCase());
+		
 		String query = "INSERT INTO users (";
 				
 		query += user.toValueNames()+") VALUES(";
@@ -633,6 +635,127 @@ public class UserDbController extends DbController {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public boolean insertConfirmationHash(String email, String hash) {
+		String query = "INSERT INTO user_confirmation_hashes(users_email, hash) " +
+				"VALUES(?,?);";
+		
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setString(1, email);
+			ps.setString(2, hash);
+			
+			ps.executeUpdate();
+			db.commit();
+		
+			return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public String getConfirmationEmail(String hash) {
+	
+		String query = "SELECT users_email FROM user_confirmation_hashes " +
+				"WHERE hash=?;";
+		
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setString(1, hash);
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			if(rs.next()) {
+				String email = rs.getString(1);
+				rs.close();
+				updateCanLogin(email, true);
+				return email;
+			} else {
+				rs.close();
+				return null;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void updateCanLogin(String email, boolean canLogin) {
+		String query = "UPDATE user_rights SET canLogin=? WHERE email=?;";
+		
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setBoolean(1, canLogin);
+			ps.setString(2, email);
+			
+			ps.executeUpdate();
+			db.commit();
+	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public boolean deleteConfirmationHash(String email) {
+		String query = "DELETE FROM user_confirmation_hashes WHERE users_email=?";
+	
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setString(1, email);
+			
+			ps.executeUpdate();
+			db.commit();
+		
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
 		} finally {
 			try {
 				db.setAutoCommit(true);
