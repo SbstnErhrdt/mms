@@ -1,11 +1,6 @@
 package model.content;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import util.Utilities;
-
-import model.content.Subject;
 
 public class ModuleHandbook extends Content {
 

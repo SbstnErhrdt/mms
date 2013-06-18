@@ -19,9 +19,9 @@ public class Employee extends User {
 	
 	public Employee(String email, String password, String firstName, String lastName, String title,
 			String graduation, int matricNum, int semester,
-			UserRights rights, boolean emailVerified) {
+			UserRights rights) {
 		super(firstName, lastName, title, email, graduation, password, 
-				matricNum, semester, rights, emailVerified);
+				matricNum, semester, rights);
 		this.employeeRights = new EmployeeRights();
 		isEmployee = true;
 	}

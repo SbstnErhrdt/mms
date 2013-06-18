@@ -33,6 +33,8 @@ public class UserRoutes extends Routes {
 	// ####################################################
 	
 	/**
+	 * reads the corresponding user object with the email parameter in the query 
+	 * and writes it in the response as json object
 	 * @param request
 	 * @param response
 	 */
@@ -57,6 +59,8 @@ public class UserRoutes extends Routes {
 	}
 
 	/**
+	 * deletes the corresponding user object with the email parameter in the query 
+	 * and writes it in the response as json object
 	 * @param request
 	 * @param response
 	 */
@@ -122,6 +126,7 @@ public class UserRoutes extends Routes {
 	}
 
 	/**
+	 * reads all user objects and writes them in the response as json object
 	 * @param request
 	 * @param response
 	 */
@@ -142,6 +147,8 @@ public class UserRoutes extends Routes {
 	// ####################################################
 
 	/**
+	 * creates the corresponding user object passed in the request body as json object
+	 * and writes it in the response as json object
 	 * @param request
 	 * @param response
 	 */
@@ -205,6 +212,8 @@ public class UserRoutes extends Routes {
 	}
 
 	/**
+	 * updatess the corresponding user object with the data passed in the request body as json object
+	 * and writes it in the response as json object
 	 * @param request
 	 * @param response
 	 */
@@ -265,6 +274,10 @@ public class UserRoutes extends Routes {
 	}
 
 	/**
+	 * checks if the passed json user object contains valid email and password combination
+	 * and checks if the user can login
+	 * if yes: writes the whole json user object in the response
+	 * if no: returns error message
 	 * @param request
 	 * @param response
 	 */
@@ -343,7 +356,7 @@ public class UserRoutes extends Routes {
 	/**
 	 * @param request
 	 * @param response
-	 * @return
+	 * @return true if a valid hash was passed in the cookie, false if no valid hash was passsed in the cookie
 	 */
 	public boolean verifyUserHash(HttpServletRequest request, HttpServletResponse response) {
 		Cookie[] cookies = request.getCookies();
@@ -383,6 +396,9 @@ public class UserRoutes extends Routes {
 	}
 
 	/**
+	 * singns up a new user object passed in the request body as json object and makes 
+	 * sure that this user has no advanced rights and valid email, therefore it invokes an
+	 * email confirmation process 
 	 * @param request
 	 * @param response
 	 */
@@ -444,6 +460,7 @@ public class UserRoutes extends Routes {
 	}
 
 	/**
+	 * reads the active user associated with the passed cookie sessionID
 	 * @param request
 	 * @param response
 	 */
@@ -477,6 +494,11 @@ public class UserRoutes extends Routes {
 		}
 	}
 
+	/**
+	 * checks if the passed token is a valid hash for an existing email
+	 * @param request
+	 * @param response
+	 */
 	public void confirmEmail(HttpServletRequest request,
 			HttpServletResponse response) {
 		

@@ -35,8 +35,8 @@ public class Test {
 		UserDbController udbc = new UserDbController();
 		
 		Employee emp = new Employee("email@ex-studios.net", "1234", "Sebastian", "Sehrhardt", "Herr Dipl. Ing.",
-				"Bachelor", 1234567, 4, new EmployeeRights(), true);
-		emp = new Employee("neue_email@ex-studios.net", "1234", "Sebastian", "Der Zweite", "Herr Dr. Dipl. Ing.", "Bachelor", 123456, 4, new UserRights(), false);
+				"Bachelor", 1234567, 4, new EmployeeRights());
+		emp = new Employee("neue_email@ex-studios.net", "1234", "Sebastian", "Der Zweite", "Herr Dr. Dipl. Ing.", "Bachelor", 123456, 4, new UserRights());
 		emp.setAddress("Am Arsch der Welt");
 		emp.setEmployeeRights(new EmployeeRights(true, false, false));
 		
@@ -123,7 +123,7 @@ public class Test {
 		moduleIDs.add(2);
 		
 		Event event = new Event(5, moduleIDs, "Ana IIa", 4, "gerhard.baur@uni-ulm.de", false, 
-				"test", true, "irgend n Raum", "irgendwo", "Vorlesung");
+				"test", true, "irgend n Raum", "irgendwo", "Vorlesung", "Dienstag 10 bis 12");
 		
 		ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
 		subjectIDs.add(1);
@@ -235,7 +235,7 @@ public class Test {
 		
 		
 		event = new Event(6, moduleIDs, "Ana I", 8, "gerhard.baur@uni-ulm.de", false, "test", true,
-				"", "", "");
+				"", "", "", "immer wieder Sonntags");
 		
 		cdbc.createEvent(event);
 		

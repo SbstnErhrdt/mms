@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
-
 import routes.UserRoutes;
 import routes.ContentRoutes;
 
@@ -41,7 +39,7 @@ public class FrontController extends HttpServlet {
 			response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 			response.setHeader("Access-Control-Max-Age", "15");
 			response.setHeader("Access-Control-Allow-Credentials", "true");
-			response.setHeader("Content-Type", "charset=utf-8");
+			response.setHeader("Content-Type", "application/json; charset=utf-8");
     	} catch(Exception e) {
     		e.printStackTrace();
     	}
@@ -65,7 +63,7 @@ public class FrontController extends HttpServlet {
 			response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 			response.setHeader("Access-Control-Allow-Credentials", "true");
 			response.setHeader("Access-Control-Max-Age", "15");
-			response.setHeader("Content-Type", "charset=utf-8");
+			response.setHeader("Content-Type", "application/json; charset=utf-8");
 		
 			if(path.startsWith("/delete") || path.equals("/read/activeUser")) {
 				if(!userRoutes.verifyUserHash(request, response)) {
@@ -190,7 +188,7 @@ public class FrontController extends HttpServlet {
 			response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 			response.setHeader("Access-Control-Allow-Credentials", "true");
 			response.setHeader("Access-Control-Max-Age", "15");
-			response.setHeader("Content-Type", "charset=utf-8");
+			response.setHeader("Content-Type", "application/json; charset=utf-8");
 	    
 			if(path.equals("/login")) {
 				userRoutes.login(request, response);

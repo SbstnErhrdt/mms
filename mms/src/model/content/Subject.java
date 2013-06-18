@@ -1,8 +1,5 @@
 package model.content;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import util.Utilities;
 
 public class Subject extends Content {

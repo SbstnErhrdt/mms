@@ -162,7 +162,7 @@ public class ContentDbController extends DbController {
 				newEvent = new Event(rs.getInt(1), new ArrayList<Integer>(),
 						rs.getString(2), rs.getInt(3), rs.getString(4),
 						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), rs.getString(8), 
-						rs.getString(9), rs.getString(10));
+						rs.getString(9), rs.getString(10), rs.getString(11));
 				rs.close();
 
 			} else {
@@ -225,7 +225,7 @@ public class ContentDbController extends DbController {
 				event = new Event(eventID, new ArrayList<Integer>(),
 						rs.getString(2), rs.getInt(3), rs.getString(4),
 						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), rs.getString(8), 
-						rs.getString(9), rs.getString(10));
+						rs.getString(9), rs.getString(10), rs.getString(11));
 				
 				// moduleIDs
 				ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
@@ -514,7 +514,7 @@ public class ContentDbController extends DbController {
 				event = new Event(eventID, new ArrayList<Integer>(),
 						rs.getString(2), rs.getInt(3), rs.getString(4),
 						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), rs.getString(8), 
-						rs.getString(9), rs.getString(10));
+						rs.getString(9), rs.getString(10), rs.getString(11));
 				
 				// moduleIDs
 				ArrayList<Integer> moduleIDs = new ArrayList<Integer>();

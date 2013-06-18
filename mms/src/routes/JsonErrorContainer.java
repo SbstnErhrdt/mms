@@ -6,4 +6,12 @@ public class JsonErrorContainer {
 	public JsonErrorContainer(JsonError error) {
 		this.error = error;
 	}
+
+	public JsonError getError() {
+		return error;
+	}
+
+	public void setError(JsonError error) {
+		this.error = error;
+	}
 }

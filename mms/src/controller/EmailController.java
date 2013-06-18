@@ -4,8 +4,6 @@ import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 
-import util.Utilities;
-
 public class EmailController {
 
 	public static boolean sendEmail(String recipient, String hash) {

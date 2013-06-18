@@ -21,7 +21,6 @@ public class User implements DbControllable {
 	protected String firstName, lastName, title, email, graduation;
 	protected transient String password;
 	protected boolean isEmployee = false;
-	protected boolean emailVerified;
 	protected int matricNum, semester;	
 	protected UserRights userRights;	
 	
@@ -41,7 +40,7 @@ public class User implements DbControllable {
 	// Konstruktor 
 	public User(String firstName, String lastName, String title, String email,
 			String graduation, String password, int matricNum, int semester,
-			UserRights rights, boolean emailVerified) {
+			UserRights rights) {
 		
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -52,7 +51,6 @@ public class User implements DbControllable {
 		this.matricNum = matricNum;
 		this.semester = semester;
 		this.userRights = rights;
-		this.emailVerified = emailVerified;
 	}
 
 		
@@ -115,14 +113,6 @@ public class User implements DbControllable {
 
 	public void setEmployee(boolean isEmployee) {
 		this.isEmployee = isEmployee;
-	}
-
-	public boolean isEmailVerified() {
-		return emailVerified;
-	}
-
-	public void setEmailVerified(boolean emailVerified) {
-		this.emailVerified = emailVerified;
 	}
 
 	public int getMatricNum() {

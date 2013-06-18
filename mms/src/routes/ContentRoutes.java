@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tomcat.jni.Stdlib;
-
 import model.Employee;
 import model.User;
 import model.content.Event;
@@ -23,7 +21,6 @@ import model.userRights.SubjectRights;
 import com.google.gson.Gson;
 
 import controller.ContentDbController;
-import controller.UserDbController;
 
 public class ContentRoutes extends Routes{
 	private ContentDbController db;
@@ -38,6 +35,8 @@ public class ContentRoutes extends Routes{
 	// ####################################################
 	
 	/**
+	 * reads the event associated with the passed eventID parameter in the request query
+	 * and writes it in the response as json object
 	 * @param request
 	 * @param response
 	 */
@@ -60,6 +59,8 @@ public class ContentRoutes extends Routes{
 	}
 	
 	/**
+	 * deletes the event associated with the passed eventID parameter in the request query
+	 * and writes the eventID in the response if successfully deleted
 	 * @param request
 	 * @param response
 	 */
@@ -142,6 +143,8 @@ public class ContentRoutes extends Routes{
 	}
 	
 	/**
+	 * reads the events associated with the passed moduleID parameter in the request query
+	 * or, if no parameter was specified, all events and writes them in the reponse as json array object
 	 * @param request
 	 * @param response
 	 */
@@ -166,6 +169,7 @@ public class ContentRoutes extends Routes{
 	}
 
 	/**
+	 * reads the module associated with the passed moduleID parameter in the request query
 	 * @param request
 	 * @param response
 	 */
@@ -273,6 +277,8 @@ public class ContentRoutes extends Routes{
 	}
 
 	/**
+	 * reads the modules associated with the passed subjectID parameter in the request query
+	 * or, if no parameter was specified, all modules and writes them in the response as json array object
 	 * @param request
 	 * @param response
 	 */
@@ -298,6 +304,7 @@ public class ContentRoutes extends Routes{
 	}
 
 	/**
+	 * reads the subject associated with the passed subjectID parameter in the request query
 	 * @param request
 	 * @param response
 	 */
@@ -408,6 +415,8 @@ public class ContentRoutes extends Routes{
 	}
 
 	/**
+	 * reads the events associated with the passed studycourseID or moduleHandbookID parameter in the request query
+	 * or, if no parameter was specified, all subjects and writes them in the response as json array object
 	 * @param request
 	 * @param response
 	 */
@@ -437,6 +446,7 @@ public class ContentRoutes extends Routes{
 	}
 
 	/**
+	 * reads the studycourse associated with the passed studycourseID parameter in the request query
 	 * @param request
 	 * @param response
 	 */
@@ -546,6 +556,7 @@ public class ContentRoutes extends Routes{
 	}
 
 	/**
+	 * reads all studycourses and writes them in the response as json array object
 	 * @param request
 	 * @param response
 	 */
@@ -616,6 +627,8 @@ public class ContentRoutes extends Routes{
 	}
 
 	/**
+	 * reads the moduleHandbooks associated with the passed studycourseID parameter in the request query
+	 * or, if no parameter was specified, moduleHandbooks and writes them in the response as json array object
 	 * @param request
 	 * @param response
 	 */
@@ -745,7 +758,7 @@ public class ContentRoutes extends Routes{
 			Employee actorEmployee = (Employee) actorUser;
 			if(actorEmployee.getEmployeeRights().isAdmin()) {
 				System.out.println("actorUser is admin");
-			} else {
+			} else {			
 				ArrayList<EventRights> actorUserEventRightsList = actorEmployee.getEmployeeRights().getEventRightsList();
 				if(actorUserEventRightsList.isEmpty()) {
 					json = gson.toJson(new JsonErrorContainer(new JsonError(
@@ -903,6 +916,30 @@ public class ContentRoutes extends Routes{
 			if(actorEmployee.getEmployeeRights().isAdmin()) {
 				System.out.println("actorUser is admin");
 			} else {
+				// enabling?
+				if(module.isEnabled() && !module.isCritical()) {
+					if(!actorEmployee.getEmployeeRights().isCanDeblockModule()) {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"not allowed to enable this module (moduleID: "+module.getID()+") (actorUser cannot deblock modules)", 
+								"updateModule(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					} else if(module.isEnabled() && module.isCritical()) {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"not allowed to enable this module (moduleID: "+module.getID()+") (actorUser cannot deblock critical modules)", 
+								"updateModule(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+				}
 				ArrayList<ModuleRights> actorUserModuleRightsList = actorEmployee.getEmployeeRights().getModuleRightsList();
 				if(actorUserModuleRightsList.isEmpty()) {
 					json = gson.toJson(new JsonErrorContainer(new JsonError(

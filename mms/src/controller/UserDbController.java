@@ -278,8 +278,7 @@ public class UserDbController extends DbController {
 		// are there any employee entries?
 		// new Employee-object with same attributes
 		Employee employee = new Employee(user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), 
-				user.getTitle(), user.getGraduation(), user.getMatricNum(), user.getSemester(), user.getUserRights(), 
-				user.isEmailVerified());
+				user.getTitle(), user.getGraduation(), user.getMatricNum(), user.getSemester(), user.getUserRights());
 		
 		query = "SELECT "+employee.toEmployeeValueNames()+ " FROM employees " +
 				"WHERE email='"+user.getEmail()+"';";

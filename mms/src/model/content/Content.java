@@ -2,8 +2,6 @@ package model.content;
 
 import model.DbControllable;
 
-import util.Utilities;
-
 public class Content implements DbControllable {
 
 	protected String name;
