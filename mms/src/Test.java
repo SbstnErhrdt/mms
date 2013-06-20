@@ -1,3 +1,4 @@
+import java.sql.Date;
 import java.util.ArrayList;
 
 import routes.JsonErrorContainer;
@@ -200,7 +201,7 @@ public class Test {
 		mhb = cdbc.getModuleHandbook(mhb.getID());
 		
 		System.out.println(mhb);
-		*/
+		
 		
 		ArrayList<User> users = udbc.readUsers();
 		
@@ -208,7 +209,7 @@ public class Test {
 		
 		System.out.println(json);
 		
-		ArrayList<Event> events = cdbc.getModuleEvents(2);
+		ArrayList<Event> events = cdbc.getModuleEvents(2, false);
 		
 		System.out.println(gson.toJson(events));
 		
@@ -239,7 +240,7 @@ public class Test {
 		
 		cdbc.createEvent(event);
 		
-		events = cdbc.getEvents();
+		events = cdbc.getEvents(false);
 		
 		System.out.println(events);
 		
@@ -281,6 +282,23 @@ public class Test {
 		
 		cdbc.createEvent(event);
 	
+		ModuleHandbook mhb = new ModuleHandbook(5,"MHB", 1, 12, true, false, "dies und das", true);
 		
+		
+		System.out.println(cdbc.getDeadline(mhb));
+		
+		System.out.println(cdbc.readModuleHandbooks());
+		
+		
+		System.out.println(cdbc.getModuleHandbook(1));
+		*/
+		
+		System.out.println(cdbc.getModuleHandbookSubjects(1, false));
+		
+		System.out.println(cdbc.getSubject(1));
+		
+		java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
+		
+		System.out.println(date);
 	}
 }

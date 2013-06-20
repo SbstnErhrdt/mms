@@ -1,5 +1,6 @@
 package controller;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +10,7 @@ import java.util.Arrays;
 
 import util.Utilities;
 
+import model.content.Deadline;
 // IMPORT MODLES
 import model.content.Event;
 import model.content.Module;
@@ -208,12 +210,14 @@ public class ContentDbController extends DbController {
 		return true;
 	}
 	
-	public ArrayList<Event> getEvents() {
+	public ArrayList<Event> getEvents(boolean getOnlyEnabled) {
 		ArrayList<Event> events = new ArrayList<Event>();
 
 		Event event = new Event(0);
 		
-		String query = "SELECT "+event.toValueNames()+" FROM events;"; 
+		String query = "SELECT "+event.toValueNames()+" FROM events";
+		if(getOnlyEnabled) query += " WHERE enabled=true";
+		query += ";"; 
 		System.out.println(query);
 		
 		try {
@@ -443,11 +447,13 @@ public class ContentDbController extends DbController {
 		return true;
 	}
 	
-	public ArrayList<Module> getModules() {
+	public ArrayList<Module> getModules(boolean getOnlyEnabled) {
 		ArrayList<Module> modules = new ArrayList<Module>();
 		Module module = new Module(0);
 		
-		String query = "SELECT "+module.toValueNames()+" FROM modules;";
+		String query = "SELECT "+module.toValueNames()+" FROM modules";
+		if(getOnlyEnabled) query += " WHERE enabled=true";
+		query += ";";
 		
 		System.out.println(query);
 		
@@ -494,7 +500,7 @@ public class ContentDbController extends DbController {
 
 	// MODUL EVENTS LISTE
 	// Holt die Events eines Modules und gibt diese in einer ArrayList aus
-	public ArrayList<Event> getModuleEvents(int moduleID) {
+	public ArrayList<Event> getModuleEvents(int moduleID, boolean getOnlyEnabled) {
 
 		ArrayList<Event> events = new ArrayList<Event>();
 
@@ -502,7 +508,9 @@ public class ContentDbController extends DbController {
 		
 		String query = "SELECT "+event.toValueNames()+" FROM events " +
 				"WHERE eventID IN (SELECT eventID FROM events_modules " +
-				"WHERE moduleID="+ moduleID+");";
+				"WHERE moduleID="+ moduleID+")";
+		if(getOnlyEnabled) query += " AND enabled=true";	
+		query+=";";
 		System.out.println(query);
 		
 		try {
@@ -645,11 +653,13 @@ public class ContentDbController extends DbController {
 
 	}
 	
-	public ArrayList<Subject> getSubjects() {
+	public ArrayList<Subject> getSubjects(boolean getOnlyEnabled) {
 		ArrayList<Subject> subjects = new ArrayList<Subject>();
 		Subject subject = new Subject(0);
 		
-		String query = "SELECT "+subject.toValueNames()+" FROM subjects;";
+		String query = "SELECT "+subject.toValueNames()+" FROM subjects";
+		if(getOnlyEnabled) query += " WHERE enabled=true";
+		query += ";";
 		
 		System.out.println(query);
 		
@@ -674,14 +684,16 @@ public class ContentDbController extends DbController {
 
 	// SUBJECT MODULE LISTE
 	// Holt die Modules eines Subjects und gibt diese in einer ArrayList aus
-	public ArrayList<Module> getSubjectModules(int subjectID) {
+	public ArrayList<Module> getSubjectModules(int subjectID, boolean getOnlyEnabled) {
 
 		ArrayList<Module> modules = new ArrayList<Module>();
 		Module module = new Module(0);
 		
 		String query = "SELECT "+module.toValueNames()+" FROM modules " +
 				"WHERE moduleID IN (SELECT moduleID FROM modules_subjects " +
-				"WHERE subjectID="+ subjectID+");";
+				"WHERE subjectID="+ subjectID+")";
+		if(getOnlyEnabled) query += " AND enabled=true";
+		query += ";";
 		
 		System.out.println(query);
 		
@@ -800,7 +812,7 @@ public class ContentDbController extends DbController {
 			if (rs.next()) {
 				newModuleHandbook = new ModuleHandbook(
 						rs.getInt(1), rs.getString(2), rs.getInt(3),
-						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
+						rs.getInt(4), rs.getBoolean(5), rs.getBoolean(6), rs.getString(7), rs.getBoolean(8));
 				rs.close();
 				return newModuleHandbook;
 
@@ -832,14 +844,16 @@ public class ContentDbController extends DbController {
 
 	}
 
-	public ArrayList<ModuleHandbook> readStudycourseModuleHandbooks(int studycourseID) {
+	public ArrayList<ModuleHandbook> readStudycourseModuleHandbooks(int studycourseID, boolean getOnlyEnabled) {
 
 		ArrayList<ModuleHandbook> moduleHandbooks = new ArrayList<ModuleHandbook>();
 		
 		ModuleHandbook moduleHandbook = new ModuleHandbook(0);
 		
 		String query = "SELECT "+moduleHandbook.toValueNames()+" FROM module_handbooks " +
-				"WHERE studycourses_studycourseID="+studycourseID+";";
+				"WHERE studycourses_studycourseID="+studycourseID;
+		if(getOnlyEnabled) query += " AND enabled=true";
+		query += ";";
 		
 		System.out.println(query);
 		
@@ -847,9 +861,10 @@ public class ContentDbController extends DbController {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			
 			while(rs.next()) {
-				moduleHandbooks.add(new ModuleHandbook(rs.getInt(1),
-						rs.getString(2), rs.getInt(3), 
-						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7)));
+				moduleHandbook = new ModuleHandbook(
+						rs.getInt(1), rs.getString(2), rs.getInt(3),
+						rs.getInt(4), rs.getBoolean(5), rs.getBoolean(6), rs.getString(7), rs.getBoolean(8));
+				moduleHandbooks.add(moduleHandbook);
 			}
 			rs.close();
 		} catch(SQLException e) {
@@ -966,13 +981,15 @@ public class ContentDbController extends DbController {
 
 	// STUDYCOURSE SUBJECT LISTE
 	// Holt die Subjects eines Studycourses und gibt diese in einer ArrayList aus
-	public ArrayList<Subject> getStudycourseSubjects(int studycourseID) {
+	public ArrayList<Subject> getStudycourseSubjects(int studycourseID, boolean getOnlyEnabled) {
 
 		ArrayList<Subject> subjects = new ArrayList<Subject>();
 		Subject subject = new Subject(0);
 		
 		String query = "SELECT "+subject.toValueNames()+" FROM subjects " +
-				"WHERE studycourses_studycourseID="+ studycourseID + ";";
+				"WHERE studycourses_studycourseID="+ studycourseID;
+		if(getOnlyEnabled) query += " AND enabled=true";
+		query += ";";
 		System.out.println(query);
 		
 		try {
@@ -995,13 +1012,15 @@ public class ContentDbController extends DbController {
 	}
 	
 	// Holt die Subjedts eines ModuleHandbooks und gibt diese in einer ArrayList aus
-	public ArrayList<Subject> getModuleHandbookSubjects(int moduleHandbookID) {
+	public ArrayList<Subject> getModuleHandbookSubjects(int moduleHandbookID, boolean getOnlyEnabled) {
 
 		ArrayList<Subject> subjects = new ArrayList<Subject>();
 		Subject subject = new Subject(0);
 		
 		String query = "SELECT "+subject.toValueNames()+" FROM subjects " +
-				"WHERE module_handbooks_moduleHandbookID="+ moduleHandbookID + ";";
+				"WHERE module_handbooks_moduleHandbookID="+ moduleHandbookID;
+		if(getOnlyEnabled) query += " AND enabled=true";		
+		query += ";";
 		System.out.println(query);
 		
 		try {
@@ -1009,8 +1028,8 @@ public class ContentDbController extends DbController {
 
 			while (rs.next()) {
 				subject = null;
-				subject = new Subject(rs.getInt(1), rs.getInt(2), rs.getInt(2), 
-						rs.getString(3), rs.getBoolean(4), rs.getString(5), rs.getBoolean(6));
+				subject = new Subject(rs.getInt(1), rs.getInt(2), rs.getInt(3), 
+						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
 				subjects.add(subject);
 			}
 
@@ -1025,13 +1044,14 @@ public class ContentDbController extends DbController {
 	/*
 	 * returns an ArrayList of all studycourses in the database
 	 */
-	public ArrayList<Studycourse> readStudycourses() {
+	public ArrayList<Studycourse> readStudycourses(boolean getOnlyEnabled) {
 		ArrayList<Studycourse> studycourses = new ArrayList<Studycourse>();
 		
 		Studycourse studycourse = new Studycourse (0);
 		
-		String query = "SELECT "+studycourse.toValueNames()+" FROM studycourses;";
-		
+		String query = "SELECT "+studycourse.toValueNames()+" FROM studycourses";
+		if(getOnlyEnabled) query += " WHERE enabled=true";
+		query += ";";
 		System.out.println(query);
 		
 		try {
@@ -1049,12 +1069,14 @@ public class ContentDbController extends DbController {
 		return studycourses;
 	}
 	
-	public ArrayList<ModuleHandbook> readModuleHandbooks() {
+	public ArrayList<ModuleHandbook> readModuleHandbooks(boolean getOnlyEnabled) {
 		ArrayList<ModuleHandbook> moduleHandbooks = new ArrayList<ModuleHandbook>();
 		
 		ModuleHandbook moduleHandbook = new ModuleHandbook(0);
 		
-		String query = "SELECT "+moduleHandbook.toValueNames()+" FROM module_handbooks;";
+		String query = "SELECT "+moduleHandbook.toValueNames()+" FROM module_handbooks";
+		if(getOnlyEnabled) query += " WHERE enabled=true";
+		query += ";";
 		
 		System.out.println(query);
 		
@@ -1062,9 +1084,11 @@ public class ContentDbController extends DbController {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			
 			while(rs.next()) {
-				moduleHandbooks.add(new ModuleHandbook(rs.getInt(1),
-						rs.getString(2), rs.getInt(3), 
-						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7)));
+				moduleHandbook = new ModuleHandbook(
+						rs.getInt(1), rs.getString(2), rs.getInt(3),
+						rs.getInt(4), rs.getBoolean(5), rs.getBoolean(6), 
+						rs.getString(7), rs.getBoolean(8));
+				moduleHandbooks.add(moduleHandbook);
 			}
 			rs.close();
 		} catch(SQLException e) {
@@ -1072,5 +1096,279 @@ public class ContentDbController extends DbController {
 		}
 		
 		return moduleHandbooks;
+	}
+	
+	public Deadline getDeadline(ModuleHandbook moduleHandbook) {
+		boolean sose = moduleHandbook.isSose();
+		int year = moduleHandbook.getYear();
+		
+		String query = "SELECT sose, year, deadline FROM content_deadlines WHERE sose=? AND year=?;";
+		
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setBoolean(1, sose);
+			ps.setInt(2, year);
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			Deadline deadline = null;
+			
+			if(rs.next()) {
+				deadline = new Deadline(rs.getBoolean(1), rs.getInt(2),
+						rs.getDate(3));
+			}
+			rs.close();
+			return deadline;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public boolean updateDeadline(Deadline deadline) {
+		
+		String query = "UPDATE content_deadlines SET deadline=? "+
+				"WHERE sose=? AND year=?;";
+		
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setDate(1, deadline.getDeadline());
+			ps.setBoolean(2, deadline.isSose());
+			ps.setInt(3, deadline.getYear());
+			
+			ps.executeUpdate();
+			db.commit();
+	
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}		
+	}
+
+	public boolean createDeadline(Deadline deadline) {
+		String query = "INSERT INTO content_deadlines(deadline, sose, year) VALUES(?,?,?);";
+		
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setDate(1, deadline.getDeadline());
+			ps.setBoolean(2, deadline.isSose());
+			ps.setInt(3, deadline.getYear());
+			
+			ps.executeUpdate();
+			db.commit();
+	
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}			
+	}
+
+	public boolean deleteDeadline(boolean sose, int year) {
+		String query = "DELETE FROM content_deadlines WHERE sose=? AND year=?;";
+		
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setBoolean(1, sose);
+			ps.setInt(2, year);
+			
+			ps.executeUpdate();
+			db.commit();
+	
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}					
+	}
+
+	public java.sql.Date getEariliestDeadline(Event event) {
+		String query = "SELECT deadline FROM content_deadlines WHERE (sose, year) " +
+				"IN (SELECT sose, year FROM module_handbooks WHERE moduleHandbookID " +
+				"IN (SELECT module_handbooks_modulehandbookID FROM subjects " +
+				"WHERE subjectID IN (SELECT subjectID FROM modules_subjects " +
+				"WHERE moduleID IN (SELECT moduleID FROM modules WHERE moduleID IN " +
+				"(SELECT moduleID FROM events_modules WHERE eventID=?)))));";
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setInt(1, event.getID());
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			Date earliestDate = null;
+			if(rs.next()) {
+				earliestDate = rs.getDate(1);
+				while(rs.next()) {
+					if(earliestDate.before(rs.getDate(1))) earliestDate = rs.getDate(1);
+				}
+			}
+			rs.close();
+			return earliestDate;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}		
+	}
+
+	public java.sql.Date getEariliestDeadline(Module module) {
+		String query = "SELECT deadline FROM content_deadlines WHERE (sose, year) IN " +
+				"(SELECT sose, year FROM module_handbooks WHERE moduleHandbookID IN " +
+				"(SELECT module_handbooks_modulehandbookID FROM subjects WHERE subjectID IN " +
+				"(SELECT subjectID FROM modules_subjects WHERE moduleID=?)));";
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setInt(1, module.getID());
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			Date earliestDate = null;
+			if(rs.next()) {
+				earliestDate = rs.getDate(1);
+				while(rs.next()) {
+					if(earliestDate.before(rs.getDate(1))) earliestDate = rs.getDate(1);
+				}
+			}
+			rs.close();
+			return earliestDate;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public java.sql.Date getEariliestDeadline(Subject subject) {
+		String query = "SELECT deadline FROM content_deadlines WHERE (sose, year) IN " +
+				"(SELECT sose, year FROM module_handbooks WHERE moduleHandbookID IN " +
+				"(SELECT module_handbooks_modulehandbookID FROM subjects " +
+				"WHERE subjectID=?))";
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setInt(1, subject.getID());
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			Date earliestDate = null;
+			if(rs.next()) {
+				earliestDate = rs.getDate(1);
+				while(rs.next()) {
+					if(earliestDate.before(rs.getDate(1))) earliestDate = rs.getDate(1);
+				}
+			}
+			rs.close();
+			return earliestDate;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public java.sql.Date getEariliestDeadline(ModuleHandbook moduleHandbook) {
+		String query = "SELECT deadline FROM content_deadlines WHERE (sose, year) IN " +
+				"(SELECT sose, year FROM module_handbooks WHERE moduleHandbookID=?)";
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setInt(1, moduleHandbook.getID());
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			Date earliestDate = null;
+			if(rs.next()) {
+				earliestDate = rs.getDate(1);
+				while(rs.next()) {
+					if(earliestDate.before(rs.getDate(1))) earliestDate = rs.getDate(1);
+				}
+			}
+			rs.close();
+			return earliestDate;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

@@ -156,6 +156,19 @@ public class FrontController extends HttpServlet {
 				userRoutes.readUsers(request, response);
 			}
 			
+			// logout
+			else if(path.equals("/logout")) {
+				request.getSession().invalidate();
+			}
+			
+			// read Deadline
+			else if(path.equals("/read/deadline")) {
+				contentRoutes.readDeadline(request, response);
+			
+			} else if(path.equals("/delete/deadline")) {
+				contentRoutes.deleteDeadline(request, response);
+			}
+			
 			// confirm email
 			else if(path.equals("/confirm")) {
 				userRoutes.confirmEmail(request, response);
@@ -259,6 +272,15 @@ public class FrontController extends HttpServlet {
 			} else if(path.equals("/update/user")) {
 				userRoutes.updateUser(request, response);
 			}
+			
+			//create Deadline
+			else if(path.equals("/create/deadline")) {
+				contentRoutes.createDeadline(request, response);
+			// update Deadline
+			} else if(path.equals("/update/deadline")) {
+				contentRoutes.updateDeadline(request, response);
+			}
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {

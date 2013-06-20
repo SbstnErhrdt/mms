@@ -2,6 +2,8 @@ package model.userRights;
 
 import java.util.ArrayList;
 
+import model.content.ModuleHandbook;
+
 import util.Utilities;
 
 public class EmployeeRights extends UserRights {
@@ -10,6 +12,7 @@ public class EmployeeRights extends UserRights {
 	private ArrayList<EventRights> eventRightsList;
 	private ArrayList<StudycourseRights> studycourseRightsList;
 	private ArrayList<SubjectRights> subjectRightsList;
+	private ArrayList<ModuleHandbookRights> moduleHandbookRightsList;
 	
 	
 	public EmployeeRights() {
@@ -18,6 +21,7 @@ public class EmployeeRights extends UserRights {
 		moduleRightsList = new ArrayList<ModuleRights>();
 		subjectRightsList = new ArrayList<SubjectRights>();
 		studycourseRightsList = new ArrayList<StudycourseRights>();
+		moduleHandbookRightsList = new ArrayList<ModuleHandbookRights>();
 	}
 	
 	public EmployeeRights(boolean canDeblockCriticalModule, boolean canDeblockModule, 
@@ -31,6 +35,19 @@ public class EmployeeRights extends UserRights {
 		subjectRightsList = new ArrayList<SubjectRights>();
 		studycourseRightsList = new ArrayList<StudycourseRights>();
 	}
+	
+	public ArrayList<ModuleHandbookRights> getModuleHandbookRightsList() {
+		return moduleHandbookRightsList;
+	}
+
+
+
+	public void setModuleHandbookRightsList(
+			ArrayList<ModuleHandbookRights> moduleHandbookRightsList) {
+		this.moduleHandbookRightsList = moduleHandbookRightsList;
+	}
+
+	
 	
 	public ArrayList<ModuleRights> getModuleRightsList() {
 		return moduleRightsList;

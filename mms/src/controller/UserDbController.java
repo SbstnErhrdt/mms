@@ -9,6 +9,7 @@ import model.Employee;
 import model.User;
 import model.userRights.EmployeeRights;
 import model.userRights.EventRights;
+import model.userRights.ModuleHandbookRights;
 import model.userRights.ModuleRights;
 import model.userRights.StudycourseRights;
 import model.userRights.SubjectRights;
@@ -141,6 +142,31 @@ public class UserDbController extends DbController {
 					}
 				}
 			}
+
+			// ModuleHandbookRights
+			ArrayList<ModuleHandbookRights> moduleHandbookRightsList = employeeRights.getModuleHandbookRightsList();
+			if(!eventRightsList.isEmpty()) {
+				
+				for(ModuleHandbookRights mhbr : moduleHandbookRightsList) {
+					query = "INSERT INTO module__handbook_rights (users_email, ";
+							
+					// Names
+					query += mhbr.toValueNames() + ") VALUES('"+user.getEmail()+"', ";
+					
+					// Values
+					query += mhbr.toValues() + ");";
+					
+					System.out.println(query);	// DEBUG
+					
+					try {
+						db.createStatement().executeUpdate(query);
+					} catch(SQLException e) {
+						e.printStackTrace();
+						return false;
+					}
+				}
+			}
+			
 			// StudycourseRights
 			ArrayList<StudycourseRights> studycourseRightsList = employeeRights.getStudycourseRightsList();
 			if(!studycourseRightsList.isEmpty()) {
@@ -417,6 +443,35 @@ public class UserDbController extends DbController {
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
+
+		// ModuleHandbookRights
+		ArrayList<ModuleHandbookRights> moduleHandbookRightsList = new ArrayList<ModuleHandbookRights>();
+		ModuleHandbookRights moduleHandbookRights = new ModuleHandbookRights();
+		
+		query = "SELECT "+moduleHandbookRights.toValueNames()+
+				" FROM module_handbook_rights WHERE users_email='"+employee.getEmail()+"';";
+		
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			while(rs.next()) {
+				moduleHandbookRights.setModuleHandbookID(rs.getInt(1)); 	// moduleHandbookID
+				moduleHandbookRights.setCanEdit(rs.getBoolean(2)); 	// canEdit
+				moduleHandbookRights.setCanDelete(rs.getBoolean(3));// canDelete
+				moduleHandbookRightsList.add(moduleHandbookRights);
+				moduleHandbookRights = new ModuleHandbookRights();
+			} 
+			if(moduleHandbookRightsList.isEmpty()) {
+				System.out.println("No module_handbook_rights found with this users_email");
+			} else {
+				// set moduleHandbookRightsList of EmployeeRights
+				employeeRights.setModuleHandbookRightsList(moduleHandbookRightsList);
+			}
+			rs.close();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}		
 		
 		// StudycourseRights
 		ArrayList<StudycourseRights> studycourseRightsList = new ArrayList<StudycourseRights>();

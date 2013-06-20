@@ -12,16 +12,18 @@ public class ModuleHandbook extends Content {
 	 *  archived boolean
 	 */
 	
-	private String semester;
+	private int year;
+	private boolean sose;
 	private int moduleHandbookID, studycourses_studycourseID;
 	
 	// Konstruktor
 	public ModuleHandbook (int moduleHandbookID, String name, int studycourses_studycourseID, 
-			String semester, boolean archived, String content, boolean enabled) {
+			int year, boolean sose, boolean archived, String content, boolean enabled) {
 		this.moduleHandbookID = moduleHandbookID;
 		this.name = name;
 		this.studycourses_studycourseID = studycourses_studycourseID;
-		this.semester = semester;
+		this.year = year;
+		this.sose = sose;
 		this.archived = archived;
 		this.content = content;
 		this.enabled = enabled;
@@ -32,16 +34,24 @@ public class ModuleHandbook extends Content {
 	}
 
 	// Getter & Setter
-	public String getSemester() {
-		return semester;
-	}
-
-	public void setSemester(String semester) {
-		this.semester = semester;
-	}
-
 	public boolean isArchived() {
 		return archived;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+	public void setYear(int year) {
+		this.year = year;
+	}
+
+	public boolean isSose() {
+		return sose;
+	}
+
+	public void setSose(boolean sose) {
+		this.sose = sose;
 	}
 
 	public void setArchived(boolean archived) {
@@ -65,7 +75,7 @@ public class ModuleHandbook extends Content {
 	@Override
 	public String[] toValuesArray() {
 		String[] values = {moduleHandbookID+"", "'"+name+"'", 
-				studycourses_studycourseID+"",  "'"+semester+"'",  
+				studycourses_studycourseID+"", "'"+year+"'", ""+sose,   
 				archived+"", ""+"'"+content+"'", ""+enabled};
 		return values;
 	}
@@ -73,7 +83,7 @@ public class ModuleHandbook extends Content {
 	@Override
 	public String[] toValueNamesArray() {
 		String[] values = {"moduleHandbookID", "name", 
-				"studycourses_studycourseID", "semester", 
+				"studycourses_studycourseID", "year", "sose", 
 				"archived", "content", "enabled"};
 		return values;
 	}
