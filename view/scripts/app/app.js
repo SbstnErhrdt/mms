@@ -84,10 +84,16 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 		templateUrl: pURL+"show/user.html",
 		controller: showUserCtrl
 	});
+	$routeProvider.when("/show/deadline", {
+        templateUrl: pURL+"show/deadline.html",
+        //controller: showDeadlineCtrl
+    });
+    // DEBUG
     $routeProvider.when("/request", {
         templateUrl: pURL+"requestTest.html",
         controller: requestCtrl
     });
+
 
 	/*
 	*	CREATE ROUTES
@@ -120,6 +126,11 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 	$routeProvider.when("/create/event", {
 		templateUrl: pURL+"create/event.html",
 		controller: createEventCtrl
+	});
+
+	$routeProvider.when("/create/deadline", {
+		templateUrl: pURL+"create/deadline.html"
+		//controller: createDeadlineCtrl
 	});
 
 	/*
@@ -155,7 +166,10 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 		controller: updateEventCtrl
 	});
 
-
+	$routeProvider.when("/update/deadline", {
+		templateUrl: pURL+"update/deadline.html",
+		//controller: updateDeadlineCtrl
+	});
 
 
 	/*
@@ -184,6 +198,10 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 	$routeProvider.when("/delete/user", {
 		templateUrl: pURL+"show/users.html",
 		controller: deleteUserCtrl
+	});
+	$routeProvider.when("/delete/deadline", {
+		templateUrl: pURL+"show/deadline.html",
+		//controller: deleteDeadlineCtrl
 	});
 	$routeProvider.otherwise({redirectTo: "/home"});
 
@@ -340,6 +358,32 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 		}
 	}
 
+	factory.canDeblockContent = function() {
+		if (typeof ActiveUser.employeeRights === "undefined") {
+			console.log("ActiveUser is not allowed to enable content (employeeRights === 'undefined')");
+			return false;
+		} else if(ActiveUser.employeeRights.canDeblockModule) {
+			console.log("ActiveUser is allowed to enable content");
+			return true;
+		} else {
+			console.log("ActiveUser is not allowed to enable content");
+			return false;
+		}
+	}
+
+	factory.canDeblockCriticalModule = function() {
+		if (typeof ActiveUser.employeeRights === "undefined") {
+			console.log("ActiveUser is not allowed to enable (critical) modules (employeeRights === 'undefined')");
+			return false;
+		} else if(ActiveUser.employeeRights.canDeblockCriticalModule) {
+			console.log("ActiveUser is allowed to enable critical modules");
+			return true;
+		} else {
+			console.log("ActiveUser is not allowed to enable critical modules");
+			return false;
+		}
+	}
+
 	factory.isAuthorised = function(content) {
 		console.log("function isAutorised");
 		if(typeof ActiveUser.employeeRights === "undefined" || typeof ActiveUser.isEmployee === "undefined") {
@@ -375,28 +419,28 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 			} else if(content === "subject") {
 				console.log("content === 'subject'");
 				if(ActiveUser.employeeRights.subjectRightsList.length > 0){
-					console.log("ActiveUser.subjectRights.moduleRightsList.length is NOT 0");
+					console.log("ActiveUser.employeeRights.subjectRightsList.length is NOT 0");
 					return true;
 				} else {
-					console.log("ActiveUser.subjectRights.moduleRightsList.length === 0");
+					console.log("ActiveUser.employeeRights.subjectRightsList.length === 0");
 					return false;
 				}
 			} else if(content === "moduleHandbook") {
 				console.log("content === 'moduleHandbook'");
 				if(ActiveUser.employeeRights.moduleHandbookRightsList.length > 0){
-					console.log("ActiveUser.moduleHandbookRights.moduleRightsList.length is NOT 0");
+					console.log("ActiveUser.employeeRights.moduleHandbookRightsList.length is NOT 0");
 					return true;
 				} else {
-					console.log("ActiveUser.moduleHandbookRights.moduleRightsList.length === 0");
+					console.log("ActiveUser.employeeRights.moduleHandbookRightsList.length === 0");
 					return false;
 				}
 			} else if(content === "studycourse") {
 				console.log("content === 'studycourse'");
 				if(ActiveUser.employeeRights.studycoursekRightsList.length > 0){
-					console.log("ActiveUser.studycourseRights.moduleRightsList.length is NOT 0");
+					console.log("ActiveUser.employeeRights.studycourseRightsList.length is NOT 0");
 					return true;
 				} else {
-					console.log("ActiveUser.studycourseRights.moduleRightsList.length === 0");
+					console.log("ActiveUser.employeeRights.studycourseRightsList.length === 0");
 					return false;
 				}
 			}
@@ -1180,6 +1224,7 @@ MMSApp.factory("ModuleFactory", function($http, $q) {
 			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
 		});
+
 		return deferred.promise;
 	};
 

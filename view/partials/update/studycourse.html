@@ -24,6 +24,13 @@
 						    <textarea rows="5" ng-model="studycourse.content"></textarea>
 						    <span class="help-block">Bitte w&auml;len Sie eine Beschreibung des Studiengangs.</span>
 
+						    <span ng-show="canDeblockContent">
+						    	Freigeben:  <input type="checkbox" ng-model="studycourse.enabled" name="enabled"><br /><br />
+						    	<span class="help-block">Studiengang freigeben.</span>
+							</span>
+
+						    Archivieren: <input type="checkbox" ng-model="studycourse.archived" name="archived"><br /><br />
+						    <span class="help-block">Studiengang archivieren.</span>
 						</fieldset>
 				 	</div>
 				 	<div class="row-fluid">

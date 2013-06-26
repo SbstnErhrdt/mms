@@ -55,6 +55,8 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 			$scope.activeUser = activeUser;
             $scope.isAdmin = ActiveUserFactory.isAdmin();
             $scope.isEmployee = ActiveUserFactory.isEmployee();
+            $scope.canDeblockContent = ActiveUserFactory.canDeblockContent();
+            $scope.canDeblockCriticalModule = ActiveUserFactory.canDeblockCriticalModule();
 		}, function(error) {
 			sendError(error);
 		});

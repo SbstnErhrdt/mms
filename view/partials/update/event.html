@@ -74,8 +74,10 @@
 						    	<strong>Form:</strong> FR 08:00 - 10:00<br />
 						    </span>
 
-						    Freigeben:  <input type="checkbox" ng-model="_event.enabled" name="enabled"><br /><br />
-						    <span class="help-block">Event freigeben.</span>
+						    <span ng-show="canDeblockContent">
+						    	Freigeben:  <input type="checkbox" ng-model="_event.enabled" name="enabled"><br /><br />
+						    	<span class="help-block">Event freigeben.</span>
+							</span>
 
 						    Archivieren: <input type="checkbox" ng-model="_event.archived" name="archived"><br /><br />
 						    <span class="help-block">Event archivieren.</span>

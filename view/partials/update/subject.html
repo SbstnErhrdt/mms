@@ -24,6 +24,14 @@
 						    <textarea rows="5" ng-model="subject.content"></textarea>
 						    <span class="help-block">Bitte w&auml;len Sie eine Beschreibung des Fachs.</span>
 
+						    <span ng-show="canDeblockContent">
+						    	Freigeben:  <input type="checkbox" ng-model="subject.enabled" name="enabled"><br /><br />
+						    	<span class="help-block">Fach freigeben.</span>
+							</span>
+
+						    Archivieren: <input type="checkbox" ng-model="subject.archived" name="archived"><br /><br />
+						    <span class="help-block">Fach archivieren.</span>
+
 						</fieldset>
 				 	</div>
 				 	<div class="row-fluid">
