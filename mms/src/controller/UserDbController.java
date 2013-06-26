@@ -534,14 +534,66 @@ public class UserDbController extends DbController {
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);		
 			while(rs.next()) {
-				users.add(new User(rs.getString(1), rs.getString(2), rs.getString(3)));
+				User user = new User(rs.getString(1), rs.getString(2), rs.getString(3));
+				
+				EmployeeRights er = getEmployeeRights(user);
+				
+				if(er != null) {
+					Employee employee = new Employee(user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), 
+							user.getTitle(), user.getGraduation(), user.getMatricNum(), user.getSemester(), user.getUserRights());
+					employee.setEmployeeRights(er);
+					employee.setEmployee(true);
+					users.add(employee);
+				} else {
+					user.setEmployee(false);
+					users.add(user);
+				}
 			}
 			rs.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 			return null;
 		}	
+		
 		return users;
+	}
+	
+	private EmployeeRights getEmployeeRights(User user) {
+	String query = "SELECT canDeblockModule, canDeblockCriticalModule, isAdmin " +
+			"FROM employee_rights WHERE email=?;";
+		
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+	
+			ps.setString(1, user.getEmail());
+			
+			ResultSet rs = ps.executeQuery();
+			
+			db.commit();
+			
+			if(rs.next()) {
+				EmployeeRights er = new EmployeeRights(rs.getBoolean(1), rs.getBoolean(2), 
+						rs.getBoolean(3));
+				rs.close();
+				return er;
+			} else {
+				rs.close();
+				return null;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public User verifyUser(User user) {

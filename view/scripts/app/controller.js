@@ -57,7 +57,10 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
             $scope.isEmployee = ActiveUserFactory.isEmployee();
             $scope.canDeblockContent = ActiveUserFactory.canDeblockContent();
             $scope.canDeblockCriticalModule = ActiveUserFactory.canDeblockCriticalModule();
-		}, function(error) {
+            $scope.isLoggedIn = true;
+  		}, function(error) {
+ 			$scope.isLoggedIn = false;
+ 			console.log("ERROR HALLO TIM");
 			sendError(error);
 		});
 	} else {
@@ -68,7 +71,6 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 }
 
 function homeCtrl($scope, $http, $cookies, $location, ActiveUserFactory) {
-	$scope.isLoggedIn = ActiveUserFactory.isLoggedIn();
 }
 
 function overviewCtrl($scope) {
@@ -87,8 +89,6 @@ function navigationCtrl($http, $scope, $cookies, $location, ActiveUserFactory) {
                 console.log("couldn't log out")
             });
 	};
-
-	$scope.isLoggedIn = ActiveUserFactory.isLoggedIn();
 }
 
 function registerCtrl($scope, $cookies, $location, ActiveUserFactory) {
@@ -624,13 +624,56 @@ function showUserCtrl($scope, $routeParams, UserFactory) {
 	}
 }
 
-function createUserCtrl($scope, UserFactory) {
+function createUserCtrl($scope, $location, UserFactory) {
+	// Abschicken
+	$scope.createEvent = function() {
+		
+		/*
+		*
+		*
+		* TODO
+		*
+		*
+		*/
 
+		var user = {
+			//TODO
+		};
+
+		UserFactory.createUser(user, function() {
+			$location.path("/show/users");
+		});
+	};
 }
 
-function updateUserCtrl($scope, $routeParams, UserFactory) {
-	showUserCtrl($scope, $routeParams, UserFactory);
+function updateUserCtrl($scope, $location, $routeParams, UserFactory) {
+	if($routeParams.email) {
+		UserFactory.getUser($routeParams.email).then(function(user) {
+			$scope.user = user;
+		}, function(error) {
+			sendError(error);
+		});
+	} else {
+		// Error
+		sendError("No query");
+	}
 
+    $scope.update = function () {
+        UserFactory.updateUser($scope.user, function () {
+            $location.path("/show/users");
+        });
+    }
+
+	// Laden
+	UserFactory.getUsers().then(function(users) {
+		$scope.users = users;
+	}, function(error) {
+		sendError(error);
+	});
+
+    $scope.log = function () {
+        console.log($scope._event);
+    }
 }
 
 function deleteUserCtrl($scope, $routeParams, $location, UserFactory) {

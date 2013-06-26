@@ -300,5 +300,7 @@ public class Test {
 		java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
 		
 		System.out.println(date);
+		
+		System.out.println(udbc.readReducedUsers());
 	}
 }

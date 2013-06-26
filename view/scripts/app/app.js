@@ -84,6 +84,10 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 		templateUrl: pURL+"show/user.html",
 		controller: showUserCtrl
 	});
+	$routeProvider.when("/show/deadlines", {
+        templateUrl: pURL+"show/deadlines.html",
+        //controller: showDeadlinesCtrl
+    });
 	$routeProvider.when("/show/deadline", {
         templateUrl: pURL+"show/deadline.html",
         //controller: showDeadlineCtrl
@@ -246,8 +250,7 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 			isAdmin: "boolean",
 			canDeblockModule: "boolean",
 			canDeblockCriticalModule: "boolean"
-		}
-		,
+		},
 		firstName: "String",
 		graduation: "String",
 		isEmployee: "boolean",
@@ -257,8 +260,7 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 		phoneNum: "String",
 		semester: "Number",
 		talkTime: "String",
-		title: "String",
-		userRights: "Object"
+		title: "String"
 	};
 
 	factory.getActiveUser = function() {
@@ -321,14 +323,6 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 		});
 
 		return deferred.promise;
-	};
-
-	factory.isLoggedIn = function() {
-		if (typeof ActiveUser.userRights === "undefined") {
-			return false;
-		} else {
-			return true;
-		}
 	};
 
 	factory.isAdmin = function() {
@@ -672,13 +666,42 @@ MMSApp.factory("UserFactory", function($http, $q) {
 
 	factory.createUser = function(user) {
 		// BENÖTIGTE FELDER - FIX THIS
-		if(user.email) {
+  		if(user.email) {
 
+            var url = hURL+"create/user";
 
-		} else {
-			// Error
-			console.log("Error: Es wurden nicht alle Felder ausgefüllt.");
-		}
+            $http({
+                method: "POST",
+                url: url,
+                data: user
+            }).
+                success(function(data, status, headers, config) {
+
+                    if(data.error) {
+                        // Error
+                        console.log("Servernachricht: "+data.error.message);
+                    } else if(data === "null") {
+                        // Error
+                        console.log("Der Server lieferte 'null' zurück.");
+                    } else {
+                        console.log(data);
+                        if(event.name == data.name) {
+                            console.log("User wurde erstellt.");
+                        } else {
+                            console.log("User wurde nicht erstellt.");
+                        }
+                    }
+                    callback();
+                }).
+                error(function(data, status, headers, config) {
+                    sendError("Error: "+data+" - "+status);
+                    callback();
+                });
+
+        } else {
+            // Error
+            console.log("Error: Es wurden nicht alle nötigen Felder (email) ausgefüllt.");
+        }
 	};
 
 	factory.getUser = function(email) {
@@ -778,6 +801,46 @@ MMSApp.factory("UserFactory", function($http, $q) {
 		});
 		return deferred.promise;
 	};
+
+	factory.updateUser = function(user,callback) {
+        if(user.email) {
+
+            var url = hURL+"update/user";
+
+            $http({
+                method: "POST",
+                url: url,
+                data: user
+            }).
+                success(function(data, status, headers, config) {
+
+                    if(data.error) {
+                        // Error
+                        console.log("Servernachricht: "+data.error.message);
+                    } else if(data === "null") {
+                        // Error
+                        console.log("Der Server lieferte 'null' zurück.");
+                    } else {
+                        console.log(data);
+                        if(event.name == data.name) {
+                            console.log("User wurde geupdated.");
+                        } else {
+                            console.log("User wurde nicht geupdated.");
+                        }
+                    }
+                    callback();
+                }).
+                error(function(data, status, headers, config) {
+                    sendError("Error: "+data+" - "+status);
+                    callback();
+                });
+
+        } else {
+            // Error
+            console.log("Error: Es wurden nicht alle nötigen Felder (email) ausgefüllt.");
+        }	
+	};
+
 	return factory;
 });
 
@@ -1749,6 +1812,140 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 
 			if(studycourseID) {
 				url = url+"?studycourseID="+studycourseID;
+			}
+
+			return url;
+
+		} else {
+			// ERROR
+			console.log("ERROR in Eventfactory.checkSingularURL");
+
+			return {
+				error: {
+					message: "Method in checkSingularURL wasn't definded."
+				}
+			};
+		}
+	};
+	return factory;
+});
+/*
+
+	DeadlineFactory
+
+ */
+MMSApp.factory("DeadlineFactory", function($http, $q) {
+	var factory = {};
+	var deadline = {
+		deadlineDate: "Date",
+		sose: "boolean",
+		year: "Number"
+	};
+	var deadline = [];
+
+	factory.createDeadline = function(deadlineDate) {
+		// BENÖTIGTE FELDER - FIX THIS
+		if(studycourse.name) {
+
+
+		} else {
+			// Error
+			console.log("Error: Es wurden nicht alle Felder ausgefüllt.");
+		}
+	};
+
+	factory.getDeadline = function(deadline) {
+
+		var url = factory.checkSingularURL("read", deadlineDate);
+		if(url.error) {
+			return url.error;
+		}
+
+		var deferred = $q.defer();
+		$http.get(url).success(function(data, status) {
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				deadline = data;
+				deferred.resolve(deadline);
+			}
+
+		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
+			deferred.reject(data);
+		});
+		return deferred.promise;
+	};
+
+	factory.getDeadlines = function() {
+
+
+		var url = hURL+"read/deadlines";
+
+		var deferred = $q.defer();
+		$http.get(url).success(function(data, status) {
+
+			if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// Success
+				Deadlines = data;
+				deferred.resolve(data);
+			}
+
+		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
+			deferred.reject(data);
+		});
+		return deferred.promise;
+	};
+
+	factory.deleteDeadline = function(studycourseID) {
+
+		var url = factory.checkSingularURL("delete", deadlineDate);
+		if(url.error) {
+			return url.error;
+		}
+
+		var deferred = $q.defer();
+		$http.get(url).success(function(data, status) {
+			if(deadlineDate === data.deadlineDate) {
+				Deadline.deadlineDate = data.deadlineDate;
+			} else if(data.error) {
+				// Error
+				console.log("Servernachricht: "+data.error.message);
+			} else if(data === "null") {
+				// Error
+				console.log("Der Server lieferte 'null' zurück.");
+			} else {
+				// ERROR
+				console.log("ERROR in Deadline.deleteDeadline");
+			}
+			deferred.resolve(Deadline);
+		}).error(function(data, status) {
+			console.log("Error: "+data+" - Status:"+status);
+			deferred.reject(data);
+		});
+		return deferred.promise;
+	};
+
+	factory.checkSingularURL = function(method, studycourseID) {
+		if(method) {
+
+			var url = hURL+method+"/deadline";
+
+			if(studycourseID) {
+				url = url+"?deadlineDate="+deadlineDate;
 			}
 
 			return url;

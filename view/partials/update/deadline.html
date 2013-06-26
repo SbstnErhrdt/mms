@@ -2,26 +2,26 @@
     <div class="row-fluid">
         <ul class="span 12 breadcrumb">
             <li><a href="#/home">Home</a> <span class="divider">/</span></li>
-            <li class="active">Deadline erstellen</li>
+            <li class="active">Deadline bearbeiten</li>
         </ul>
     </div>
 </div>
 <div class="container-fluid">
     <div class="row-fluid">
 		<div class="span12">
-            <h1>Deadline erstellen</h1>
-            <p class="lead">Hier k&ouml;nnen sie eine Deadline erstellen</p>
+            <h1>Deadline bearbeiten</h1>
+            <p class="lead">Hier k&ouml;nnen sie eine Deadline bearbeiten</p>
             <form>
 				<legend>Deadline Daten</legend>
 				<label>Jahr</label>
-				<input type="text" ng-model="deadline.year" name="year" placeholder="2013" required>
+				<input type="text" ng-model="deadline.year" name="year" required>
 				<label>Wintersemester / Sommersemester</label>
 				<input type="radio" ng-model="sose" value="true"> Sommersemester<br />
 				<input type="radio" ng-model="sose" value="false"> Wintersemester
 				<label>Deadline</label>
 				<input type="date" placeholder="2013" ng-model="deadline" >
 				<hr />
-			<input ng-click="createDeadline()" type="submit" name="submit" class="btn btn-success" value="Deadline erstellen" />
+			<input ng-click="updateDeadline()" type="submit" name="submit" class="btn btn-success" value="Deadline bearbeiten" />
             </form>
 		</div>
     </div>

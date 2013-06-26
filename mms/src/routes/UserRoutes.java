@@ -132,8 +132,53 @@ public class UserRoutes extends Routes {
 	 */
 	public void readUsers(HttpServletRequest request,
 			HttpServletResponse response) {
+		
+		String json;
+		
+		// check rights
+		User actorUser = getActorUser(request);
+		if(actorUser != null) {
+			if(actorUser.isEmployee()) {
+				Employee actorEmployee = (Employee) actorUser;
+				if(!actorEmployee.getEmployeeRights().isAdmin()) {
+					System.out.println("actorUser is no admin");
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
+							"not allowed to read all users (actorUser is no admin)", 
+							"readUsers(...)")));
+					try { 
+						response.getWriter().write(json);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
+				} else {
+					System.out.println("actorUser is admin");
+				}
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"not allowed to read all users (actorUser is no employee (and therefore no admin))", 
+						"readUsers(...)")));
+				try { 
+					response.getWriter().write(json);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return;
+			}
+		} else {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"not allowed to read all users (actorUser is not logged in)", 
+					"readUsers(...)")));
+			try { 
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
+		
 		ArrayList<User> users = db.readReducedUsers();		
-		String json = gson.toJson(users);
+		json = gson.toJson(users);
 		
 		try {
 			response.getWriter().write(json);
@@ -243,7 +288,7 @@ public class UserRoutes extends Routes {
 		// check rights
 		if(!hasRights) {
 			if(!user.getEmail().equals(actorUser.getEmail())) {
-				System.out.println("actorUser does not equal user to delete");
+				System.out.println("actorUser does not equal user to update");
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to delete this user (actorUser is no admin and does not equal user to update)", 
 						"updateUser(...)")));		
@@ -254,7 +299,7 @@ public class UserRoutes extends Routes {
 				}
 				return;
 			} else {
-				System.out.println("actorUser equals user to delete");
+				System.out.println("actorUser equals user to user");
 			}
 		}
 		
