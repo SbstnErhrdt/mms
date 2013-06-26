@@ -192,7 +192,7 @@ function showModuleHandbooksCtrl($scope, ModuleHandbookFactory, StudycourseFacto
 	});
     $scope.isAuthorised = function() {
     	return ActiveUserFactory.isAuthorised("moduleHandbook");
-    }	
+    }
 	$scope.canEdit = function (id) {
         return ActiveUserFactory.canEdit(id, "moduleHandbook");
     }
@@ -236,7 +236,26 @@ function deleteModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandboo
 		sendError(error);
 	});
 }
-
+/*
+* PRINT MODULEHANDBOOK CONTROLLER
+*/
+function printModulehandbookCtrl($scope, ModuleHandbookFactory, StudycourseFactory, ActiveUserFactory) {
+	if($routeParams.modulehandbookID) {
+		ModuleHandbookFactory.getModuleHandbook($routeParams.modulehandbookID).then(function(moduleHandbook) {
+			$scope.moduleHandbook = moduleHandbook;
+			SubjectFactory.getSubjects(moduleHandbook.moduleHandbookID).then(function(subjects) {
+				$scope.subjects = subjects;
+			}, function(error) {
+				sendError(error);
+			});
+		}, function(error) {
+			sendError(error);
+		});
+	} else {
+		// Error
+		sendError("No query");
+	}
+}
 /*
 * SUBJECT CONTROLLER
 */
@@ -334,7 +353,7 @@ function showModulesCtrl($scope, ModuleFactory, SubjectFactory, ActiveUserFactor
 		sendError(error);
 	});
     $scope.isAuthorised = function() {
-    	return ActiveUserFactory.isAuthorised("module");	
+    	return ActiveUserFactory.isAuthorised("module");
     }
 	$scope.canEdit = function (id) {
         return ActiveUserFactory.canEdit(id, "module");

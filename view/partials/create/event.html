@@ -20,11 +20,15 @@
 						    <input type="text" ng-model="_event.name" placeholder="Fach" required>
 						    <span class="help-block">Bitte w&auml;len Sie eine Veranstaltungsname.</span>
 
-						    <label>Zugehöriges Modul*</label>
-						    <select ng-model="_event.moduleID">
-							  	<option ng-repeat="module in modules">{{module.moduleID}} - {{module.name}}</option>
-							</select>
-						    <span class="help-block">Bitte w&auml;len Sie den Dozenten.</span>
+                            <label>Zugehöriges Fach*<a style="margin-left: 20px;" ng-click="addEvent()"><i class="icon-plus"></i></a></label>
+                            <div ng-repeat="modules in moduleList">
+                                <select ng-model="idList[$index]">
+                                    <option ng-repeat="module in modules">{{module.moduleID}} - {{module.name}}</option>
+                                </select>
+                                <a style="margin-left: 10px;" ng-click="removeEvent()"><i class="icon-minus"></i></a>
+                            </div>
+                            <br>
+                            <span class="help-block">Bitte w&auml;hlen Sie das zugehörige Modul.</span>
 
 						    <label>Semesterwochenstunden</label>
 						    <input type="text" ng-model="_event.sws" placeholder="4" maxlength="4">
@@ -73,9 +77,6 @@
 						    	Bitte w&auml;len Sie die Zeiten der Veranstaltung.<br />
 						    	<strong>Form:</strong> FR 08:00 - 10:00<br />
 						    </span>
-
-						    Freigeben:  <input type="checkbox" ng-model="_event.enabled" name="enabled"><br /><br />
-						    <span class="help-block">Event freigeben.</span>
 
 						    Archivieren: <input type="checkbox" ng-model="_event.archived" name="archived"><br /><br />
 						    <span class="help-block">Event archivieren.</span>

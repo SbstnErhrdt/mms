@@ -50,7 +50,8 @@ SONDERFALL PASSWORT!!!
 				    <span class="help-block">Bitte w&auml;len Sie einen Vornamen.</span>
 
 				    <label>Email</label>
-				    <input type="text" ng-model="user.email" >
+				    <span class="input-xlarge uneditable-input">{{user.email}}</span>
+				    <input ng-model="user.email" type="hidden">
 				    <span class="help-block">Bitte w&auml;len Sie eine Email.</span>
 
 				    <label>Matrikelnummer</label>

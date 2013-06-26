@@ -1064,7 +1064,7 @@ public class ContentRoutes extends Routes{
 		
 		// enabled changed?
 		boolean enabledChanged = false;
-		Module oldEvent = db.getModule(event.getID());
+		Event oldEvent = db.getEvent(event.getID());
 		if(oldEvent.isEnabled() != event.isEnabled()) {
 				enabledChanged = true;
 		}		

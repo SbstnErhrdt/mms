@@ -200,6 +200,15 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 		templateUrl: pURL+"confirm.html",
 		controller: confirmCtrl
 	});
+
+	/*
+		PRINT ROUTE
+	 */
+	 $routeProvider.when("print/modulehandbook", {
+		templateUrl: pURL+"print/modulehandbook.html",
+		//controller: printModulehandbookCtrl
+	});
+
 });
 
 /*
@@ -328,7 +337,7 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 		} else {
 			console.log("ActiveUser is no employee");
 			return false;
-		}	
+		}
 	}
 
 	factory.isAuthorised = function(content) {
@@ -390,7 +399,7 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 					console.log("ActiveUser.studycourseRights.moduleRightsList.length === 0");
 					return false;
 				}
-			}						
+			}
 		} else {
 			console.log("unknown case");
 			console.log(ActiveUser.employeeRights);
@@ -490,7 +499,7 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 			}
 			console.log("unexpected case in function canEdit");
 			return false;
-		} 
+		}
 	};
 
 	factory.canDelete = function(id, content) {
@@ -585,8 +594,8 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 			}
 			console.log("unexpected case in function canEdit");
 			return false;
-		} 
-	};	
+		}
+	};
 
 	return factory;
 });
