@@ -24,6 +24,14 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 		templateUrl: pURL+"home.html",
 		controller: homeCtrl
 	});
+	$routeProvider.when("/imprint", {
+		templateUrl: pURL+"imprint.html",
+		//controller: imprintCtrl
+	});
+	$routeProvider.when("/contact", {
+		templateUrl: pURL+"contact.html",
+		//controller: contectCtrl
+	});
 	$routeProvider.when("/overview", {
 		templateUrl: pURL+"overview.html",
 		controller: overviewCtrl
@@ -76,6 +84,10 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 		templateUrl: pURL+"show/user.html",
 		controller: showUserCtrl
 	});
+    $routeProvider.when("/request", {
+        templateUrl: pURL+"requestTest.html",
+        controller: requestCtrl
+    });
 
 	/*
 	*	CREATE ROUTES
@@ -96,13 +108,13 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 	});
 
 	$routeProvider.when("/create/subject", {
-		templateUrl: pURL+"create/subject.html"
-		//controller: createSubjectCtrl
+		templateUrl: pURL+"create/subject.html",
+		controller: createSubjectCtrl
 	});
 
 	$routeProvider.when("/create/module", {
-		templateUrl: pURL+"create/module.html"
-		//controller: createModuleCtrl
+		templateUrl: pURL+"create/module.html",
+		controller: createModuleCtrl
 	});
 
 	$routeProvider.when("/create/event", {
@@ -110,6 +122,38 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 		controller: createEventCtrl
 	});
 
+	/*
+	*	UPDATE ROUTES
+	*/
+	$routeProvider.when("/update/user", {
+		templateUrl: pURL+"update/user.html",
+		controller: updateUserCtrl
+	});
+
+	$routeProvider.when("/update/studycourse", {
+		templateUrl: pURL+"update/studycourse.html",
+		controller: updateStudycourseCtrl
+	});
+
+	$routeProvider.when("/update/modulehandbook", {
+		templateUrl: pURL+"update/modulehandbook.html",
+		controller: updateModuleHandbookCtrl
+	});
+
+	$routeProvider.when("/update/subject", {
+		templateUrl: pURL+"update/subject.html",
+		controller: updateSubjectCtrl
+	});
+
+	$routeProvider.when("/update/module", {
+		templateUrl: pURL+"update/module.html",
+		controller: updateModuleCtrl
+	});
+
+	$routeProvider.when("/update/event", {
+		templateUrl: pURL+"update/event.html",
+		controller: updateEventCtrl
+	});
 
 
 
@@ -142,6 +186,20 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 		controller: deleteUserCtrl
 	});
 	$routeProvider.otherwise({redirectTo: "/home"});
+
+
+	/*
+		REGISTER ROUTE
+	 */
+	$routeProvider.when("/register", {
+		templateUrl: pURL+"register.html",
+		controller: registerCtrl
+	});
+
+	$routeProvider.when("/confirm", {
+		templateUrl: pURL+"confirm.html",
+		controller: confirmCtrl
+	});
 });
 
 /*
@@ -154,21 +212,26 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 	var factory = {};
 
 	var ActiveUser = {
-		address: String,
-		email: String,
-		emailVerified: Boolean,
-		employeeRights: Object,
-		firstName: String,
-		graduation: String,
-		isEmployee: Boolean,
-		lastName: String,
-		matricNum: Number,
-		password: Number,
-		phoneNum: String,
-		semester: Number,
-		talkTime: String,
-		title: String,
-		userRights: Object
+		address: "String",
+		email: "String",
+		emailVerified: "boolean",
+		employeeRights: {
+			isAdmin: "boolean",
+			canDeblockModule: "boolean",
+			canDeblockCriticalModule: "boolean"
+		}
+		,
+		firstName: "String",
+		graduation: "String",
+		isEmployee: "boolean",
+		lastName: "String",
+		matricNum: "Number",
+		password: "Number",
+		phoneNum: "String",
+		semester: "Number",
+		talkTime: "String",
+		title: "String",
+		userRights: "Object"
 	};
 
 	factory.getActiveUser = function() {
@@ -179,7 +242,7 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 			url = url+"?JSESSIONID="+$cookies["JSESSIONID"];
 		} else {
 			// ERROR
-			console.log("ERROR in factory.getActiveUser");
+			sendError("ERROR in factory.getActiveUser");
 		}
 
 		var deferred = $q.defer();
@@ -188,6 +251,11 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 			if(data.error) {
 				// Error
 				console.log("Servernachricht: "+data.error.message);
+				return {
+					error: {
+						message: data.error.message
+					}
+				};
 			} else if(data === "null") {
 				// Error
 				console.log("Der Server lieferte 'null' zurück.");
@@ -207,6 +275,318 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 	factory.setActiveUser = function(activeUser) {
 		ActiveUser = activeUser;
 	};
+
+	factory.createActiveUser = function(activeUser) {
+
+		var url = hURL+"register";
+
+		var deferred = $q.defer();
+		$http({
+			method: "POST",
+			url: url,
+			data: activeUser
+		}).success(function(data, status, headers, config) {
+			ActiveUser = data;
+			deferred.resolve(ActiveUser);
+		}).error(function(data, status, headers, config) {
+			sendError("Error: "+data+" - Status: "+status);
+			deferred.reject(data);
+		});
+
+		return deferred.promise;
+	};
+
+	factory.isLoggedIn = function() {
+		if (typeof ActiveUser.userRights === "undefined") {
+			return false;
+		} else {
+			return true;
+		}
+	};
+
+	factory.isAdmin = function() {
+		console.log(ActiveUser);
+		if (typeof ActiveUser.employeeRights === "undefined") {
+			console.log("ActiveUser is no admin (employeeRights === 'undefined')");
+			return false;
+		} else if(ActiveUser.employeeRights.isAdmin) {
+			console.log("ActiveUser is admin");
+			return true;
+		} else {
+			console.log("ActiveUser is no admin");
+			return false;
+		}
+	};
+
+	factory.isEmployee = function() {
+		if (typeof ActiveUser.isEmployee === "undefined") {
+			console.log("ActiveUser is no employee (isEmployee === 'undefined')");
+			return false;
+		} else if(ActiveUser.isEmployee) {
+			console.log("ActiveUser is employee");
+			return true;
+		} else {
+			console.log("ActiveUser is no employee");
+			return false;
+		}	
+	}
+
+	factory.isAuthorised = function(content) {
+		console.log("function isAutorised");
+		if(typeof ActiveUser.employeeRights === "undefined" || typeof ActiveUser.isEmployee === "undefined") {
+			console.log("ActiveUser is no admin and no employee (employeeRights || isEmployee === 'undefined')");
+			return false;
+		} else if(!ActiveUser.employeeRights.isAdmin && !ActiveUser.isEmployee) {
+			console.log("ActiveUser is no admin and no employee");
+			console.log(ActiveUser.employeeRights);
+			return false;
+		} else if(ActiveUser.employeeRights.isAdmin) {
+			console.log("ActiveUser is admin");
+			return true;
+		} else if (ActiveUser.isEmployee) {
+			console.log("ActiveUser is employee");
+			if(content === "event") {
+				console.log("content === 'event'");
+				if(ActiveUser.employeeRights.eventRightsList.length > 0){
+					console.log("ActiveUser.employeeRights.eventRightsList.length is NOT 0");
+					return true;
+				} else {
+					console.log("ActiveUser.employeeRights.eventRightsList.length === 0");
+					return false;
+				}
+			} else if(content === "module") {
+				console.log("content === 'module'");
+				if(ActiveUser.employeeRights.moduleRightsList.length > 0){
+					console.log("ActiveUser.employeeRights.moduleRightsList.length is NOT 0");
+					return true;
+				} else {
+					console.log("ActiveUser.employeeRights.moduleRightsList.length === 0");
+					return false;
+				}
+			} else if(content === "subject") {
+				console.log("content === 'subject'");
+				if(ActiveUser.employeeRights.subjectRightsList.length > 0){
+					console.log("ActiveUser.subjectRights.moduleRightsList.length is NOT 0");
+					return true;
+				} else {
+					console.log("ActiveUser.subjectRights.moduleRightsList.length === 0");
+					return false;
+				}
+			} else if(content === "moduleHandbook") {
+				console.log("content === 'moduleHandbook'");
+				if(ActiveUser.employeeRights.moduleHandbookRightsList.length > 0){
+					console.log("ActiveUser.moduleHandbookRights.moduleRightsList.length is NOT 0");
+					return true;
+				} else {
+					console.log("ActiveUser.moduleHandbookRights.moduleRightsList.length === 0");
+					return false;
+				}
+			} else if(content === "studycourse") {
+				console.log("content === 'studycourse'");
+				if(ActiveUser.employeeRights.studycoursekRightsList.length > 0){
+					console.log("ActiveUser.studycourseRights.moduleRightsList.length is NOT 0");
+					return true;
+				} else {
+					console.log("ActiveUser.studycourseRights.moduleRightsList.length === 0");
+					return false;
+				}
+			}						
+		} else {
+			console.log("unknown case");
+			console.log(ActiveUser.employeeRights);
+			return false;
+		}
+	};
+
+	factory.canEdit = function(id, content) {
+		if(typeof ActiveUser.employeeRights === "undefined") {
+			console.log("ActiveUser is no employee (employeeRights === 'undefined')");
+			return false;
+		} else if(ActiveUser.employeeRights.isAdmin) {
+			console.log("ActiveUser is admin");
+			return true;
+		} else {
+			var list = [];
+			// event
+			if(content === "event") {
+				list = ActiveUser.employeeRights.eventRightsList;
+				for(var i=0;i<list.length;i++) {
+					var x = list[i];
+					if(x.eventID === id) {
+						console.log("eventID "+id+" matches an entry in eventRightsList");
+						if(x.canEdit) {
+							console.log("canEdit = true");
+							return true;
+						} else {
+							console.log("canEdit = false");
+						}
+					}
+				}
+				return false;
+
+			// module
+			} else if(content === "module") {
+				list = ActiveUser.employeeRights.moduleRightsList;
+				for(var i=0;i<list.length;i++) {
+					var x = list[i];
+					if(x.moduleID === id) {
+						console.log("moduleID "+id+" matches an entry in moduleRightsList");
+						if(x.canEdit) {
+							console.log("canEdit = true");
+							return true;
+						} else {
+							console.log("canEdit = false");
+						}
+					}
+				}
+				return false;
+
+			// subject
+			} else if(content === "subject") {
+				list = ActiveUser.employeeRights.subjectRightsList;
+				for(var i=0;i<list.length;i++) {
+					var x = list[i];
+					if(x.subjectID === id) {
+						console.log("subjectID "+id+" matches an entry in subjectRightsList");
+						if(x.canEdit) {
+							console.log("canEdit = true");
+							return true;
+						} else {
+							console.log("canEdit = false");
+						}
+					}
+				}
+				return false;
+			} else if(content === "moduleHandbook") {
+				list = ActiveUser.employeeRights.moduleHandbookRightsList;
+				for(var i=0;i<list.length;i++) {
+					var x = list[i];
+					if(x.moduleHandbookID === id) {
+						console.log("moduleHandbookID "+id+" matches an entry in moduleHandbookRightsList");
+						if(x.canEdit) {
+							console.log("canEdit = true");
+							return true;
+						} else {
+							console.log("canEdit = false");
+						}
+					}
+				}
+				return false;
+			} else if(content === "studycourse") {
+				list = ActiveUser.employeeRights.studycourseRightsList;
+				for(var i=0;i<list.length;i++) {
+					var x = list[i];
+					if(x.studycourseID === id) {
+						console.log("studycourseID "+id+" matches an entry in studycourseRightsList");
+						if(x.canEdit) {
+							console.log("canEdit = true");
+							return true;
+						} else {
+							console.log("canEdit = false");
+						}
+					}
+				}
+				return false;
+			}
+			console.log("unexpected case in function canEdit");
+			return false;
+		} 
+	};
+
+	factory.canDelete = function(id, content) {
+		if(typeof ActiveUser.employeeRights === "undefined") {
+			console.log("ActiveUser is no employee (employeeRights === 'undefined')");
+			return false;
+		} else if(ActiveUser.employeeRights.isAdmin) {
+			console.log("ActiveUser is admin");
+			return true;
+		} else {
+			var list = [];
+			// event
+			if(content === "event") {
+				list = ActiveUser.employeeRights.eventRightsList;
+				for(var i=0;i<list.length;i++) {
+					var x = list[i];
+					if(x.eventID === id) {
+						console.log("eventID "+id+" matches an entry in eventRightsList");
+						if(x.canDelete) {
+							console.log("canDelete = true");
+							return true;
+						} else {
+							console.log("canDelete = false");
+						}
+					}
+				}
+				return false;
+
+			// module
+			} else if(content === "module") {
+				list = ActiveUser.employeeRights.moduleRightsList;
+				for(var i=0;i<list.length;i++) {
+					var x = list[i];
+					if(x.moduleID === id) {
+						console.log("moduleID "+id+" matches an entry in moduleRightsList");
+						if(x.canDelete) {
+							console.log("canDelete = true");
+							return true;
+						} else {
+							console.log("canDelete = false");
+						}
+					}
+				}
+				return false;
+
+			// subject
+			} else if(content === "subject") {
+				list = ActiveUser.employeeRights.subjectRightsList;
+				for(var i=0;i<list.length;i++) {
+					var x = list[i];
+					if(x.subjectID === id) {
+						console.log("subjectID "+id+" matches an entry in subjectRightsList");
+						if(x.canDelete) {
+							console.log("canDelete = true");
+							return true;
+						} else {
+							console.log("canDelete = false");
+						}
+					}
+				}
+				return false;
+			} else if(content === "moduleHandbook") {
+				list = ActiveUser.employeeRights.moduleHandbookRightsList;
+				for(var i=0;i<list.length;i++) {
+					var x = list[i];
+					if(x.moduleHandbookID === id) {
+						console.log("moduleHandbookID "+id+" matches an entry in moduleHandbookRightsList");
+						if(x.canDelete) {
+							console.log("canDelete = true");
+							return true;
+						} else {
+							console.log("canDelete = false");
+						}
+					}
+				}
+				return false;
+			} else if(content === "studycourse") {
+				list = ActiveUser.employeeRights.studycourseRightsList;
+				for(var i=0;i<list.length;i++) {
+					var x = list[i];
+					if(x.studycourseID === id) {
+						console.log("studycourseID "+id+" matches an entry in studycourseRightsList");
+						if(x.canDelete) {
+							console.log("canDelete = true");
+							return true;
+						} else {
+							console.log("canDelete = false");
+						}
+					}
+				}
+				return false;
+			}
+			console.log("unexpected case in function canEdit");
+			return false;
+		} 
+	};	
 
 	return factory;
 });
@@ -479,11 +859,16 @@ MMSApp.factory("EventFactory", function($http, $q) {
 		name: "String",
 		sws: "Number",
 		lecturer_email: "String",
-		archived: "boolean"
+		archived: "boolean",
+		enabled: "boolean",
+		room:"String",
+		type:"String",
+		place:"String"
+
 	};
 	var Events = [];
 
-	factory.createEvent = function(_event) {
+	factory.createEvent = function(_event, callback) {
 		// BENÖTIGTE FELDER - FIX THIS
 		if(_event.name && _event.moduleIDs) {
 
@@ -495,11 +880,7 @@ MMSApp.factory("EventFactory", function($http, $q) {
 			$http({
 				method: "POST",
 				url: url,
-				data: _event,
-				headers: {
-			        	"withCredentials": true,
-			        	"X-Requested-With": false
-			        }
+				data: _event
 			}).
 				success(function(data, status, headers, config) {
 
@@ -517,10 +898,11 @@ MMSApp.factory("EventFactory", function($http, $q) {
 							console.log("Event wurde nicht erstellt.");
 						}
 					}
-
+					callback();
 				}).
 				error(function(data, status, headers, config) {
-					console.log("Error: "+data);
+					sendError("Error: "+data+" - "+status);
+					callback();
 				});
 
 		} else {
@@ -627,6 +1009,49 @@ MMSApp.factory("EventFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
+    factory.updateEvent = function (event, callback) {
+
+        if(event.name && event.moduleIDs) {
+
+            var url = factory.checkSingularURL("update");
+            if(url.error) {
+                return url.error;
+            }
+
+            $http({
+                method: "POST",
+                url: url,
+                data: event
+            }).
+                success(function(data, status, headers, config) {
+
+                    if(data.error) {
+                        // Error
+                        console.log("Servernachricht: "+data.error.message);
+                    } else if(data === "null") {
+                        // Error
+                        console.log("Der Server lieferte 'null' zurück.");
+                    } else {
+                        console.log(data);
+                        if(event.name == data.name) {
+                            console.log("Event wurde geupdated.");
+                        } else {
+                            console.log("Event wurde nicht geupdated.");
+                        }
+                    }
+                    callback();
+                }).
+                error(function(data, status, headers, config) {
+                    sendError("Error: "+data+" - "+status);
+                    callback();
+                });
+
+        } else {
+            // Error
+            console.log("Error: Es wurden nicht alle Felder ausgefüllt.");
+        }
+    };
+
 	factory.checkSingularURL = function(method, eventID) {
 		if(method) {
 
@@ -677,10 +1102,42 @@ MMSApp.factory("ModuleFactory", function($http, $q) {
 	};
 	var Modules = [];
 
-	factory.createModule = function(module) {
+	factory.createModule = function(module, callback) {
 		// BENÖTIGTE FELDER - FIX THIS
 		if(module.name) {
 
+			var url = factory.checkSingularURL("create");
+			if(url.error) {
+				return url.error;
+			}
+
+			$http({
+				method: "POST",
+				url: url,
+				data: module
+			}).
+				success(function(data, status, headers, config) {
+
+					if(data.error) {
+						// Error
+						console.log("Servernachricht: "+data.error.message);
+					} else if(data === "null") {
+						// Error
+						console.log("Der Server lieferte 'null' zurück.");
+					} else {
+						console.log(data);
+						if(module.name == data.name) {
+							console.log("Event wurde erstellt.");
+						} else {
+							console.log("Event wurde nicht erstellt.");
+						}
+					}
+					callback();
+				}).
+				error(function(data, status, headers, config) {
+					sendError("Error: "+data+" - "+status);
+					callback();
+				});
 
 		} else {
 			// Error
@@ -818,17 +1275,6 @@ MMSApp.factory("SubjectFactory", function($http, $q) {
 	};
 	var Subjects = [];
 
-	factory.createSubject = function(subject) {
-		// BENÖTIGTE FELDER - FIX THIS
-		if(subject.name) {
-
-
-		} else {
-			// Error
-			console.log("Error: Es wurden nicht alle Felder ausgefüllt.");
-		}
-	};
-
 	factory.getSubject = function(subjectID) {
 
 		var url = factory.checkSingularURL("read", subjectID);
@@ -886,6 +1332,46 @@ MMSApp.factory("SubjectFactory", function($http, $q) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
+	};
+
+	factory.createSubject = function(subject, callback) {
+		if(subject.name) {
+			var url = factory.checkSingularURL("create");
+
+			if(url.error) {
+				return url.error;
+			}
+
+			$http({
+				method: "POST",
+				url: url,
+				data: subject
+			}).success(function(data, status, headers, config) {
+
+				if(data.error) {
+						// Error
+						console.log("Servernachricht: "+data.error.message);
+					} else if(data === "null") {
+						// Error
+						console.log("Der Server lieferte 'null' zurück.");
+					} else {
+						console.log(data);
+						if(subject.name == data.name) {
+							console.log("Fach wurde erstellt.");
+						} else {
+							console.log("Fach wurde nicht erstellt.");
+						}
+					}
+					callback();
+			}).error(function(data, status, headers, config) {
+				sendError("Error: "+data+" - "+status);
+				callback();
+			});
+
+		} else {
+			// Error
+			sendError("Error: Es wurden nicht alle Felder ausgefüllt.");
+		}
 	};
 
 	factory.deleteSubject = function(subjectID) {

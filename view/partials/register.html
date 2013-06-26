@@ -1,0 +1,59 @@
+
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<ul class="breadcrumb">
+				<li class="active">Registration</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12"></div>
+		<div id="reg" class="span4">
+			<h2>Stammdaten angeben</h2>
+			<form class="form-horizontal">
+			  <div class="control-group">
+			    <label class="control-label" for="inputEmail">Email*</label>
+			    <div class="controls">
+			      <input type="email" id="inputEmail" placeholder="Email" ng-model="user.email" required>
+			    </div>
+			  </div>
+			  <div class="control-group">
+			    <label class="control-label" for="inputPassword">Vorname*</label>
+			    <div class="controls">
+			      <input type="text" placeholder="Vorname" ng-model="user.firstName" required>
+			    </div>
+			  </div>
+			  <div class="control-group">
+			    <label class="control-label" for="inputPassword">Nachname*</label>
+			    <div class="controls">
+			      <input type="text" id="inputPassword" placeholder="Nachname" ng-model="user.lastName" required>
+			    </div>
+			  </div>
+			  <div class="control-group">
+			    <label class="control-label" for="inputPassword">Passwort*</label>
+			    <div class="controls">
+			      <input type="password" id="inputPassword" placeholder="Passwort" ng-model="user.password1" required>
+			    </div>
+			  </div>
+			  <div class="control-group">
+			    <label class="control-label" for="inputPassword">Passwort wiederholen*</label>
+			    <div class="controls">
+			      <input type="password" id="inputPassword" placeholder="Passwort wiederholen" ng-model="user.password2" required>
+			    </div>
+			  </div>
+			  <div class="control-group">
+			    <div class="controls">
+			      <button class="btn btn-medium" type="button" ng-click="register()">Registrieren</button>
+			    </div>
+			  </div>
+			</form>
+
+		</div>
+
+	</div>
+</div>

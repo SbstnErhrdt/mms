@@ -12,12 +12,12 @@
       <!--Body content-->
 	    <h1>Fächer</h1>
 		<p class="lead"> Hier finden Sie alle Fächer der Universität Ulm</p>
-        <div class="input-prepend pull-left">
+        <div id="filter" class="input-prepend pull-left">
           <span class="add-on">Filtern:</span>
           <input id="prependedInput" type="text" ng-model="search.name" placeholder="nach Name">
         </div>
-        <a href="#/create/subject" class="btn btn-success pull-left" style="margin-left: 10px;"><i class="icon-edit icon-white"></i> Neues Fach erstellen</a>
-        <div style="clear: both;"></div>
+        <a ng-show="isEmployee" href="#/create/subject" class="btn btn-success pull-left" ><i class="icon-edit icon-white"></i> Neues Fach erstellen</a>
+        <br class="clear" />
 		<hr />
 	    <table class="table">
 	    	<thead>
@@ -25,7 +25,8 @@
 					<th>#</th>
 					<th>Name</th>
 					<th>Archiviert</th>
-					<th>Aktion</th>
+					<th>Freigegeben</th>
+					<th ng-show="isAuthorised()">Aktion</th>
 				</tr>
 	    	</thead>
 	    	<tbody>
@@ -33,9 +34,10 @@
 				<td>{{subject.subjectID}}</td>
 				<td><a href="#/show/subject?subjectID={{subject.subjectID}}">{{subject.name}}</a></td>
 				<td><span class="label" ng-hide="subject.archived">nicht archiviert</span><span class="label label-warning" ng-show="subject.archived">archiviert</span></td>
-				<td>
-					<a href="#/delete/subject?subjectID={{subject.subjectID}}"class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
-					<a href="#/update/subject?subjectID={{subject.subjectID}}" class="btn btn-mini btn-warning"><i class="icon-refresh icon-white"></i> bearbeiten</a>
+				<td><span class="label" ng-hide="subject.enabled">nicht freigegeben</span><span class="label label-success" ng-show="subject.enabled">freigegeben</span></td>
+				<td ng-show="isAuthorised()">
+					<a href="#/delete/subject?subjectID={{subject.subjectID}}"class="btn btn-mini btn-danger" ng-show="canDelete(subject.subjectID)"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+					<a href="#/update/subject?subjectID={{subject.subjectID}}" class="btn btn-mini btn-warning" ng-show="canEdit(subject.subjectID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
 				</td>
 			</tr>
 	    	</tbody>

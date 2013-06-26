@@ -12,12 +12,12 @@
       <!--Body content-->
 	    <h1>Studiengänge</h1>
 		<p class="lead"> Hier finden Sie alle Studiengänge der Universität Ulm.</p>
-		<div class="input-prepend pull-left">
+		<div id="filter" class="input-prepend pull-left">
 	      <span class="add-on">Filtern:</span>
 	      <input id="prependedInput" type="text" ng-model="search.name" placeholder="nach Name">
 	    </div>
-		<a href="#/create/studycourse" class="btn btn-success pull-left" style="margin-left: 10px;"><i class="icon-edit icon-white"></i> Neuen Studiengang erstellen</a>
-	    <div style="clear: both;"></div>
+		<a ng-show="isEmployee" href="#/create/studycourse" class="btn btn-success pull-left"><i class="icon-edit icon-white"></i> Neuen Studiengang erstellen</a>
+	    <br class="clear" />
 		<hr />
 	    <table class="table">
 	    	<thead>
@@ -25,7 +25,8 @@
 					<th>#</th>
 					<th>Name</th>
 					<th>Archiviert</th>
-					<th>Aktion</th>
+					<th>Freigegeben</th>
+					<th ng-show="isAuthorised()">Aktion</th>
 				</tr>
 	    	</thead>
 	    	<tbody>
@@ -33,9 +34,10 @@
 				<td>{{studycourse.studycourseID}}</td>
 				<td><a href="#/show/studycourse?studycourseID={{studycourse.studycourseID}}">{{studycourse.name}}</a></td>
 				<td><span class="label" ng-hide="studycourse.archived">nicht archiviert</span><span class="label label-warning" ng-show="studycourse.archived">archiviert</span></td>
-				<td>
+				<td><span class="label" ng-hide="studycourse.enabled">nicht freigegeben</span><span class="label label-success" ng-show="studycourse.enabled">freigegeben</span></td>
+				<td ng-show="isAuthorised()">
 					<a href="#/delete/studycourse?studycourseID={{studycourse.studycourseID}}" class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
-					<a href="#/update/studycourse?studycourseID={{studycourse.studycourseID}}" class="btn btn-mini btn-warning"><i class="icon-refresh icon-white"></i> bearbeiten</a>
+					<a href="#/update/studycourse?studycourseID={{studycourse.studycourseID}}" class="btn btn-mini btn-warning" ng-show="canEdit(studycourse.studycourseID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
 
 
 				</td>

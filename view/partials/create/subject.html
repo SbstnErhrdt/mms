@@ -20,6 +20,12 @@
 						    <input type="text" ng-model="subject.name" placeholder="Fach" required>
 						    <span class="help-block">Bitte w&auml;len Sie einen Fachnamen.</span>
 
+						    <label>Zugehöriges Modulhandbuch*</label>
+						    <select ng-model="subject.moduleHandbookID">
+							  <option ng-repeat="moduleHandbook in moduleHandbooks">{{moduleHandbook.moduleHandbookID}} - {{moduleHandbook.name}}</option>
+							</select>
+						    <span class="help-block">Bitte w&auml;len Sie das zugehörige Modulhandbuch</span>
+
 						    <label>Beschreibung</label>
 						    <textarea rows="5" ng-model="subject.content" placeholder="Beschreibung des Fachs"></textarea>
 						    <span class="help-block">Bitte w&auml;len Sie eine Beschreibung des Fachs.</span>
@@ -30,7 +36,7 @@
 
 						<div class="span12">
 							<hr />
-							<input type="submit" name="submit" class="btn btn-success" value="Benutzer erstellen" />
+							<input ng-click="createSubject()" type="submit" name="submit" class="btn btn-success" value="Fach erstellen" />
 						</div>
 				 	</div>
 	             </form>

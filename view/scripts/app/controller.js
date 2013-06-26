@@ -2,55 +2,61 @@
 
 	Tabs Projekt! Spaces könnt ihr nehmen, dann aber VIER und ja nicht 2!!!
 	I DREH EICH OIGAHENDIG S KNICK ROM A WENN IH
+
 */
 
 function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
-
 	$scope.login = function() {
 		if($scope.email && $scope.password) {
+			delete $cookies['JSESSIONID'];
 			$http({
-			        method: 'POST',
-			        url: 'http://sopra.ex-studios.net:8080/mms/login?email='+$scope.email,
-			        data: {
-			        	email: $scope.email,
-			        	password: $scope.password
-			        },
-			        headers: {
-			        	"withCredentials": true,
-			        	"X-Requested-With": false
-			        }
-		    }).
-		        success(function(data, status, headers, config) {
-		        	if(data.error) {
-		        		// Error
-		        		console.log(data.error.message);
-		        	} else {
-		        		if(data[1].jsessionID) {
-		        			$cookies.JSESSIONID = data[1].jsessionID;
-		        			$location.path("/overview");
-		        		} else {
-		        			// Error
-		        			console.log("Error: Es wurden keine Cookies übertragen");
-		        		}
-		        	}
-		        }).
-		        error(function(data, status, headers, config) {
-		            console.log("Error: "+data);
-		        });
-		    
+					method: 'POST',
+					url: 'http://sopra.ex-studios.net:8080/mms/login?email='+$scope.email,
+					data: {
+						email: $scope.email,
+						password: $scope.password
+					},
+					headers: {
+						"withCredentials": true,
+						"X-Requested-With": false
+					}
+			}).
+				success(function(data, status, headers, config) {
+					if(data.error) {
+						sendError("Servernachricht: "+data.error.message);
+					} else {
+						if(data[1].jsessionID) {
+							$cookies.JSESSIONID = data[1].jsessionID;
+
+							// Feedback Loginbar - jQuery
+							$("#inputEmail, #inputPassword").val("");
+
+                            $location.path("/overview");
+                            document.location.reload(true);
+						} else {
+							// Error
+							sendError("Es wurden keine Cookies übertragen");
+						}
+					}
+				}).
+				error(function(data, status, headers, config) {
+					sendError(data);
+				});
+
 		} else {
-			// Butterbar
-			console.log("Es wurden nicht alle Felder ausgefüllt.");
+			sendError("Es wurden nicht alle Felder ausgefüllt.");
 		}
-	};		
+	};
 
 	if($cookies['JSESSIONID']) {
 		console.log("DEBUG: loged in");
 
 		ActiveUserFactory.getActiveUser().then(function(activeUser) {
 			$scope.activeUser = activeUser;
+            $scope.isAdmin = ActiveUserFactory.isAdmin();
+            $scope.isEmployee = ActiveUserFactory.isEmployee();
 		}, function(error) {
-			console.log("Error: "+error);
+			sendError(error);
 		});
 	} else {
 		console.log("DEBUG: NOT loged in");
@@ -60,29 +66,76 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 }
 
 function homeCtrl($scope, $http, $cookies, $location, ActiveUserFactory) {
-	
+	$scope.isLoggedIn = ActiveUserFactory.isLoggedIn();
 }
 
 function overviewCtrl($scope) {
 	// Does nothing
 }
 
-function navigationCtrl($scope, $cookies, $location) {
+function navigationCtrl($http, $scope, $cookies, $location, ActiveUserFactory) {
 	$scope.logout = function() {
-		delete $cookies['JSESSIONID'];
-		$location.path("/home");
+        console.log("click");
+        $http({method: 'GET', url: 'http://sopra.ex-studios.net:8080/mms/logout'}).
+            success(function(data, status, headers, config) {
+                delete $cookies['JSESSIONID'];
+                document.location.reload(true);
+            }).
+            error(function(data, status, headers, config) {
+                console.log("couldn't log out")
+            });
 	};
+
+	$scope.isLoggedIn = ActiveUserFactory.isLoggedIn();
+}
+
+function registerCtrl($scope, $cookies, $location, ActiveUserFactory) {
+	if($cookies['JSESSIONID']) {
+		sendError("Sie sind bereits eingeloggt.");
+		$location.path("/home");
+	} else {
+		$scope.register = function() {
+			if($scope.user.email && $scope.user.firstName && $scope.user.lastName && $scope.user.password1 && $scope.user.password2) {
+				if($scope.user.password1 === $scope.user.password2) {
+					var ActiveUser = {
+						email: $scope.user.email,
+						firstName: $scope.user.firstName,
+						lastName: $scope.user.lastName,
+						password: $scope.user.password1
+					};
+					ActiveUserFactory.createActiveUser(ActiveUser).then(function(activeUser) {
+						$location.path("/home");
+					}, function(error) {
+						sendError("Error: "+error);
+					});
+				} else {
+					sendError("Die beiden Passwörter stimmen nicht überein.");
+				}
+			} else {
+				sendError("Ihre Angaben sind nicht vollständig.");
+			}
+		};
+	}
 }
 
 /*
 * STUDYCOURSE CONTROLLER
 */
-function showStudycoursesCtrl($scope, StudycourseFactory) {
+function showStudycoursesCtrl($scope, StudycourseFactory, ActiveUserFactory) {
 	StudycourseFactory.getStudycourses().then(function(studycourses) {
 		$scope.studycourses = studycourses;
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
+    $scope.isAuthorised = function() {
+    	return ActiveUserFactory.isAuthorised("studycourse");
+    }
+	$scope.canEdit = function (id) {
+        return ActiveUserFactory.canEdit(id, "studycourse");
+    }
+	$scope.canDelete = function (id) {
+        return ActiveUserFactory.canDelete(id, "studycourse");
+    }
 }
 
 function showStudycourseCtrl($scope, $routeParams, StudycourseFactory, ModuleHandbookFactory) {
@@ -92,15 +145,19 @@ function showStudycourseCtrl($scope, $routeParams, StudycourseFactory, ModuleHan
 			ModuleHandbookFactory.getModuleHandbooks(studycourse.studycourseID).then(function(moduleHandbooks) {
 				$scope.moduleHandbooks = moduleHandbooks;
 			}, function(error) {
-				console.log("Error: "+error);
+				sendError(error);
 			});
 		}, function(error) {
-			console.log("Error: "+error);
+			sendError(error);
 		});
 	} else {
 		// Error
-		console.log("ERROR: No query");
+		sendError("No query");
 	}
+}
+
+function updateStudycourseCtrl($scope, $routeParams, StudycourseFactory, ModuleHandbookFactory) {
+	showStudycourseCtrl($scope, $routeParams, StudycourseFactory, ModuleHandbookFactory);
 }
 
 function deleteStudycourseCtrl($scope, $routeParams, $location, StudycourseFactory) {
@@ -109,30 +166,39 @@ function deleteStudycourseCtrl($scope, $routeParams, $location, StudycourseFacto
 			$location.path("/show/studycourses");
 		} else {
 			// ERROR
-			console.log("Error: Couldn't delete Studycourse");
+			sendError("Couldn't delete Studycourse");
 			$location.path("/show/studycourses");
 		}
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
 }
 
 /*
 * MODULEHANDBOOK CONTROLLER
 */
-function showModuleHandbooksCtrl($scope, ModuleHandbookFactory, StudycourseFactory) {
+function showModuleHandbooksCtrl($scope, ModuleHandbookFactory, StudycourseFactory, ActiveUserFactory) {
 	// Get Modulehandbooks and Studycourses and add them to the GUI
 	ModuleHandbookFactory.getModuleHandbooks().then(function(moduleHandbooks) {
 		$scope.moduleHandbooks = moduleHandbooks;
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
 
 	StudycourseFactory.getStudycourses().then(function(studycourses) {
 		$scope.studycourses = studycourses;
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
+    $scope.isAuthorised = function() {
+    	return ActiveUserFactory.isAuthorised("moduleHandbook");
+    }	
+	$scope.canEdit = function (id) {
+        return ActiveUserFactory.canEdit(id, "moduleHandbook");
+    }
+	$scope.canDelete = function (id) {
+        return ActiveUserFactory.canDelete(id, "moduleHandbook");
+    }
 }
 
 function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory) {
@@ -142,15 +208,19 @@ function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, Sub
 			SubjectFactory.getSubjects(moduleHandbook.moduleHandbookID).then(function(subjects) {
 				$scope.subjects = subjects;
 			}, function(error) {
-				console.log("Error: "+error);
+				sendError(error);
 			});
 		}, function(error) {
-			console.log("Error: "+error);
+			sendError(error);
 		});
 	} else {
 		// Error
-		console.log("ERROR: No query");
+		sendError("No query");
 	}
+}
+
+function updateModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory) {
+	showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory);
 }
 
 function deleteModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandbookFactory) {
@@ -159,29 +229,38 @@ function deleteModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandboo
 			$location.url("/show/modulehandbooks");
 		} else {
 			// ERROR
-			console.log("Error: Couldn't delete Modulehandbook");
+			sendError("Couldn't delete Modulehandbook");
 			$location.url("/show/modulehandbooks");
 		}
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
 }
 
 /*
 * SUBJECT CONTROLLER
 */
-function showSubjectsCtrl($scope, SubjectFactory, StudycourseFactory) {
+function showSubjectsCtrl($scope, SubjectFactory, StudycourseFactory, ActiveUserFactory) {
 	StudycourseFactory.getStudycourses().then(function(studycourses) {
 		$scope.studycourses = studycourses;
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
 
 	SubjectFactory.getSubjects().then(function(subjects) {
 		$scope.subjects = subjects;
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
+    $scope.isAuthorised = function() {
+    	return ActiveUserFactory.isAuthorised("subject");
+    }
+	$scope.canEdit = function (id) {
+        return ActiveUserFactory.canEdit(id, "subject");
+    }
+	$scope.canDelete = function (id) {
+        return ActiveUserFactory.canDelete(id, "subject");
+    }
 }
 
 function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory) {
@@ -191,15 +270,38 @@ function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory) {
 			ModuleFactory.getModules(subject.subjectID).then(function(modules) {
 				$scope.modules = modules;
 			}, function(error) {
-				console.log("Error: "+error);
+				sendError(error);
 			});
 		}, function(error) {
-			Console.log("Error: "+error);
+			sendError(error);
 		});
 	} else {
 		// Error
-		console.log("ERROR: No query");
+		sendError("No Query.");
 	}
+}
+
+function createSubjectCtrl($scope, $location, SubjectFactory, ModuleHandbookFactory) {
+	ModuleHandbookFactory.getModuleHandbooks().then(function(moduleHandbooks) {
+		$scope.moduleHandbooks = moduleHandbooks;
+	}, function(error) {
+		sendError("Error: "+error);
+	});
+
+	$scope.createSubject = function() {
+		var Subject = {
+			name: $scope.subject.name,
+			content: $scope.subject.content
+		};
+		SubjectFactory.createSubject(Subject, function() {
+			$location.path("/show/subjects");
+		});
+
+	};
+}
+
+function updateSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory) {
+	showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory);
 }
 
 function deleteSubjectCtrl($scope, $routeParams, $location, SubjectFactory) {
@@ -208,29 +310,38 @@ function deleteSubjectCtrl($scope, $routeParams, $location, SubjectFactory) {
 			$location.path("/show/subjects");
 		} else {
 			// ERROR
-			console.log("Error: Couldn't delete Subject");
+			sendError("Couldn't delete Subject");
 			$location.path("/show/subjects");
 		}
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
 }
 
 /*
 * MODULE CONTROLLER
 */
-function showModulesCtrl($scope, ModuleFactory, SubjectFactory) {
+function showModulesCtrl($scope, ModuleFactory, SubjectFactory, ActiveUserFactory) {
 	SubjectFactory.getSubjects().then(function(subjects) {
 		$scope.subjects = subjects;
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
 
 	ModuleFactory.getModules().then(function(modules) {
 		$scope.modules = modules;
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
+    $scope.isAuthorised = function() {
+    	return ActiveUserFactory.isAuthorised("module");	
+    }
+	$scope.canEdit = function (id) {
+        return ActiveUserFactory.canEdit(id, "module");
+    }
+	$scope.canDelete = function (id) {
+        return ActiveUserFactory.canDelete(id, "module");
+    }
 }
 
 function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory) {
@@ -240,15 +351,72 @@ function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory) {
 			EventFactory.getEvents(module.moduleID).then(function(events) {
 				$scope.events = events;
 			}, function(error) {
-				console.log("Error: "+error);
+				sendError(error);
 			});
 		}, function(error) {
-			Console.log("Error: "+error);
+			sendError(error);
 		});
 	} else {
 		// Error
-		console.log("ERROR: No query");
+		sendError("No query");
 	}
+}
+
+function createModuleCtrl($scope, $location, ModuleFactory, SubjectFactory) {
+	$scope.subjectList = [];
+	var subjects;
+	$scope.idList = [];
+	$scope.idList.length = $scope.subjectList.length;
+
+	SubjectFactory.getSubjects().then(function(data) {
+		subjects = data;
+		$scope.subjects = data;
+		$scope.subjectList.push(data);
+	}, function(error) {
+		sendError("Error: "+error);
+	});
+
+	$scope.addSubject = function () {
+		$scope.subjectList.push(subjects);
+	};
+
+	$scope.removeSubject = function () {
+		$scope.subjectList.pop();
+	};
+
+	$scope.createModule = function() {
+		idList = [];
+		for (i=0; i < $scope.idList.length; i++) {
+			id = $scope.idList[i].split("-");
+			idList.push(parseInt(id[0], 10));
+		}
+
+		var module = {
+			duration: $scope.module.duration,
+			subjectIDs: idList,
+			name: $scope.module.name,
+			token: $scope.module.token,
+			englishTitle: $scope.module.englishTitle,
+			lp: $scope.module.lp,
+			sws: $scope.module.sws,
+			language: $scope.module.language,
+			director_email: $scope.module.director_email,
+			requirement: $scope.module.requirement,
+			learningTarget: $scope.module.learningTarget,
+			content: $scope.module.content,
+			literature: $scope.module.literature,
+			archived: $scope.module.archived,
+			enabled: $scope.module.enabled
+		};
+
+		ModuleFactory.createModule(module, function() {
+			$location.path("/show/modules");
+		});
+	};
+}
+
+function updateModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory) {
+	showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory);
 }
 
 function deleteModuleCtrl($scope, $routeParams, $location, ModuleFactory) {
@@ -257,69 +425,144 @@ function deleteModuleCtrl($scope, $routeParams, $location, ModuleFactory) {
 			$location.path("/show/modules");
 		} else {
 			// ERROR
-			console.log("Error: Couldn't delete Module");
+			sendError("Couldn't delete Module");
 			$location.path("/show/modules");
 		}
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
 }
 
 /*
 * EVENT CONTROLLER
 */
-function showEventsCtrl($scope, EventFactory, ModuleFactory) {
+function showEventsCtrl($scope, EventFactory, ModuleFactory, ActiveUserFactory) {
 	ModuleFactory.getModules().then(function(modules) {
 		$scope.modules = modules;
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
 
 	EventFactory.getEvents().then(function(events) {
 		$scope.events = events;
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
+    $scope.isAuthorised = function() {
+    	return ActiveUserFactory.isAuthorised("event");
+    }
+    $scope.canEdit = function (id) {
+        return ActiveUserFactory.canEdit(id, "event");
+    }
+    $scope.canDelete = function (id) {
+        return ActiveUserFactory.canDelete(id, "event");
+    }
 }
 
 function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory) {
 	if($routeParams.eventID) {
 		EventFactory.getEvent($routeParams.eventID).then(function(_event) {
 			$scope._event = _event;
+
+			$scope.modules = [];
+
+			for(var i = 0; i < _event.moduleIDs.length; i++) {
+				ModuleFactory.getModule(_event.moduleIDs[i]).then(function(module) {
+					$scope.modules.push(module);
+				}, function(error) {
+					sendError("Error: "+error);
+				});
+			}
 		}, function(error) {
-			console.log("Error: "+error);
+			sendError(error);
 		});
 	} else {
 		// Error
-		console.log("ERROR: No query");
+		sendError("No query");
 	}
 }
 
-function createEventCtrl($scope, $location, EventFactory, ModuleFactory) {
+function updateEventCtrl($scope, $location, $routeParams, EventFactory, ModuleFactory) {
+
+	EventFactory.getEvent($routeParams.eventID).then(function(event) {
+        $scope._event = event;
+        console.log($scope._event);
+    }, function(error) {
+        sendError(error);
+    });;
+
+    $scope.update = function () {
+        EventFactory.updateEvent($scope._event, function () {
+            $location.path("/show/events");
+        });
+    }
 
 	// Laden
 	ModuleFactory.getModules().then(function(modules) {
 		$scope.modules = modules;
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
+
+    $scope.log = function () {
+        console.log($scope._event);
+    }
+}
+
+function createEventCtrl($scope, $location, EventFactory, ModuleFactory) {
+
+    $scope.moduleList = [];
+    var modules;
+    $scope.idList = [];
+    $scope.idList.length = $scope.moduleList.length;
+
+	// Laden
+	ModuleFactory.getModules().then(function(data) {
+		$scope.modules = data;
+        $scope.moduleList.push(data);
+        modules = data;
+	}, function(error) {
+		sendError(error);
+	});
+
+    $scope.addEvent = function () {
+        $scope.moduleList.push(modules);
+    };
+
+    $scope.removeEvent = function () {
+        $scope.moduleList.pop();
+    };
 
 	// Abschicken
 	$scope.createEvent = function() {
 
+        idList = [];
+        for (i=0; i < $scope.idList.length; i++) {
+            id = $scope.idList[i].split("-");
+            idList.push(parseInt(id[0], 10));
+        }
 
 		var _event = {
-			moduleIDs: [parseInt($scope.event.moduleID.split("-")[0])],
-			name: $scope.event.name,
-			sws: $scope.event.sws,
-			lecturer_email: $scope.event.lecturer
+			moduleIDs: idList,
+			name: $scope._event.name,
+			sws: parseInt($scope._event.sws, 10),
+			lecturer_email: $scope._event.lecturer,
+			archived: $scope._event.archived,
+			enabled: $scope._event.enabled,
+			room: $scope._event.room,
+			type: $scope._event.type,
+			place: $scope._event.place,
+			content: $scope._event.content,
+			times: $scope._event.times
 		};
-		
 
-		EventFactory.createEvent(_event);
-		$location.path("/show/events");
+		EventFactory.createEvent(_event, function() {
+			$location.path("/show/events");
+		});
 	};
 }
+
+
 
 function deleteEventCtrl($scope, $routeParams, $location, EventFactory) {
 	// "event" ist in Javascript bereits reserviert, deswegen "_event"
@@ -328,11 +571,11 @@ function deleteEventCtrl($scope, $routeParams, $location, EventFactory) {
 			$location.path("/show/events");
 		} else {
 			// ERROR
-			console.log("Error: Couldn't delete Event");
+			sendError("Couldn't delete Event");
 			$location.path("/show/events");
 		}
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
 }
 
@@ -343,7 +586,7 @@ function showUsersCtrl($scope, UserFactory) {
 	UserFactory.getUsers().then(function(users) {
 		$scope.users = users;
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
 }
 
@@ -352,12 +595,21 @@ function showUserCtrl($scope, $routeParams, UserFactory) {
 		UserFactory.getUser($routeParams.email).then(function(user) {
 			$scope.user = user;
 		}, function(error) {
-			console.log("Error: "+error);
+			sendError(error);
 		});
 	} else {
 		// Error
-		console.log("ERROR: No query");
+		sendError("No query");
 	}
+}
+
+function createUserCtrl($scope, UserFactory) {
+
+}
+
+function updateUserCtrl($scope, $routeParams, UserFactory) {
+	showUserCtrl($scope, $routeParams, UserFactory);
+
 }
 
 function deleteUserCtrl($scope, $routeParams, $location, UserFactory) {
@@ -366,11 +618,63 @@ function deleteUserCtrl($scope, $routeParams, $location, UserFactory) {
 			$location.path("/show/users");
 		} else {
 			// ERROR
-			console.log("Error: Couldn't delete User");
+			sendError("Couldn't delete User");
 			$location.path("/show/users");
 		}
 	}, function(error) {
-		console.log("Error: "+error);
+		sendError(error);
 	});
+}
+
+function confirmCtrl($scope, $routeParams, $http) {
+
+	function init () {
+		console.log($routeParams.token);
+		$http({
+				method: 'GET',
+				url: "http://sopra.ex-studios.net:8080/mms/confirm?token=" + $routeParams.token
+		}).
+			success(function(data, status, headers, config) {
+				$scope.success = data.success;
+			}).
+			error(function(data, status, headers, config) {
+				sendError(data);
+			});
+	}
+
+	init();
+}
+
+function requestCtrl($scope, $http) {
+    $scope.url = "http://sopra.ex-studios.net:8080/mms/";
+
+     $scope.get = function () {
+         $http({
+             method: 'GET',
+             url: $scope.url
+         }).
+             success(function(data, status, headers, config) {
+                 $scope.response = JSON.stringify(data);
+                 $scope.status = status;
+             }).
+             error(function(data, status, headers, config) {
+                 sendError(data);
+             });
+     }
+
+    $scope.post = function () {
+        $http({
+            method: 'POST',
+            url: $scope.url,
+            data: $scope.body
+        }).
+            success(function(data, status, headers, config) {
+                $scope.response = JSON.stringify(data);
+                $scope.status = status;
+            }).
+            error(function(data, status, headers, config) {
+                sendError(data);
+            });
+    }
 }
 

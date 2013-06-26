@@ -1,4 +1,4 @@
-<!-- 
+<!--
 ÜBERSICHT DER ATTRIBUTE
 
 DIESE MÜSSEN DARGESTELLT WERDEN
@@ -18,10 +18,13 @@ var Event = {
     <div class="row-fluid">
         <ul class="span 12 breadcrumb">
             <li><a href="#/home">Home</a> <span class="divider">/</span></li>
-            <li><a href="#/home">Studiengang</a> <span class="divider">/</span></li>
-            <li><a href="#/home">Modulhandbuch</a> <span class="divider">/</span></li>
-            <li><a href="#/home">Fach</a> <span class="divider">/</span></li>
-            <li><a href="#/home">Modul</a> <span class="divider">/</span></li>
+            <li><a href="#/show/studycourses">Studiengang</a> <span class="divider">/</span></li>
+            <li><a href="#/show/modulehandbooks">Modulhandbuch</a> <span class="divider">/</span></li>
+            <li><a href="#/subjects">Fach</a> <span class="divider">/</span></li>
+            <li>
+                <span ng-repeat="module in modules"><a href="#/show/module?moduleID={{module.moduleID}}">{{module.name}}</a> </span>
+                <span class="divider">/</span>
+            </li>
             <li class="active">{{_event.name}}</li>
         </ul>
     </div>
@@ -50,6 +53,16 @@ var Event = {
                 <dd><a href="mailto:{{_event.lecturer_email}}">{{_event.lecturer_email}}</a></dd>
                 <dt>Archiviert</dt>
                 <dd>{{_event.archived}}</dd>
+                <dt>Enabled</dt>
+                <dd>{{_event.enabled}}</dd>
+                <dt>Content</dt>
+                <dd>{{_event.content}}</dd>
+                <dt>Type</dt>
+                <dd>{{_event.type}}</dd>
+                <dt>Place</dt>
+                <dd>{{_event.place}}</dd>
+                <dt>Room</dt>
+                <dd>{{_event.room}}</dd>
             </dl>
    		</div>
 	</div>

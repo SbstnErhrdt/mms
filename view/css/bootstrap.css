@@ -1,30 +1,4 @@
 
-.loginBar{
-	background: #000;
-	margin-top: -10px;
-	padding: 10px;
-	position: absolute;
-	top: 50px;
-	right: -30%;
-	width: 20%;
-	color: #CCC;
-}
-.loginBar hr {
-	border:1 px solid #333;
-}
-.loginBar input {
-	width: 95%;
-}
-.loginBar label {
-	color: #CCC;
-}
-.loginBar h5 {
-	color: #CCC;
-	border-bottom: 1px solid #333;
-}
-
-
-
 /*!
  * Bootstrap v2.2.1
  *
@@ -372,7 +346,6 @@ a:hover {
   display: block;
   float: left;
   width: 100%;
-  min-height: 30px;
   margin-left: 2.127659574468085%;
   *margin-left: 2.074468085106383%;
   -webkit-box-sizing: border-box;

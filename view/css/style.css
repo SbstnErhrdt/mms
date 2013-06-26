@@ -1,31 +1,133 @@
-body, html {
-	height:100%;
+svg {
+	-webkit-transform-origin-y: 0%;
+	width: 100%;
+}
+#logo {
+	min-height: 200px;
+}
+.loggedIn {
+	height: 2px;
+	width: 100%;
+	background: #0088cc;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 1040;
+}
+.navbar-inverse .brand .loggedInAs , .navbar-inverse .nav > li > a.loggedInAs {
+	background: #0088cc;
+	border-bottom: 1px solid #0088cc;
+	margin-bottom: -1px;
+	color: #FFF;
+}
+.navbar-inverse .brand .loggedInAs:hover , .navbar-inverse .nav > li > a.loggedInAs:hover {
+	text-decoration: underline;
+}
+#loginBar {
+	display: none;
+	position: static;
+}
+.loginBar{
+	background-color: #1b1b1b;
+	background-image: -moz-linear-gradient(top, #222222, #111111);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#222222), to(#111111));
+	background-image: -webkit-linear-gradient(top, #222222, #111111);
+	background-image: -o-linear-gradient(top, #222222, #111111);
+	background-image: linear-gradient(to bottom, #222222, #111111);
+	background-repeat: repeat-x;
+	border-color: #252525;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff222222', endColorstr='#ff111111', GradientType=0);
+	margin-top: -10px;
+	padding: 10px;
+	position: absolute;
+	top: 50px;
+	right: 0%;
+	color: #CCC;
+	z-index: 20;
+}
+i.loginClick{
+	position: absolute;
+	top: 15px;
+	cursor: pointer;
+	right: 15px;
+	z-index: 30;
+}
+
+.loginBar hr {
+	border:1 px solid #333;
+}
+
+.loginBar input {
+	width: 95%;
+}
+
+.loginBar label {
+	color: #CCC;
+}
+
+.loginBar h5 {
+	color: #CCC;
+	border-bottom: 1px solid #333;
+}
+
+#filter {
+
+	margin-right: 10px;
+
+}
+
+.clear {
+	clear: both;
+}
+
+.butterbar {
+	z-index: 10;
+	display:none;
+	position: fixed;
+	left:0;
+	top:40px;
+	background-color: #F3EF7D;
 	width:100%;
+	border-bottom: 1px solid #DCDCDC;
 }
 
-#formular {
-	width:100%;
-	height:200px;
+@media (max-width: 979px) {
+	.butterbar {
+		display:none;
+		position: relative;
+		left:0;
+		top:-20px;
+		background-color: #F3EF7D;
+		width:100%;
+		border-bottom: 1px solid #DCDCDC;
+	}
+	.loginBar {
+		left: 0px;
+	}
+
 }
 
-#formular h1 {
-	font-size: 20px;
+.butterbarClose {
+	opacity: 0;
+	margin-top: 9px;
+	margin-right: 10px;
+	cursor: pointer;
 }
 
-#formular ul {
-	list-style: none;
-	height:30px;
+.butterbar h1 {
+	opacity: 0;
+	margin-top: -4px;
+	margin-left: 20px;
+	font-size: 14px;
 }
 
-#formular ul li {
-	width: 150px;
-	float:left;
+.butterbar h2 {
+	opacity: 0;
+	margin-top: -4px;
+	font-size: 14px;
+	font-weight: normal;
 }
 
-th tr {
-	font-weight: bold;
-}
-
-.margin-left {
-	margin-left: 10px;
+.full-width {
+    width: 100%;
 }

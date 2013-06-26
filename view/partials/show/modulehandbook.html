@@ -31,22 +31,13 @@ var Subject = {
 
 <div class="container-fluid">
 	<div class="row-fluid">
-		<div class="span12">
-			<div class="alert alert-warning">
-				<strong>Achtung!</strong>
-				<p>Dieses Modulhandbuch ist archiviert.</p>
-			</div>
-		</div>
-	</div>
-	<div class="row-fluid">
-		<div class="span12">
-			<h1>{{moduleHandbook.name}}</h1>
+		<div class="span6">
+			<h1>{{moduleHandbook.name}} <span class="label label-warning" ng-show="moduleHandbook.archived">Archiviert</span></h1>
 			<h3>{{moduleHandbook.semester}}</h3>
+			<p>{{moduleHandbook.content}}</p>
 		</div>
-	</div>
-	<div class="row-fluid">
-		<div class="span12">
-			<h2>Alle Subjects von MODULHANDBOOK</h2>
+		<div class="span6">
+			<h2>Alle Subjects von {{moduleHandbook.name}}</h2>
 			<ul ng-repeat="subject in subjects">
 				<li><a href="#/show/subject?subjectID={{subject.subjectID}}">{{subject.name}}</a></li>
 			</ul>

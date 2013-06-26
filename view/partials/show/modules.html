@@ -14,7 +14,7 @@
 		      <span class="add-on">Filtern:</span>
 		      <input id="prependedInput" type="text" ng-model="search.name" placeholder="nach Name">
 		    </div>
-			<a href="#/create/module" class="btn btn-success pull-left" style="margin-left: 10px;"><i class="icon-edit icon-white"></i> Neues Modulhandbuch erstellen</a>
+			<a ng-show="isEmployee" href="#/create/module" class="btn btn-success pull-left" style="margin-left: 10px;"><i class="icon-edit icon-white"></i> Neues Modul erstellen</a>
 		    <div style="clear: both;"></div>
 			<hr />
 			<table class="table">
@@ -23,7 +23,8 @@
 						<th>#</th>
 						<th>Name</th>
 						<th>Archiviert</th>
-						<th>Aktion</th>
+						<th>Freigegeben</th>
+						<th ng-show="isAuthorised()">Aktion</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -31,9 +32,10 @@
 						<td>{{module.moduleID}}</td>
 						<td><a href="#/show/module?moduleID={{module.moduleID}}">{{module.name}}</a></td>
 						<td><span class="label" ng-hide="module.archived">nicht archiviert</span><span class="label label-warning" ng-show="module.archived">archiviert</span></td>
-						<td>
-							<a href="#/delete/module?moduleID={{module.moduleID}}"class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
-							<a href="#/update/module?moduleID={{module.moduleID}}" class="btn btn-mini btn-warning"><i class="icon-refresh icon-white"></i> bearbeiten</a>
+						<td><span class="label" ng-hide="module.enabled">nicht freigegeben</span><span class="label label-success" ng-show="module.enabled">freigegeben</span></td>
+						<td ng-show="isAuthorised()">
+							<a href="#/delete/module?moduleID={{module.moduleID}}" class="btn btn-mini btn-danger" ng-show="canDelete(module.moduleID)"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+							<a href="#/update/module?moduleID={{module.moduleID}}" class="btn btn-mini btn-warning" ng-show="canEdit(module.moduleID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
 						</td>
 					</tr>
 				</tbody>

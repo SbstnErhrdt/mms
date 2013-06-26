@@ -10,28 +10,28 @@
     <div class="row-fluid">
 
 			<div class="span12">
-	            <h1>Veranstaltung erstellen</h1>
-	            <p class="lead">Hier k&ouml;nnen sie eine Veranstaltung erstellen</p>
+	            <h1>{{_event.name}} bearbeiten</h1>
+	            <p class="lead">Hier k&ouml;nnen sie eine Veranstaltung bearbeiten</p>
 	            <form>
 				 	<div class="row-fluid">
 						<fieldset class="span6">
 							<legend>Veranstaltung-Daten</legend>
 						    <label>Name*</label>
-						    <input type="text" ng-model="_event.name" placeholder="Fach" required>
+						    <input type="text" ng-model="_event.name"  required>
 						    <span class="help-block">Bitte w&auml;len Sie eine Veranstaltungsname.</span>
 
 						    <label>Zugehöriges Modul*</label>
-						    <select ng-model="_event.moduleID">
-							  	<option ng-repeat="module in modules">{{module.moduleID}} - {{module.name}}</option>
-							</select>
+                            <div ng-repeat="id in _event.moduleIDs">
+                                <select ng-model="_event.moduleIDs[$index]" ng-options="module.moduleID as module.name for module in modules">
+                                </select>
+                            </div>
 						    <span class="help-block">Bitte w&auml;len Sie den Dozenten.</span>
 
 						    <label>Semesterwochenstunden</label>
-						    <input type="text" ng-model="_event.sws" placeholder="4" maxlength="4">
+						    <input type="text" ng-model="_event.sws"  maxlength="4">
 						    <span class="help-block">Bitte w&auml;len Sie eine Stundenanzahl.</span>
-
 						    <label>Dozent</label>
-						    <select ng-model="_event.lecturer">
+						    <select ng-model="_event.lecturer_email">
 							  <option>Hans Peter Reck</option>
 							  <option>Franz Hauck</option>
 							  <option>Kargl</option>
@@ -42,7 +42,7 @@
 						    <span class="help-block">Bitte w&auml;len Sie den Dozenten.</span>
 
 						    <label>Beschreibung</label>
-						    <textarea rows="5" ng-model="_event.content" placeholder="Beschreibung der Veranstaltung"></textarea>
+						    <textarea rows="5" ng-model="_event.content"></textarea>
 						    <span class="help-block">Bitte w&auml;len Sie eine Beschreibung der Veranstaltung.</span>
 
 						</fieldset>
@@ -51,20 +51,20 @@
 
 						    <label>Typ</label>
 						    <select ng-model="_event.type">
-							  <option value="vorlesunf">Vorlesung</option>
-							  <option value="uebung">&Uuml;bung</option>
-							  <option value="tutorium">Tutorium</option>
-							  <option value="praktikum">Praktikum</option>
-							  <option value="versuch">Versuch</option>
+							  <option value="Vorlesung">Vorlesung</option>
+							  <option value="Übung">&Uuml;bung</option>
+							  <option value="Tutorium">Tutorium</option>
+							  <option value="Praktikum">Praktikum</option>
+							  <option value="Versuch">Versuch</option>
 							</select>
 						    <span class="help-block">Bitte w&auml;len Sie den Typ.</span>
 
 						    <label>Ort</label>
-						    <input type="text" ng-model="_event.place" placeholder="N24">
+						    <input type="text" ng-model="_event.place">
 						    <span class="help-block">Bitte w&auml;len Sie den Ort.</span>
 
 						    <label>Raum</label>
-						    <input type="text" ng-model="_event.room" placeholder="222">
+						    <input type="text" ng-model="_event.room">
 						    <span class="help-block">Bitte w&auml;len Sie den Raum.</span>
 
 						    <label>Zeiten</label>
@@ -80,13 +80,14 @@
 						    Archivieren: <input type="checkbox" ng-model="_event.archived" name="archived"><br /><br />
 						    <span class="help-block">Event archivieren.</span>
 
+
 						</fieldset>
 				 	</div>
 				 	<div class="row-fluid">
 
 						<div class="span12">
 							<hr />
-							<input ng-click="createEvent()" type="submit" name="submit" class="btn btn-success" value="Veranstaltung erstellen" />
+							<input ng-click="log()" type="submit" name="submit" class="btn btn-success" value="{{_event.name}} bearbeiten" />
 						</div>
 				 	</div>
 	             </form>

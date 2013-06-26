@@ -20,49 +20,41 @@ SONDERFALL PASSWORT!!!
 	<div class="row-fluid">
 		<ul class="span 12 breadcrumb">
 			<li><a href="#/home">Home</a> <span class="divider">/</span></li>
-			<li class="active">Benutzer</li>
+			<li class="active">Benutzer bearbeiten</li>
 		</ul>
 	</div>
 </div>
 <div class="container-fluid">
 	<div class="row-fluid">
-		<div class="span2">
-		<div class="well sidebar-nav">
-			<ul class="nav nav-list">
-				<li class="nav-header">Veranstaltungen</li>
-				<li><a href="">Benutzer</a><li>
-				<li><a href="">Mitarbeiter</a><li>
-				<li><a href="">Administratoren</a><li>
-			</ul>
-		</div><!--/.well -->
-	</div><!--/span-->
-	<div class="span7">
+		<div class="span12">
 		<!--Body content-->
-		<h1>Benutzer erstellen</h1>
-		<p class="lead"> Hier k&ouml;nnen Sie einen Benutzer erstellen.</p>
+		<h3 ng-show="activeUser.email==user.email">Benutzercenter</h3>
+		<h1>{{user.firstName}} {{user.lastName}} bearbeiten</h1>
+		<p ng-show="activeUser.email==user.email" class="lead"> Hier k&ouml;nnen Sie ihre Daten bearbeiten.</p>
+		<p ng-hide="activeUser.email==user.email" class="lead"> Hier k&ouml;nnen Sie den Benutzer bearbeiten.</p>
 
 			<form>
 				  <fieldset>
 				    <legend>Benutzer Daten</legend>
 
 				    <label>Titel</label>
-				    <input placeholder="Titel" type="text" ng-model="user.title" >
+				    <input type="text" ng-model="user.title" >
 				    <span class="help-block">Bitte w&auml;len Sie einen Titel.</span>
 
 				    <label>Name</label>
-				    <input placeholder="Vorname" type="text" ng-model="user.firstName" >
+				    <input type="text" ng-model="user.firstName" >
 				    <span class="help-block">Bitte w&auml;len Sie einen Vornamen.</span>
 
 				    <label>Nachname</label>
-				    <input placeholder="Nachname" type="text" ng-model="user.lastName" >
+				    <input type="text" ng-model="user.lastName" >
 				    <span class="help-block">Bitte w&auml;len Sie einen Vornamen.</span>
 
 				    <label>Email</label>
-				    <input placeholder="vor.nachname@uni-ulm.de" type="text" ng-model="user.email" >
+				    <input type="text" ng-model="user.email" >
 				    <span class="help-block">Bitte w&auml;len Sie eine Email.</span>
 
 				    <label>Matrikelnummer</label>
-				    <input placeholder="00000000" type="text" ng-model="user.matricNum" >
+				    <input type="text" ng-model="user.matricNum" >
 				    <span class="help-block">Bitte w&auml;len Sie ein Semester.</span>
 
 				    <label>Abschluss w&auml;hlen</label>
@@ -75,15 +67,15 @@ SONDERFALL PASSWORT!!!
 					<span class="help-block">Bitte w&auml;len Sie einen Typ.</span>
 
 					<label>Semster</label>
-				    <input type="text" placeholder="1" ng-model="user.semester" >
+				    <input type="text" ng-model="user.semester" >
 				    <span class="help-block">Bitte w&auml;len Sie ein Semester.</span>
 
 				  </fieldset>
 				  <hr />
-				  <input type="submit" name="submit" class="btn btn-success" value="Benutzer erstellen" />
+				  <input type="submit" name="submit" class="btn btn-success" value="Benutzer bearbeiten" />
 
 			</form>
 
 	</div>
-  </div>
+	</div>
 </div>

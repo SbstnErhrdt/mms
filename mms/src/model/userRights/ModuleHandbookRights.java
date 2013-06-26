@@ -26,7 +26,7 @@ public class ModuleHandbookRights extends ContentRights {
 
 	
 	public String[] toValueNamesArray() {
-		String[] valueNames = {"moduleHandbookID", "canEdit", "canDelete"};
+		String[] valueNames = {"module_handbooks_moduleHandbookID", "canEdit", "canDelete"};
 		return valueNames;
 	}
 	

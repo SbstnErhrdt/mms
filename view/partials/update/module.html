@@ -2,7 +2,7 @@
     <div class="row-fluid">
         <ul class="span 12 breadcrumb">
             <li><a href="#/home">Home</a> <span class="divider">/</span></li>
-            <li class="active">Modul erstellen</li>
+            <li class="active">Modul bearbeiten</li>
         </ul>
     </div>
 </div>
@@ -11,45 +11,37 @@
     	<!--Body content  -->
         	<div class="span12">
 
-	            <h1>Modul erstellen</h1>
-	            <p class="lead">Hier k&ouml;nnen sie ein Modul erstellen</p>
+	            <h1>{{module.name}} bearbeiten</h1>
+	            <p class="lead">Hier k&ouml;nnen sie das Modul bearbeiten</p>
         	</div>
 				 <form>
 				 	<div class="row-fluid">
 						<fieldset class="span4">
 							<legend>Modul Daten</legend>
 						    <label>Name*</label>
-						    <input type="text" ng-model="module.name" name="name" placeholder="Modulname"required>
+						    <input type="text" ng-model="module.name" required>
 						    <span class="help-block">Bitte w&auml;len Sie einen Modulnamen.</span>
 
-					    	<label>Zugehöriges Fach*<a style="margin-left: 20px;" ng-click="addSubject()"><i class="icon-plus"></i></a></label>
-					    		<div ng-repeat="subjects in subjectList">
-								    <select ng-model="idList[$index]">		    	
-									  	<option ng-repeat="subject in subjects">{{subject.subjectID}} - {{subject.name}}</option>
-									</select>
-									<a style="margin-left: 10px;" ng-click="removeSubject()"><i class="icon-minus"></i></a>
-								</div>
-							<br>							
-						    <span class="help-block">Bitte w&auml;hlen Sie das zugehörige Fach.</span>
+						    <label>Zugehöriges Fach*</label>
+						    <select ng-model="module.subjectID">
+							  <option ng-repeat="subject in subjects">{{subject.subjectID}} - {{subject.name}}</option>
+							</select>
+						    <span class="help-block">Bitte w&auml;len Sie das zugehörige Fach.</span>
 
 						    <label>Englischer Titel</label>
-						    <input type="text" ng-model="module.englishTitle" name="englishTitle" placeholder="English">
+						    <input type="text" ng-model="module.englishTitle" >
 						    <span class="help-block">Bitte w&auml;len Sie einen den Namen des Moduls auf Englisch.</span>
 
 						    <label>Leistungspunkte</label>
-						    <input type="text" ng-model="module.lp" name="lp" placeholder="3" maxlength="3">
+						    <input type="text" ng-model="module.lp"  maxlength="3">
 						    <span class="help-block">Bitte w&auml;len Sie die Leistungspunkte des Moduls.</span>
 
 						    <label>Semester Wochen Stunden</label>
-						    <input type="text" ng-model="module.sws" name="sws" placeholder="10" maxlength="4">
-						    <span class="help-block">Bitte w&auml;len Sie die Semester Wochenstunden des Moduls.</span>
-
-						    <label>Kürzel</label>
-						    <input type="text" ng-model="module.token" name="token" placeholder="10" maxlength="4">
+						    <input type="text" ng-model="module.sws"  maxlength="4">
 						    <span class="help-block">Bitte w&auml;len Sie die Semester Wochenstunden des Moduls.</span>
 
 						    <label>Sprache</label>
-						    <select ng-model="module.language">
+						    <select>
 							  <option>Deutsch</option>
 							  <option>Englisch</option>
 							  <option>Spanisch</option>
@@ -60,11 +52,11 @@
 						    <span class="help-block">Bitte w&auml;len Sie die Sprache des Moduls.</span>
 
 						    <label>Dauer</label>
-						    <input type="text" ng-model="module.duration" name="duration" placeholder="10" maxlength="20">
-						    <span class="help-block"> W&auml;hlen Sie die Dauer des Moduls.</span>
+						    <input type="text" ng-model="module.director_email"  maxlength="20">
+						    <span class="help-block"> w&auml;len Sie die Dauer des Moduls.</span>
 
 						    <label>Modulverantwortlicher</label>
-						    <select ng-model="module.director_email">
+						    <select>
 							  <option>Hans Peter Reck</option>
 							  <option>Franz Hauck</option>
 							  <option>Kargl</option>
@@ -77,23 +69,20 @@
 						<fieldset class="span8">
 							<legend>Modul Inhalt</legend>
 						    <label>Vorraussetzungen</label>
-						    <textarea rows="5" ng-model="module.requirement" name="requirement" placeholder="Hier sollten die Vorraussetzungen f&uuml;r das Modul stehen."></textarea>
+						    <textarea rows="5" ng-model="module.requirement" spellcheck="ture" ></textarea>
 						    <span class="help-block">Bitte verfassen Sie die Vorraussetzungen f&uuml;r das Modul.</span>
 
 						    <label>Lernzeile</label>
-						    <textarea rows="5" ng-model="module.learningTarget" name="learningTarget" placeholder="Hier sollten die Lernzeile f&uuml;r das Modul stehen."></textarea>
+						    <textarea rows="5" ng-model="module.learningTarget" spellcheck="ture" ></textarea>
 						    <span class="help-block">Bitte verfassen Sie die Lernziele f&uuml;r das Modul.</span>
 
 						    <label>Inhalt</label>
-						    <textarea rows="5" ng-model="module.content" name="content" placeholder="Hier sollten der Inhalt des Modul stehen."></textarea>
+						    <textarea rows="5" ng-model="module.content" spellcheck="ture" ></textarea>
 						    <span class="help-block">Bitte verfassen Sie die Inhalt f&uuml;r das Modul.</span>
 
 						    <label>Literatur</label>
-						    <textarea rows="5" ng-model="module.literature" name="literature" placeholder="Hier sollten Literaturhinweise für das Modul sehen."></textarea>
+						    <textarea rows="5" ng-model="module.content" spellcheck="ture" ></textarea>
 						    <span class="help-block">Bitte nennen Sie passende Literatur f&uuml;r das Modul.</span>
-
-						    Archivieren: <input type="checkbox" ng-model="module.archived" name="archived"><br /><br />
-						    <span class="help-block">Modul archivieren.</span>
 
 
 						</fieldset>
@@ -102,7 +91,7 @@
 
 						<div class="span12">
 							<hr />
-							<input ng-click="createModule()" type="submit" name="submit" class="btn btn-success" value="Modul erstellen" />
+							<input type="submit" name="submit" class="btn btn-success" value="Modul bearbeiten" />
 						</div>
 				 	</div>
 				</form>

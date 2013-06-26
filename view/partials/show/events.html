@@ -5,34 +5,43 @@
 			<li class="active">Veranstaltungen</li>
 		</ul>
 	</div>
+	hier: {{ActiveUser.email}}
 	<div class="row-fluid">
-		<div class="span12" ng-controller="createEventCtrl">
+		<div class="span12">
 			<!--Body content-->
 			<h1>Veranstaltungen</h1>
 			<p class="lead"> Hier finden Sie alle Veranstaltungen der Universität Ulm</p>
-			<div class="input-prepend pull-left">
+			<div id="filter" class="input-prepend pull-left">
 		      <span class="add-on">Filtern:</span>
 		      <input id="prependedInput" type="text" ng-model="search.name" placeholder="nach Name">
 		    </div>
-		    <a href="#/create/event" class="btn btn-success pull-left" style="margin-left: 10px;"><i class="icon-edit icon-white"></i> Neues Event erstellen</a>
-			<div style="clear: both;"></div>
+		    <a ng-show="isEmployee" href="#/create/event" class="btn btn-success pull-left"><i class="icon-edit icon-white"></i> Neues Event erstellen</a>
+			<br class="clear" />
 			<hr/>
 			<table class="table">
 				<thead>
 					<tr>
 						<th>#</th>
 						<th>Name</th>
+						<th>Raum &amp; Ort</th>
+						<th>Zeiten</th>
 						<th>Archiviert</th>
-						<th>Aktion</th>
+						<th>Freigegeben</th>
+						<th ng-show="isAuthorised()">Aktion</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="event in events | filter: search">
 						<td>{{event.eventID}}</td>
 						<td><a href="#/show/event?eventID={{event.eventID}}">{{event.name}}</a></td>
+						<td>{{event.place}} - {{event.room}}</td>
+						<td>{{event.times}}</td>
 						<td><span class="label" ng-hide="event.archived">nicht archiviert</span><span class="label label-warning" ng-show="event.archived">archiviert</span></td>
-						<td><a href="#/delete/event?eventID={{event.eventID}}"class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
-						<a href="#/update/event?eventID={{event.eventID}}" class="btn btn-mini btn-warning"><i class="icon-refresh icon-white"></i> bearbeiten</a></td>
+						<td><span class="label" ng-hide="event.enabled">nicht freigegeben</span><span class="label label-success" ng-show="event.enabled">freigegeben</span></td>
+						<td ng-show="isAuthorised()" >
+							<a href="#/delete/event?eventID={{event.eventID}}"class="btn btn-mini btn-danger" ng-show="canDelete(event.eventID)"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+							<a href="#/update/event?eventID={{event.eventID}}" class="btn btn-mini btn-warning" ng-show="canEdit(event.eventID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
+						</td>
 					</tr>
 				</tbody>
 			</table>

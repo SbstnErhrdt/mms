@@ -25,6 +25,10 @@ public class ContentDbController extends DbController {
 	}
 	
 	// EVENT ERSTELLEN
+	/**
+	 * @param event
+	 * @return true, if event was created successfully 
+	 */
 	public boolean createEvent(Event event) {
 
 		// GET VALUENAMES & VALUES
