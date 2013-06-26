@@ -362,6 +362,9 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 		if (typeof ActiveUser.employeeRights === "undefined") {
 			console.log("ActiveUser is not allowed to enable content (employeeRights === 'undefined')");
 			return false;
+		} else if(ActiveUser.employeeRights.isAdmin) {
+			console.log("ActiveUser is admin");
+			return true;
 		} else if(ActiveUser.employeeRights.canDeblockModule) {
 			console.log("ActiveUser is allowed to enable content");
 			return true;
@@ -375,6 +378,9 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 		if (typeof ActiveUser.employeeRights === "undefined") {
 			console.log("ActiveUser is not allowed to enable (critical) modules (employeeRights === 'undefined')");
 			return false;
+		} else if(ActiveUser.employeeRights.isAdmin) {
+			console.log("ActiveUser is admin");
+			return true;
 		} else if(ActiveUser.employeeRights.canDeblockCriticalModule) {
 			console.log("ActiveUser is allowed to enable critical modules");
 			return true;

@@ -10,7 +10,7 @@
 			<!--Body content-->
 			<h1>Module</h1>
 			<p class="lead"> Hier finden Sie alle Module der Universität Ulm</p>
-			<div class="input-prepend pull-left">
+			<div id="filter" class="input-prepend pull-left">
 		      <span class="add-on">Filtern:</span>
 		      <input id="prependedInput" type="text" ng-model="search.name" placeholder="nach Name">
 		    </div>
@@ -28,7 +28,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="module in modules">
+					<tr ng-repeat="module in modules | filter: search">
 						<td>{{module.moduleID}}</td>
 						<td><a href="#/show/module?moduleID={{module.moduleID}}">{{module.name}}</a></td>
 						<td><span class="label" ng-hide="module.archived">nicht archiviert</span><span class="label label-warning" ng-show="module.archived">archiviert</span></td>
