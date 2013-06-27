@@ -88,12 +88,9 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 	});
 	$routeProvider.when("/show/deadlines", {
         templateUrl: pURL+"show/deadlines.html",
-        //controller: showDeadlinesCtrl
+        controller: showDeadlinesCtrl
     });
-	$routeProvider.when("/show/deadline", {
-        templateUrl: pURL+"show/deadline.html",
-        //controller: showDeadlineCtrl
-    });
+
     // DEBUG
     $routeProvider.when("/request", {
         templateUrl: pURL+"requestTest.html",

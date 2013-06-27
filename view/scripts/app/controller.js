@@ -71,7 +71,6 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 }
 
 function homeCtrl($scope, $http, $cookies, $location, ActiveUserFactory) {
-	// Does nothing
 }
 
 function overviewCtrl($scope) {
@@ -304,19 +303,26 @@ function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory) {
 }
 
 function createSubjectCtrl($scope, $location, SubjectFactory, ModuleHandbookFactory) {
-	ModuleHandbookFactory.getModuleHandbooks().then(function(moduleHandbooks) {
-		$scope.moduleHandbooks = moduleHandbooks;
+
+	ModuleHandbookFactory.getModuleHandbooks().then(function(data) {;
+        $scope.moduleHandbooks = data;
+        console.log($scope.moduleHandbooks)
 	}, function(error) {
 		sendError("Error: "+error);
 	});
 
 	$scope.createSubject = function() {
-		var Subject = {
-			name: $scope.subject.name,
-			content: $scope.subject.content
-		};
-		SubjectFactory.createSubject(Subject, function() {
-			$location.path("/show/subjects");
+        var subject = {
+            name : $scope.subject.name,
+            content : $scope.subject.content,
+            studycourses_studycourseID : $scope.subject.modulehandbook.studycourses_studycourseID,
+            moduleHandbooks_moduleHandbookID : $scope.subject.modulehandbook.moduleHandbookID,
+            archived : $scope.subject.archived,
+            enabled : false
+        }
+
+		SubjectFactory.createSubject(subject, function() {
+        	$location.path("/show/subjects");
 		});
 
 	};
@@ -647,7 +653,7 @@ function createUserCtrl($scope, $location, UserFactory) {
 	};
 }
 
-function updateUserCtrl($scope, $location, $routeParams, UserFactory, StudycourseFactory, ModuleHandbookFactory, SubjectFactory, ModuleFactory) {
+function updateUserCtrl($scope, $location, $routeParams, UserFactory, StudycourseFactory, ModuleHandbookFactory, SubjectFactory, ModuleFactory, EventFactory) {
 	if($routeParams.email) {
 		UserFactory.getUser($routeParams.email).then(function(user) {
 			$scope.user = user;
@@ -663,6 +669,7 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory, Studycours
     var ModuleHandbookList = [];
     var SubjectList = [];
     var ModuleList = [];
+    var EventList = [];
     function init () {
         StudycourseFactory.getStudycourses().then(function (studycourses) {
             StudycourseList = studycourses;
@@ -677,8 +684,14 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory, Studycours
             SubjectList = subjects;
             console.log(SubjectList);
         });
+
         ModuleFactory.getModules().then(function (modules) {
             ModuleList = modules;
+            console.log(ModuleList);
+        });
+
+        EventFactory.getEvents().then(function (events) {
+            EventList = events;
             console.log(ModuleList);
         });
     }
@@ -712,6 +725,14 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory, Studycours
         for (i=0; i < ModuleList.length; i++) {
             if (id === ModuleList[i].moduleID) {
                 return ModuleList[i].name;
+            }
+        }
+    };
+
+    $scope.getEvent = function (id) {
+        for (i=0; i < EventList.length; i++) {
+            if (id === EventList[i].eventID) {
+                return EventList[i].name;
             }
         }
     };
@@ -765,6 +786,14 @@ function confirmCtrl($scope, $routeParams, $http) {
 	}
 
 	init();
+}
+
+function showDeadlinesCtrl($scope, DeadlineFactory) {
+		DeadlineFactory.getDeadlines().then(function(deadlines) {
+		$scope.deadlines = deadlines;
+	}, function(error) {
+		sendError(error);
+	});
 }
 
 function requestCtrl($scope, $http) {

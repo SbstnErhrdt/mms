@@ -22,20 +22,20 @@
 	    <table class="table">
 	    	<thead>
 				<tr>
-					<th>Datum</th>
 					<th>SoSe / WiSe</th>
 					<th>Jahr</th>
+					<th>Datum</th>
 					<th ng-show="isAdmin">Aktion</th>
 				</tr>
 	    	</thead>
 	    	<tbody>
 			<tr ng-repeat="deadline in deadlines | filter: search">
-				<td><a href="#/show/deadline?deadline={{deadline.deadline}}">{{deadline.deadline}}</a></td>
 				<td><span ng-show="deadline.sose">Sommersemester</span><span ng-hide="deadline.sose">Wintersemester</span></td>
-				<td>{{deadline.year}} <span ng-show="!deadline.sose">/{{deadline.year+1}}</span></td>
+				<td>{{deadline.year}}<span ng-show="!deadline.sose">/{{deadline.year+1}}</span></td>
+				<td>{{deadline.deadline}}</a></td>
 				<td ng-show="isAdmin">
-					<a href="#/delete/subject?subjectID={{subject.subjectID}}"class="btn btn-mini btn-danger" ng-show="canDelete(subject.subjectID)"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
-					<a href="#/update/subject?subjectID={{subject.subjectID}}" class="btn btn-mini btn-warning" ng-show="canEdit(subject.subjectID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
+					<a href="#/delete/deadline?sose={{deadline.sose}}&year={{deadline.year}}"class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+					<a href="#/update/deadline?sose={{deadline.sose}}&year={{deadline.year}}" class="btn btn-mini btn-warning"><i class="icon-refresh icon-white"></i> bearbeiten</a>
 				</td>
 			</tr>
 	    	</tbody>
