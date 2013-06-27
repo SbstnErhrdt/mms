@@ -59,6 +59,31 @@ public class ContentRights implements DbControllable {
 		}
 		string += valueNames[values.length-2]+"="+values[values.length-2];
 		return string;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (canDelete ? 1231 : 1237);
+		result = prime * result + (canEdit ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ContentRights other = (ContentRights) obj;
+		if (canDelete != other.canDelete)
+			return false;
+		if (canEdit != other.canEdit)
+			return false;
+		return true;
 	}	
 	
 }

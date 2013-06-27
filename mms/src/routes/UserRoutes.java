@@ -16,6 +16,12 @@ import controller.UserDbController;
 
 import model.Employee;
 import model.User;
+import model.userRights.EmployeeRights;
+import model.userRights.EventRights;
+import model.userRights.ModuleHandbookRights;
+import model.userRights.ModuleRights;
+import model.userRights.StudycourseRights;
+import model.userRights.SubjectRights;
 import model.userRights.UserRights;
 
 import util.Utilities;
@@ -285,6 +291,8 @@ public class UserRoutes extends Routes {
 		
 		User user = gson.fromJson(json, User.class);
 		
+		User oldUser = db.getUser(user);
+		
 		// check rights
 		if(!hasRights) {
 			if(!user.getEmail().equals(actorUser.getEmail())) {
@@ -300,6 +308,164 @@ public class UserRoutes extends Routes {
 				return;
 			} else {
 				System.out.println("actorUser equals user to user");
+				
+				// check, if user changed his own rights
+				if(!oldUser.isEmployee() && user.isEmployee() || oldUser.isEmployee() && !user.isEmployee()) {
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
+							"actorUser is not allowed to change his own rights (right=isEmployee) (actorUser is no admin)", 
+							"updateUser(...)")));		
+					try {
+						response.getWriter().write(json);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
+				} else if(user.isEmployee() && oldUser.isEmployee()) {
+					Employee employee = (Employee) user;
+					Employee oldEmployee = (Employee) oldUser;
+					
+					
+					EmployeeRights eR = employee.getEmployeeRights();
+					EmployeeRights oER = oldEmployee.getEmployeeRights();
+					
+					// check EmployeeRights
+					if(eR.isCanDeblockCriticalModule() && !oER.isCanDeblockCriticalModule() || 
+							!eR.isCanDeblockCriticalModule() && oER.isCanDeblockCriticalModule() ||
+							eR.isCanDeblockModule() && !oER.isCanDeblockModule() ||
+							!eR.isCanDeblockModule() && oER.isCanDeblockModule() ||
+							eR.isAdmin() && !oER.isAdmin() ||
+							!eR.isAdmin() && oER.isAdmin()) {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"actorUser is not allowed to change his own rights (rights=EmployeeRights) (actorUser is no admin)", 
+								"updateUser(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+					// check ContentRights
+					if(!eR.getEventRightsList().isEmpty() && oER.getEventRightsList().isEmpty() ||
+							eR.getEventRightsList().isEmpty() && !oER.getEventRightsList().isEmpty() ||
+							!eR.getModuleRightsList().isEmpty() || oER.getModuleRightsList().isEmpty() || 
+							eR.getModuleRightsList().isEmpty() || !oER.getModuleRightsList().isEmpty() ||
+							!eR.getSubjectRightsList().isEmpty() && oER.getSubjectRightsList().isEmpty() ||
+							eR.getSubjectRightsList().isEmpty() && !oER.getSubjectRightsList().isEmpty() ||
+							!eR.getModuleHandbookRightsList().isEmpty() && oER.getModuleHandbookRightsList().isEmpty() ||
+							eR.getModuleHandbookRightsList().isEmpty() && !oER.getModuleHandbookRightsList().isEmpty() ||
+							!eR.getStudycourseRightsList().isEmpty() && oER.getStudycourseRightsList().isEmpty() ||
+							eR.getStudycourseRightsList().isEmpty() && !oER.getStudycourseRightsList().isEmpty() ||
+							// list sizes
+							eR.getEventRightsList().size() != oER.getEventRightsList().size() ||
+							eR.getModuleRightsList().size() != oER.getModuleRightsList().size() ||
+							eR.getSubjectRightsList().size() != oER.getSubjectRightsList().size() ||
+							eR.getModuleHandbookRightsList().size() != oER.getModuleHandbookRightsList().size() ||
+							eR.getStudycourseRightsList().size() != oER.getStudycourseRightsList().size()) {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"actorUser is not allowed to change his own rights (rights=ContentRightsList) (actorUser is no admin)", 
+								"updateUser(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					} else {
+						// check ContentRights
+						
+						ArrayList<EventRights> eventRightsList = eR.getEventRightsList();
+						ArrayList<EventRights> oldEventRightsList = oER.getEventRightsList();
+						
+						// check if EventRights changed
+						for(EventRights er : eventRightsList) {
+							if(!oldEventRightsList.contains(er)) {
+								json = gson.toJson(new JsonErrorContainer(new JsonError(
+										"actorUser is not allowed to change his own rights (rights=EventRights) (actorUser is no admin)", 
+										"updateUser(...)")));		
+								try {
+									response.getWriter().write(json);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								return;								
+							}
+						}
+						
+						ArrayList<ModuleRights> moduleRightsList = eR.getModuleRightsList();
+						ArrayList<ModuleRights> oldModuleRightsList = oER.getModuleRightsList();
+						
+						// check if ModuleRights changed
+						for(ModuleRights mr : moduleRightsList) {
+							if(!oldModuleRightsList.contains(mr)) {
+								json = gson.toJson(new JsonErrorContainer(new JsonError(
+										"actorUser is not allowed to change his own rights (rights=ModuleRights) (actorUser is no admin)", 
+										"updateUser(...)")));		
+								try {
+									response.getWriter().write(json);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								return;								
+							}
+						}
+						
+						ArrayList<SubjectRights> subjectRightsList = eR.getSubjectRightsList();
+						ArrayList<SubjectRights> oldSubjectRightsList = oER.getSubjectRightsList();
+						
+						// check if SubjectRights changed
+						for(SubjectRights sr : subjectRightsList) {
+							if(!oldSubjectRightsList.contains(sr)) {
+								json = gson.toJson(new JsonErrorContainer(new JsonError(
+										"actorUser is not allowed to change his own rights (rights=SubjectRights) (actorUser is no admin)", 
+										"updateUser(...)")));		
+								try {
+									response.getWriter().write(json);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								return;								
+							}
+						}						
+
+						ArrayList<ModuleHandbookRights> moduleHandbookRightsList = eR.getModuleHandbookRightsList();
+						ArrayList<ModuleHandbookRights> oldModuleHandbookRightsList = oER.getModuleHandbookRightsList();
+						
+						// check if ModuleHandbookRights changed
+						for(ModuleHandbookRights mhr : moduleHandbookRightsList) {
+							if(!oldModuleHandbookRightsList.contains(mhr)) {
+								json = gson.toJson(new JsonErrorContainer(new JsonError(
+										"actorUser is not allowed to change his own rights (rights=ModuleHandbookRights) (actorUser is no admin)", 
+										"updateUser(...)")));		
+								try {
+									response.getWriter().write(json);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								return;								
+							}
+						}	
+
+						ArrayList<StudycourseRights> studycourseRightsList = eR.getStudycourseRightsList();
+						ArrayList<StudycourseRights> oldStudycourseRightsList = oER.getStudycourseRightsList();
+						
+						// check if StudycourseRights changed
+						for(StudycourseRights scr : studycourseRightsList) {
+							if(!oldStudycourseRightsList.contains(scr)) {
+								json = gson.toJson(new JsonErrorContainer(new JsonError(
+										"actorUser is not allowed to change his own rights (rights=StudycourseRights) (actorUser is no admin)", 
+										"updateUser(...)")));		
+								try {
+									response.getWriter().write(json);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								return;								
+							}
+						}	
+					}
+				}
+				
 			}
 		}
 		

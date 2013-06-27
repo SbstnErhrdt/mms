@@ -35,4 +35,29 @@ public class SubjectRights extends ContentRights {
 		string += ", subjectID="+subjectID+"]";
 		return string;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (canCreateChilds ? 1231 : 1237);
+		result = prime * result + subjectID;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SubjectRights other = (SubjectRights) obj;
+		if (canCreateChilds != other.canCreateChilds)
+			return false;
+		if (subjectID != other.subjectID)
+			return false;
+		return true;
+	}
 }

@@ -39,4 +39,26 @@ public class ModuleHandbookRights extends ContentRights {
 		String string = Utilities.arrayToString(toValuesArray());
 		return string;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + moduleHandbookID;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ModuleHandbookRights other = (ModuleHandbookRights) obj;
+		if (moduleHandbookID != other.moduleHandbookID)
+			return false;
+		return true;
+	}
 }
