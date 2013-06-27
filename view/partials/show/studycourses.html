@@ -19,33 +19,33 @@
 		<a ng-show="isEmployee" href="#/create/studycourse" class="btn btn-success pull-left"><i class="icon-edit icon-white"></i> Neuen Studiengang erstellen</a>
 	    <br class="clear" />
 		<hr />
-	    <table class="table">
-	    	<thead>
-				<tr>
-					<th>#</th>
-					<th>Name</th>
-					<th>Archiviert</th>
-					<th>Freigegeben</th>
-					<th ng-show="isAuthorised()">Aktion</th>
+		<div class="tableWrapper">
+		    <table class="table">
+		    	<thead>
+					<tr>
+						<th>#</th>
+						<th>Name</th>
+						<th>Archiviert</th>
+						<th>Freigegeben</th>
+						<th ng-show="isAuthorised()">Aktion</th>
+					</tr>
+		    	</thead>
+		    	<tbody>
+				<tr ng-repeat="studycourse in studycourses | filter: search">
+					<td>{{studycourse.studycourseID}}</td>
+					<td><a href="#/show/studycourse?studycourseID={{studycourse.studycourseID}}">{{studycourse.name}}</a></td>
+					<td><span class="label" ng-hide="studycourse.archived">nicht archiviert</span><span class="label label-warning" ng-show="studycourse.archived">archiviert</span></td>
+					<td><span class="label" ng-hide="studycourse.enabled">nicht freigegeben</span><span class="label label-success" ng-show="studycourse.enabled">freigegeben</span></td>
+					<td ng-show="isAuthorised()">
+						<a href="#/delete/studycourse?studycourseID={{studycourse.studycourseID}}" class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+						<a href="#/update/studycourse?studycourseID={{studycourse.studycourseID}}" class="btn btn-mini btn-warning" ng-show="canEdit(studycourse.studycourseID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
+
+
+					</td>
 				</tr>
-	    	</thead>
-	    	<tbody>
-			<tr ng-repeat="studycourse in studycourses | filter: search">
-				<td>{{studycourse.studycourseID}}</td>
-				<td><a href="#/show/studycourse?studycourseID={{studycourse.studycourseID}}">{{studycourse.name}}</a></td>
-				<td><span class="label" ng-hide="studycourse.archived">nicht archiviert</span><span class="label label-warning" ng-show="studycourse.archived">archiviert</span></td>
-				<td><span class="label" ng-hide="studycourse.enabled">nicht freigegeben</span><span class="label label-success" ng-show="studycourse.enabled">freigegeben</span></td>
-				<td ng-show="isAuthorised()">
-					<a href="#/delete/studycourse?studycourseID={{studycourse.studycourseID}}" class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
-					<a href="#/update/studycourse?studycourseID={{studycourse.studycourseID}}" class="btn btn-mini btn-warning" ng-show="canEdit(studycourse.studycourseID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
-
-
-				</td>
-			</tr>
-	    	</tbody>
-		</table>
-
-
+		    	</tbody>
+			</table>
+		</div>
     </div>
   </div>
 </div>

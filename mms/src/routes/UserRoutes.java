@@ -242,6 +242,12 @@ public class UserRoutes extends Routes {
 		
 		User user = gson.fromJson(json, User.class);
 		
+		// user is Employee?
+		if(user.isEmployee()) {
+			Employee employee = gson.fromJson(json, Employee.class);
+			user = employee;
+		}
+		
 		// validate email
 		if(!Utilities.validateEmail(user.getEmail())) {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
@@ -467,6 +473,12 @@ public class UserRoutes extends Routes {
 				}
 				
 			}
+		}
+		
+		// user is Employee?
+		if(user.isEmployee()) {
+			Employee employee = gson.fromJson(json, Employee.class);
+			user = employee;
 		}
 		
 		if(db.updateUser(user)) {

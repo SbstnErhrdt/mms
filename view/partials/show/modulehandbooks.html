@@ -20,35 +20,35 @@
 		<a ng-show="isEmployee" href="#/create/modulehandbook" class="btn btn-success pull-left"><i class="icon-edit icon-white"></i> Neues Modulhandbuch erstellen</a>
 		<br class="clear" />
 		<hr />
-	    <table class="table table-striped">
-	    	<thead>
-				<tr>
-					<th>#</th>
-					<th>Name</th>
-					<th>Studienbeginn</th>
-					<th>Archiviert</th>
-					<th>Freigegeben</th>
-					<th>Drucken</th>
-					<th ng-show="isAuthorised()">Aktion</th>
+		<div class="tableWrapper">
+		    <table class="table table-striped">
+		    	<thead>
+					<tr>
+						<th>#</th>
+						<th>Name</th>
+						<th>Studienbeginn</th>
+						<th>Archiviert</th>
+						<th>Freigegeben</th>
+						<th>Drucken</th>
+						<th ng-show="isAuthorised()">Aktion</th>
+					</tr>
+		    	</thead>
+		    	<tbody>
+				<tr ng-repeat="handbook in moduleHandbooks | filter: search">
+					<td>{{handbook.moduleHandbookID}}</td>
+					<td><a href="#/show/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}">{{handbook.name}}</a></td>
+					<td><span ng-hide="handbook.sose">Wintersemester</span><span ng-show="handbook.sose">Sommersemester</span> {{handbook.year}}</td>
+					<td><span class="label" ng-hide="handbook.archived">nicht archiviert</span><span class="label label-warning" ng-show="handbook.archived">archiviert</span></td>
+					<td><span class="label" ng-hide="handbook.enabled">nicht freigegeben</span><span class="label label-success" ng-show="handbook.enabled">freigegeben</span></td>
+					<td><a href="#/print/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}" class="btn btn-mini"><i class="icon icon-print"></i> Drucken</a></td>
+					<td ng-show="isAuthorised()">
+						<a href="#/delete/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}" class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+						<a href="#/update/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}" class="btn btn-mini btn-warning" ng-show="canEdit(handbook.moduleHandbookID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
+						</td>
 				</tr>
-	    	</thead>
-	    	<tbody>
-			<tr ng-repeat="handbook in moduleHandbooks | filter: search">
-				<td>{{handbook.moduleHandbookID}}</td>
-				<td><a href="#/show/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}">{{handbook.name}}</a></td>
-				<td><span ng-hide="handbook.sose">Wintersemester</span><span ng-show="handbook.sose">Sommersemester</span> {{handbook.year}}</td>
-				<td><span class="label" ng-hide="handbook.archived">nicht archiviert</span><span class="label label-warning" ng-show="handbook.archived">archiviert</span></td>
-				<td><span class="label" ng-hide="handbook.enabled">nicht freigegeben</span><span class="label label-success" ng-show="handbook.enabled">freigegeben</span></td>
-				<td><a href="#/print/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}" class="btn btn-mini"><i class="icon icon-print"></i> Drucken</a></td>
-				<td ng-show="isAuthorised()">
-					<a href="#/delete/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}" class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
-					<a href="#/update/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}" class="btn btn-mini btn-warning" ng-show="canEdit(handbook.moduleHandbookID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
-					</td>
-			</tr>
-	    	</tbody>
-		</table>
-
-
+		    	</tbody>
+			</table>
+		</div>
     </div>
   </div>
 </div>

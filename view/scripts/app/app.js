@@ -1,8 +1,10 @@
+"use strict"
 /*
 
 	Tabs Projekt! Spaces könnt ihr nehmen, dann aber VIER und ja nicht 2!!!
 	I DREH EICH OIGAHENDIG S KNICK ROM A WENN IH
 */
+
 
 
 var MMSApp = angular.module("MMS", ["ngCookies"]);
@@ -1087,7 +1089,7 @@ MMSApp.factory("EventFactory", function($http, $q) {
 				console.log("Der Server lieferte 'null' zurück.");
 			} else {
 				// Success
-				Events = data; // FIX THIS
+				Events = data;
 				deferred.resolve(Events);
 			}
 
@@ -1837,15 +1839,15 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 MMSApp.factory("DeadlineFactory", function($http, $q) {
 	var factory = {};
 	var deadline = {
-		deadlineDate: "Date",
+		deadline: "String",
 		sose: "boolean",
 		year: "Number"
 	};
-	var deadline = [];
+	var Deadlines = [];
 
-	factory.createDeadline = function(deadlineDate) {
-		// BENÖTIGTE FELDER - FIX THIS
-		if(studycourse.name) {
+	factory.createDeadline = function(deadline) {
+		// BENÖTIGTE FELDER
+		if(deadline.deadline && deadline.sose && deadline.year) {
 
 
 		} else {
@@ -1854,9 +1856,9 @@ MMSApp.factory("DeadlineFactory", function($http, $q) {
 		}
 	};
 
-	factory.getDeadline = function(deadline) {
+	factory.getDeadline = function(sose, year) {
 
-		var url = factory.checkSingularURL("read", deadlineDate);
+		var url = factory.checkSingularURL("read", sose, year);
 		if(url.error) {
 			return url.error;
 		}
@@ -1939,13 +1941,13 @@ MMSApp.factory("DeadlineFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
-	factory.checkSingularURL = function(method, studycourseID) {
+	factory.checkSingularURL = function(method, sose, year) {
 		if(method) {
 
 			var url = hURL+method+"/deadline";
 
-			if(studycourseID) {
-				url = url+"?deadlineDate="+deadlineDate;
+			if(sose && year) {
+				url = url+"?sose="+sose+"&year="+year;
 			}
 
 			return url;

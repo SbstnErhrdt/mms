@@ -176,6 +176,7 @@ public class FrontController extends HttpServlet {
 			
 		} catch(Exception e) {
 			e.printStackTrace();
+			response.getWriter().write(""+e.getStackTrace());
 		} finally {
 			System.out.println("closing database connections");
 			userRoutes.closeConnection();
@@ -283,6 +284,7 @@ public class FrontController extends HttpServlet {
 			
 		} catch(Exception e) {
 			e.printStackTrace();
+			response.getWriter().write(""+e.getStackTrace());
 		} finally {
 			System.out.println("closing database connections");
 			userRoutes.closeConnection();

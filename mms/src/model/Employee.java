@@ -10,7 +10,7 @@ public class Employee extends User {
 
 	public Employee(String email, String password, String address, String phoneNum, String talkTime)  {
 		super(email, password);
-		this.employeeRights = new EmployeeRights();
+		this.employeeRights = new EmployeeRights(false, false, false);
 		this.address = address;
 		this.phoneNum = phoneNum;
 		this.talkTime = talkTime;
@@ -22,7 +22,7 @@ public class Employee extends User {
 			UserRights rights) {
 		super(firstName, lastName, title, email, graduation, password, 
 				matricNum, semester, rights);
-		this.employeeRights = new EmployeeRights();
+		this.employeeRights = new EmployeeRights(false, false, false);
 		isEmployee = true;
 	}
 	

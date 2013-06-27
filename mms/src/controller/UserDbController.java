@@ -59,8 +59,19 @@ public class UserDbController extends DbController {
 		if(user.isEmployee()) {
 			query = "INSERT INTO employees (";
 			
-			Employee employee = (Employee) user;
-		
+			Employee employee = null;
+			try {
+				employee = (Employee) user;
+				
+				if(employee.getEmployeeRights() == null) {
+					employee.setEmployeeRights(new EmployeeRights(false,false, false));
+				}
+				
+			} catch(ClassCastException e) {
+				employee = new Employee(user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), 
+						user.getTitle(), user.getGraduation(), user.getMatricNum(), user.getSemester(), user.getUserRights());
+			}
+										
 			// Names
 			query += employee.toEmployeeValueNames() + ") VALUES(";
 			

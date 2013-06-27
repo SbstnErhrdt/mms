@@ -71,6 +71,7 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 }
 
 function homeCtrl($scope, $http, $cookies, $location, ActiveUserFactory) {
+	// Does nothing
 }
 
 function overviewCtrl($scope) {
@@ -646,7 +647,7 @@ function createUserCtrl($scope, $location, UserFactory) {
 	};
 }
 
-function updateUserCtrl($scope, $location, $routeParams, UserFactory) {
+function updateUserCtrl($scope, $location, $routeParams, UserFactory, StudycourseFactory, ModuleHandbookFactory, SubjectFactory, ModuleFactory) {
 	if($routeParams.email) {
 		UserFactory.getUser($routeParams.email).then(function(user) {
 			$scope.user = user;
@@ -657,6 +658,63 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory) {
 		// Error
 		sendError("No query");
 	}
+
+    var StudycourseList = [];
+    var ModuleHandbookList = [];
+    var SubjectList = [];
+    var ModuleList = [];
+    function init () {
+        StudycourseFactory.getStudycourses().then(function (studycourses) {
+            StudycourseList = studycourses;
+            console.log(StudycourseList);
+        });
+        ModuleHandbookFactory.getModuleHandbooks().then(function (modulehandbooks) {
+            ModuleHandbookList = modulehandbooks;
+            console.log(ModuleHandbookList);
+        });
+
+        SubjectFactory.getSubjects().then(function (subjects) {
+            SubjectList = subjects;
+            console.log(SubjectList);
+        });
+        ModuleFactory.getModules().then(function (modules) {
+            ModuleList = modules;
+            console.log(ModuleList);
+        });
+    }
+    init();
+
+    $scope.getStudyCourse = function (id) {
+        for (i=0; i < StudycourseList.length; i++) {
+            if (id === StudycourseList[i].studycourseID) {
+                return StudycourseList[i].name;
+            }
+        }
+    };
+
+    $scope.getModuleHandbook = function (id) {
+        for (i=0; i < ModuleHandbookList.length; i++) {
+            if (id === ModuleHandbookList[i].moduleHandbookID) {
+                return ModuleHandbookList[i].name;
+            }
+        }
+    };
+
+    $scope.getSubject = function (id) {
+        for (i=0; i < SubjectList.length; i++) {
+            if (id === SubjectList[i].subjectID) {
+                return SubjectList[i].name;
+            }
+        }
+    };
+
+    $scope.getModule = function (id) {
+        for (i=0; i < ModuleList.length; i++) {
+            if (id === ModuleList[i].moduleID) {
+                return ModuleList[i].name;
+            }
+        }
+    };
 
     $scope.update = function () {
         UserFactory.updateUser($scope.user, function () {

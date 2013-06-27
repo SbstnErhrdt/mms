@@ -575,13 +575,22 @@ public class ContentDbController extends DbController {
 		String query = "INSERT INTO subjects (" + valueNames + ") VALUES ("
 				+ values + ");";
 		System.out.println("db:createSubject " + query);
+		
 		try {
-			db.createStatement().executeUpdate(query);
+			Statement stmt = db.createStatement();	
+			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.next()) {
+				subject.setID(rs.getInt(1));
+			    System.out.println("Generated eventID: " + subject.getID());	    
+			}
+			stmt.close();
+			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
-		}
-
+		} 
+		
 		return true;
 	}
 
@@ -763,12 +772,22 @@ public class ContentDbController extends DbController {
 		String query = "INSERT INTO module_handbooks (" + valueNames
 				+ ") VALUES (" + values + ");";
 		System.out.println("db:createModuleHandbook " + query);
+	
 		try {
-			db.createStatement().executeUpdate(query);
+			Statement stmt = db.createStatement();	
+			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.next()) {
+				moduleHandbook.setID(rs.getInt(1));
+			    System.out.println("Generated eventID: " + moduleHandbook.getID());	    
+			}
+			stmt.close();
+			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
-		}
+		} 
+		
 
 		return true;
 	}
@@ -899,12 +918,21 @@ public class ContentDbController extends DbController {
 		String query = "INSERT INTO studycourses (" + valueNames
 				+ ") VALUES (" + values + ");";
 		System.out.println("db:createStudycourse " + query);
+		
 		try {
-			db.createStatement().executeUpdate(query);
+			Statement stmt = db.createStatement();	
+			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.next()) {
+				studycourse.setID(rs.getInt(1));
+			    System.out.println("Generated eventID: " + studycourse.getID());	    
+			}
+			stmt.close();
+			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
-		}
+		} 
 
 		return true;
 	}

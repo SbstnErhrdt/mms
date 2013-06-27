@@ -55,7 +55,7 @@ public class Subject extends Content {
 	public String[] toValueNamesArray() {
 		// TODO Auto-generated method stub
 		String[] values = {"subjectID", "studycourses_studycourseID", 
-				"module_handbooks_moduleHandbookID", "name", "archived", 
+				"module_handbooks_modulehandbookID", "name", "archived", 
 				"content", "enabled"};
 		return values;
 	}
