@@ -27,6 +27,9 @@ public class FrontController extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
+	/**
+	 * @see HttpServlet#doOptions(HttpServletRequest request, HttpServletResponse response)
+	 */
     protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
     	try {
 	    	String path = request.getServletPath();
@@ -164,9 +167,12 @@ public class FrontController extends HttpServlet {
 			// read Deadline
 			else if(path.equals("/read/deadline")) {
 				contentRoutes.readDeadline(request, response);
-			
+			// delete Deadline
 			} else if(path.equals("/delete/deadline")) {
 				contentRoutes.deleteDeadline(request, response);
+			// read Deadlines	
+			} else if(path.equals("/read/deadlines")) {
+				contentRoutes.readDeadlines(request, response);
 			}
 			
 			// confirm email

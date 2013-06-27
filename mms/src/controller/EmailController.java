@@ -6,6 +6,11 @@ import javax.mail.internet.*;
 
 public class EmailController {
 
+	/**
+	 * @param recipient
+	 * @param hash
+	 * @return true, if the email was successfully sent
+	 */
 	public static boolean sendEmail(String recipient, String hash) {
 		
 		// Sender's email

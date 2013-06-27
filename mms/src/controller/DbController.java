@@ -9,6 +9,9 @@ public class DbController {
 	protected Connection db = null;
 	private static DbController instance = null;
 
+	/**
+	 * constructor
+	 */
 	protected DbController() {
 		String url = "jdbc:mysql://localhost:3306/sopra";
 		String user = "sopra";
@@ -27,6 +30,9 @@ public class DbController {
 
 	}
 
+	/**
+	 * @return an instance of the DbController
+	 */
 	public static DbController getInstance() {
 		if (instance == null) {
 			instance = new DbController();
@@ -35,6 +41,9 @@ public class DbController {
 			return instance;
 	}
 	
+	/**
+	 * closes the database connection
+	 */
 	public void closeConnection() {
 		try {
 			db.close();

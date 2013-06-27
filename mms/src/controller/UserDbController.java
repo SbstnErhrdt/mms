@@ -17,10 +17,17 @@ import model.userRights.UserRights;
 
 public class UserDbController extends DbController {
 	
+	/**
+	 * constructor
+	 */
 	public UserDbController() {
 		super();
 	}
 	
+	/**
+	 * @param user
+	 * @return true, if the user was created successfully
+	 */
 	public boolean createUser(User user) {
 		user.setEmail(user.getEmail().toLowerCase());
 		
@@ -159,7 +166,7 @@ public class UserDbController extends DbController {
 			if(!eventRightsList.isEmpty()) {
 				
 				for(ModuleHandbookRights mhbr : moduleHandbookRightsList) {
-					query = "INSERT INTO module__handbook_rights (users_email, ";
+					query = "INSERT INTO module_handbook_rights (users_email, ";
 							
 					// Names
 					query += mhbr.toValueNames() + ") VALUES('"+user.getEmail()+"', ";
@@ -234,18 +241,25 @@ public class UserDbController extends DbController {
 	/**
 	 * 
 	 * @param user
-	 * @return
+	 * @return true, if the user was updated successfully
 	 */
 	public boolean updateUser(User user) {
 		
+		User oldUser = getUser(user);
+		
 		// Update: delete and re-create
 		if(deleteUser(user)){
+			user.setPassword(oldUser.getPassword());	// get back password
 			if(createUser(user)) return true;
 		} 
 		return false;
 	}
 	
-	// Deletes a user, the database will delete all referring entries automatically
+	/**
+	 * Deletes a user, the database will delete all referring entries automatically
+	 * @param user
+	 * @return true, if the user was deleted successfully
+	 */
 	public boolean deleteUser(User user) {
 		String email = user.getEmail();
 		String query = "DELETE FROM users WHERE email = '" + email + "';";
@@ -261,6 +275,10 @@ public class UserDbController extends DbController {
 		return true;
 	}
 	
+	/**
+	 * @param user
+	 * @return the whole user object that belongs to the email of the passed user
+	 */
 	public User getUser(User user) {	
 		// User
 		String query = "SELECT " + user.toValueNames() +
@@ -519,6 +537,9 @@ public class UserDbController extends DbController {
 		return employee;
 	}
 	
+	/**
+	 * @return a list of all users
+	 */
 	public ArrayList<User> readUsers() {
 		ArrayList<User> users = new ArrayList<User>();
 		String query = "SELECT email FROM users;";
@@ -538,6 +559,9 @@ public class UserDbController extends DbController {
 		return users;
 	}
 	
+	/**
+	 * @return a list of all users, but only with reduced number of attributes
+	 */
 	public ArrayList<User> readReducedUsers() {
 		ArrayList<User> users = new ArrayList<User>();
 		String query = "SELECT email, firstName, lastName FROM users;";
@@ -569,6 +593,10 @@ public class UserDbController extends DbController {
 		return users;
 	}
 	
+	/**
+	 * @param user
+	 * @return the employeerights that belong to the passed user
+	 */
 	private EmployeeRights getEmployeeRights(User user) {
 	String query = "SELECT canDeblockModule, canDeblockCriticalModule, isAdmin " +
 			"FROM employee_rights WHERE email=?;";
@@ -607,6 +635,10 @@ public class UserDbController extends DbController {
 		}
 	}
 	
+	/**
+	 * @param user
+	 * @return the user, if the user was verified successfully, else null
+	 */
 	public User verifyUser(User user) {
 		String query = "SELECT " + user.toValueNames() +
 				" FROM users WHERE email ='"+ user.getEmail()+"'" +
@@ -635,6 +667,11 @@ public class UserDbController extends DbController {
 		return user;
 	}
 
+	/**
+	 * @param email
+	 * @param hash
+	 * @return true, if the hash was inserted successfully
+	 */
 	public boolean insertUserHash(String email, String hash) {
 		String query = "DELETE FROM user_hashes WHERE users_email=?";
 		
@@ -687,6 +724,11 @@ public class UserDbController extends DbController {
 		return true;
 	}
 
+	/**
+	 * @param email
+	 * @param hash
+	 * @return true, if there is such an email-hash combination in the database
+	 */
 	public boolean verifyUserHash(String email, String hash) {
 		
 		String query = "SELECT * FROM user_hashes " +
@@ -725,6 +767,10 @@ public class UserDbController extends DbController {
 		}
 	}
 	
+	/**
+	 * @param hash
+	 * @return the email that belongs to the passed hash
+	 */
 	public String getHashEmail(String hash) {
 		String query = "SELECT users_email FROM user_hashes " +
 				"WHERE hash=?;";
@@ -761,6 +807,11 @@ public class UserDbController extends DbController {
 		}
 	}
 	
+	/**
+	 * @param email
+	 * @param hash
+	 * @return true, if the confirmation hash was successfully inserted
+	 */
 	public boolean insertConfirmationHash(String email, String hash) {
 		String query = "INSERT INTO user_confirmation_hashes(users_email, hash) " +
 				"VALUES(?,?);";
@@ -791,6 +842,10 @@ public class UserDbController extends DbController {
 		}
 	}
 
+	/**
+	 * @param hash
+	 * @return the email that belongs to the passed hash
+	 */
 	public String getConfirmationEmail(String hash) {
 	
 		String query = "SELECT users_email FROM user_confirmation_hashes " +
@@ -829,6 +884,11 @@ public class UserDbController extends DbController {
 		}
 	}
 
+	/**
+	 * sets canLogin of the user that belongs to the passed email as passed 
+	 * @param email
+	 * @param canLogin
+	 */
 	private void updateCanLogin(String email, boolean canLogin) {
 		String query = "UPDATE user_rights SET canLogin=? WHERE email=?;";
 		
@@ -855,6 +915,10 @@ public class UserDbController extends DbController {
 		}
 	}
 
+	/**
+	 * @param email
+	 * @return true, if the confirmation hash was deleted successfully
+	 */
 	public boolean deleteConfirmationHash(String email) {
 		String query = "DELETE FROM user_confirmation_hashes WHERE users_email=?";
 	

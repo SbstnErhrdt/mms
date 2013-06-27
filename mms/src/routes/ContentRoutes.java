@@ -249,6 +249,7 @@ public class ContentRoutes extends Routes{
 	}
 
 	/**
+	 * deletes the module that belongs to the moduleID passed in the query
 	 * @param request
 	 * @param response
 	 */
@@ -416,6 +417,7 @@ public class ContentRoutes extends Routes{
 	}
 
 	/**
+	 * deletes the subject that belongs to the subjectID passed in the query
 	 * @param request
 	 * @param response
 	 */
@@ -587,6 +589,7 @@ public class ContentRoutes extends Routes{
 	}
 
 	/**
+	 * deletes the studycourse that belongs to the studycourseID passed in the query
 	 * @param request
 	 * @param response
 	 */
@@ -698,6 +701,7 @@ public class ContentRoutes extends Routes{
 	}
 
 	/**
+	 * reads the modulehandbook that belongs to the moduleHandbookID passed in the query
 	 * @param request
 	 * @param response
 	 */
@@ -746,6 +750,7 @@ public class ContentRoutes extends Routes{
 	}
 
 	/**
+	 * deletes the modulehandbook that belongs to the moduleID passed in the query
 	 * @param request
 	 * @param response
 	 */
@@ -882,9 +887,15 @@ public class ContentRoutes extends Routes{
 			ModuleHandbook moduleHandbook = db.getModuleHandbook(moduleHandbookID);
 			
 			json = gson.toJson(db.getDeadline(moduleHandbook));
+		} else if(request.getParameter("sose") != null && request.getParameter("year") != null){
+			boolean sose = Boolean.parseBoolean(request.getParameter("sose"));
+			int year = Integer.parseInt(request.getParameter("year"));
+			
+			json = gson.toJson(db.getDeadline(sose, year));
+		
 		} else {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
-					"unspecified moduleHandbookID in query", 
+					"unspecified moduleHandbookID and unspecified sose or year in query", 
 					"readDeadline(...)"))); 
 		}
 		
@@ -895,6 +906,54 @@ public class ContentRoutes extends Routes{
 		}	
 	}
 	
+	/**
+	 * reads all deadlines
+	 * @param request
+	 * @param response
+	 */
+	public void readDeadlines(HttpServletRequest request, HttpServletResponse response) {
+		String json;
+		
+		User actorUser = getActorUser(request);
+		
+		// check rights
+		if(actorUser == null) {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"not allowed to read deadlines (actorUser is not logged in)", 
+					"deleteDeadline(...)")));
+			try { 
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
+		if(!actorUser.isEmployee()) {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"not allowed to read deadlines (actorUser is no employee)", 
+					"deleteDeadline(...)")));
+			try { 
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		}	
+		
+		json = gson.toJson(db.getDeadlines());
+		
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+	}
+	
+	/**
+	 * deletes the deadline that belongs to the sose and year passed in the query
+	 * @param request
+	 * @param response
+	 */
 	public void deleteDeadline(HttpServletRequest request,
 			HttpServletResponse response) {
 		String json;

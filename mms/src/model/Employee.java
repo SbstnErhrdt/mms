@@ -8,6 +8,14 @@ public class Employee extends User {
 	private String address, phoneNum, talkTime;
 	private EmployeeRights employeeRights;
 
+	/**
+	 * constructor
+	 * @param email
+	 * @param password
+	 * @param address
+	 * @param phoneNum
+	 * @param talkTime
+	 */
 	public Employee(String email, String password, String address, String phoneNum, String talkTime)  {
 		super(email, password);
 		this.employeeRights = new EmployeeRights(false, false, false);
@@ -17,6 +25,18 @@ public class Employee extends User {
 		isEmployee = true;
 	}
 	
+	/**
+	 * constructor
+	 * @param email
+	 * @param password
+	 * @param firstName
+	 * @param lastName
+	 * @param title
+	 * @param graduation
+	 * @param matricNum
+	 * @param semester
+	 * @param rights
+	 */
 	public Employee(String email, String password, String firstName, String lastName, String title,
 			String graduation, int matricNum, int semester,
 			UserRights rights) {

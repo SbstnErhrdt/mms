@@ -20,6 +20,9 @@ import model.content.Subject;
 
 public class ContentDbController extends DbController {
 	
+	/**
+	 * constructor
+	 */
 	public ContentDbController() {
 		super();
 	}
@@ -91,6 +94,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// EVENT UPDATEN
+	/**
+	 * @param event
+	 * @return true, if event was updated successfully
+	 */
 	public boolean updateEvent(Event event) {
 
 		// GET VALUENAMES & VALUES
@@ -156,6 +163,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// EVENT HOLEN
+	/**
+	 * @param eventID
+	 * @return event with the specified eventID
+	 */
 	public Event getEvent(int eventID) {
 		Event newEvent = new Event(eventID);
 		
@@ -200,6 +211,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// EVENT ENTFERNEN
+	/**
+	 * @param event
+	 * @return true, if event was deleted successfully
+	 */
 	public boolean deleteEvent(Event event) {
 
 		String query = "DELETE FROM events ";
@@ -214,6 +229,10 @@ public class ContentDbController extends DbController {
 		return true;
 	}
 	
+	/**
+	 * @param getOnlyEnabled
+	 * @return list of events, if getOnlyEnabled is true, only events that have enabled=true are selected
+	 */
 	public ArrayList<Event> getEvents(boolean getOnlyEnabled) {
 		ArrayList<Event> events = new ArrayList<Event>();
 
@@ -267,6 +286,10 @@ public class ContentDbController extends DbController {
 	// ####################################################
 
 	// MODULE ERSTELLEN
+	/**
+	 * @param module
+	 * @return true, if module was created successfully
+	 */
 	public boolean createModule(Module module) {
 
 		// GET VALUENAMES & VALUES
@@ -327,6 +350,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// MODULE UPDATEN
+	/**
+	 * @param module
+	 * @return true, if module was updated successfully
+	 */
 	public boolean updateModule(Module module) {
 
 		// GET VALUENAMES & VALUES
@@ -392,6 +419,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// MODULE HOLEN
+	/**
+	 * @param moduleID
+	 * @return module with specified moduleID
+	 */
 	public Module getModule(int moduleID) {
 		Module newModule = new Module(moduleID);
 		String query = "SELECT "+newModule.toValueNames()+" FROM modules WHERE moduleID="+moduleID+";";
@@ -437,6 +468,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// MODULE ENTFERNEN
+	/**
+	 * @param module
+	 * @return true, if module was deleted successfully
+	 */
 	public boolean deleteModule(Module module) {
 
 		String query = "DELETE FROM modules ";
@@ -451,6 +486,10 @@ public class ContentDbController extends DbController {
 		return true;
 	}
 	
+	/**
+	 * @param getOnlyEnabled
+	 * @return list of modules, if getOnlyEnabled is true, only modules that have enabled=true are selected
+	 */
 	public ArrayList<Module> getModules(boolean getOnlyEnabled) {
 		ArrayList<Module> modules = new ArrayList<Module>();
 		Module module = new Module(0);
@@ -504,6 +543,12 @@ public class ContentDbController extends DbController {
 
 	// MODUL EVENTS LISTE
 	// Holt die Events eines Modules und gibt diese in einer ArrayList aus
+	/**
+	 * @param moduleID
+	 * @param getOnlyEnabled
+	 * @return list of events, that belong to the module with the passed moduleID, if getOnlyEnabled = true, only enabled events are selected
+	 * 
+	 */
 	public ArrayList<Event> getModuleEvents(int moduleID, boolean getOnlyEnabled) {
 
 		ArrayList<Event> events = new ArrayList<Event>();
@@ -559,6 +604,10 @@ public class ContentDbController extends DbController {
 	// ####################################################
 
 	// SUBJECT ERSTELLEN
+	/**
+	 * @param subject
+	 * @return true, if the subject was created successfully
+	 */
 	public boolean createSubject(Subject subject) {
 
 		// GET VALUENAMES & VALUES
@@ -595,6 +644,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// SUBJECT UPDATEN
+	/**
+	 * @param subject
+	 * @return true, if the subject was updated successfully
+	 */
 	public boolean updateSubject(Subject subject) {
 
 		// GET VALUENAMES & VALUES
@@ -624,6 +677,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// SUBJECT HOLEN
+	/**
+	 * @param subjectID
+	 * @return the subject with the passed subjectID
+	 */
 	public Subject getSubject(int subjectID) {
 		Subject newSubject = new Subject(subjectID);
 		
@@ -651,6 +708,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// SUBJECT ENTFERNEN
+	/**
+	 * @param subject
+	 * @return true, if the subject was deleted successfully
+	 */
 	public boolean deleteSubject(Subject subject) {
 
 		String query = "DELETE FROM subjects ";
@@ -666,6 +727,10 @@ public class ContentDbController extends DbController {
 
 	}
 	
+	/**
+	 * @param getOnlyEnabled
+	 * @return list of subjects, if getOnlyEnabled = true, only enabled subjects are selected
+	 */
 	public ArrayList<Subject> getSubjects(boolean getOnlyEnabled) {
 		ArrayList<Subject> subjects = new ArrayList<Subject>();
 		Subject subject = new Subject(0);
@@ -697,6 +762,11 @@ public class ContentDbController extends DbController {
 
 	// SUBJECT MODULE LISTE
 	// Holt die Modules eines Subjects und gibt diese in einer ArrayList aus
+	/**
+	 * @param subjectID
+	 * @param getOnlyEnabled
+	 * @return list of modules that belong to the subject with the passed subjectID, if getOnlyEnabled = true, only enabled modules are selected
+	 */
 	public ArrayList<Module> getSubjectModules(int subjectID, boolean getOnlyEnabled) {
 
 		ArrayList<Module> modules = new ArrayList<Module>();
@@ -756,6 +826,10 @@ public class ContentDbController extends DbController {
 	// ####################################################
 
 	// MODULE HANDBOOK ERSTELLEN
+	/**
+	 * @param moduleHandbook
+	 * @return true, if the moduleHandbook was created successfully
+	 */
 	public boolean createModuleHandbook(ModuleHandbook moduleHandbook) {
 
 		// GET VALUENAMES & VALUES
@@ -793,6 +867,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// MODULE HANDBOOK UPDATEN
+	/**
+	 * @param moduleHandbook
+	 * @return true, if the moduleHandbook was updated successfully
+	 */
 	public boolean updateModuleHandbook(ModuleHandbook moduleHandbook) {
 
 		// GET VALUENAMES & VALUES
@@ -822,6 +900,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// MODULE HANDBOOK HOLEN
+	/**
+	 * @param moduleHandbookID
+	 * @return the modulehandbook with the passed moduleHandbookID
+	 */
 	public ModuleHandbook getModuleHandbook(int moduleHandbookID) {
 		ModuleHandbook newModuleHandbook = new ModuleHandbook(moduleHandbookID);
 		
@@ -852,6 +934,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// MODULE HANDBOOK ENTFERNEN
+	/**
+	 * @param moduleHandbook
+	 * @return true, if the modulehandbook was deleted successfully
+	 */
 	public boolean deleteModuleHandbook(ModuleHandbook moduleHandbook) {
 
 		String query = "DELETE FROM module_handbooks ";
@@ -867,6 +953,11 @@ public class ContentDbController extends DbController {
 
 	}
 
+	/**
+	 * @param studycourseID
+	 * @param getOnlyEnabled
+	 * @return list of modulehandbooks, that belong to the studycourse with the passed studycourseID, if getOnlyEnabled = true, only enabled modulehandbooks are selected
+	 */
 	public ArrayList<ModuleHandbook> readStudycourseModuleHandbooks(int studycourseID, boolean getOnlyEnabled) {
 
 		ArrayList<ModuleHandbook> moduleHandbooks = new ArrayList<ModuleHandbook>();
@@ -902,6 +993,10 @@ public class ContentDbController extends DbController {
 	// ####################################################
 
 	// STUDYCOURSE ERSTELLEN
+	/**
+	 * @param studycourse
+	 * @return true, if the studycourse was created successfully
+	 */
 	public boolean createStudycourse(Studycourse studycourse) {
 
 		// GET VALUENAMES & VALUES
@@ -938,6 +1033,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// STUDYCOURSE UPDATEN
+	/**
+	 * @param studycourse
+	 * @return true, if the studycourse was updated successfully
+	 */
 	public boolean updateStudycourse(Studycourse studycourse) {
 
 		// GET VALUENAMES & VALUES
@@ -967,6 +1066,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// STUDYCOURSE HOLEN
+	/**
+	 * @param studycourseID
+	 * @return the studycourse with the passed studycourseID
+	 */
 	public Studycourse getStudycourse(int studycourseID) {
 		Studycourse newStudycourse = new Studycourse(studycourseID);
 		
@@ -996,6 +1099,10 @@ public class ContentDbController extends DbController {
 	}
 
 	// STUDYCOURSE ENTFERNEN
+	/**
+	 * @param studycourse
+	 * @return true, if the studycourse was deleted successfully
+	 */
 	public boolean deleteStudycourse(Studycourse studycourse) {
 
 		String query = "DELETE FROM studycourses ";
@@ -1013,6 +1120,11 @@ public class ContentDbController extends DbController {
 
 	// STUDYCOURSE SUBJECT LISTE
 	// Holt die Subjects eines Studycourses und gibt diese in einer ArrayList aus
+	/**
+	 * @param studycourseID
+	 * @param getOnlyEnabled
+	 * @return list of subjects that belong to the studycourse with the passed studycourseID, if getOnlyEnabled = true, only enabled subjets are selected
+	 */
 	public ArrayList<Subject> getStudycourseSubjects(int studycourseID, boolean getOnlyEnabled) {
 
 		ArrayList<Subject> subjects = new ArrayList<Subject>();
@@ -1044,6 +1156,11 @@ public class ContentDbController extends DbController {
 	}
 	
 	// Holt die Subjedts eines ModuleHandbooks und gibt diese in einer ArrayList aus
+	/**
+	 * @param moduleHandbookID
+	 * @param getOnlyEnabled
+	 * @return list of subjects that belong to the modulehandbook with the passed moduleHandbokID, if getOnlyEnabled = true, only enabled subjets are selected
+	 */
 	public ArrayList<Subject> getModuleHandbookSubjects(int moduleHandbookID, boolean getOnlyEnabled) {
 
 		ArrayList<Subject> subjects = new ArrayList<Subject>();
@@ -1076,6 +1193,10 @@ public class ContentDbController extends DbController {
 	/*
 	 * returns an ArrayList of all studycourses in the database
 	 */
+	/**
+	 * @param getOnlyEnabled
+	 * @return list of all studycourses, if getOnlyEnabled = true, only enabled studycourses are selected
+	 */
 	public ArrayList<Studycourse> readStudycourses(boolean getOnlyEnabled) {
 		ArrayList<Studycourse> studycourses = new ArrayList<Studycourse>();
 		
@@ -1101,6 +1222,10 @@ public class ContentDbController extends DbController {
 		return studycourses;
 	}
 	
+	/**
+	 * @param getOnlyEnabled
+	 * @return list of all modulehandbooks, if getOnlyEnabled = true, only enabled modulehandbooks are selected
+	 */
 	public ArrayList<ModuleHandbook> readModuleHandbooks(boolean getOnlyEnabled) {
 		ArrayList<ModuleHandbook> moduleHandbooks = new ArrayList<ModuleHandbook>();
 		
@@ -1130,6 +1255,10 @@ public class ContentDbController extends DbController {
 		return moduleHandbooks;
 	}
 	
+	/**
+	 * @param moduleHandbook
+	 * @return the deadline that belongs to the passed modulehandbok
+	 */
 	public Deadline getDeadline(ModuleHandbook moduleHandbook) {
 		boolean sose = moduleHandbook.isSose();
 		int year = moduleHandbook.getYear();
@@ -1167,7 +1296,81 @@ public class ContentDbController extends DbController {
 			}
 		}
 	}
+	
+	/**
+	 * @param sose
+	 * @param year
+	 * @return the deadline with the passed sose and year
+	 */
+	public Deadline getDeadline(boolean sose, int year) {		
+		String query = "SELECT sose, year, deadline FROM content_deadlines WHERE sose=? AND year=?;";
+		
+		System.out.println(query);
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setBoolean(1, sose);
+			ps.setInt(2, year);
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			Deadline deadline = null;
+			
+			if(rs.next()) {
+				deadline = new Deadline(rs.getBoolean(1), rs.getInt(2),
+						rs.getDate(3));
+			}
+			rs.close();
+			return deadline;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * @return list of all deadlines
+	 */
+	public ArrayList<Deadline> getDeadlines() {
+		String query = "SELECT sose, year, deadline FROM content_deadlines " +
+				"ORDER BY deadline DESC;";
+		
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			
+			ArrayList<Deadline> deadlines = new ArrayList<Deadline>();
+			
+			Deadline deadline = null;
+			
+			while(rs.next()) {
+				deadline = new Deadline(rs.getBoolean(1), rs.getInt(2),
+						rs.getDate(3));
+				deadlines.add(deadline);
+			}
+			
+			rs.close();
+			return deadlines;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} 	
+	}
 
+	/**
+	 * @param deadline
+	 * @return true, if the deadline was updated successfully
+	 */
 	public boolean updateDeadline(Deadline deadline) {
 		
 		String query = "UPDATE content_deadlines SET deadline=? "+
@@ -1199,6 +1402,10 @@ public class ContentDbController extends DbController {
 		}		
 	}
 
+	/**
+	 * @param deadline
+	 * @return true, if the deadline was created successfully
+	 */
 	public boolean createDeadline(Deadline deadline) {
 		String query = "INSERT INTO content_deadlines(deadline, sose, year) VALUES(?,?,?);";
 		
@@ -1228,6 +1435,11 @@ public class ContentDbController extends DbController {
 		}			
 	}
 
+	/**
+	 * @param sose
+	 * @param year
+	 * @return true, if the deadline was deleted successfully
+	 */
 	public boolean deleteDeadline(boolean sose, int year) {
 		String query = "DELETE FROM content_deadlines WHERE sose=? AND year=?;";
 		
@@ -1256,6 +1468,10 @@ public class ContentDbController extends DbController {
 		}					
 	}
 
+	/**
+	 * @param event
+	 * @return the earliest deadline that belongs to the passed event
+	 */
 	public java.sql.Date getEariliestDeadline(Event event) {
 		String query = "SELECT deadline FROM content_deadlines WHERE (sose, year) " +
 				"IN (SELECT sose, year FROM module_handbooks WHERE moduleHandbookID " +
@@ -1295,6 +1511,10 @@ public class ContentDbController extends DbController {
 		}		
 	}
 
+	/**
+	 * @param module
+	 * @return the earliest deadline that belongs to the passed module
+	 */
 	public java.sql.Date getEariliestDeadline(Module module) {
 		String query = "SELECT deadline FROM content_deadlines WHERE (sose, year) IN " +
 				"(SELECT sose, year FROM module_handbooks WHERE moduleHandbookID IN " +
@@ -1332,6 +1552,10 @@ public class ContentDbController extends DbController {
 		}
 	}
 
+	/**
+	 * @param subject
+	 * @return the earliest deadline that belongs to the passed subject
+	 */
 	public java.sql.Date getEariliestDeadline(Subject subject) {
 		String query = "SELECT deadline FROM content_deadlines WHERE (sose, year) IN " +
 				"(SELECT sose, year FROM module_handbooks WHERE moduleHandbookID IN " +
@@ -1369,6 +1593,10 @@ public class ContentDbController extends DbController {
 		}
 	}
 
+	/**
+	 * @param moduleHandbook
+	 * @return the earliest deadline that belongs to the passed modulehandbook
+	 */
 	public java.sql.Date getEariliestDeadline(ModuleHandbook moduleHandbook) {
 		String query = "SELECT deadline FROM content_deadlines WHERE (sose, year) IN " +
 				"(SELECT sose, year FROM module_handbooks WHERE moduleHandbookID=?)";
