@@ -414,7 +414,7 @@ function createModuleCtrl($scope, $location, ModuleFactory, SubjectFactory) {
 
 	$scope.createModule = function() {
 		idList = [];
-		for (i=0; i < $scope.idList.length; i++) {
+		for (var i=0; i < $scope.idList.length; i++) {
 			id = $scope.idList[i].split("-");
 			idList.push(parseInt(id[0], 10));
 		}
@@ -473,6 +473,7 @@ function showEventsCtrl($scope, EventFactory, ModuleFactory, ActiveUserFactory) 
 
 	EventFactory.getEvents().then(function(events) {
 		$scope.events = events;
+
 	}, function(error) {
 		sendError(error);
 	});
@@ -487,10 +488,17 @@ function showEventsCtrl($scope, EventFactory, ModuleFactory, ActiveUserFactory) 
     }
 }
 
-function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory) {
+function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory, UserFactory) {
 	if($routeParams.eventID) {
 		EventFactory.getEvent($routeParams.eventID).then(function(_event) {
 			$scope._event = _event;
+
+			UserFactory.getUser(_event.lecturer_email).then(function(user) {
+				console.log("hasdasd");
+				$scope._event.lecturer_email = user.firstName+" "+user.lastName;
+			}, function(error) {
+				sendError("Error: "+error);
+			});
 
 			$scope.modules = [];
 
@@ -502,7 +510,7 @@ function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory) {
 				});
 			}
 		}, function(error) {
-			sendError(error);
+			sendError("Error: "+error);
 		});
 	} else {
 		// Error
@@ -510,14 +518,25 @@ function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory) {
 	}
 }
 
-function updateEventCtrl($scope, $location, $routeParams, EventFactory, ModuleFactory) {
+function updateEventCtrl($scope, $location, $routeParams, EventFactory, ModuleFactory, UserFactory) {
 
 	EventFactory.getEvent($routeParams.eventID).then(function(event) {
         $scope._event = event;
         console.log($scope._event);
     }, function(error) {
         sendError(error);
-    });;
+    });
+
+    UserFactory.getUsers().then(function(users) {
+		for(var i = 0; i < users.length; i++) {
+			if(!users[i].isEmployee) {
+				users.splice(i, 1);
+			}
+		}
+		$scope.lecturers = users;
+	}, function(error) {
+		sendError("Error: "+error);
+	});
 
     $scope.update = function () {
         EventFactory.updateEvent($scope._event, function () {
@@ -537,7 +556,7 @@ function updateEventCtrl($scope, $location, $routeParams, EventFactory, ModuleFa
     }
 }
 
-function createEventCtrl($scope, $location, EventFactory, ModuleFactory) {
+function createEventCtrl($scope, $location, EventFactory, ModuleFactory, UserFactory) {
 
     $scope.moduleList = [];
     var modules;
@@ -553,6 +572,17 @@ function createEventCtrl($scope, $location, EventFactory, ModuleFactory) {
 		sendError(error);
 	});
 
+	UserFactory.getUsers().then(function(users) {
+		for(var i = 0; i < users.length; i++) {
+			if(!users[i].isEmployee) {
+				users.splice(i, 1);
+			}
+		}
+		$scope.lecturers = users;
+	}, function(error) {
+		sendError("Error: "+error);
+	});
+
     $scope.addEvent = function () {
         $scope.moduleList.push(modules);
     };
@@ -565,7 +595,7 @@ function createEventCtrl($scope, $location, EventFactory, ModuleFactory) {
 	$scope.createEvent = function() {
 
         idList = [];
-        for (i=0; i < $scope.idList.length; i++) {
+        for (var i=0; i < $scope.idList.length; i++) {
             id = $scope.idList[i].split("-");
             idList.push(parseInt(id[0], 10));
         }
@@ -621,7 +651,9 @@ function showUsersCtrl($scope, UserFactory) {
 function showUserCtrl($scope, $routeParams, UserFactory) {
 	if($routeParams.email) {
 		UserFactory.getUser($routeParams.email).then(function(user) {
+
 			$scope.user = user;
+
 		}, function(error) {
 			sendError(error);
 		});
@@ -697,8 +729,8 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory, Studycours
     }
     init();
 
-    $scope.getStudyCourse = function (id) {
-        for (i=0; i < StudycourseList.length; i++) {
+    $scope.GETSTUDYCOURSE = function (id) {
+        for (var i=0; i < StudycourseList.length; i++) {
             if (id === StudycourseList[i].studycourseID) {
                 return StudycourseList[i].name;
             }
@@ -706,7 +738,7 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory, Studycours
     };
 
     $scope.getModuleHandbook = function (id) {
-        for (i=0; i < ModuleHandbookList.length; i++) {
+        for (var i=0; i < ModuleHandbookList.length; i++) {
             if (id === ModuleHandbookList[i].moduleHandbookID) {
                 return ModuleHandbookList[i].name;
             }
@@ -714,7 +746,7 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory, Studycours
     };
 
     $scope.getSubject = function (id) {
-        for (i=0; i < SubjectList.length; i++) {
+        for (var i=0; i < SubjectList.length; i++) {
             if (id === SubjectList[i].subjectID) {
                 return SubjectList[i].name;
             }
@@ -722,7 +754,7 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory, Studycours
     };
 
     $scope.getModule = function (id) {
-        for (i=0; i < ModuleList.length; i++) {
+        for (var i=0; i < ModuleList.length; i++) {
             if (id === ModuleList[i].moduleID) {
                 return ModuleList[i].name;
             }
@@ -730,7 +762,7 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory, Studycours
     };
 
     $scope.getEvent = function (id) {
-        for (i=0; i < EventList.length; i++) {
+        for (var i=0; i < EventList.length; i++) {
             if (id === EventList[i].eventID) {
                 return EventList[i].name;
             }
@@ -795,6 +827,22 @@ function showDeadlinesCtrl($scope, DeadlineFactory) {
 		sendError(error);
 	});
 }
+
+function showDeadlineCtrl($scope, $routeParams, DeadlineFactory) {
+	if($routeParams.sose && $routeParams.year) {
+		DeadlineFactory.getDeadline($routeParams.sose, $routeParams.year).then(function(deadline) {
+			$scope.deadline = deadline;
+		}, function(error) {
+			sendError(error);
+		});
+	} else {
+		// Error
+		sendError("missing parameters in query");
+	}
+}
+
+
+
 
 function requestCtrl($scope, $http) {
     $scope.url = "http://sopra.ex-studios.net:8080/mms/";

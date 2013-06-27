@@ -46,62 +46,105 @@ var Event = {
         <div class="span12">
             <!--Body content-->
             <h1>{{module.name}} <span class="label label-warning" ng-show="module.archived">Archiviert</span></h1>
-            <p class="lead">{{module.token}}</p>
+            <hr />
+            <p class="lead"><strong>K&uuml;rzel:</strong> {{module.token}}</p>
         </div>
     </div>
-    <div class="hero-unit">
-        <div class="row-fluid">
-            <dl class="dl-horizontal span6">
-                <dt>Dauer</dt>
-                <dd>dauer {{module.duration}}</dd>
-
-                <dt>englischer Titel</dt>
-                <dd>english {{module.englishTitle}}</dd>
-
-                <dt>LP</dt>
-                <dd>lp {{module.lp}}</dd>
-
-                <dt>SWS</dt>
-                <dd>sws {{module.SWS}}</dd>
-
-                <dt>Sprache</dt>
-                <dd>{{module.language}}</dd>
-            </dl>
-            <dl class="dl-horizontal span6">
-                <dt>director_email</dt>
-                <dd>{{module.director_email}}</dd>
-                <dt>requirement</dt>
-                <dd>{{module.requirement}}</dd>
-                <dt>learningTarget</dt>
-                <dd>{{module.learningTarget}}</dd>
-                <dt>content</dt>
-                <dd>{{module.content}}</dd>
-                <dt>literature</dt>
-                <dd>{{module.literature}}</dd>
-            </dl>
-        </div>
-    </div>
-    <h4>Veranstaltungen</h4>
     <div class="row-fluid">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <td>Name</td>
-                <td>SWS</td>
-                <td>Dozent</td>
-                <td>Ort</td>
-                <td>Zeit</td>
-            </tr>
-            </thead>
-            <tbody ng-repeat="event in events">
-            <tr>
-                <td><a href="#/show/event?eventID={{event.eventID}}">{{event.name}}</a></td>
-                <td>{{event.sws}}</td>
-                <td>{{event.lecturer_email}}</a></td>
-                <td>{{event.place}} - {{event.room}}</td>
-                <td>{{event.sws}}</td>
-            </tr>
-            </tbody>
-        </table>
+
+    	<div class="span4">
+
+    		<ul id="myTab" class="nav nav-tabs">
+              <li class="active"><a href="#info" data-toggle="tab">Info</a></li>
+              <li class=""><a href="#mcontent" data-toggle="tab">Beschreibung</a></li>
+              <li class=""><a href="#requirement" data-toggle="tab">Voraussetzungen</a></li>
+              <li class=""><a href="#literature" data-toggle="tab">Literatur</a></li>
+            </ul>
+
+			<div id="myTabContent" class="tab-content">
+
+
+              <div class="tab-pane fade active in" id="info">
+              	<h4>Informationen</h4>
+                <dl>
+		            <dt>Dauer</dt>
+		            <dd>{{module.duration}}</dd>
+
+		            <dt>Englischer Titel</dt>
+		            <dd>{{module.englishTitle}}</dd>
+
+		            <dt>Leistungspunkte</dt>
+		            <dd>{{module.lp}} LP</dd>
+
+		            <dt>Semester-Wochen-Stunden</dt>
+		            <dd>{{module.SWS}}</dd>
+
+		            <dt>Sprache</dt>
+		            <dd>{{module.language}}</dd>
+		        </dl>
+              </div>
+
+              <div class="tab-pane fade" id="mcontent">
+              	<h4>Beschreibung</h4>
+                <p>{{module.content}}</p>
+              </div>
+
+              <div class="tab-pane fade" id="requirement">
+              	<h4>Voraussetzungen</h4>
+                <p>{{module.requirement}}</p>
+              </div>
+
+
+              <div class="tab-pane fade" id="learningTarget">
+              	<h4>Lernziele</h4>
+                <p>{{module.learningTarget}}</p>
+              </div>
+
+              <div class="tab-pane fade" id="literature">
+              	<h4>Literatur</h4>
+                <p>{{module.literature}}</p>
+              </div>
+
+            </div>
+
+            <hr />
+
+            <h4>Modul-Verantwortlicher</h4>
+            <dl>
+	            <dt>Name</dt>
+	            <dd>{{module.director_email}}</dd>
+            </dl>
+
+		</div>
+
+    	<div class="span3">
+    		<h4>F&auml;cher von {{module.name}}</h4>
+	    	<ul class="backward">
+	    		<li ng-repeat="subjectID in subjectIDs"><a href="#/show/module?moduleID={{subjectID.subjectID}}"><i class="icon-arrow-left"></i> NAME</a></li>
+	    	</ul>
+    	</div>
+
+    	<div class="span5">
+    		<h4>Veranstaltungen von {{module.name}}</h4>
+	        <table class="table table-striped">
+	            <thead>
+	            <tr>
+	                <td>Name</td>
+	                <td>Dozent</td>
+	                <td>Ort</td>
+	                <td>Zeit</td>
+	            </tr>
+	            </thead>
+	            <tbody ng-repeat="event in events">
+	            <tr>
+	                <td><a href="#/show/event?eventID={{event.eventID}}" class="btn">{{event.name}} <i class="icon-arrow-right"></i></a></td>
+	                <td>{{event.lecturer_email}}</a></td>
+	                <td>{{event.place}} - {{event.room}}</td>
+	                <td>{{event.sws}}</td>
+	            </tr>
+	            </tbody>
+	        </table>
+        </div>
+
     </div>
 </div>

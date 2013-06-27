@@ -119,7 +119,7 @@ SONDERFALL PASSWORT!!!
 								<tbody>
 								    <tr ng-repeat="studycourseright in user.employeeRights.studycourseRightsList">
 								    	<td>{{studycourseright.studycourseID}}</td>
-								    	<td>{{studycourseright.name}}</td>
+								    	<td>{{getStudyCourse(studycourseright.studycourseID)}}</td>
 								    	<td><input type="checkbox" ng-model="studycourseright.canEdit"></td>
 								    	<td> <input type="checkbox" ng-model="studycourseright.canDelete"></td>
 								    </tr>
@@ -140,7 +140,7 @@ SONDERFALL PASSWORT!!!
 								<tbody>
 								    <tr ng-repeat="modulhandbookright in user.employeeRights.moduleHandbookRightsList">
 								    	<td>{{modulhandbookright.moduleHandbookID}}</td>
-								    	<td>{{modulhandbookright.moduleHandbookID}}</td>
+								    	<td>{{getModuleHandbook(modulhandbookright.moduleHandbookID)}}</td>
 								    	<td><input type="checkbox" ng-model="modulhandbookright.canEdit"></td>
 								    	<td> <input type="checkbox" ng-model="modulhandbookright.canDelete"></td>
 								    </tr>
@@ -160,7 +160,7 @@ SONDERFALL PASSWORT!!!
 								<tbody>
 								    <tr ng-repeat="subjectright in user.employeeRights.subjectRightsList">
 								    	<td>{{subjectright.subjectID}}</td>
-								    	<td>{{subjectright.subjectID}}</td>
+								    	<td>{{getSubject(subjectright.subjectID)}}</td>
 								    	<td><input type="checkbox" ng-model="subjectright.canEdit"></td>
 								    	<td> <input type="checkbox" ng-model="subjectright.canDelete"></td>
 								    </tr>
@@ -180,7 +180,7 @@ SONDERFALL PASSWORT!!!
 								<tbody>
 								    <tr ng-repeat="moduleright in user.employeeRights.moduleRightsList">
 								    	<td>{{moduleright.moduleID}}</td>
-								    	<td>{{moduleright.moduleID}}</td>
+								    	<td>{{getModule(moduleright.moduleID)}}</td>
 								    	<td><input type="checkbox" ng-model="moduleright.canEdit"></td>
 								    	<td> <input type="checkbox" ng-model="moduleright.canDelete"></td>
 								    </tr>
@@ -200,7 +200,7 @@ SONDERFALL PASSWORT!!!
 								<tbody>
 								    <tr ng-repeat="eventright in user.employeeRights.eventRightsList">
 								    	<td>{{eventright.eventID}}</td>
-								    	<td>{{eventright.eventID}}</td>
+								    	<td>{{getEvent(eventright.eventID)}}</td>
 								    	<td><input type="checkbox" ng-model="eventright.canEdit"></td>
 								    	<td> <input type="checkbox" ng-model="eventright.canDelete"></td>
 								    </tr>

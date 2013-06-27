@@ -40,8 +40,8 @@ var ModuleHandbook = {
 		</div>
 		<div class="span6">
 			<h3>Alle Modulhandb&uuml;cher von {{studycourse.name}}</h3>
-			<ul ng-repeat="moduleHandbook in moduleHandbooks">
-				<li><a href="#/show/modulehandbook?modulehandbookID={{moduleHandbook.moduleHandbookID}}">{{moduleHandbook.name}}</a></li>
+			<ul class="forward">
+			<li ng-repeat="moduleHandbook in moduleHandbooks"><a href="#/show/modulehandbook?modulehandbookID={{moduleHandbook.moduleHandbookID}}" class="btn">{{moduleHandbook.name}} <i class="icon-arrow-right"></i></a></li>
 			</ul>
 		</div>
 	</div>

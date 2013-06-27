@@ -20,15 +20,17 @@
 						    <input type="text" ng-model="subject.name" placeholder="Fach" required>
 						    <span class="help-block">Bitte w&auml;len Sie einen Fachnamen.</span>
 
-						    <label>Zugehöriges Modulhandbuch*</label>
-						    <select ng-model="subject.moduleHandbookID">
-							  <option ng-repeat="moduleHandbook in moduleHandbooks">{{moduleHandbook.moduleHandbookID}} - {{moduleHandbook.name}}</option>
-							</select>
-						    <span class="help-block">Bitte w&auml;len Sie das zugehörige Modulhandbuch</span>
+                            <label>Zugehöriges Modulhandbuch*</label>
+                            <select ng-model="subject.modulehandbook" ng-options="modulehandbook as modulehandbook.name for modulehandbook in moduleHandbooks"></select>
+                            <br>
+                            <span class="help-block">Bitte w&auml;hlen Sie das zugehörige Modulhandbuch.</span>
 
 						    <label>Beschreibung</label>
 						    <textarea rows="5" ng-model="subject.content" placeholder="Beschreibung des Fachs"></textarea>
 						    <span class="help-block">Bitte w&auml;len Sie eine Beschreibung des Fachs.</span>
+
+                            Archivieren: <input type="checkbox" ng-model="subject.archived" name="archived"><br /><br />
+                            <span class="help-block">Fach archivieren.</span>
 
 						</fieldset>
 				 	</div>

@@ -2,6 +2,15 @@ svg {
 	-webkit-transform-origin-y: 0%;
 	width: 100%;
 }
+.rightID {
+	width: 10%;
+}
+.rightName {
+	width:60%;
+}
+.rightEdit, .rightDelete {
+	width: 15%;
+}
 #logo {
 	min-height: 200px;
 }
@@ -91,6 +100,14 @@ i.loginClick{
 	border-bottom: 1px solid #DCDCDC;
 }
 
+ul.forward, ul.backward {
+	list-style: none;
+	margin-left: none;
+}
+.forward li, .backward li {
+	margin-bottom: 1%;
+}
+
 @media (max-width: 979px) {
 	.butterbar {
 		display:none;
@@ -104,7 +121,10 @@ i.loginClick{
 	.loginBar {
 		left: 0px;
 	}
-
+	.tableWrapper {
+		width: 100%;
+		overflow: scroll;
+	}
 }
 
 .butterbarClose {
@@ -125,9 +145,8 @@ i.loginClick{
 	opacity: 0;
 	margin-top: -4px;
 	font-size: 14px;
-	font-weight: normal;
+	margin:0 0 10px 0;
 }
-
 .full-width {
     width: 100%;
 }

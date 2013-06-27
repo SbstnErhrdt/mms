@@ -31,14 +31,7 @@
 						    <input type="text" ng-model="_event.sws"  maxlength="4">
 						    <span class="help-block">Bitte w&auml;len Sie eine Stundenanzahl.</span>
 						    <label>Dozent</label>
-						    <select ng-model="_event.lecturer_email">
-							  <option>Hans Peter Reck</option>
-							  <option>Franz Hauck</option>
-							  <option>Kargl</option>
-							  <option>Prof. Dr. Dr. Peter Dadam</option>
-							  <option>Uwe</option>
-							  <option>OGB</option>
-							</select>
+							<select ng-model="_event.lecturer_email" ng-options="lecturer.email as lecturer.firstName +' '+ lecturer.lastName for lecturer in lecturers"></select>
 						    <span class="help-block">Bitte w&auml;len Sie den Dozenten.</span>
 
 						    <label>Beschreibung</label>
