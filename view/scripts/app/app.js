@@ -105,8 +105,8 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 	*	CREATE ROUTES
 	*/
 	$routeProvider.when("/create/user", {
-		templateUrl: pURL+"create/user.html"
-		//controller: createUserCtrl
+		templateUrl: pURL+"create/user.html",
+		controller: createUserCtrl
 	});
 
 	$routeProvider.when("/create/studycourse", {
@@ -247,7 +247,6 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 	var ActiveUser = {
 		address: "String",
 		email: "String",
-		emailVerified: "boolean",
 		employeeRights: {
 			isAdmin: "boolean",
 			canDeblockModule: "boolean",
@@ -666,7 +665,7 @@ MMSApp.factory("UserFactory", function($http, $q) {
 
 	var Users = [];
 
-	factory.createUser = function(user) {
+	factory.createUser = function(user, callback) {
 		// BENÖTIGTE FELDER - FIX THIS
   		if(user.email) {
 
@@ -1845,10 +1844,40 @@ MMSApp.factory("DeadlineFactory", function($http, $q) {
 	};
 	var Deadlines = [];
 
-	factory.createDeadline = function(deadline) {
+	factory.createDeadline = function(deadline, callback) {
 		// BENÖTIGTE FELDER
 		if(deadline.deadline && deadline.sose && deadline.year) {
+			var url = factory.checkSingularURL("create");
 
+			if(url.error) {
+				return url.error;
+			}
+
+			$http({
+				method: "POST",
+				url: url,
+				data: subject
+			}).success(function(data, status, headers, config) {
+
+				if(data.error) {
+						// Error
+						console.log("Servernachricht: "+data.error.message);
+					} else if(data === "null") {
+						// Error
+						console.log("Der Server lieferte 'null' zurück.");
+					} else {
+						console.log(data);
+						if(subject.name == data.name) {
+							console.log("Deadline wurde erstellt.");
+						} else {
+							console.log("Deadline wurde nicht erstellt.");
+						}
+					}
+					callback();
+			}).error(function(data, status, headers, config) {
+				sendError("Error: "+data+" - "+status);
+				callback();
+			});
 
 		} else {
 			// Error
@@ -1912,17 +1941,18 @@ MMSApp.factory("DeadlineFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
-	factory.deleteDeadline = function(studycourseID) {
+	factory.deleteDeadline = function(sose, year) {
 
-		var url = factory.checkSingularURL("delete", deadlineDate);
+		var url = factory.checkSingularURL("delete", sose, year);
 		if(url.error) {
 			return url.error;
 		}
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
-			if(deadlineDate === data.deadlineDate) {
-				Deadline.deadlineDate = data.deadlineDate;
+			if(sose === data.sose && year === data.year) {
+				deadline.sose = data.sose;
+				deadline.year = data.year;
 			} else if(data.error) {
 				// Error
 				console.log("Servernachricht: "+data.error.message);
@@ -1931,9 +1961,9 @@ MMSApp.factory("DeadlineFactory", function($http, $q) {
 				console.log("Der Server lieferte 'null' zurück.");
 			} else {
 				// ERROR
-				console.log("ERROR in Deadline.deleteDeadline");
+				console.log("ERROR in deleteDeadline");
 			}
-			deferred.resolve(Deadline);
+			deferred.resolve(deadline);
 		}).error(function(data, status) {
 			console.log("Error: "+data+" - Status:"+status);
 			deferred.reject(data);
@@ -1954,7 +1984,7 @@ MMSApp.factory("DeadlineFactory", function($http, $q) {
 
 		} else {
 			// ERROR
-			console.log("ERROR in Eventfactory.checkSingularURL");
+			console.log("ERROR in DeadlineFactory.checkSingularURL");
 
 			return {
 				error: {

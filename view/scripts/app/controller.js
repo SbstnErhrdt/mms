@@ -664,24 +664,40 @@ function showUserCtrl($scope, $routeParams, UserFactory) {
 }
 
 function createUserCtrl($scope, $location, UserFactory) {
-	// Abschicken
-	$scope.createEvent = function() {
-		
-		/*
-		*
-		*
-		* TODO
-		*
-		*
-		*/
 
-		var user = {
-			//TODO
-		};
+	$scope.createUser = function() {
+		if($scope.user.email && $scope.user.firstName && $scope.user.lastName) {
+			var user = {
+			//	address: "String",
+				email: $scope.user.email,
+				isEmployee: $scope.user.isEmployee,
+				employeeRights: {
+					isAdmin: $scope.user.employeeRights.isAdmin,
+					canDeblockModule: $scope.user.employeeRights.canDeblockModule,
+					canDeblockCriticalModule: $scope.user.employeeRights.canDeblockCriticalModule
+				},
+				firstName: $scope.user.firstName,
+				//graduation: "String",
+				//isEmployee: "boolean",
+				lastName: $scope.user.lastName,
+				matricNum: $scope.user.matricNum,
+				//password: "Number",
+				//phoneNum: "String",
+				semester: $scope.user.semester,
+				//talkTime: "String",
+				title: $scope.user.title,
+				userRights: {canLogin: $scope.user.canLogin}
+			};
 
-		UserFactory.createUser(user, function() {
-			$location.path("/show/users");
-		});
+			console.log(user);
+
+			UserFactory.createUser(user, function() {
+				$location.path("/show/users");
+			});
+			
+		} else {
+			sendError("Ihre Angaben sind nicht vollständig.");
+		}
 	};
 }
 

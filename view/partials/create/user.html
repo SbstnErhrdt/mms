@@ -26,23 +26,14 @@ SONDERFALL PASSWORT!!!
 </div>
 <div class="container-fluid">
 	<div class="row-fluid">
-		<div class="span2">
-		<div class="well sidebar-nav">
-			<ul class="nav nav-list">
-				<li class="nav-header">Veranstaltungen</li>
-				<li><a href="">Benutzer</a><li>
-				<li><a href="">Mitarbeiter</a><li>
-				<li><a href="">Administratoren</a><li>
-			</ul>
-		</div><!--/.well -->
-	</div><!--/span-->
-	<div class="span7">
+		<div class="span12">
 		<!--Body content-->
 		<h1>Benutzer erstellen</h1>
 		<p class="lead"> Hier k&ouml;nnen Sie einen Benutzer erstellen.</p>
 
 			<form>
-				  <fieldset>
+				<div class="row-fluid">
+				  <fieldset class="span3">
 				    <legend>Benutzer Daten</legend>
 
 				    <label>Titel</label>
@@ -78,9 +69,143 @@ SONDERFALL PASSWORT!!!
 				    <input type="text" placeholder="1" ng-model="user.semester" >
 				    <span class="help-block">Bitte w&auml;len Sie ein Semester.</span>
 
+					<label>Benutzer Rechte</label>
+					<input type="checkbox" ng-model="user.canLogin" > Kann sich einloggen<br /><br />
+
+					<input type="checkbox" ng-model="user.isEmployee" > Ist Mitarbeiter<br /><br />
+					<span class="help-block">Ist der User ein Mitarbeiter.</span>
+
 				  </fieldset>
+
+				   <div ng-show="user.isEmployee">
+						<fieldset class="span3">
+							<legend>Adresse &amp; Sprechzeiten</legend>
+						    <label>Addresse</label>
+						    <textarea rows="5" ng-model="user.adress" spellcheck="ture" ></textarea>
+						    <span class="help-block">Bitte w&auml;len Sie einen Adresse. O26 - 344</span>
+
+						    <label>Sprechzeit</label>
+						    <textarea rows="5" ng-model="user.talkTime" spellcheck="ture" ></textarea>
+						    <span class="help-block">Bitte w&auml;len Sie einen Sprechzeit. Mo: 10:00 - 12:00 Uhr</span>
+
+
+							
+							<hr />
+							<label>Rechte</label>
+							<input type="checkbox" ng-model="user.employeeRights.canDeblockCriticalModule" > Kann kritische Module freigeben<br /><br />
+							<input type="checkbox" ng-model="user.employeeRights.canDeblockModule" > Kann Module freigeben<br /><br />
+							<hr />
+							<label>Administrator</label>
+							<input type="checkbox" ng-model="user.employeeRights.isAdmin" > Ist Administrator<br /><br />
+
+						</fieldset>
+						<fieldset ng-show="!user.employeeRights.isAdmin" class="span6">
+							<legend>Studiengang Rechte</legend>
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th class="rightID">#</th>
+										<th class="rightName">Studiengang Name</th>
+										<th class="rightEdit">Bearbeiten</th>
+										<th class="rightDelete">L&ouml;schen</th>
+									</tr>
+								</thead>
+								<tbody>
+								    <tr ng-repeat="studycourseright in user.employeeRights.studycourseRightsList">
+								    	<td>{{studycourseright.studycourseID}}</td>
+								    	<td>{{getStudyCourse(studycourseright.studycourseID)}}</td>
+								    	<td><input type="checkbox" ng-model="studycourseright.canEdit"></td>
+								    	<td> <input type="checkbox" ng-model="studycourseright.canDelete"></td>
+								    </tr>
+								</tbody>
+							</table>
+
+
+						    <legend>Modulhandbuch Rechte</legend>
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th class="rightID">#</th>
+										<th class="rightName">Modulhandbuch Name</th>
+										<th class="rightEdit">Bearbeiten</th>
+										<th class="rightDelete">L&ouml;schen</th>
+									</tr>
+								</thead>
+								<tbody>
+								    <tr ng-repeat="modulhandbookright in user.employeeRights.moduleHandbookRightsList">
+								    	<td>{{modulhandbookright.moduleHandbookID}}</td>
+								    	<td>{{getModuleHandbook(modulhandbookright.moduleHandbookID)}}</td>
+								    	<td><input type="checkbox" ng-model="modulhandbookright.canEdit"></td>
+								    	<td> <input type="checkbox" ng-model="modulhandbookright.canDelete"></td>
+								    </tr>
+								</tbody>
+							</table>
+
+							<legend>Fach Rechte</legend>
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th class="rightID">#</th>
+										<th class="rightName">Fach Name</th>
+										<th class="rightEdit">Bearbeiten</th>
+										<th class="rightDelete">L&ouml;schen</th>
+									</tr>
+								</thead>
+								<tbody>
+								    <tr ng-repeat="subjectright in user.employeeRights.subjectRightsList">
+								    	<td>{{subjectright.subjectID}}</td>
+								    	<td>{{getSubject(subjectright.subjectID)}}</td>
+								    	<td><input type="checkbox" ng-model="subjectright.canEdit"></td>
+								    	<td> <input type="checkbox" ng-model="subjectright.canDelete"></td>
+								    </tr>
+								</tbody>
+							</table>
+
+							<legend>Module Rechte</legend>
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th class="rightID">#</th>
+										<th class="rightName">Fach Name</th>
+										<th class="rightEdit">Bearbeiten</th>
+										<th class="rightDelete">L&ouml;schen</th>
+									</tr>
+								</thead>
+								<tbody>
+								    <tr ng-repeat="moduleright in user.employeeRights.moduleRightsList">
+								    	<td>{{moduleright.moduleID}}</td>
+								    	<td>{{getModule(moduleright.moduleID)}}</td>
+								    	<td><input type="checkbox" ng-model="moduleright.canEdit"></td>
+								    	<td> <input type="checkbox" ng-model="moduleright.canDelete"></td>
+								    </tr>
+								</tbody>
+							</table>
+
+							<legend>Event Rechte</legend>
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th class="rightID">#</th>
+										<th class="rightName">Event Name</th>
+										<th class="rightEdit">Bearbeiten</th>
+										<th class="rightDelete">L&ouml;schen</th>
+									</tr>
+								</thead>
+								<tbody>
+								    <tr ng-repeat="eventright in user.employeeRights.eventRightsList">
+								    	<td>{{eventright.eventID}}</td>
+								    	<td>{{getEvent(eventright.eventID)}}</td>
+								    	<td><input type="checkbox" ng-model="eventright.canEdit"></td>
+								    	<td> <input type="checkbox" ng-model="eventright.canDelete"></td>
+								    </tr>
+								</tbody>
+							</table>
+						</fieldset>
+
+					</div>
 				  <hr />
-				  <input type="submit" name="submit" class="btn btn-success" value="Benutzer erstellen" />
+				</div>
+				<input ng-click="createUser()" type="submit" name="submit" class="btn btn-success" value="Benutzer erstellen" />
 
 			</form>
 
