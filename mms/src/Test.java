@@ -6,6 +6,8 @@ import routes.JsonError;
 import routes.UserRoutes;
 import util.Utilities;
 
+import bcrypt.BCrypt;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
@@ -302,5 +304,46 @@ public class Test {
 		System.out.println(date);
 		
 		System.out.println(udbc.readReducedUsers());
+		
+		String email = "rob.ausm.jungle@gmx.de";
+		String password = "123";
+		String pepper = "modulmanagementsystemsopra20122013";
+		
+		json = "{\"email\":\"rob.ausm.jungle@gmx.de\",\"firstName\":\"rob\",\"lastName\":\"ausmJungle\",\"password\":\"123\"}";
+		
+		User user = gson.fromJson(json, User.class);
+		
+		udbc.deleteUser(user);
+		
+		
+		System.out.println("user: "+user);
+		
+		String pw = BCrypt.hashpw(password+pepper, BCrypt.gensalt());
+		
+		user.setPassword(pw);
+		
+		System.out.println("user with pw: "+user);
+		
+		email = user.getEmail();
+		String hash = Utilities.createRandomHash();
+		
+		user.setUserRights(new UserRights(false));
+		
+		System.out.println(udbc.createUser(user));
+		
+		System.out.println(udbc.insertConfirmationHash(email, hash));
+		
+		user = gson.fromJson(json, User.class);
+		
+		user.setPassword(password+pepper);
+		
+		System.out.println(udbc.verifyUser(user));
+		
+		
+		
+		
+		
+		
+		
 	}
 }

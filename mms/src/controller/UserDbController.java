@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import bcrypt.BCrypt;
+
 import model.Employee;
 import model.User;
 import model.userRights.EmployeeRights;
@@ -640,29 +642,51 @@ public class UserDbController extends DbController {
 	 * @return the user, if the user was verified successfully, else null
 	 */
 	public User verifyUser(User user) {
-		String query = "SELECT " + user.toValueNames() +
-				" FROM users WHERE email ='"+ user.getEmail()+"'" +
-				" AND password='"+user.getPassword()+"';";
-			
-		System.out.println(query);
+		String query = "SELECT " + user.toValueNames() + " FROM users WHERE email=?;";	
 		
 		try {
-			ResultSet rs = db.createStatement().executeQuery(query);
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ps.setString(1, user.getEmail());
+			
+			System.out.println(ps);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			db.commit();
 			
 			if(rs.next()) {
-				user.setFirstName(rs.getString(2));	// firstName
-				user.setLastName(rs.getString(3)); 	// lastName
-				user.setTitle(rs.getString(4));		// title
-				user.setGraduation(rs.getString(5));// graduation
-				user.setMatricNum(rs.getInt(7));	// matricNum
-				user.setSemester(rs.getInt(8));		// semester
+				String dbPasword = rs.getString(6);
+				System.out.println("db: "+dbPasword);
+				System.out.println("user: "+user.getPassword());
+				if(BCrypt.checkpw(user.getPassword(), dbPasword)) {	
+					user.setFirstName(rs.getString(2));	// firstName
+					user.setLastName(rs.getString(3)); 	// lastName
+					user.setTitle(rs.getString(4));		// title
+					user.setGraduation(rs.getString(5));// graduation
+					user.setMatricNum(rs.getInt(7));	// matricNum
+					user.setSemester(rs.getInt(8));		// semester
+				} else {
+					System.out.println("wrong password");
+					rs.close();
+					return null;
+				}
 			} else {
-				System.out.println("No user found with this email and password.");
+				System.out.println("No user found with this email");
+				rs.close();
 				return null;
 			}
 			rs.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return user;
 	}

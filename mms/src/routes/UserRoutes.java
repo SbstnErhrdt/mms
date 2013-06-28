@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import bcrypt.BCrypt;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -29,6 +31,7 @@ import util.Utilities;
 public class UserRoutes extends Routes {
 	private UserDbController db;
 	private Gson gson = new Gson();
+	private final String pepper = "modulmanagementsystemsopra20122013";
 
 	public UserRoutes() {
 		db = new UserDbController();
@@ -269,7 +272,7 @@ public class UserRoutes extends Routes {
 	}
 
 	/**
-	 * updatess the corresponding user object with the data passed in the request body as json object
+	 * updates the corresponding user object with the data passed in the request body as json object
 	 * and writes it in the response as json object
 	 * @param request
 	 * @param response
@@ -516,13 +519,18 @@ public class UserRoutes extends Routes {
 			
 			String userEmail = obj.get("email").getAsString().toLowerCase();
 			String userPassword = obj.get("password").getAsString();
+				
+			// add pepper to encrypt password later
+			userPassword = userPassword+pepper;
 			
-			System.out.println("email: "+userEmail+", password: "+userPassword);
+			System.out.println("email: "+userEmail+", password (with pepper): "+userPassword);
+			
 			
 			User user = new User(userEmail, userPassword);
 			
 			System.out.println(user);
 			
+			// check, if there such an email and (hashed) password combination
 			user = db.verifyUser(user);
 			
 			if(user != null) {
@@ -539,7 +547,6 @@ public class UserRoutes extends Routes {
 				
 					String sessionID = session.getId();
 					if(db.insertUserHash(email, sessionID)) {
-						System.out.println("DEBUG5");
 						
 						json = "[" + gson.toJson(db.getUser(user));
 						
@@ -632,6 +639,7 @@ public class UserRoutes extends Routes {
 		JsonObject obj = gson.fromJson(json, JsonObject.class);
 		
 		String password = obj.get("password").getAsString();
+		password = BCrypt.hashpw(password+pepper, BCrypt.gensalt());
 		
 		User user = gson.fromJson(json, User.class);
 				
@@ -656,16 +664,18 @@ public class UserRoutes extends Routes {
 				// overwrite userRights if any, so the user can't register with advanced rights
 				user.setUserRights(new UserRights(false));	// canLogin == false
 				
-				if(!EmailController.sendEmail(email, hash)) {
-					json = gson.toJson(new JsonErrorContainer(new JsonError(
-							"registration failed (sendEmail(...) to users email address failed)", 
-							"register(...)")));
-				} else if(db.createUser(user)) {			
+				
+				if(db.createUser(user)) {			
 					if(db.insertConfirmationHash(email, hash)) {
 						json = gson.toJson(user);
 					} else {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"registration failed (db.insertConfirmationHash(email, hash) failed)", 
+								"register(...)")));
+					} 
+					if(!EmailController.sendEmail(email, hash)) {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"registration failed (sendEmail(...) to users email address failed)", 
 								"register(...)")));
 					}
 				} else {
