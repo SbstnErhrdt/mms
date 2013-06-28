@@ -55,6 +55,9 @@ public class FrontController extends HttpServlet {
 		UserRoutes userRoutes = null;
 		ContentRoutes contentRoutes = null;
 		try {
+			
+			// new UserDbController().ichScheissAufDichSeb();
+			
 			String path = request.getServletPath();
 			System.out.println("GET-Request, Path: " + path);
 			userRoutes = new UserRoutes();
@@ -182,12 +185,21 @@ public class FrontController extends HttpServlet {
 			
 		} catch(Exception e) {
 			e.printStackTrace();
-			response.getWriter().write(""+e.getStackTrace());
+			response.getWriter().write(stackTraceToString(e));
 		} finally {
 			System.out.println("closing database connections");
 			userRoutes.closeConnection();
 			contentRoutes.closeConnection();
 		}
+	}
+	
+	public String stackTraceToString(Throwable e) {
+	    StringBuilder sb = new StringBuilder();
+	    for (StackTraceElement element : e.getStackTrace()) {
+	        sb.append(element.toString());
+	        sb.append("\n");
+	    }
+	    return sb.toString();
 	}
 
 	/**
@@ -290,7 +302,7 @@ public class FrontController extends HttpServlet {
 			
 		} catch(Exception e) {
 			e.printStackTrace();
-			response.getWriter().write(""+e.getStackTrace());
+			response.getWriter().write(e + "\n"+stackTraceToString(e));
 		} finally {
 			System.out.println("closing database connections");
 			userRoutes.closeConnection();

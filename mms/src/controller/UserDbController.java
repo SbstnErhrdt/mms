@@ -30,22 +30,45 @@ public class UserDbController extends DbController {
 	 * @param user
 	 * @return true, if the user was created successfully
 	 */
-	public boolean createUser(User user) {
+	public boolean createUser(User user) throws SQLException{
 		user.setEmail(user.getEmail().toLowerCase());
 		
 		String query = "INSERT INTO users (";
 				
 		query += user.toValueNames()+") VALUES(";
 		
-		query += user.toValues() + ");";
+		query += getXQuestionMarks(8) + ")";
 		
 		System.out.println(query);	// DEBUG
-		
+				
 		try {
-			db.createStatement().executeUpdate(query);
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ps.setString(1, user.getEmail());
+			ps.setString(2, user.getFirstName());
+			ps.setString(3, user.getLastName());
+			ps.setString(4, user.getTitle());
+			ps.setString(5, user.getGraduation());
+			ps.setString(6, user.getPassword());
+			ps.setInt(7, user.getMatricNum());
+			ps.setInt(8, user.getSemester());
+			
+			System.out.println(ps);		// DEBUG
+			
+			ps.executeUpdate();
+			db.commit();
 		} catch(SQLException e) {
 			e.printStackTrace();
-			return false;
+			throw e;
+			//return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		UserRights userRights = user.getUserRights();
@@ -245,7 +268,7 @@ public class UserDbController extends DbController {
 	 * @param user
 	 * @return true, if the user was updated successfully
 	 */
-	public boolean updateUser(User user) {
+	public boolean updateUser(User user) throws SQLException{
 		
 		User oldUser = getUser(user);
 		
@@ -658,8 +681,6 @@ public class UserDbController extends DbController {
 			
 			if(rs.next()) {
 				String dbPasword = rs.getString(6);
-				System.out.println("db: "+dbPasword);
-				System.out.println("user: "+user.getPassword());
 				if(BCrypt.checkpw(user.getPassword(), dbPasword)) {	
 					user.setFirstName(rs.getString(2));	// firstName
 					user.setLastName(rs.getString(3)); 	// lastName
@@ -967,6 +988,34 @@ public class UserDbController extends DbController {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	public void ichScheissAufDichSeb() {
+		String sql = "ALTER TABLE  `users` CHANGE  `email`  `email` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL , "+
+				"CHANGE  `firstName`  `firstName` VARCHAR( 30 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,"+
+				"CHANGE  `lastName`  `lastName` VARCHAR( 30 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,"+
+				"CHANGE  `title`  `title` VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,"+
+				"CHANGE  `matricNum`  `matricNum` INT( 8 ) NULL DEFAULT NULL ,"+
+				"CHANGE  `current_semester`  `current_semester` INT( 2 ) NULL DEFAULT NULL ,"+
+				"CHANGE  `graduation`  `graduation` VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,"+
+				"CHANGE  `password`  `password` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL";
+		
+		try {
+			db.createStatement().executeUpdate(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		sql = "UPDATE users SET password='$2a$10$aNjD8GgINLZvzJ3.6bJOdOCnk3YoXtceVTfTEeqBzYmYOvE3Dkcfi'" +
+				" WHERE email='rob@rob.com';";
+		
+		try {
+			db.createStatement().executeUpdate(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package routes;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.http.Cookie;
@@ -205,9 +206,10 @@ public class UserRoutes extends Routes {
 	 * and writes it in the response as json object
 	 * @param request
 	 * @param response
+	 * @throws SQLException 
 	 */
 	public void createUser(HttpServletRequest request,
-			HttpServletResponse response) {		
+			HttpServletResponse response) throws SQLException {		
 		String json;
 		
 		User actorUser = getActorUser(request);
@@ -276,9 +278,10 @@ public class UserRoutes extends Routes {
 	 * and writes it in the response as json object
 	 * @param request
 	 * @param response
+	 * @throws SQLException 
 	 */
 	public void updateUser(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response) throws SQLException {
 		
 		User actorUser = getActorUser(request);
 		
@@ -630,10 +633,11 @@ public class UserRoutes extends Routes {
 	 * sure that this user has no advanced rights and valid email, therefore it invokes an
 	 * email confirmation process 
 	 * @param request
-	 * @param response
+	 * @param response 
+	 * @throws SQLException 
 	 */
 	public void register(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response) throws SQLException {
 		String json = getRequestBody(request);
 		
 		JsonObject obj = gson.fromJson(json, JsonObject.class);

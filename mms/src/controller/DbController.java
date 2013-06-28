@@ -42,6 +42,19 @@ public class DbController {
 	}
 	
 	/**
+	 * @param x
+	 * @return returns a string with x question marks, seperated with ","
+	 */
+	protected String getXQuestionMarks(int x) {
+		String string = "";
+		for(int i=0; i<x-1; i++) {
+			string += "?, ";
+		}
+		string += "?";
+		return string;
+	}
+	
+	/**
 	 * closes the database connection
 	 */
 	public void closeConnection() {

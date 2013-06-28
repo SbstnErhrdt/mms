@@ -1,4 +1,5 @@
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import routes.JsonErrorContainer;
@@ -7,6 +8,7 @@ import routes.UserRoutes;
 import util.Utilities;
 
 import bcrypt.BCrypt;
+import bcrypt.BcryptTest;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -97,7 +99,12 @@ public class Test {
 	
 		
 		udbc.deleteUser(emp);
-		udbc.createUser(emp);
+		try {
+			udbc.createUser(emp);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		emp = (Employee) udbc.getUser(user1);
 		
@@ -329,7 +336,13 @@ public class Test {
 		
 		user.setUserRights(new UserRights(false));
 		
-		System.out.println(udbc.createUser(user));
+		
+		try {
+			System.out.println(udbc.createUser(user));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		System.out.println(udbc.insertConfirmationHash(email, hash));
 		
@@ -341,8 +354,11 @@ public class Test {
 		
 		
 		
+		System.out.println(BCrypt.hashpw("rob"+pepper, BCrypt.gensalt()));
 		
 		
+		
+		System.out.println(udbc.updateUser(user));
 		
 		
 	}
