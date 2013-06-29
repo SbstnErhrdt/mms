@@ -41,17 +41,22 @@ SONDERFALL PASSWORT!!!
 				    <span class="help-block">Bitte w&auml;len Sie einen Titel.</span>
 
 				    <label>Name</label>
-				    <input placeholder="Vorname" type="text" ng-model="user.firstName" >
+				    <input placeholder="Vorname" type="text" ng-model="user.firstName" required>
 				    <span class="help-block">Bitte w&auml;len Sie einen Vornamen.</span>
 
 				    <label>Nachname</label>
-				    <input placeholder="Nachname" type="text" ng-model="user.lastName" >
+				    <input placeholder="Nachname" type="text" ng-model="user.lastName" required>
 				    <span class="help-block">Bitte w&auml;len Sie einen Vornamen.</span>
 
 				    <label>Email</label>
-				    <input placeholder="vor.nachname@uni-ulm.de" type="text" ng-model="user.email" >
+				    <input placeholder="vor.nachname@uni-ulm.de" type="text" ng-model="user.email" required>
 				    <span class="help-block">Bitte w&auml;len Sie eine Email.</span>
 
+
+				    <label>Passwort</label>
+				    <input type="password" id="inputPassword" placeholder="Passwort" ng-model="user.password" required>
+				    <span class="help-block">Bitte w&auml;len Sie eine Passwort.</span>
+				 
 				    <label>Matrikelnummer</label>
 				    <input placeholder="00000000" type="text" ng-model="user.matricNum" >
 				    <span class="help-block">Bitte w&auml;len Sie ein Semester.</span>

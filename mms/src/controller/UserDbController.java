@@ -680,8 +680,8 @@ public class UserDbController extends DbController {
 			db.commit();
 			
 			if(rs.next()) {
-				String dbPasword = rs.getString(6);
-				if(BCrypt.checkpw(user.getPassword(), dbPasword)) {	
+				String dbPassword = rs.getString(6);
+				if(BCrypt.checkpw(user.getPassword(), dbPassword)) {	
 					user.setFirstName(rs.getString(2));	// firstName
 					user.setLastName(rs.getString(3)); 	// lastName
 					user.setTitle(rs.getString(4));		// title

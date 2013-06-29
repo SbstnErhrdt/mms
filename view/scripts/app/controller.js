@@ -666,10 +666,11 @@ function showUserCtrl($scope, $routeParams, UserFactory) {
 function createUserCtrl($scope, $location, UserFactory) {
 
 	$scope.createUser = function() {
-		if($scope.user.email && $scope.user.firstName && $scope.user.lastName) {
+		if($scope.user.email && $scope.user.firstName && $scope.user.lastName && $scope.user.password) {
 			var user = {
 			//	address: "String",
 				email: $scope.user.email,
+				password: $scope.user.password,
 				isEmployee: $scope.user.isEmployee,
 				employeeRights: {
 					isAdmin: $scope.user.employeeRights.isAdmin,

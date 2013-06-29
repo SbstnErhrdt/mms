@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import bcrypt.BCrypt;
+import bcrypt.BcryptTest;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -245,13 +246,32 @@ public class UserRoutes extends Routes {
 		
 		json = getRequestBody(request);
 		
+		JsonObject obj = gson.fromJson(json, JsonObject.class);
+		
+		String password = obj.get("password").getAsString();
+		
 		User user = gson.fromJson(json, User.class);
+		
+		if(user == null) {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"invalid user object (conversion gson.fromJson(json, User.class) failed)", 
+					"createUser(...)")));
+			try {
+				response.getWriter().write(json);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		} 
+		
 		
 		// user is Employee?
 		if(user.isEmployee()) {
 			Employee employee = gson.fromJson(json, Employee.class);
 			user = employee;
 		}
+		
+		user.setPassword(BCrypt.hashpw(password+pepper, BCrypt.gensalt()));
 		
 		// validate email
 		if(!Utilities.validateEmail(user.getEmail())) {
