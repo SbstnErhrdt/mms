@@ -61,8 +61,8 @@ SONDERFALL PASSWORT!!!
 				 	<span class="help-block">Bitte wiederholen Sie das Passwort.</span>
 
 				    <label>Matrikelnummer</label>
-				    <input placeholder="00000000" type="text" ng-model="user.matricNum" >
-				    <span class="help-block">Bitte w&auml;len Sie ein Semester.</span>
+				    <input placeholder="00000000" type="text" ng-model="user.matricNum">
+				    <span class="help-block">Bitte geben Sie eine Matrikelnummer an.</span>
 
 				    <label>Abschluss w&auml;hlen</label>
 				    <select ng-model="user.graduation">
@@ -73,8 +73,8 @@ SONDERFALL PASSWORT!!!
 					</select>
 					<span class="help-block">Bitte w&auml;len Sie einen Typ.</span>
 
-					<label>Semster</label>
-				    <input type="text" placeholder="1" ng-model="user.semester" >
+					<label>Semester</label>
+				    <input type="number" placeholder="1" ng-model="user.semester" min="1">
 				    <span class="help-block">Bitte w&auml;len Sie ein Semester.</span>
 
 					<label>Benutzer Rechte</label>

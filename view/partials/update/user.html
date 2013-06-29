@@ -56,8 +56,8 @@ SONDERFALL PASSWORT!!!
 				    <span class="help-block">Sie können die Email-Adresse nicht ändern.</span>
 
 				    <label>Matrikelnummer</label>
-				    <input type="number" placeholder="000000" ng-model="user.matricNum" >
-				    <span class="help-block">Bitte w&auml;len Sie ein Semester.</span>
+				    <input placeholder="00000000" type="text" ng-model="user.matricNum">
+				    <span class="help-block">Bitte geben Sie eine Matrikelnummer an.</span>
 
 				    <label>Abschluss w&auml;hlen</label>
 				    <select ng-model="user.graduation">
@@ -69,7 +69,7 @@ SONDERFALL PASSWORT!!!
 					<span class="help-block">Bitte w&auml;len Sie einen Typ.</span>
 
 					<label>Semester</label>
-				    <input type="number" placeholder="0" ng-model="user.semester" >
+				    <input type="number" placeholder="1" ng-model="user.semester" min="1">
 				    <span class="help-block">Bitte w&auml;len Sie ein Semester.</span>
 
 					<div ng-show="isAdmin">
