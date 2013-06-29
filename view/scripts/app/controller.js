@@ -666,35 +666,57 @@ function showUserCtrl($scope, $routeParams, UserFactory) {
 function createUserCtrl($scope, $location, UserFactory) {
 
 	$scope.createUser = function() {
-		if($scope.user.email && $scope.user.firstName && $scope.user.lastName && $scope.user.password) {
-			var user = {
-			//	address: "String",
-				email: $scope.user.email,
-				password: $scope.user.password,
-				isEmployee: $scope.user.isEmployee,
-				employeeRights: {
-					isAdmin: $scope.user.employeeRights.isAdmin,
-					canDeblockModule: $scope.user.employeeRights.canDeblockModule,
-					canDeblockCriticalModule: $scope.user.employeeRights.canDeblockCriticalModule
-				},
-				firstName: $scope.user.firstName,
-				//graduation: "String",
-				//isEmployee: "boolean",
-				lastName: $scope.user.lastName,
-				matricNum: $scope.user.matricNum,
-				//password: "Number",
-				//phoneNum: "String",
-				semester: $scope.user.semester,
-				//talkTime: "String",
-				title: $scope.user.title,
-				userRights: {canLogin: $scope.user.canLogin}
-			};
+		if($scope.user.email && $scope.user.firstName && $scope.user.lastName && $scope.user.password1 && $scope.user.password2) {
+			if($scope.user.password1 === $scope.user.password2) {
+				if(!$scope.user.isEmployee) {
+					var user = {
+						email: $scope.user.email,
+						password: $scope.user.password1,
+						isEmployee: $scope.user.isEmployee,
+						firstName: $scope.user.firstName,
+						lastName: $scope.user.lastName,
+						matricNum: parseInt($scope.user.matricNum,10),
+						semester: parseInt($scope.user.semester, 10),
+						graduation: $scope.user.graduation,
+						title: $scope.user.title,
+						userRights: {
+							canLogin: $scope.user.canLogin
+						}
+					};
+				} else {
+					var user = {
+						email: $scope.user.email,
+						password: $scope.user.password1,
+						isEmployee: $scope.user.isEmployee,
+						firstName: $scope.user.firstName,
+						lastName: $scope.user.lastName,
+						matricNum: parseInt($scope.user.matricNum,10),
+						semester: parseInt($scope.user.semester, 10),
+						graduation: $scope.user.graduation,
+						title: $scope.user.title,
+						userRights: {
+							canLogin: $scope.user.canLogin
+						},
+						employeeRights: {
+							isAdmin: $scope.user.employeeRights.isAdmin,
+							canDeblockModule: $scope.user.employeeRights.canDeblockModule,
+							canDeblockCriticalModule: $scope.user.employeeRights.canDeblockCriticalModule
+						},
+						address: $scope.user.adress,
+						talkTime: $scope.user.talkTime,
+						phoneNum: $scope.user.phoneNum
+						
+					};
+				}
 
-			console.log(user);
+				console.log(user);
 
-			UserFactory.createUser(user, function() {
-				$location.path("/show/users");
-			});
+				UserFactory.createUser(user, function() {
+					$location.path("/show/users");
+				});
+			} else {
+				sendError("Die beiden Passwörter stimmen nicht überein.");
+			}
 			
 		} else {
 			sendError("Ihre Angaben sind nicht vollständig.");

@@ -270,7 +270,7 @@ public class UserDbController extends DbController {
 	 */
 	public boolean updateUser(User user) throws SQLException{
 		
-		User oldUser = getUser(user);
+		User oldUser = getUser(new User(user.getEmail()));
 		
 		// Update: delete and re-create
 		if(deleteUser(user)){
@@ -319,6 +319,7 @@ public class UserDbController extends DbController {
 				user.setLastName(rs.getString(3)); 	// lastName
 				user.setTitle(rs.getString(4));		// title
 				user.setGraduation(rs.getString(5));// graduation
+				user.setPassword(rs.getString(6)); 	// password
 				user.setMatricNum(rs.getInt(7));	// matricNum
 				user.setSemester(rs.getInt(8));		// semester
 			} else {

@@ -53,10 +53,10 @@ SONDERFALL PASSWORT!!!
 				    <label>Email</label>
 				    <span class="input-xlarge uneditable-input">{{user.email}}</span>
 				    <input ng-model="user.email" type="hidden">
-				    <span class="help-block">Bitte w&auml;len Sie eine Email.</span>
+				    <span class="help-block">Sie können die Email-Adresse nicht ändern.</span>
 
 				    <label>Matrikelnummer</label>
-				    <input type="text" ng-model="user.matricNum" >
+				    <input type="number" placeholder="000000" ng-model="user.matricNum" >
 				    <span class="help-block">Bitte w&auml;len Sie ein Semester.</span>
 
 				    <label>Abschluss w&auml;hlen</label>
@@ -69,12 +69,12 @@ SONDERFALL PASSWORT!!!
 					<span class="help-block">Bitte w&auml;len Sie einen Typ.</span>
 
 					<label>Semester</label>
-				    <input type="text" ng-model="user.semester" >
+				    <input type="number" placeholder="0" ng-model="user.semester" >
 				    <span class="help-block">Bitte w&auml;len Sie ein Semester.</span>
 
 					<div ng-show="isAdmin">
 					    <label>Benutzer Rechte</label>
-					    <input type="checkbox" ng-model="user.employeeRights.canLogin" > Kann sich einloggen<br /><br />
+					    <input type="checkbox" ng-model="user.userRights.canLogin" > Kann sich einloggen<br /><br />
 
 					    <input type="checkbox" ng-model="user.isEmployee" > Ist Mitarbeiter<br /><br />
 					    <span class="help-block">Ist der User ein Mitarbeiter.</span>
@@ -86,13 +86,16 @@ SONDERFALL PASSWORT!!!
 						<fieldset ng-show="user.isEmployee" class="span3">
 							<legend>Adresse &amp; Sprechzeiten</legend>
 						    <label>Addresse</label>
-						    <textarea rows="5" ng-model="user.adress" spellcheck="ture" ></textarea>
+						    <textarea rows="3" ng-model="user.address" spellcheck="ture" ></textarea>
 						    <span class="help-block">Bitte w&auml;len Sie einen Adresse. O26 - 344</span>
 
 						    <label>Sprechzeit</label>
 						    <textarea rows="5" ng-model="user.talkTime" spellcheck="ture" ></textarea>
 						    <span class="help-block">Bitte w&auml;len Sie einen Sprechzeit. Mo: 10:00 - 12:00 Uhr</span>
 
+ 							<label>Telefonnummer</label>
+						    <input type="text" placeholder="+49 (0)731/50-24444" ng-model="user.phoneNum" spellcheck="ture" ></textarea>
+						    <span class="help-block">Bitte geben Sie eine Telefonnummer an.</span>
 
 							<div ng-show="isAdmin">
 								<hr />

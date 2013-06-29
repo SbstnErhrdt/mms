@@ -358,8 +358,36 @@ public class Test {
 		
 		
 		
-		System.out.println(udbc.updateUser(user));
+		try {
+			System.out.println(udbc.updateUser(user));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+		
+		json = "{\"address\":\"Eigenes BÃ¼ro ganz oben neben Uwe SchÃ¶ning\",\"phoneNum\":\"0731 123456\",\"talkTime\":\"jederzeit\",\"employeeRights\":{\"canDeblockCriticalModule\":false,\"canDeblockModule\":false,\"isAdmin\":true,\"moduleRightsList\":[],\"eventRightsList\":[],\"studycourseRightsList\":[],\"subjectRightsList\":[],\"moduleHandbookRightsList\":[],\"canLogin\":true},\"firstName\":\"eugen\",\"lastName\":\"eugen\",\"email\":\"eugen@eugen.com\",\"isEmployee\":true,\"matricNum\":\"1234\",\"semester\":10,\"userRights\":{\"canLogin\":true},\"title\":\"Herr Lehrer\",\"graduation\":\"Lehramt\"}";
+		
+		user = gson.fromJson(json, User.class);
+		
+		Employee employee1 = gson.fromJson(json, Employee.class);
+		
+		user = employee1;
+		
+		System.out.println(user);
+		
+		
+		
+		try {
+			udbc.deleteUser(user);
+			user.setPassword(BCrypt.hashpw("eugen"+pepper, BCrypt.gensalt()));
+			udbc.createUser(user);
+			System.out.println(udbc.updateUser(user));
+			System.out.println(udbc.getUser(new User(user.getEmail())));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 }

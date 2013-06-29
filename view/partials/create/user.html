@@ -40,23 +40,26 @@ SONDERFALL PASSWORT!!!
 				    <input placeholder="Titel" type="text" ng-model="user.title" >
 				    <span class="help-block">Bitte w&auml;len Sie einen Titel.</span>
 
-				    <label>Name</label>
+				    <label>Name*</label>
 				    <input placeholder="Vorname" type="text" ng-model="user.firstName" required>
 				    <span class="help-block">Bitte w&auml;len Sie einen Vornamen.</span>
 
-				    <label>Nachname</label>
+				    <label>Nachname*</label>
 				    <input placeholder="Nachname" type="text" ng-model="user.lastName" required>
 				    <span class="help-block">Bitte w&auml;len Sie einen Vornamen.</span>
 
-				    <label>Email</label>
+				    <label>Email*</label>
 				    <input placeholder="vor.nachname@uni-ulm.de" type="text" ng-model="user.email" required>
 				    <span class="help-block">Bitte w&auml;len Sie eine Email.</span>
 
 
-				    <label>Passwort</label>
-				    <input type="password" id="inputPassword" placeholder="Passwort" ng-model="user.password" required>
+				    <label>Passwort*</label>
+				    <input type="password" id="inputPassword" placeholder="Passwort" ng-model="user.password1" required>
 				    <span class="help-block">Bitte w&auml;len Sie eine Passwort.</span>
-				 
+
+				    <input type="password" id="inputPassword" placeholder="Passwort wiederholen" ng-model="user.password2" required>
+				 	<span class="help-block">Bitte wiederholen Sie das Passwort.</span>
+
 				    <label>Matrikelnummer</label>
 				    <input placeholder="00000000" type="text" ng-model="user.matricNum" >
 				    <span class="help-block">Bitte w&auml;len Sie ein Semester.</span>
@@ -86,13 +89,16 @@ SONDERFALL PASSWORT!!!
 						<fieldset class="span3">
 							<legend>Adresse &amp; Sprechzeiten</legend>
 						    <label>Addresse</label>
-						    <textarea rows="5" ng-model="user.adress" spellcheck="ture" ></textarea>
+						    <textarea rows="3" ng-model="user.address" spellcheck="ture" ></textarea>
 						    <span class="help-block">Bitte w&auml;len Sie einen Adresse. O26 - 344</span>
 
 						    <label>Sprechzeit</label>
 						    <textarea rows="5" ng-model="user.talkTime" spellcheck="ture" ></textarea>
 						    <span class="help-block">Bitte w&auml;len Sie einen Sprechzeit. Mo: 10:00 - 12:00 Uhr</span>
 
+ 							<label>Telefonnummer</label>
+						    <input type="text" placeholder="+49 (0)731/50-24444" ng-model="user.phoneNum" spellcheck="ture" ></textarea>
+						    <span class="help-block">Bitte geben Sie eine Telefonnummer an.</span>
 
 							
 							<hr />

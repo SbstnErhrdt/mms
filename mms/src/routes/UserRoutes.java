@@ -323,8 +323,6 @@ public class UserRoutes extends Routes {
 		
 		User user = gson.fromJson(json, User.class);
 		
-		User oldUser = db.getUser(user);
-		
 		// check rights
 		if(!hasRights) {
 			if(!user.getEmail().equals(actorUser.getEmail())) {
@@ -340,6 +338,8 @@ public class UserRoutes extends Routes {
 				return;
 			} else {
 				System.out.println("actorUser equals user to user");
+				
+				User oldUser = db.getUser(user);
 				
 				// check, if user changed his own rights
 				if(!oldUser.isEmployee() && user.isEmployee() || oldUser.isEmployee() && !user.isEmployee()) {
@@ -500,12 +500,22 @@ public class UserRoutes extends Routes {
 				
 			}
 		}
+	
+		// DEBUG START
+		System.out.println("#######################################");
+		System.out.println(user);
+		System.out.println("#######################################");
+		// DEBUG END
 		
 		// user is Employee?
 		if(user.isEmployee()) {
 			Employee employee = gson.fromJson(json, Employee.class);
 			user = employee;
 		}
+		
+		System.out.println("#######################################");
+		System.out.println(user);
+		System.out.println("#######################################");
 		
 		if(db.updateUser(user)) {
 			json = gson.toJson(user);
