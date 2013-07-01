@@ -7,10 +7,17 @@ public class UserRights implements DbControllable {
 	private boolean canLogin;
 
 	// Konstruktor	
+	/**
+	 * constructor
+	 */
 	public UserRights() {
 	}
 	
 	// Konstruktor	
+	/**
+	 * constructor
+	 * @param canLogin
+	 */
 	public UserRights(boolean canLogin) {
 			this.canLogin = canLogin;
 	}

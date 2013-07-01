@@ -46,17 +46,23 @@ public class Employee extends User {
 		isEmployee = true;
 	}
 	
+	/**
+	 * constructor
+	 * @param email
+	 * @param password
+	 */
+	public Employee(String email, String password) {
+		super(email, password);
+		this.employeeRights = new EmployeeRights(false, false, false);
+		isEmployee = true;
+	}
+	
 	public EmployeeRights getEmployeeRights() {
 		return employeeRights;
 	}
 
 	public void setEmployeeRights(EmployeeRights employeeRights) {
 		this.employeeRights = employeeRights;
-	}
-
-	public Employee(String email, String password) {
-		super(email, password);
-		// TODO Auto-generated constructor stub
 	}
 
 	public String getAddress() {

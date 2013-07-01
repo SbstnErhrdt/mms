@@ -54,10 +54,13 @@ public class UserDbController extends DbController {
 			ps.setInt(7, user.getMatricNum());
 			ps.setInt(8, user.getSemester());
 			
-			System.out.println(ps);		// DEBUG
+			System.out.println("db:createUser: " + ps);		// DEBUG
 			
 			ps.executeUpdate();
 			db.commit();
+			
+			ps.close();
+			
 		} catch(SQLException e) {
 			e.printStackTrace();
 			throw e;

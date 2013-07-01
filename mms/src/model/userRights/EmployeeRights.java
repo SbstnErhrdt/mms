@@ -15,6 +15,9 @@ public class EmployeeRights extends UserRights {
 	private ArrayList<ModuleHandbookRights> moduleHandbookRightsList;
 	
 	
+	/**
+	 * constructor
+	 */
 	public EmployeeRights() {
 		super(true);
 		eventRightsList = new ArrayList<EventRights>();
@@ -24,6 +27,12 @@ public class EmployeeRights extends UserRights {
 		moduleHandbookRightsList = new ArrayList<ModuleHandbookRights>();
 	}
 	
+	/**
+	 * constructor
+	 * @param canDeblockCriticalModule
+	 * @param canDeblockModule
+	 * @param isAdmin
+	 */
 	public EmployeeRights(boolean canDeblockCriticalModule, boolean canDeblockModule, 
 			boolean isAdmin) {
 		super(true);

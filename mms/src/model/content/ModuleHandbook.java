@@ -17,6 +17,17 @@ public class ModuleHandbook extends Content {
 	private int moduleHandbookID, studycourses_studycourseID;
 	
 	// Konstruktor
+	/**
+	 * constructor
+	 * @param moduleHandbookID
+	 * @param name
+	 * @param studycourses_studycourseID
+	 * @param year
+	 * @param sose
+	 * @param archived
+	 * @param content
+	 * @param enabled
+	 */
 	public ModuleHandbook (int moduleHandbookID, String name, int studycourses_studycourseID, 
 			int year, boolean sose, boolean archived, String content, boolean enabled) {
 		this.moduleHandbookID = moduleHandbookID;
@@ -29,6 +40,10 @@ public class ModuleHandbook extends Content {
 		this.enabled = enabled;
 	}
 	
+	/**
+	 * constructor
+	 * @param moduleHandbookID
+	 */
 	public ModuleHandbook(int moduleHandbookID) {
 		this.moduleHandbookID = moduleHandbookID;
 	}

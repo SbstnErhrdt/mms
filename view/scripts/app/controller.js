@@ -494,8 +494,7 @@ function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory, UserFa
 			$scope._event = _event;
 
 			UserFactory.getUser(_event.lecturer_email).then(function(user) {
-				console.log("hasdasd");
-				$scope._event.lecturer_email = user.firstName+" "+user.lastName;
+				$scope._event.lecturer_name = user.firstName+" "+user.lastName;
 			}, function(error) {
 				sendError("Error: "+error);
 			});
@@ -675,8 +674,8 @@ function createUserCtrl($scope, $location, UserFactory) {
 						isEmployee: $scope.user.isEmployee,
 						firstName: $scope.user.firstName,
 						lastName: $scope.user.lastName,
-						matricNum: parseInt($scope.user.matricNum,10),
-						semester: parseInt($scope.user.semester, 10),
+						matricNum: $scope.user.matricNum,
+						semester: $scope.user.semester,
 						graduation: $scope.user.graduation,
 						title: $scope.user.title,
 						userRights: {
@@ -690,8 +689,8 @@ function createUserCtrl($scope, $location, UserFactory) {
 						isEmployee: $scope.user.isEmployee,
 						firstName: $scope.user.firstName,
 						lastName: $scope.user.lastName,
-						matricNum: parseInt($scope.user.matricNum,10),
-						semester: parseInt($scope.user.semester, 10),
+						matricNum: $scope.user.matricNum,
+						semester: $scope.user.semester,
 						graduation: $scope.user.graduation,
 						title: $scope.user.title,
 						userRights: {
@@ -705,7 +704,7 @@ function createUserCtrl($scope, $location, UserFactory) {
 						address: $scope.user.adress,
 						talkTime: $scope.user.talkTime,
 						phoneNum: $scope.user.phoneNum
-						
+
 					};
 				}
 
@@ -717,7 +716,7 @@ function createUserCtrl($scope, $location, UserFactory) {
 			} else {
 				sendError("Die beiden Passwörter stimmen nicht überein.");
 			}
-			
+
 		} else {
 			sendError("Ihre Angaben sind nicht vollständig.");
 		}
@@ -768,7 +767,7 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory, Studycours
     }
     init();
 
-    $scope.GETSTUDYCOURSE = function (id) {
+    $scope.getStudyCourse = function (id) {
         for (var i=0; i < StudycourseList.length; i++) {
             if (id === StudycourseList[i].studycourseID) {
                 return StudycourseList[i].name;

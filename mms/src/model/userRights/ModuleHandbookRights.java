@@ -5,6 +5,12 @@ import util.Utilities;
 public class ModuleHandbookRights extends ContentRights {
 	private int moduleHandbookID;
 	
+	/**
+	 * constructor
+	 * @param moduleHandbookID
+	 * @param canDelete
+	 * @param canEdit
+	 */
 	public ModuleHandbookRights(int moduleHandbookID, boolean canDelete,
 			boolean canEdit) {
 		this.moduleHandbookID = moduleHandbookID;
@@ -12,8 +18,10 @@ public class ModuleHandbookRights extends ContentRights {
 		this.canEdit = canEdit;
 	}
 
+	/**
+	 * constructor
+	 */
 	public ModuleHandbookRights() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public int getModuleHandbookID() {

@@ -34,35 +34,56 @@ public class ContentDbController extends DbController {
 	 */
 	public boolean createEvent(Event event) {
 
-		// GET VALUENAMES & VALUES
-		String[] valuesArray = event.toValuesArray();
+		// GET VALUENAMES
 		String[] valueNamesArray = event.toValueNamesArray();
 		
-		String[] newValuesArray = Arrays.copyOfRange(valuesArray, 1, valuesArray.length);
 		String[] newValuesNamesArray = Arrays.copyOfRange(valueNamesArray, 1, valueNamesArray.length);
 		
-		String values = Utilities.arrayToString(newValuesArray);
 		String valueNames =  Utilities.arrayToString(newValuesNamesArray);
 		
 		// QUERY
-		String query = "INSERT INTO events (" +valueNames+ ") VALUES ("+values+");";
-		
-		System.out.println("db:createEvent " + query);
-		
+		String query = "INSERT INTO events (" +valueNames+ ") " +
+				"VALUES("+getXQuestionMarks(newValuesNamesArray.length)+");";		
 		try {
-			Statement stmt = db.createStatement();	
-			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-			ResultSet rs = stmt.getGeneratedKeys();
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);	
+			
+			ps.setString(1, event.getName());				// name
+			ps.setInt(2, event.getSws());					// sws
+			ps.setString(3, event.getLecturer_email());		// lecturer_email
+			ps.setBoolean(4, event.isArchived());			// archived
+			ps.setString(5, event.getContent());			// content
+			ps.setBoolean(6, event.isEnabled());			// enabled
+			ps.setString(7, event.getRoom());				// room
+			ps.setString(8, event.getPlace());				// place
+			ps.setString(9, event.getType());				// type
+			ps.setString(10, event.getTimes());				// times
+			
+			System.out.println("db:createEvent: " + ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			// get generated eventID
+			ResultSet rs = ps.getGeneratedKeys();
 			if (rs.next()) {
 				event.setID(rs.getInt(1));
 			    System.out.println("Generated eventID: " + event.getID());	    
 			}
-			stmt.close();
+			
+			ps.close();
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
-		} 
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 				
 		// CREATE ENTRY IN TABLE EVENTS_MODULES
 		query = "INSERT INTO events_modules(eventID, moduleID) VALUES ("+event.getID()+", ?);";
@@ -78,6 +99,8 @@ public class ContentDbController extends DbController {
 				ps.executeUpdate();
 				db.commit();
 			}
+			
+			ps.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -100,27 +123,50 @@ public class ContentDbController extends DbController {
 	 */
 	public boolean updateEvent(Event event) {
 
-		// GET VALUENAMES & VALUES
+		// GET VALUENAMES
 		String[] valueNames = event.toValueNamesArray();
-		String[] values = event.toValuesArray();
-
+		
 		// QUERY
 		String query = "UPDATE events SET ";
 
 		for (int i = 0; i < valueNames.length - 1; i++) {
-			query += valueNames[i] + "=" + values[i] + ", ";
+			query += valueNames[i] + "=?, ";
 		}
-		query += valueNames[valueNames.length - 1] + "="
-				+ values[values.length - 1];
+		query += valueNames[valueNames.length - 1] + "=?";
 		query += " WHERE eventID = " + event.getID() + ";";
 
-		System.out.println("db:updateEvent " + query);
-
 		try {
-			db.createStatement().executeUpdate(query);
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);	
+			
+			ps.setString(1, event.getName());				// name
+			ps.setInt(2, event.getSws());					// sws
+			ps.setString(3, event.getLecturer_email());		// lecturer_email
+			ps.setBoolean(4, event.isArchived());			// archived
+			ps.setString(5, event.getContent());			// content
+			ps.setBoolean(6, event.isEnabled());			// enabled
+			ps.setString(7, event.getRoom());				// room
+			ps.setString(8, event.getPlace());				// place
+			ps.setString(9, event.getType());				// type
+			ps.setString(10, event.getTimes());				// times
+
+			System.out.println("db:updateEvent: " + ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		// UPDATE EVENTS_MODULES: delete and recreate

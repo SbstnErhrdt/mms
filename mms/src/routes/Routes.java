@@ -16,10 +16,17 @@ public abstract class Routes {
 	
 	private UserDbController db;
 	
+	/**
+	 * constructor
+	 */
 	public Routes() {
 		db = new UserDbController();
 	}
 	
+	/**
+	 * @param request
+	 * @return the body-payload of the passed HttpServletRequest
+	 */
 	protected String getRequestBody(HttpServletRequest request) {
 		StringBuilder stringBuilder = new StringBuilder();
 		BufferedReader bufferedReader = null;
@@ -49,24 +56,11 @@ public abstract class Routes {
 		
 		return stringBuilder.toString();
 	}
-	protected String getCookieEmail(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-		
-		String email = "";
-		
-		if(cookies != null) {
-			for(Cookie c : cookies) {
-				if(c.getName().equals("email")){
-					email = c.getValue();
-				}
-			}
-		} else {
-			System.out.println("request.getCookies() == null");
-		}
-		
-		return email;
-	}
 	
+	/**
+	 * @param request
+	 * @return the email that belongs to the current session
+	 */
 	protected User getActorUser(HttpServletRequest request) {
 		String actorEmail = (String) request.getSession().getAttribute("email");
 		User actorUser = db.getUser(new User(actorEmail));

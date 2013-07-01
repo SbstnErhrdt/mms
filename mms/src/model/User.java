@@ -26,11 +26,22 @@ public class User implements DbControllable {
 	
 	
 	// Konstruktor 
+	/** 
+	 * constructor
+	 * @param email
+	 * @param password
+	 */
 	public User(String email, String password) {
 		this.email = email.toLowerCase();
 		this.password = password;
 	}
 	
+	/**
+	 * constructor
+	 * @param email
+	 * @param firstName
+	 * @param lastName
+	 */
 	public User(String email, String firstName, String lastName) {
 		this.email = email.toLowerCase();
 		this.firstName = firstName;
@@ -38,6 +49,18 @@ public class User implements DbControllable {
 	}
 	
 	// Konstruktor 
+	/**
+	 * constructor
+	 * @param firstName
+	 * @param lastName
+	 * @param title
+	 * @param email
+	 * @param graduation
+	 * @param password
+	 * @param matricNum
+	 * @param semester
+	 * @param rights
+	 */
 	public User(String firstName, String lastName, String title, String email,
 			String graduation, String password, int matricNum, int semester,
 			UserRights rights) {
@@ -54,6 +77,10 @@ public class User implements DbControllable {
 	}
 
 		
+	/**
+	 * constructor
+	 * @param email
+	 */
 	public User(String email) {
 		this.email = email;
 	}

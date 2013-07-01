@@ -15,6 +15,16 @@ public class Subject extends Content {
 	
 	
 	// Konstruktor
+	/**
+	 * constructor
+	 * @param subjectID
+	 * @param studycourses_studycourseID
+	 * @param moduleHandbooks_moduleHandbookID
+	 * @param name
+	 * @param archived
+	 * @param content
+	 * @param enabled
+	 */
 	public Subject (int subjectID, int studycourses_studycourseID, int moduleHandbooks_moduleHandbookID,
 			String name, boolean archived, String content, boolean enabled) {
 		this.subjectID = subjectID; 
@@ -26,9 +36,14 @@ public class Subject extends Content {
 		this.enabled = enabled;
 	}
 	
+	/** 
+	 * constructor
+	 * @param subjectID
+	 */
 	public Subject(int subjectID) {
 		this.subjectID = subjectID;
 	}
+	
 	
 	@Override
 	public String toValues() {

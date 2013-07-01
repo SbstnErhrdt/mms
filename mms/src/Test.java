@@ -357,7 +357,7 @@ public class Test {
 		System.out.println(BCrypt.hashpw("rob"+pepper, BCrypt.gensalt()));
 		
 		
-		
+		/*
 		try {
 			System.out.println(udbc.updateUser(user));
 		} catch (SQLException e) {
@@ -388,6 +388,12 @@ public class Test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
+		
+		event.setRoom("H22");
+		cdbc.createEvent(event);
+		
+		
 		
 	}
 }

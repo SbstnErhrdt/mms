@@ -21,10 +21,29 @@ public class Event extends Content {
 	private ArrayList<Integer> moduleIDs;
 	
 	// Konstruktor
+	/**
+	 * constructor
+	 * @param eventID
+	 */
 	public Event(int eventID) {
 		this.eventID = eventID;
 	}
 	
+	/**
+	 * constructor
+	 * @param eventID
+	 * @param moduleIDs
+	 * @param name
+	 * @param sws
+	 * @param lecturer_email
+	 * @param archived
+	 * @param content
+	 * @param enabled
+	 * @param room
+	 * @param place
+	 * @param type
+	 * @param times
+	 */
 	public Event(int eventID, ArrayList<Integer> moduleIDs, String name, 
 			int sws, String lecturer_email, boolean archived, String content, 
 			boolean enabled, String room, String place, String type, String times) {

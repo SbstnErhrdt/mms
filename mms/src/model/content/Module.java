@@ -31,6 +31,26 @@ public class Module extends Content {
 	private ArrayList<Integer> subjectIDs;
 	
 	// Konstruktor
+	/**
+	 * constructor
+	 * @param moduleID
+	 * @param name
+	 * @param subjectIDs
+	 * @param token
+	 * @param englishTitle
+	 * @param lp
+	 * @param sws
+	 * @param language
+	 * @param duration
+	 * @param director_email
+	 * @param requirement
+	 * @param learningTarget
+	 * @param content
+	 * @param literature
+	 * @param archived
+	 * @param enabled
+	 * @param isCritical
+	 */
 	public Module(int moduleID, String name, ArrayList<Integer> subjectIDs, String token, String englishTitle, String lp, String sws, 
 			String language, int duration, String director_email, String requirement, String learningTarget, String content, String literature, 
 			boolean archived, boolean enabled, boolean isCritical) {

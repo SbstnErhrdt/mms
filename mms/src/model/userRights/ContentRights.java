@@ -7,6 +7,9 @@ public class ContentRights implements DbControllable {
 	protected boolean canEdit, canDelete;
 	
 	
+	/**
+	 * constructor
+	 */
 	public ContentRights() {
 	}
 	

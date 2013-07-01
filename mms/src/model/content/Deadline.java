@@ -7,6 +7,12 @@ public class Deadline {
 	private int year;
 	private Date deadline;
 	
+	/**
+	 * constructor
+	 * @param sose
+	 * @param year
+	 * @param deadline
+	 */
 	public Deadline(boolean sose, int year, Date deadline) {
 		super();
 		this.sose = sose;
@@ -14,6 +20,11 @@ public class Deadline {
 		this.deadline = deadline;
 	}
 	
+	/**
+	 * constructor
+	 * @param sose
+	 * @param year
+	 */
 	public Deadline(boolean sose, int year) {
 		this.sose = sose;
 		this.year = year;
