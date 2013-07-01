@@ -114,7 +114,7 @@ SONDERFALL PASSWORT!!!
 								<thead>
 									<tr>
 										<th class="rightID">#</th>
-										<th class="rightName">Studiengang Name</th>
+										<th class="rightName">Studiengang Name<a style="margin-left: 20px;" ng-click="addStudyCourse()"><i class="icon-plus"></i></a></th>
 										<th class="rightEdit">Bearbeiten</th>
 										<th class="rightDelete">L&ouml;schen</th>
 									</tr>
@@ -122,7 +122,8 @@ SONDERFALL PASSWORT!!!
 								<tbody>
 								    <tr ng-repeat="studycourseright in user.employeeRights.studycourseRightsList">
 								    	<td>{{studycourseright.studycourseID}}</td>
-								    	<td>{{getStudyCourse(studycourseright.studycourseID)}}</td>
+								    	<td><select ng-model="studycourseright.studycourseID" ng-options="Studycourse.studycourseID as Studycourse.name for Studycourse in StudycourseList">
+								    	</select><a style="margin-left: 10px;" ng-click="removeStudyCourse()"><i class="icon-minus"></i></a></td>
 								    	<td><input type="checkbox" ng-model="studycourseright.canEdit"></td>
 								    	<td> <input type="checkbox" ng-model="studycourseright.canDelete"></td>
 								    </tr>
@@ -135,7 +136,7 @@ SONDERFALL PASSWORT!!!
 								<thead>
 									<tr>
 										<th class="rightID">#</th>
-										<th class="rightName">Modulhandbuch Name</th>
+										<th class="rightName">Modulhandbuch Name<a style="margin-left: 20px;" ng-click="addModuleHandbook()"><i class="icon-plus"></i></a></th>
 										<th class="rightEdit">Bearbeiten</th>
 										<th class="rightDelete">L&ouml;schen</th>
 									</tr>
@@ -143,7 +144,7 @@ SONDERFALL PASSWORT!!!
 								<tbody>
 								    <tr ng-repeat="modulhandbookright in user.employeeRights.moduleHandbookRightsList">
 								    	<td>{{modulhandbookright.moduleHandbookID}}</td>
-								    	<td>{{getModuleHandbook(modulhandbookright.moduleHandbookID)}}</td>
+								    	<td><select ng-model="modulhandbookright.moduleHandbookID" ng-options="ModuleHandbook.moduleHandbookID as ModuleHandbook.name for ModuleHandbook in ModuleHandbookList"></select><a style="margin-left: 10px;" ng-click="removeModuleHandbook()"><i class="icon-minus"></i></a></td>
 								    	<td><input type="checkbox" ng-model="modulhandbookright.canEdit"></td>
 								    	<td> <input type="checkbox" ng-model="modulhandbookright.canDelete"></td>
 								    </tr>
@@ -155,7 +156,7 @@ SONDERFALL PASSWORT!!!
 								<thead>
 									<tr>
 										<th class="rightID">#</th>
-										<th class="rightName">Fach Name</th>
+										<th class="rightName">Fach Name<a style="margin-left: 20px;" ng-click="addSubject()"><i class="icon-plus"></i></a></th>
 										<th class="rightEdit">Bearbeiten</th>
 										<th class="rightDelete">L&ouml;schen</th>
 									</tr>
@@ -163,7 +164,7 @@ SONDERFALL PASSWORT!!!
 								<tbody>
 								    <tr ng-repeat="subjectright in user.employeeRights.subjectRightsList">
 								    	<td>{{subjectright.subjectID}}</td>
-								    	<td>{{getSubject(subjectright.subjectID)}}</td>
+								    	<td><select ng-model="subjectright.subjectID" ng-options="Subject.subjectID as Subject.name for Subject in SubjectList"></select><a style="margin-left: 10px;" ng-click="removeSubject()"><i class="icon-minus"></i></a></td>
 								    	<td><input type="checkbox" ng-model="subjectright.canEdit"></td>
 								    	<td> <input type="checkbox" ng-model="subjectright.canDelete"></td>
 								    </tr>
@@ -175,7 +176,7 @@ SONDERFALL PASSWORT!!!
 								<thead>
 									<tr>
 										<th class="rightID">#</th>
-										<th class="rightName">Fach Name</th>
+										<th class="rightName">Modul Name<a style="margin-left: 20px;" ng-click="addModule()"><i class="icon-plus"></i></a></th>
 										<th class="rightEdit">Bearbeiten</th>
 										<th class="rightDelete">L&ouml;schen</th>
 									</tr>
@@ -183,9 +184,9 @@ SONDERFALL PASSWORT!!!
 								<tbody>
 								    <tr ng-repeat="moduleright in user.employeeRights.moduleRightsList">
 								    	<td>{{moduleright.moduleID}}</td>
-								    	<td>{{getModule(moduleright.moduleID)}}</td>
+								    	<td><select ng-model="moduleright.moduleID" ng-options="Module.moduleID as Module.name for Module in ModuleList"></select><a style="margin-left: 10px;" ng-click="removeModule()"><i class="icon-minus"></i></a></td>
 								    	<td><input type="checkbox" ng-model="moduleright.canEdit"></td>
-								    	<td> <input type="checkbox" ng-model="moduleright.canDelete"></td>
+								    	<td><input type="checkbox" ng-model="moduleright.canDelete"></td>
 								    </tr>
 								</tbody>
 							</table>
@@ -195,7 +196,7 @@ SONDERFALL PASSWORT!!!
 								<thead>
 									<tr>
 										<th class="rightID">#</th>
-										<th class="rightName">Event Name</th>
+										<th class="rightName">Event Name<a style="margin-left: 20px;" ng-click="addEvent()"><i class="icon-plus"></i></a></th>
 										<th class="rightEdit">Bearbeiten</th>
 										<th class="rightDelete">L&ouml;schen</th>
 									</tr>
@@ -203,7 +204,7 @@ SONDERFALL PASSWORT!!!
 								<tbody>
 								    <tr ng-repeat="eventright in user.employeeRights.eventRightsList">
 								    	<td>{{eventright.eventID}}</td>
-								    	<td>{{getEvent(eventright.eventID)}}</td>
+								    	<td><select ng-model="eventright.eventID" ng-options="Event.eventID as Event.name for Event in EventList"></select><a style="margin-left: 10px;" ng-click="removeEvent()"><i class="icon-minus"></i></a></td>
 								    	<td><input type="checkbox" ng-model="eventright.canEdit"></td>
 								    	<td> <input type="checkbox" ng-model="eventright.canDelete"></td>
 								    </tr>

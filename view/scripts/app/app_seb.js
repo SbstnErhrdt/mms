@@ -228,9 +228,9 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 	/*
 		PRINT ROUTE
 	 */
-	 $routeProvider.when("print/modulehandbook", {
+	 $routeProvider.when("/print/modulehandbook", {
 		templateUrl: pURL+"print/modulehandbook.html",
-		//controller: printModulehandbookCtrl
+		controller: printModulehandbookCtrl
 	});
 
 });
@@ -839,7 +839,7 @@ MMSApp.factory("UserFactory", function($http, $q) {
         } else {
             // Error
             console.log("Error: Es wurden nicht alle nötigen Felder (email) ausgefüllt.");
-        }	
+        }
 	};
 
 	return factory;

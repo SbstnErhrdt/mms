@@ -51,8 +51,9 @@ var Module = {
 		</div>
 		<div class="span4">
 			<h4>Alle Modulhandb&uuml;cher von {{subject.name}}</h4>
-			<ul class="backward" ng-repeat="modulehandbook in modulehandbooks">
-				<li><a href="#/show/modulehandbook?modulehandbookID={{modulehandbook.modulehandbookID}}" class="btn"><i class="icon-arrow-left"></i> {{modulehandbook.name}}</a></li>
+
+			<ul class="backward">
+				<li><a href="#/show/modulehandbook?modulehandbookID={{modulehandbook.moduleHandbookID}}" class="btn"><i class="icon-arrow-left"></i> {{modulehandbook.name}}</a></li>
 			</ul>
 		</div>
 		<div class="span4">

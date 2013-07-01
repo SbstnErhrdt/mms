@@ -662,7 +662,7 @@ function showUserCtrl($scope, $routeParams, UserFactory) {
 	}
 }
 
-function createUserCtrl($scope, $location, UserFactory) {
+function createUserCtrl($scope, $location, UserFactory, StudycourseFactory, ModuleHandbookFactory, SubjectFactory, ModuleFactory, EventFactory) {
 
 	$scope.createUser = function() {
 		if($scope.user.email && $scope.user.firstName && $scope.user.lastName && $scope.user.password1 && $scope.user.password2) {
@@ -699,7 +699,13 @@ function createUserCtrl($scope, $location, UserFactory) {
 						employeeRights: {
 							isAdmin: $scope.user.employeeRights.isAdmin,
 							canDeblockModule: $scope.user.employeeRights.canDeblockModule,
-							canDeblockCriticalModule: $scope.user.employeeRights.canDeblockCriticalModule
+							canDeblockCriticalModule: $scope.user.employeeRights.canDeblockCriticalModule,
+                            studycourseRightsList : $scope.user.employeeRights.studycourseRightsList,
+                            subjectRightsList : $scope.user.employeeRights.subjectRightsList,
+                            moduleRightsList : $scope.user.employeeRights.moduleRightsList,
+                            eventRightsList : $scope.user.employeeRights.eventRightsList,
+                            moduleHandbookRightsList : $scope.user.employeeRights.moduleHandbookRightsList
+
 						},
 						address: $scope.user.adress,
 						talkTime: $scope.user.talkTime,
@@ -721,12 +727,117 @@ function createUserCtrl($scope, $location, UserFactory) {
 			sendError("Ihre Angaben sind nicht vollständig.");
 		}
 	};
+
+    var employeeRights = {
+        studycourseRightsList : [],
+        subjectRightsList : [],
+        moduleHandbookRightsList : [],
+        moduleRightsList : [],
+        eventRightsList : []
+    }
+    $scope.user = {};
+    $scope.user.employeeRights = employeeRights;
+
+    function init () {
+        StudycourseFactory.getStudycourses().then(function (studycourses) {
+            $scope.StudycourseList = studycourses;
+            console.log(studycourses);
+        });
+        ModuleHandbookFactory.getModuleHandbooks().then(function (modulehandbooks) {
+            $scope.ModuleHandbookList = modulehandbooks;
+        });
+
+        SubjectFactory.getSubjects().then(function (subjects) {
+            $scope.SubjectList = subjects;
+        });
+
+        ModuleFactory.getModules().then(function (modules) {
+            $scope.ModuleList = modules;
+        });
+
+        EventFactory.getEvents().then(function (events) {
+            $scope.EventList = events;
+            console.log(events);
+        });
+    }
+    init();
+
+    $scope.addStudyCourse = function () {
+        var newCourse = {
+            canCreateChilds : false,
+            canDelete : false,
+            canEdit : false,
+            studycourseID : 1
+        }
+        $scope.user.employeeRights.studycourseRightsList.push(newCourse);
+    }
+
+    $scope.removeStudyCourse = function () {
+        $scope.user.employeeRights.studycourseRightsList.pop();
+    }
+
+    $scope.addModuleHandbook = function () {
+        var newHandbook = {
+            canDelete: false,
+            canEdit: false,
+            moduleHandbookID: 1
+        }
+        $scope.user.employeeRights.moduleHandbookRightsList.push(newHandbook);
+    }
+
+    $scope.removeModuleHandbook = function () {
+        $scope.user.employeeRights.moduleHandbookRightsList.pop();
+    }
+
+    $scope.addSubject = function () {
+        var newSubject = {
+            canCreateChilds: false,
+            canDelete: false,
+            canEdit: false,
+            subjectID: 1
+        }
+        $scope.user.employeeRights.subjectRightsList.push(newSubject);
+    }
+
+    $scope.removeSubject = function () {
+        $scope.user.employeeRights.subjectRightsList.pop();
+    }
+
+    $scope.addModule = function () {
+        var newModule = {
+            canCreateChilds: false,
+            canDelete: false,
+            canEdit: false,
+            moduleID: 1
+        }
+        $scope.user.employeeRights.moduleRightsList.push(newModule);
+    }
+
+    $scope.removeModule = function () {
+        $scope.user.employeeRights.moduleRightsList.pop();
+    }
+
+    $scope.addEvent = function () {
+        var newEvent = {
+            canDelete: false,
+            canEdit: false,
+            eventID: 1
+        }
+        $scope.user.employeeRights.eventRightsList.push(newEvent);
+    }
+
+    $scope.removeEvent = function () {
+        $scope.user.employeeRights.eventRightsList.pop();
+    }
 }
 
 function updateUserCtrl($scope, $location, $routeParams, UserFactory, StudycourseFactory, ModuleHandbookFactory, SubjectFactory, ModuleFactory, EventFactory) {
-	if($routeParams.email) {
-		UserFactory.getUser($routeParams.email).then(function(user) {
-			$scope.user = user;
+    var user;
+    if($routeParams.email) {
+		UserFactory.getUser($routeParams.email).then(function(data) {
+            console.log(data);
+            user = data;
+			$scope.user = data;
 		}, function(error) {
 			sendError(error);
 		});
@@ -735,77 +846,96 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory, Studycours
 		sendError("No query");
 	}
 
-    var StudycourseList = [];
-    var ModuleHandbookList = [];
-    var SubjectList = [];
-    var ModuleList = [];
-    var EventList = [];
     function init () {
         StudycourseFactory.getStudycourses().then(function (studycourses) {
-            StudycourseList = studycourses;
-            console.log(StudycourseList);
+            $scope.StudycourseList = studycourses;
         });
         ModuleHandbookFactory.getModuleHandbooks().then(function (modulehandbooks) {
-            ModuleHandbookList = modulehandbooks;
-            console.log(ModuleHandbookList);
+            $scope.ModuleHandbookList = modulehandbooks;
         });
 
         SubjectFactory.getSubjects().then(function (subjects) {
-            SubjectList = subjects;
-            console.log(SubjectList);
+            $scope.SubjectList = subjects;
         });
 
         ModuleFactory.getModules().then(function (modules) {
-            ModuleList = modules;
-            console.log(ModuleList);
+            $scope.ModuleList = modules;
         });
 
         EventFactory.getEvents().then(function (events) {
-            EventList = events;
-            console.log(ModuleList);
+            $scope.EventList = events;
+            console.log(events);
         });
     }
     init();
 
-    $scope.getStudyCourse = function (id) {
-        for (var i=0; i < StudycourseList.length; i++) {
-            if (id === StudycourseList[i].studycourseID) {
-                return StudycourseList[i].name;
-            }
+    $scope.addStudyCourse = function () {
+        var newCourse = {
+            canCreateChilds : false,
+            canDelete : false,
+            canEdit : false,
+            studycourseID : 1
         }
-    };
+        $scope.user.employeeRights.studycourseRightsList.push(newCourse);
+    }
 
-    $scope.getModuleHandbook = function (id) {
-        for (var i=0; i < ModuleHandbookList.length; i++) {
-            if (id === ModuleHandbookList[i].moduleHandbookID) {
-                return ModuleHandbookList[i].name;
-            }
-        }
-    };
+    $scope.removeStudyCourse = function () {
+        $scope.user.employeeRights.studycourseRightsList.pop();
+    }
 
-    $scope.getSubject = function (id) {
-        for (var i=0; i < SubjectList.length; i++) {
-            if (id === SubjectList[i].subjectID) {
-                return SubjectList[i].name;
-            }
+    $scope.addModuleHandbook = function () {
+        var newHandbook = {
+            canDelete: false,
+            canEdit: false,
+            moduleHandbookID: 1
         }
-    };
+        $scope.user.employeeRights.moduleHandbookRightsList.push(newHandbook);
+    }
 
-    $scope.getModule = function (id) {
-        for (var i=0; i < ModuleList.length; i++) {
-            if (id === ModuleList[i].moduleID) {
-                return ModuleList[i].name;
-            }
-        }
-    };
+    $scope.removeModuleHandbook = function () {
+        $scope.user.employeeRights.moduleHandbookRightsList.pop();
+    }
 
-    $scope.getEvent = function (id) {
-        for (var i=0; i < EventList.length; i++) {
-            if (id === EventList[i].eventID) {
-                return EventList[i].name;
-            }
+    $scope.addSubject = function () {
+        var newSubject = {
+            canCreateChilds: false,
+            canDelete: false,
+            canEdit: false,
+            subjectID: 1
         }
-    };
+        $scope.user.employeeRights.subjectRightsList.push(newSubject);
+    }
+
+    $scope.removeSubject = function () {
+        $scope.user.employeeRights.subjectRightsList.pop();
+    }
+
+    $scope.addModule = function () {
+        var newModule = {
+            canCreateChilds: false,
+            canDelete: false,
+            canEdit: false,
+            moduleID: 1
+        }
+        $scope.user.employeeRights.moduleRightsList.push(newModule);
+    }
+
+    $scope.removeModule = function () {
+        $scope.user.employeeRights.moduleRightsList.pop();
+    }
+
+    $scope.addEvent = function () {
+        var newEvent = {
+            canDelete: false,
+            canEdit: false,
+            eventID: 1
+        }
+        $scope.user.employeeRights.eventRightsList.push(newEvent);
+    }
+
+    $scope.removeEvent = function () {
+        $scope.user.employeeRights.eventRightsList.pop();
+    }
 
     $scope.update = function () {
         UserFactory.updateUser($scope.user, function () {

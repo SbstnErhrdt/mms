@@ -58,7 +58,7 @@ var Event = {
 	        <p>{{_event.content}}</p>
 		</div>
         <div class="span4">
-        	<h4>Eltern</h4>
+        	<h4>Module von {{_event.name}}</h4>
         	<ul class="backward"ng-repeat="module in modules">
 				<li><a href="#/show/module?moduleID={{module.moduleID}}" class="btn"><i class="icon-arrow-left"></i> {{module.name}}</a></li>
 			</ul>

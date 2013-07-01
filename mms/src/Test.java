@@ -391,7 +391,10 @@ public class Test {
 		*/
 		
 		event.setRoom("H22");
-		cdbc.createEvent(event);
+		//cdbc.createEvent(event);
+		
+		
+		cdbc.updateEvent(event);
 		
 		
 		

@@ -202,8 +202,8 @@ function showModuleHandbooksCtrl($scope, ModuleHandbookFactory, StudycourseFacto
         return ActiveUserFactory.canDelete(id, "moduleHandbook");
     }
 }
-
-function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory) {
+// UPDATE
+function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory, StudycourseFactory, DeadlineFactory) {
 	if($routeParams.modulehandbookID) {
 		ModuleHandbookFactory.getModuleHandbook($routeParams.modulehandbookID).then(function(moduleHandbook) {
 			$scope.moduleHandbook = moduleHandbook;
@@ -212,6 +212,18 @@ function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, Sub
 			}, function(error) {
 				sendError(error);
 			});
+			StudycourseFactory.getStudycourse(moduleHandbook.studycourses_studycourseID).then(function(studycourse) {
+				$scope.studycourse = studycourse;
+			}, function(error) {
+				sendError(error);
+			});
+
+			DeadlineFactory.getDeadline(moduleHandbook.sose, moduleHandbook.year).then(function(deadline) {
+				$scope.deadline = deadline;
+			}, function(error) {
+				sendError(error);
+			});
+
 		}, function(error) {
 			sendError(error);
 		});
@@ -239,14 +251,30 @@ function deleteModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandboo
 	});
 }
 /*
+UPDATE
 * PRINT MODULEHANDBOOK CONTROLLER
 */
-function printModulehandbookCtrl($scope, ModuleHandbookFactory, StudycourseFactory, ActiveUserFactory) {
+function printModulehandbookCtrl($scope, $routeParams, ModuleHandbookFactory, StudycourseFactory, ActiveUserFactory, SubjectFactory, ModuleFactory, EventFactory) {
 	if($routeParams.modulehandbookID) {
 		ModuleHandbookFactory.getModuleHandbook($routeParams.modulehandbookID).then(function(moduleHandbook) {
 			$scope.moduleHandbook = moduleHandbook;
 			SubjectFactory.getSubjects(moduleHandbook.moduleHandbookID).then(function(subjects) {
+				console.log(subjects);
 				$scope.subjects = subjects;
+				for(var i = 0; i < subjects.length; i++) {
+
+					ModuleFactory.getModules(subjects[i].subjectID).then(function(modules) {
+						console.log(modules);
+
+						$scope.modules = modules;
+
+						for(var j = 0; j < modules.length; j++) {
+							EventFactory.getEvents(modules[j].moduleID).then(function(events){
+							$scope.events = events;
+							});
+						}
+					})
+				}
 			}, function(error) {
 				sendError(error);
 			});
@@ -283,8 +311,8 @@ function showSubjectsCtrl($scope, SubjectFactory, StudycourseFactory, ActiveUser
         return ActiveUserFactory.canDelete(id, "subject");
     }
 }
-
-function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory) {
+// UPDATE
+function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, ModuleHandbookFactory) {
 	if($routeParams.subjectID) {
 		SubjectFactory.getSubject($routeParams.subjectID).then(function(subject) {
 			$scope.subject = subject;
@@ -293,6 +321,12 @@ function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory) {
 			}, function(error) {
 				sendError(error);
 			});
+			ModuleHandbookFactory.getModuleHandbook(subject.moduleHandbooks_moduleHandbookID).then(function(moduleHandbook) {
+				$scope.modulehandbook = moduleHandbook;
+			}, function(error) {
+				sendError(error);
+			});
+
 		}, function(error) {
 			sendError(error);
 		});
@@ -371,8 +405,8 @@ function showModulesCtrl($scope, ModuleFactory, SubjectFactory, ActiveUserFactor
         return ActiveUserFactory.canDelete(id, "module");
     }
 }
-
-function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory) {
+//UPDATE
+function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, SubjectFactory) {
 	if($routeParams.moduleID) {
 		ModuleFactory.getModule($routeParams.moduleID).then(function(module) {
 			$scope.module = module;
@@ -385,8 +419,8 @@ function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory) {
 			$scope.subjects = [];
 
 			for(var i = 0; i < module.subjectIDs.length; i++) {
-				ModuleFactory.getSubject(module.subjectIDs[i]).then(function(module) {
-					$scope.modules.push(module);
+				SubjectFactory.getSubject(module.subjectIDs[i]).then(function(subject) {
+					$scope.subjects.push(subject);
 				}, function(error) {
 					sendError("Error: "+error);
 				});

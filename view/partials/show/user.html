@@ -12,13 +12,15 @@
 		<div class="span12">
 			<!--Body content-->
 			<h1>{{user.firstName}} {{user.lastName}}</h1>
-			<h2><a href="mailto:{{user.email}}">{{user.email}}</a></h2>
-			<h3>
+			<h3><a href="mailto:{{user.email}}">{{user.email}}</a></h3>
+			<p>
 				<span ng-show="user.isEmployee" class="label label-success">Mitarbeiter</span>
 				<span ng-hide="user.isEmployee" class="label">Benutzer</span>
 				<span ng-show="user.employeeRights.isAdmin" class="label label-important">Admin</span>
-			</h3>
+			</p>
 
+			</br>
+			
 			<p ng-show="user.title">
 				<strong>Titel:</strong> {{user.title}}
 			</p>

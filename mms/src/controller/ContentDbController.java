@@ -129,7 +129,7 @@ public class ContentDbController extends DbController {
 		// QUERY
 		String query = "UPDATE events SET ";
 
-		for (int i = 0; i < valueNames.length - 1; i++) {
+		for (int i = 1; i < valueNames.length - 1; i++) {
 			query += valueNames[i] + "=?, ";
 		}
 		query += valueNames[valueNames.length - 1] + "=?";
