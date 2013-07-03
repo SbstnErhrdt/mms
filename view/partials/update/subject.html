@@ -11,26 +11,26 @@
 
 			<div class="span12">
 	            <h1>{{subject.name}} bearbeiten</h1>
-	            <p class="lead">Hier k&ouml;nnen sie das Fach bearbeiten</p>
+	            <p class="lead">Hier k&ouml;nnen Sie das Fach bearbeiten</p>
 	            <form>
 				 	<div class="row-fluid">
 						<fieldset class="span4">
 							<legend>Fach-Daten</legend>
 						    <label>Name*</label>
-						    <input type="text" ng-model="subject.name" required>
-						    <span class="help-block">Bitte w&auml;len Sie einen Fachnamen.</span>
+						    <input type="text" ng-model="subject.name" placeholder="Fach" required>
+						    <span class="help-block">Bitte w&auml;hlen Sie einen Fachnamen.</span>
+
+                            <label>Zugehöriges Modulhandbuch*</label>
+                            <select ng-model="subject.moduleHandbooks_moduleHandbookID" ng-options="modulehandbook.moduleHandbookID as modulehandbook.name for modulehandbook in moduleHandbooks"></select>
+                            <br>
+                            <span class="help-block">Bitte w&auml;hlen Sie das zugehörige Modulhandbuch.</span>
 
 						    <label>Beschreibung</label>
-						    <textarea rows="5" ng-model="subject.content"></textarea>
-						    <span class="help-block">Bitte w&auml;len Sie eine Beschreibung des Fachs.</span>
+						    <textarea rows="5" ng-model="subject.content" placeholder="Beschreibung des Fachs"></textarea>
+						    <span class="help-block">Bitte w&auml;hlen Sie eine Beschreibung des Fachs.</span>
 
-						    <span ng-show="canDeblockContent">
-						    	Freigeben:  <input type="checkbox" ng-model="subject.enabled" name="enabled"><br /><br />
-						    	<span class="help-block">Fach freigeben.</span>
-							</span>
-
-						    Archivieren: <input type="checkbox" ng-model="subject.archived" name="archived"><br /><br />
-						    <span class="help-block">Fach archivieren.</span>
+                            Archivieren: <input type="checkbox" ng-model="subject.archived" name="archived"><br /><br />
+                            <span class="help-block">Fach archivieren.</span>
 
 						</fieldset>
 				 	</div>
@@ -38,7 +38,7 @@
 
 						<div class="span12">
 							<hr />
-							<input type="submit" name="submit" class="btn btn-success" value="Fach bearbeiten" />
+							<button class="btn btn-primary" type="submit" ng-click="update()">{{subject.name}} bearbeiten</button>
 						</div>
 				 	</div>
 	             </form>

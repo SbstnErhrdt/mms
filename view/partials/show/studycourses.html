@@ -37,7 +37,9 @@
 					<td><span class="label" ng-hide="studycourse.archived">nicht archiviert</span><span class="label label-warning" ng-show="studycourse.archived">archiviert</span></td>
 					<td><span class="label" ng-hide="studycourse.enabled">nicht freigegeben</span><span class="label label-success" ng-show="studycourse.enabled">freigegeben</span></td>
 					<td ng-show="isAuthorised()">
-						<a href="#/delete/studycourse?studycourseID={{studycourse.studycourseID}}" class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+
+						<a href="#delete" class="btn btn-mini btn-danger" ng-click="deleteContentModal(studycourse.studycourseID, studycourse.name, 'studycourse')" data-target="#delete" data-toggle="modal" ng-show="canDelete(studycourse.studycourseID)"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+
 						<a href="#/update/studycourse?studycourseID={{studycourse.studycourseID}}" class="btn btn-mini btn-warning" ng-show="canEdit(studycourse.studycourseID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
 
 

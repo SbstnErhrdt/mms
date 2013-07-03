@@ -23,22 +23,23 @@
 						    <span class="help-block">Bitte w&auml;len Sie einen Modulnamen.</span>
 
 						    <label>Zugehöriges Fach*</label>
-						    <select ng-model="module.subjectID">
-							  <option ng-repeat="subject in subjects">{{subject.subjectID}} - {{subject.name}}</option>
-							</select>
-						    <span class="help-block">Bitte w&auml;len Sie das zugehörige Fach.</span>
+						    <div ng-repeat="id in module.subjectIDs">
+                                <select ng-model="module.subjectIDs[$index]" ng-options="subject.subjectID as subject.name for subject in subjects">
+                                </select>
+                            </div>
+						    <span class="help-block">Bitte w&auml;hlen Sie das zugehörige Fach.</span>
 
 						    <label>Englischer Titel</label>
 						    <input type="text" ng-model="module.englishTitle" >
-						    <span class="help-block">Bitte w&auml;len Sie einen den Namen des Moduls auf Englisch.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie einen den Namen des Moduls auf Englisch.</span>
 
 						    <label>Leistungspunkte</label>
 						    <input type="text" ng-model="module.lp"  maxlength="3">
-						    <span class="help-block">Bitte w&auml;len Sie die Leistungspunkte des Moduls.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie die Leistungspunkte des Moduls.</span>
 
 						    <label>Semester Wochen Stunden</label>
 						    <input type="text" ng-model="module.sws"  maxlength="4">
-						    <span class="help-block">Bitte w&auml;len Sie die Semester Wochenstunden des Moduls.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie die Semester Wochenstunden des Moduls.</span>
 
 						    <label>Sprache</label>
 						    <select>
@@ -49,11 +50,11 @@
 							  <option>Suaheli</option>
 							  <option>Kantonesisch</option>
 							</select>
-						    <span class="help-block">Bitte w&auml;len Sie die Sprache des Moduls.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie die Sprache des Moduls.</span>
 
 						    <label>Dauer</label>
 						    <input type="text" ng-model="module.director_email"  maxlength="20">
-						    <span class="help-block"> w&auml;len Sie die Dauer des Moduls.</span>
+						    <span class="help-block"> w&auml;hlen Sie die Dauer des Moduls.</span>
 
 						    <label>Modulverantwortlicher</label>
 						    <select>
@@ -64,7 +65,7 @@
 							  <option>Uwe</option>
 							  <option>OGB</option>
 							</select>
-						    <span class="help-block">Bitte w&auml;len Sie den Modulverantwortlichen.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie den Modulverantwortlichen.</span>
 						</fieldset>
 						<fieldset class="span8">
 							<legend>Modul Inhalt</legend>
@@ -104,7 +105,7 @@
 
 						<div class="span12">
 							<hr />
-							<input type="submit" name="submit" class="btn btn-success" value="Modul bearbeiten" />
+							<input type="submit" name="submit" class="btn btn-success" ng-click="update()" value="{{module.name}} bearbeiten" />
 						</div>
 				 	</div>
 				</form>

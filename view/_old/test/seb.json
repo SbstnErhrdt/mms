@@ -1,0 +1,12 @@
+{
+"firstName":"Sebastian",
+"lastName":"Erhardt",
+"title":"Herr",
+"email":"sebastian.erhardt@uni-ulm.de",
+"graduation":"Bachelor",
+"isEmployee":false,
+"emailVerified":false,
+"matricNum":123456,
+"semester":4,
+"userRights":{"canLogin":true}
+}

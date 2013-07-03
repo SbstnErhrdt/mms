@@ -34,7 +34,9 @@
 						<td><span class="label" ng-hide="module.archived">nicht archiviert</span><span class="label label-warning" ng-show="module.archived">archiviert</span></td>
 						<td><span class="label" ng-hide="module.enabled">nicht freigegeben</span><span class="label label-success" ng-show="module.enabled">freigegeben</span></td>
 						<td ng-show="isAuthorised()">
-							<a href="#/delete/module?moduleID={{module.moduleID}}" class="btn btn-mini btn-danger" ng-show="canDelete(module.moduleID)"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+
+							<a href="#delete" class="btn btn-mini btn-danger" ng-click="deleteContentModal(module.moduleID, module.name, 'module')" data-target="#delete" data-toggle="modal" ng-show="canDelete(module.moduleID)"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+
 							<a href="#/update/module?moduleID={{module.moduleID}}" class="btn btn-mini btn-warning" ng-show="canEdit(module.moduleID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
 						</td>
 					</tr>

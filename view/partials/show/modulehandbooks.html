@@ -42,7 +42,10 @@
 					<td><span class="label" ng-hide="handbook.enabled">nicht freigegeben</span><span class="label label-success" ng-show="handbook.enabled">freigegeben</span></td>
 					<td><a href="#/print/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}" class="btn btn-mini"><i class="icon icon-print"></i> Drucken</a></td>
 					<td ng-show="isAuthorised()">
-						<a href="#/delete/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}" class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+
+						<a href="#delete" class="btn btn-mini btn-danger" ng-click="deleteContentModal(handbook.moduleHandbookID, handbook.name, 'modulehandbook')" data-target="#delete" data-toggle="modal" ng-show="canDelete(handbook.moduleHandbookID)"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+
+
 						<a href="#/update/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}" class="btn btn-mini btn-warning" ng-show="canEdit(handbook.moduleHandbookID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
 						</td>
 				</tr>

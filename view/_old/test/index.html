@@ -1,0 +1,23 @@
+<!doctype html>
+<html ng-app="App" >
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="todo.js"></script>
+   <style type="text/css">
+   	.done-true {
+  text-decoration: line-through;
+  color: grey;
+}
+   </style>
+  </head>
+<body ng-controller="User">
+  <ul>
+    <li>
+      {{userdata.firstName}} - {{userdata.lastName}}
+    </li>
+    <li>
+    	{{userdata.title}} - {{userdata.email}}
+    </li>
+  </ul>
+</body>
+</html>

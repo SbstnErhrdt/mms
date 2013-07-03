@@ -39,7 +39,9 @@
 							<td><span class="label" ng-hide="event.archived">nicht archiviert</span><span class="label label-warning" ng-show="event.archived">archiviert</span></td>
 							<td><span class="label" ng-hide="event.enabled">nicht freigegeben</span><span class="label label-success" ng-show="event.enabled">freigegeben</span></td>
 							<td ng-show="isAuthorised()" >
-								<a href="#/delete/event?eventID={{event.eventID}}"class="btn btn-mini btn-danger" ng-show="canDelete(event.eventID)"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+
+								<a href="#delete" class="btn btn-mini btn-danger" ng-click="deleteContentModal(event.eventID, event.name, 'event')" data-target="#delete" data-toggle="modal" ng-show="canDelete(event.eventID)"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+
 								<a href="#/update/event?eventID={{event.eventID}}" class="btn btn-mini btn-warning" ng-show="canEdit(event.eventID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
 							</td>
 						</tr>

@@ -45,7 +45,10 @@
 								<span ng-hide="user.isEmployee" class="label">Benutzer</span>
 								<span ng-show="user.employeeRights.isAdmin" class="label label-important">Admin</span>
 							</td>
-							<td><a href="#/delete/user?email={{user.email}}"class="btn btn-mini btn-danger"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+							<td>
+								<a href="#delete" class="btn btn-mini btn-danger" ng-click="deleteUserModal(user.email)" data-target="#delete" data-toggle="modal"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
+
+
 								<a href="#/update/user?email={{user.email}}" class="btn btn-mini btn-warning"><i class="icon-refresh icon-white"></i> bearbeiten</a></td>
 						</tr>
 					</tbody>

@@ -803,7 +803,7 @@ MMSApp.factory("UserFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
-	factory.updateUser = function(user,callback) {
+	factory.updateUser = function(user, callback) {
         if(user.email) {
 
             var url = hURL+"update/user";
@@ -1384,6 +1384,43 @@ MMSApp.factory("ModuleFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
+	factory.updateModule = function(module, callback) {
+		if(module.name && module.subjectIDs) {
+
+			var url = factory.checkSingularURL("update");
+            if(url.error) {
+                return url.error;
+            }
+
+            $http({
+            	method: "POST",
+            	url: url,
+            	data: module
+            }).success(function(data, status, headers, config) {
+            	if(data.error) {
+                    // Error
+                    console.log("Servernachricht: "+data.error.message);
+                } else if(data === "null") {
+                    // Error
+                    console.log("Der Server lieferte 'null' zurück.");
+                } else {
+                    if(module.name == data.name) {
+                        console.log("Modul wurde geupdated.");
+                    } else {
+                        console.log("Modul wurde nicht geupdated.");
+                    }
+                }
+                callback();
+            }).error(function(data, status, headers, config) {
+            	sendError("Error: "+data+" - "+status);
+                callback();
+            });
+
+		} else {
+			sendError("Es wurden nicht alle Felder ausgefüllt.");
+		}
+	};
+
 	factory.checkSingularURL = function(method, moduleID) {
 		if(method) {
 
@@ -1552,6 +1589,44 @@ MMSApp.factory("SubjectFactory", function($http, $q) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
+	};
+
+	factory.updateSubject = function(subject, callback) {
+		if(subject.name && subject.moduleHandbooks_moduleHandbookID) {
+
+			var url = factory.checkSingularURL("update");
+            if(url.error) {
+                return url.error;
+            }
+
+            $http({
+            	method: "POST",
+            	url: url,
+            	data: subject
+            }).success(function(data, status, headers, config) {
+            	if(data.error) {
+                    // Error
+                    console.log("Servernachricht: "+data.error.message);
+                } else if(data === "null") {
+                    // Error
+                    console.log("Der Server lieferte 'null' zurück.");
+                } else {
+                    
+                    if(subject.name == data.name) {
+                        console.log("Fach wurde geupdated.");
+                    } else {
+                        console.log("Fach wurde nicht geupdated.");
+                    }
+                }
+                callback();
+            }).error(function(data, status, headers, config) {
+            	sendError("Error: "+data+" - "+status);
+                callback();
+            });
+
+		} else {
+			sendError("Es wurden nicht alle Felder ausgefüllt.");
+		}
 	};
 
 	factory.checkSingularURL = function(method, subjectID) {
@@ -1724,6 +1799,43 @@ MMSApp.factory("ModuleHandbookFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
+	factory.updateModuleHandbook = function(moduleHandbook, callback) {
+		if(moduleHandbook.name && moduleHandbook.studycourses_studycourseID && moduleHandbook.year && moduleHandbook.semester) {
+
+			var url = factory.checkSingularURL("update");
+			if(url.error) {
+				return url.error;
+			}
+
+			$http({
+				method: "POST",
+				url: url,
+				data: moduleHandbook
+			}).success(function(data, status, headers, config) {
+				if(data.error) {
+                    // Error
+                    console.log("Servernachricht: "+data.error.message);
+                } else if(data === "null") {
+                    // Error
+                    console.log("Der Server lieferte 'null' zurück.");
+                } else {
+                    console.log(data);
+                    if(moduleHandbook.name == data.name) {
+                        console.log("Modulhandbuch wurde geupdated.");
+                    } else {
+                        console.log("Modulhandbuch wurde nicht geupdated.");
+                    }
+                }
+                callback();
+			}).error(function(data, status, headers, config) {
+				sendError("Error: "+data+" - "+status);
+                callback();
+			});	
+		} else {
+			sendError("Es wurden nicht alle Felder ausgefüllt.");
+		}
+	};
+
 	factory.checkSingularURL = function(method, moduleHandbookID) {
 		if(method) {
 			var url = hURL+method+"/modulehandbook";
@@ -1762,16 +1874,45 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 	};
 	var Studycourses = [];
 
-	factory.createStudycourse = function(studycourse) {
-		// BENÖTIGTE FELDER - FIX THIS
-		if(studycourse.name) {
+    factory.createStudycourse = function(studycourse, callback) {
+        if(studycourse.name) {
+            var url = factory.checkSingularURL("create");
 
+            if(url.error) {
+                return url.error;
+            }
 
-		} else {
-			// Error
-			console.log("Error: Es wurden nicht alle Felder ausgefüllt.");
-		}
-	};
+            $http({
+                method: "POST",
+                url: url,
+                data: studycourse
+            }).success(function(data, status, headers, config) {
+
+                    if(data.error) {
+                        // Error
+                        console.log("Servernachricht: "+data.error.message);
+                    } else if(data === "null") {
+                        // Error
+                        console.log("Der Server lieferte 'null' zurück.");
+                    } else {
+                        console.log(data);
+                        if(studycourse.name == data.name) {
+                            console.log("Fach wurde erstellt.");
+                        } else {
+                            console.log("Fach wurde nicht erstellt.");
+                        }
+                    }
+                    callback();
+                }).error(function(data, status, headers, config) {
+                    sendError("Error: "+data+" - "+status);
+                    callback();
+                });
+
+        } else {
+            // Error
+            sendError("Error: Es wurden nicht alle Felder ausgefüllt.");
+        }
+    };
 
 	factory.getStudycourse = function(studycourseID) {
 
@@ -1858,6 +1999,44 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
+	};
+
+	factory.updateStudycourse = function(studycourse, callback) {
+		if(studycourse.name && studycourse.current_moduleHandbook) {
+
+			var url = factory.checkSingularURL("update");
+			if(url.error) {
+                return url.error;
+            }
+
+            $http({
+            	method: "POST",
+            	url: url,
+            	data: studycourse
+            }).success(function(data, status, headers, config) {
+            	if(data.error) {
+                    // Error
+                    console.log("Servernachricht: "+data.error.message);
+                } else if(data === "null") {
+                    // Error
+                    console.log("Der Server lieferte 'null' zurück.");
+                } else {
+                    console.log(data);
+                    if(studycourse.name == data.name) {
+                        console.log("Studiengang wurde geupdated.");
+                    } else {
+                        console.log("Studiengang wurde nicht geupdated.");
+                    }
+                }
+                callback();
+            }).error(function(data, status, headers, config) {
+            	sendError("Error: "+data+" - "+status);
+                callback();
+            });
+
+		} else {
+			sendError("Es wurden nicht alle Felder ausgefüllt.");
+		}
 	};
 
 	factory.checkSingularURL = function(method, studycourseID) {
@@ -2023,6 +2202,43 @@ MMSApp.factory("DeadlineFactory", function($http, $q) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
+	};
+
+	factory.updateDeadline = function(deadline, callback) {
+		if(deadline.deadline && deadline.sose && deadline.year) {
+
+			var url = factory.checkSingularURL("update");
+            if(url.error) {
+                return url.error;
+            }
+
+            $http({
+            	method: "POST",
+            	url: url,
+            	data: deadline
+            }).success(function(data, status, headers, config) {
+            	if(data.error) {
+                    // Error
+                    console.log("Servernachricht: "+data.error.message);
+                } else if(data === "null") {
+                    // Error
+                    console.log("Der Server lieferte 'null' zurück.");
+                } else {
+                    if(deadline.year == data.year) {
+                        console.log("Deadline wurde geupdated.");
+                    } else {
+                        console.log("Deadline wurde nicht geupdated.");
+                    }
+                }
+                callback();
+            }).error(function(data, status, headers, config) {
+            	sendError("Error: "+data+" - "+status);
+                callback();
+            });
+
+		} else {
+			sendError("Es wurden nicht alle Felder ausgefüllt.");
+		}
 	};
 
 	factory.checkSingularURL = function(method, sose, year) {

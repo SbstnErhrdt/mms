@@ -18,25 +18,25 @@
 							<legend>Veranstaltung-Daten</legend>
 						    <label>Name*</label>
 						    <input type="text" ng-model="_event.name"  required>
-						    <span class="help-block">Bitte w&auml;len Sie eine Veranstaltungsname.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie eine Veranstaltungsname.</span>
 
 						    <label>Zugehöriges Modul*</label>
                             <div ng-repeat="id in _event.moduleIDs">
                                 <select ng-model="_event.moduleIDs[$index]" ng-options="module.moduleID as module.name for module in modules">
                                 </select>
                             </div>
-						    <span class="help-block">Bitte w&auml;len Sie den Dozenten.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie den Dozenten.</span>
 
 						    <label>Semesterwochenstunden</label>
 						    <input type="text" ng-model="_event.sws"  maxlength="4">
-						    <span class="help-block">Bitte w&auml;len Sie eine Stundenanzahl.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie eine Stundenanzahl.</span>
 						    <label>Dozent</label>
 							<select ng-model="_event.lecturer_email" ng-options="lecturer.email as lecturer.firstName +' '+ lecturer.lastName for lecturer in lecturers"></select>
-						    <span class="help-block">Bitte w&auml;len Sie den Dozenten.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie den Dozenten.</span>
 
 						    <label>Beschreibung</label>
 						    <textarea rows="5" ng-model="_event.content"></textarea>
-						    <span class="help-block">Bitte w&auml;len Sie eine Beschreibung der Veranstaltung.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie eine Beschreibung der Veranstaltung.</span>
 
 						</fieldset>
 						<fieldset class="span6">
@@ -50,20 +50,20 @@
 							  <option value="Praktikum">Praktikum</option>
 							  <option value="Versuch">Versuch</option>
 							</select>
-						    <span class="help-block">Bitte w&auml;len Sie den Typ.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie den Typ.</span>
 
 						    <label>Ort</label>
 						    <input type="text" ng-model="_event.place">
-						    <span class="help-block">Bitte w&auml;len Sie den Ort.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie den Ort.</span>
 
 						    <label>Raum</label>
 						    <input type="text" ng-model="_event.room">
-						    <span class="help-block">Bitte w&auml;len Sie den Raum.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie den Raum.</span>
 
 						    <label>Zeiten</label>
 						    <textarea rows="3" ng-model="_event.times"></textarea>
 						    <span class="help-block">
-						    	Bitte w&auml;len Sie die Zeiten der Veranstaltung.<br />
+						    	Bitte w&auml;hlen Sie die Zeiten der Veranstaltung.<br />
 						    	<strong>Form:</strong> FR 08:00 - 10:00<br />
 						    </span>
 
