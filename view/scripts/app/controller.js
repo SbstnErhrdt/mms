@@ -176,6 +176,18 @@ function deleteStudycourseCtrl($scope, $routeParams, $location, StudycourseFacto
 	});
 }
 
+function createStudycourseCtrl ($scope, $location, StudycourseFactory, ModuleHandbookFactory) {
+    ModuleHandbookFactory.getModuleHandbooks().then(function (handbooks) {
+        $scope.modulehandbooks = handbooks;
+    })
+
+    $scope.send = function () {
+        StudycourseFactory.createStudycourse($scope.studycourse, function() {
+            $location.url("/show/studycourses")
+        });
+    }
+}
+
 /*
 * MODULEHANDBOOK CONTROLLER
 */
@@ -203,7 +215,7 @@ function showModuleHandbooksCtrl($scope, ModuleHandbookFactory, StudycourseFacto
     }
 }
 
-function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory) {
+function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory, StudycourseFactory, DeadlineFactory) {
 	if($routeParams.modulehandbookID) {
 		ModuleHandbookFactory.getModuleHandbook($routeParams.modulehandbookID).then(function(moduleHandbook) {
 			$scope.moduleHandbook = moduleHandbook;
@@ -212,6 +224,18 @@ function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, Sub
 			}, function(error) {
 				sendError(error);
 			});
+			StudycourseFactory.getStudycourse(moduleHandbook.studycourses_studycourseID).then(function(studycourse) {
+				$scope.studycourse = studycourse;
+			}, function(error) {
+				sendError(error);
+			});
+
+			DeadlineFactory.getDeadline(moduleHandbook.sose, moduleHandbook.year).then(function(deadline) {
+				$scope.deadline = deadline;
+			}, function(error) {
+				sendError(error);
+			});
+
 		}, function(error) {
 			sendError(error);
 		});
@@ -223,6 +247,22 @@ function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, Sub
 
 function updateModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory) {
 	showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory);
+}
+
+function createModulehandbookCtrl ($scope, $location, ModuleHandbookFactory, StudycourseFactory) {
+    StudycourseFactory.getStudycourses().then(function (studycourses) {
+        $scope.studycourses = studycourses;
+        console.log(studycourses);
+    });
+
+    $scope.moduleHandbook = {};
+
+    $scope.create = function () {
+        ModuleHandbookFactory.createModuleHandbook($scope.moduleHandbook, function () {
+            console.log($scope.moduleHandbook);
+            $location.url("/show/modulehandbooks");
+        });
+    }
 }
 
 function deleteModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandbookFactory) {
@@ -241,12 +281,39 @@ function deleteModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandboo
 /*
 * PRINT MODULEHANDBOOK CONTROLLER
 */
-function printModulehandbookCtrl($scope, ModuleHandbookFactory, StudycourseFactory, ActiveUserFactory) {
+function printModulehandbookCtrl($scope, $routeParams, ModuleHandbookFactory, StudycourseFactory, ActiveUserFactory, SubjectFactory, ModuleFactory, EventFactory) {
 	if($routeParams.modulehandbookID) {
 		ModuleHandbookFactory.getModuleHandbook($routeParams.modulehandbookID).then(function(moduleHandbook) {
 			$scope.moduleHandbook = moduleHandbook;
 			SubjectFactory.getSubjects(moduleHandbook.moduleHandbookID).then(function(subjects) {
+				console.log(subjects);
 				$scope.subjects = subjects;
+				for(var i = 0; i < subjects.length; i++) {
+					var y = i;
+					ModuleFactory.getModules(subjects[i].subjectID).then(function(modules) {
+						console.log(modules);
+
+						console.log($scope.subjects[y]);
+						$scope.subjects[y].modules = modules;
+
+						console.log("spast");
+						(function forFunct(index) {
+							if(index >= modules.length) {
+								return 0;
+							} else {
+								EventFactory.getEvents(modules[index].moduleID, function(events) {
+									console.log(events);
+										$scope.subjects[y].modules[index].events = events;
+									console.log("modules[j]"+$scope.subjects[y].modules[index].events);
+								});
+
+								return forFunct(index+1);
+							}
+						})(0);
+					})
+					console.log("$scope.subjects["+y+"]");
+					console.log($scope.subjects[y]);
+				}
 			}, function(error) {
 				sendError(error);
 			});
@@ -258,6 +325,7 @@ function printModulehandbookCtrl($scope, ModuleHandbookFactory, StudycourseFacto
 		sendError("No query");
 	}
 }
+
 /*
 * SUBJECT CONTROLLER
 */
@@ -284,7 +352,7 @@ function showSubjectsCtrl($scope, SubjectFactory, StudycourseFactory, ActiveUser
     }
 }
 
-function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory) {
+function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, ModuleHandbookFactory) {
 	if($routeParams.subjectID) {
 		SubjectFactory.getSubject($routeParams.subjectID).then(function(subject) {
 			$scope.subject = subject;
@@ -293,6 +361,12 @@ function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory) {
 			}, function(error) {
 				sendError(error);
 			});
+			ModuleHandbookFactory.getModuleHandbook(subject.moduleHandbooks_moduleHandbookID).then(function(moduleHandbook) {
+				$scope.modulehandbook = moduleHandbook;
+			}, function(error) {
+				sendError(error);
+			});
+
 		}, function(error) {
 			sendError(error);
 		});
@@ -372,7 +446,7 @@ function showModulesCtrl($scope, ModuleFactory, SubjectFactory, ActiveUserFactor
     }
 }
 
-function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory) {
+function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, SubjectFactory) {
 	if($routeParams.moduleID) {
 		ModuleFactory.getModule($routeParams.moduleID).then(function(module) {
 			$scope.module = module;
@@ -381,6 +455,16 @@ function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory) {
 			}, function(error) {
 				sendError(error);
 			});
+
+			$scope.subjects = [];
+
+			for(var i = 0; i < module.subjectIDs.length; i++) {
+				SubjectFactory.getSubject(module.subjectIDs[i]).then(function(subject) {
+					$scope.subjects.push(subject);
+				}, function(error) {
+					sendError("Error: "+error);
+				});
+			}
 		}, function(error) {
 			sendError(error);
 		});

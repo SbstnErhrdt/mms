@@ -262,18 +262,25 @@ function printModulehandbookCtrl($scope, $routeParams, ModuleHandbookFactory, St
 				console.log(subjects);
 				$scope.subjects = subjects;
 				for(var i = 0; i < subjects.length; i++) {
-
+					var y = i;
 					ModuleFactory.getModules(subjects[i].subjectID).then(function(modules) {
 						console.log(modules);
 
-						$scope.modules = modules;
+						console.log($scope.subjects[y]);
+						$scope.subjects[y].modules = modules;
 
 						for(var j = 0; j < modules.length; j++) {
+							var k = j;
+							console.log("aussen "+k);
 							EventFactory.getEvents(modules[j].moduleID).then(function(events){
-							$scope.events = events;
+								console.log("innen "+k);
+								$scope.subjects[y].modules[k].events = events;
+								console.log("modules[k]"+$scope.subjects[y].modules[k].event);
 							});
 						}
 					})
+					console.log("$scope.subjects["+y+"]");
+					console.log($scope.subjects[y]);
 				}
 			}, function(error) {
 				sendError(error);

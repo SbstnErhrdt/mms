@@ -110,13 +110,13 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 	});
 
 	$routeProvider.when("/create/studycourse", {
-		templateUrl: pURL+"create/studycourse.html"
-		//controller: createStudycourseCtrl
+		templateUrl: pURL+"create/studycourse.html",
+		controller: createStudycourseCtrl
 	});
 
 	$routeProvider.when("/create/modulehandbook", {
-		templateUrl: pURL+"create/modulehandbook.html"
-		//controller: createModulehandbookCtrl
+		templateUrl: pURL+"create/modulehandbook.html",
+		controller: createModulehandbookCtrl
 	});
 
 	$routeProvider.when("/create/subject", {
@@ -228,9 +228,9 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 	/*
 		PRINT ROUTE
 	 */
-	 $routeProvider.when("print/modulehandbook", {
+	 $routeProvider.when("/print/modulehandbook", {
 		templateUrl: pURL+"print/modulehandbook.html",
-		//controller: printModulehandbookCtrl
+		controller: printModulehandbookCtrl
 	});
 
 });
@@ -1069,34 +1069,59 @@ MMSApp.factory("EventFactory", function($http, $q) {
 	/*
 	 * getEvents: Holt alle Events einer bestimmten Kategorie vom Server
 	 */
-	factory.getEvents = function(moduleID) {
+	factory.getEvents = function(moduleID, callback) {
+        if (callback) {
 
-		var url = hURL+"read/events";
+            var url = hURL+"read/events";
 
-		if(moduleID) {
-			url = url+"?moduleID="+moduleID;
-		}
+            if(moduleID) {
+                url = url+"?moduleID="+moduleID;
+            }
 
-		var deferred = $q.defer();
-		$http.get(url).success(function(data, status) {
+            $http.get(url).success(function(data, status) {
+                if(data.error) {
+                    // Error
+                    console.log("Servernachricht: "+data.error.message);
+                } else if(data === "null") {
+                    // Error
+                    console.log("Der Server lieferte 'null' zurück.");
+                } else {
+                    // Success
+                    Events = data;
+                    callback(data);
+                }
 
-			if(data.error) {
-				// Error
-				console.log("Servernachricht: "+data.error.message);
-			} else if(data === "null") {
-				// Error
-				console.log("Der Server lieferte 'null' zurück.");
-			} else {
-				// Success
-				Events = data;
-				deferred.resolve(Events);
-			}
+            }).error(function(data, status) {
+                    console.log("Error: "+data+" - Status:"+status);
+                });
+        } else {
+            var url = hURL+"read/events";
 
-		}).error(function(data, status) {
-			console.log("Error: "+data+" - Status:"+status);
-			deferred.reject(data);
-		});
-		return deferred.promise;
+            if(moduleID) {
+                url = url+"?moduleID="+moduleID;
+            }
+
+            var deferred = $q.defer();
+            $http.get(url).success(function(data, status) {
+
+                if(data.error) {
+                    // Error
+                    console.log("Servernachricht: "+data.error.message);
+                } else if(data === "null") {
+                    // Error
+                    console.log("Der Server lieferte 'null' zurück.");
+                } else {
+                    // Success
+                    Events = data;
+                    deferred.resolve(Events);
+                }
+
+            }).error(function(data, status) {
+                console.log("Error: "+data+" - Status:"+status);
+                deferred.reject(data);
+            });
+            return deferred.promise;
+        }
 	};
 
 	factory.deleteEvent = function(eventID) {
@@ -1568,16 +1593,45 @@ MMSApp.factory("ModuleHandbookFactory", function($http, $q) {
 	};
 	var ModuleHandbooks = [];
 
-	factory.createModuleHandbook = function(moduleHandbook) {
-		// BENÖTIGTE FELDER - FIX THIS
-		if(moduleHandbook.name) {
+    factory.createModuleHandbook = function(moduleHandbook, callback) {
+        if(moduleHandbook.name) {
+            var url = factory.checkSingularURL("create");
 
+            if(url.error) {
+                return url.error;
+            }
 
-		} else {
-			// Error
-			console.log("Error: Es wurden nicht alle Felder ausgefüllt.");
-		}
-	};
+            $http({
+                method: "POST",
+                url: url,
+                data: moduleHandbook
+            }).success(function(data, status, headers, config) {
+
+                    if(data.error) {
+                        // Error
+                        console.log("Servernachricht: "+data.error.message);
+                    } else if(data === "null") {
+                        // Error
+                        console.log("Der Server lieferte 'null' zurück.");
+                    } else {
+                        console.log(data);
+                        if(moduleHandbook.name == data.name) {
+                            console.log("Fach wurde erstellt.");
+                        } else {
+                            console.log("Fach wurde nicht erstellt.");
+                        }
+                    }
+                    callback();
+                }).error(function(data, status, headers, config) {
+                    sendError("Error: "+data+" - "+status);
+                    callback();
+                });
+
+        } else {
+            // Error
+            sendError("Error: Es wurden nicht alle Felder ausgefüllt.");
+        }
+    };
 
 	factory.getModuleHandbook = function(moduleHandbookID) {
 

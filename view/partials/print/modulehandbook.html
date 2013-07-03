@@ -17,7 +17,7 @@
 				<div ng-repeat="subject in subjects">
 						<h2>Fach: {{subject.name}}</h2>
 						<p>{{subject.content}}</p>
-						<div ng-repeat="module in modules">
+						<div ng-repeat="module in subject.modules">
 							<h3>Modul: {{module.name}}</h3>
 							<dl>
 				                <dt>Dauer</dt>
@@ -47,7 +47,7 @@
 				                <dt>literature</dt>
 				                <dd>{{module.literature}}</dd>
 				            </dl>
-				            <div ng-repeat="_event in events">
+				            <div ng-repeat="_event in module.events">
 				            	<h4>Veranstaltung: {{_event.name}}</h4>
 				            	<dl>
 					                <dt>EventID</dt>
