@@ -20,7 +20,7 @@
 							<legend>Modul Daten</legend>
 						    <label>Name*</label>
 						    <input type="text" ng-model="module.name" name="name" placeholder="Modulname"required>
-						    <span class="help-block">Bitte w&auml;len Sie einen Modulnamen.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie einen Modulnamen.</span>
 
 					    	<label>Zugehöriges Fach*<a style="margin-left: 20px;" ng-click="addSubject()"><i class="icon-plus"></i></a></label>
 					    		<div ng-repeat="subjects in subjectList">
@@ -34,19 +34,19 @@
 
 						    <label>Englischer Titel</label>
 						    <input type="text" ng-model="module.englishTitle" name="englishTitle" placeholder="English">
-						    <span class="help-block">Bitte w&auml;len Sie einen den Namen des Moduls auf Englisch.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie einen den Namen des Moduls auf Englisch.</span>
 
 						    <label>Leistungspunkte</label>
 						    <input type="text" ng-model="module.lp" name="lp" placeholder="3" maxlength="3">
-						    <span class="help-block">Bitte w&auml;len Sie die Leistungspunkte des Moduls.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie die Leistungspunkte des Moduls.</span>
 
 						    <label>Semester Wochen Stunden</label>
 						    <input type="text" ng-model="module.sws" name="sws" placeholder="10" maxlength="4">
-						    <span class="help-block">Bitte w&auml;len Sie die Semester Wochenstunden des Moduls.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie die Semester Wochenstunden des Moduls.</span>
 
 						    <label>Kürzel</label>
 						    <input type="text" ng-model="module.token" name="token" placeholder="10" maxlength="4">
-						    <span class="help-block">Bitte w&auml;len Sie die Semester Wochenstunden des Moduls.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie die Semester Wochenstunden des Moduls.</span>
 
 						    <label>Sprache</label>
 						    <select ng-model="module.language">
@@ -57,22 +57,16 @@
 							  <option>Suaheli</option>
 							  <option>Kantonesisch</option>
 							</select>
-						    <span class="help-block">Bitte w&auml;len Sie die Sprache des Moduls.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie die Sprache des Moduls.</span>
 
 						    <label>Dauer</label>
 						    <input type="text" ng-model="module.duration" name="duration" placeholder="10" maxlength="20">
 						    <span class="help-block"> W&auml;hlen Sie die Dauer des Moduls.</span>
 
 						    <label>Modulverantwortlicher</label>
-						    <select ng-model="module.director_email">
-							  <option>Hans Peter Reck</option>
-							  <option>Franz Hauck</option>
-							  <option>Kargl</option>
-							  <option>Prof. Dr. Dr. Peter Dadam</option>
-							  <option>Uwe</option>
-							  <option>OGB</option>
+						    <select ng-model="module.director_email" ng-options="user.email as user.title +' '+ user.firstName +' '+user.lastName for user in users">
 							</select>
-						    <span class="help-block">Bitte w&auml;len Sie den Modulverantwortlichen.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie den Modulverantwortlichen.</span>
 						</fieldset>
 						<fieldset class="span8">
 							<legend>Modul Inhalt</legend>

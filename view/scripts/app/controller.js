@@ -1,11 +1,31 @@
 /*
 
-	Tabs Projekt! Spaces könnt ihr nehmen, dann aber VIER und ja nicht 2!!!
-	I DREH EICH OIGAHENDIG S KNICK ROM A WENN IH
+	Datei: controller.js
+
+	Beschreibung: Die controller.js realisiert den Aufruf, sowie die Kommunikation zwischen
+	Client und Server. Sie dient, wie der Name es schon suggeriert, als Controller
+	Alle Methoden die im Interface sichtbar sind (im $scope sichtbar) werden in dieser Datei implementiert.
 
 */
 
+
+/*
+
+	Funktion activeUserCtrl
+
+	Beschreibung: Die Aufgabe dieser Methode ist es zu überprüfen ob der Benutzer eingeloggt ist oder nicht.
+	Sie realisiert außerdem die Methode "login", welche die vom Benutzer eingegebenen Logindaten an den Server weiterschickt.
+
+	Außerdem wird mit $cookies['JSESSIONID'] die Cookies des eventuell schon eingeloggten Benutzer abgefragt.
+	Gibt der Server nach Anfrage ein activeUser-Objekt, so ist der User tatsächlich eingelogt.
+
+	Zusätzlich werden einige Methoden für den modalen Löschen Dialog implementiert.
+
+ */
 function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
+
+	// Methode login: Überprüft und schickt die vom Benutzer eingegebenen Logindaten an den Server
+	// und wartet darauf eine Antwort auszuwerten
 	$scope.login = function() {
 		if($scope.email && $scope.password) {
 			delete $cookies['JSESSIONID'];
@@ -56,6 +76,8 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 		}
 	};
 
+	// Überprüfung ob der Benutzer eingeloggt ist, also ob er zur Zeit ein Cookie besitzt oder nicht
+
 	if($cookies['JSESSIONID']) {
 		console.log("DEBUG: loged in");
 
@@ -78,6 +100,9 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 
 
 	// DELETE MODAL Funktionen
+	// 
+	// Methode deleteUserModal: Wird von der GUI aufgerufen und ändert den Link des Löschen Buttons des modalen Dialogs
+	// Methode wird nur aufgerufen beim Löschen eines Benutzers
 	$scope.deleteUserModal = function(email) {
 		$scope.toDeleteObject = {
 			name: email
@@ -86,6 +111,9 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 		$("#deleteButton").attr("href", "#/delete/user?email="+email);
 	};
 
+	// Methode deleteContentModal: Diese Methode wird immer dann aufgerufen, wenn ein Contentobjekt, also
+	// alle unten im If-Statement aufgelisteten Objekte, gelöscht wird.
+	// Sie ist, wie deleteUserModal, dafür zuständig den Link des modalen Dialogs zu manipulieren.
 	$scope.deleteContentModal = function(id, name, type) {
 		if(type || type === "studycourse" || type === "modulehandbook" || type === "module" || type === "subject" || type === "event") {
 			$scope.toDeleteObject = {
@@ -97,7 +125,7 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 		}	
 	};
 
-
+	// Methode hide: Versteckt den modalen Dialog #delete
 	$scope.hide = function() {
 		$("#delete").modal('hide');
 	};
@@ -114,6 +142,14 @@ function overviewCtrl($scope) {
 	// Does nothing
 }
 
+/*
+
+	Funktion: navigationCtrl
+
+	Beschreibung: Beinhaltet die Methode logout: Drückt der Benutzer auf ausloggen, wird mit dieser Methode
+	sein Cookie gelöscht, er wird via GET request vom Server ausgeloggt und die Seite wird neu geladen.
+
+ */
 function navigationCtrl($http, $scope, $cookies, $location, ActiveUserFactory) {
 	$scope.logout = function() {
         console.log("click");
@@ -126,11 +162,17 @@ function navigationCtrl($http, $scope, $cookies, $location, ActiveUserFactory) {
                 console.log("couldn't log out")
             });
 	};
-
-
-
 }
 
+/*
+
+	Funktion: registerCtrl
+
+	Beschreibung: Die Methode implementiert die Registrierenfunktion des Programms,
+	sie stellt zunächst sicher, dass nur ausgeloggte Benutzer sich registrieren können, validiert die gemachten
+	Eingaben des unregistrierten Benutzers, kreiert dann einen activeUser und schickt diesen via factory an den Server
+
+ */
 function registerCtrl($scope, $cookies, $location, ActiveUserFactory) {
 	if($cookies['JSESSIONID']) {
 		sendError("Sie sind bereits eingeloggt.");
@@ -161,29 +203,57 @@ function registerCtrl($scope, $cookies, $location, ActiveUserFactory) {
 }
 
 /*
+* 
+* 
 * STUDYCOURSE CONTROLLER
+*
+* 
 */
+
+/*
+
+	Funktion: showStudycourseCtrl
+
+	Beschreibung: Holt via factory alle Studiengänge vom Server und schickt diese an die View
+	Überprüft außerdem welche Rechte der Benutzer hat Studiengänge zu manipulieren
+
+ */
 function showStudycoursesCtrl($scope, StudycourseFactory, ActiveUserFactory) {
+
+	// Studiengänge holen
 	StudycourseFactory.getStudycourses().then(function(studycourses) {
 		$scope.studycourses = cleanResults(studycourses);
 	}, function(error) {
 		sendError(error);
 	});
+
+	// Rechte überprüfen
     $scope.isAuthorised = function() {
     	return ActiveUserFactory.isAuthorised("studycourse");
-    }
+    };
 	$scope.canEdit = function (id) {
         return ActiveUserFactory.canEdit(id, "studycourse");
-    }
+    };
 	$scope.canDelete = function (id) {
         return ActiveUserFactory.canDelete(id, "studycourse");
-    }
+    };
 }
 
+/*
+
+	Funktion: showStudycourseCtrl
+
+	Beschreibung: Holt einen bestimmten Studiengang und dessen Modulhandbücher vom Server und zeigt diese in der View an
+
+ */
 function showStudycourseCtrl($scope, $routeParams, StudycourseFactory, ModuleHandbookFactory) {
 	if($routeParams.studycourseID) {
+
+		// Studiengang holen
 		StudycourseFactory.getStudycourse($routeParams.studycourseID).then(function(studycourse) {
 			$scope.studycourse = cleanResults(studycourse);
+
+			// Modulhandbücher des Studiengangs holen
 			ModuleHandbookFactory.getModuleHandbooks(studycourse.studycourseID).then(function(moduleHandbooks) {
 				$scope.moduleHandbooks = cleanResults(moduleHandbooks);
 			}, function(error) {
@@ -198,18 +268,36 @@ function showStudycourseCtrl($scope, $routeParams, StudycourseFactory, ModuleHan
 	}
 }
 
+/*
+
+	Funktion: updateStudycourseCtrl
+
+	Beschreibung: Ist für das Bearbeiten eines Studiengangs zuständig
+	Holt sich dazu Studiengang, sowie alle zugehörigen Modulhandbücher vom Server
+	Gibt es kein aktuell ausgewähltes Modulhandbuch, so wird ein modaler Dialog aufgerufen, der den Benutzer 
+	darauf aufmerktsam macht
+
+ */
 function updateStudycourseCtrl($scope, $routeParams, $location, StudycourseFactory, ModuleHandbookFactory) {
 	if($routeParams.studycourseID) {
+
+		// Studiengang holen
 		StudycourseFactory.getStudycourse($routeParams.studycourseID).then(function(studycourse) {
 			$scope.studycourse = cleanResults(studycourse);
-
-			if(studycourse.current_moduleHandbook < 1) {
-				// Informiere den Benutzer über seine auswählbaren Modulhandbücher
-				$("#inform").modal("show");
-			}
-
+			
+			// Modulhandbuch holen
 			ModuleHandbookFactory.getModuleHandbooks(studycourse.studycourseID).then(function(moduleHandbooks) {
 				$scope.moduleHandbooks = cleanResults(moduleHandbooks);
+
+				// ggf. modalen Dialog aufrufen
+				if(moduleHandbooks.length < 1 || studycourse.current_moduleHandbook === 0) {
+					// Informiere den Benutzer über seine auswählbaren Modulhandbücher
+					$("#ueberschriftModal").html("Hinweis: Fehlende Modulhandbücher");
+					$("#informModal").html("<p style=\"font-style:italic\">Warum ist die bei der Auswahlmöglichkeit 'Zugehöriges Modulhandbuch' kein Modulhandbuch auswählbar?</p><p></p><p><b>Antwort:</b> Sie müssen zunächst Modulhandbüchern im Reiter <a href=\"#/show/modulehandbooks\">Modulhandbücher</a> einen Studiengang auswählen. Erst dann tauchen die einzelnen Modulhandbücher in dieser Ansicht auf.</p>");
+					
+					$("#inform").modal("show");
+				}
+
 			}, function(error) {
 				sendError(error);
 			});
@@ -221,14 +309,22 @@ function updateStudycourseCtrl($scope, $routeParams, $location, StudycourseFacto
 		sendError("No query");
 	}
 
+	// Methode update: Sendet die bearbeiten Dateien via factory zum Server
 	$scope.update = function() {
 		StudycourseFactory.updateStudycourse($scope.studycourse, function() {
 			$location.path("/show/studycourses");
 		});
 	};
-
 }
 
+/*
+
+	Funktion: deleteStudycourseCtrl
+
+	Beschreibung: Die Methode löscht einen bestimmten Studiengang aus dem System
+	und ruft anschließend wieder die Studiengangsübersicht auf
+
+ */
 function deleteStudycourseCtrl($scope, $routeParams, $location, StudycourseFactory) {
 	StudycourseFactory.deleteStudycourse($routeParams.studycourseID).then(function(studycourse) {
 		if(parseInt($routeParams.studycourseID) === studycourse.studycourseID) {
@@ -243,47 +339,77 @@ function deleteStudycourseCtrl($scope, $routeParams, $location, StudycourseFacto
 	});
 }
 
-function createStudycourseCtrl ($scope, $location, StudycourseFactory, ModuleHandbookFactory) {
-    ModuleHandbookFactory.getModuleHandbooks().then(function (handbooks) {
-        $scope.modulehandbooks = cleanResults(handbooks);
-    })
+/*
 
+	Funktion: createStudycourseCtrl
+
+	Beschreibung: Implementiert das Erstellen eines Studiengangs, dazu wird eine Methode send ins
+	scope gegegben die den Studiengang via factory an den Server sendet
+
+ */
+function createStudycourseCtrl ($scope, $location, StudycourseFactory, ModuleHandbookFactory) {
     $scope.send = function () {
         StudycourseFactory.createStudycourse($scope.studycourse, function() {
-            $location.url("/show/studycourses")
+            $location.url("/show/studycourses");
         });
-    }
+    };
 }
 
 /*
+* 
+* 
 * MODULEHANDBOOK CONTROLLER
+*
+* 
 */
+
+/*
+
+	Funktion: showModuleHandbooksCtrl
+
+	Beschreibung: Holt via factory alle Modulhandbücher vom Server und schickt diese an die View
+	Es wird außerdem überprüft ob der Benutzer genügende Rechte hat um Modulhandbücher zu manipulieren
+
+ */
 function showModuleHandbooksCtrl($scope, ModuleHandbookFactory, StudycourseFactory, ActiveUserFactory) {
-	// Get Modulehandbooks and Studycourses and add them to the GUI
+	// Modulhandbücher holen
 	ModuleHandbookFactory.getModuleHandbooks().then(function(moduleHandbooks) {
 		$scope.moduleHandbooks = cleanResults(moduleHandbooks);
 	}, function(error) {
 		sendError(error);
 	});
 
+	// Studiengänge holen
 	StudycourseFactory.getStudycourses().then(function(studycourses) {
 		$scope.studycourses = cleanResults(studycourses);
 	}, function(error) {
 		sendError(error);
 	});
+
+	// Rechte des Benutzers überprüfen
     $scope.isAuthorised = function() {
     	return ActiveUserFactory.isAuthorised("moduleHandbook");
-    }
+    };
 	$scope.canEdit = function (id) {
         return ActiveUserFactory.canEdit(id, "moduleHandbook");
-    }
+    };
 	$scope.canDelete = function (id) {
         return ActiveUserFactory.canDelete(id, "moduleHandbook");
-    }
+    };
 }
 
+/*
+
+	Funktion: showModulhandbookCtrl
+
+	Beschreibung: Implementiert das Anzeigen eines bestimmten Modulhandbuchs. Dazu werden außerdem zugehörige Studiengänge
+	und Deadlines benötigt
+
+ */
 function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory, StudycourseFactory, DeadlineFactory) {
 	if($routeParams.modulehandbookID) {
+
+		// Modulhandbuch holen
 		ModuleHandbookFactory.getModuleHandbook($routeParams.modulehandbookID).then(function(moduleHandbook) {
 			$scope.moduleHandbook = cleanResults(moduleHandbook);
 			SubjectFactory.getSubjects(moduleHandbook.moduleHandbookID).then(function(subjects) {
@@ -291,12 +417,15 @@ function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, Sub
 			}, function(error) {
 				sendError(error);
 			});
+
+			// Studiengänge holen
 			StudycourseFactory.getStudycourse(moduleHandbook.studycourses_studycourseID).then(function(studycourse) {
 				$scope.studycourse = cleanResults(studycourse);
 			}, function(error) {
 				sendError(error);
 			});
 
+			// Deadline holen
 			DeadlineFactory.getDeadline(moduleHandbook.sose, moduleHandbook.year).then(function(deadline) {
 				$scope.deadline = cleanResults(deadline);
 			}, function(error) {
@@ -312,14 +441,29 @@ function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, Sub
 	}
 }
 
+/*
+
+	Funktion: updateModuleHandbookCtrl
+
+	Beschreibung: Implementiert das Bearbeiten eines Modulhandbuchs, um die aktuellen Daten dieses zu bekommen
+	wird der Einfachheit halber showModuleHandbook aufgerufen und anschließend noch alle Studiengänge in die scope gespeißt
+
+	Es wird außerdem eine Methode update zur Verfügung gestellt, die via factory das bearbeitete Modulhandbuch an den 
+	Server übergibt
+
+ */
 function updateModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandbookFactory, SubjectFactory, StudycourseFactory, DeadlineFactory) {
+	
+	// Lade Modulhandbuch in die View
 	showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory, StudycourseFactory, DeadlineFactory);
 
+	// Hole Studiengänge
 	StudycourseFactory.getStudycourses().then(function (studycourses) {
         $scope.studycourses = cleanResults(studycourses);
 
     });
 
+	// Methode update: Sende bearbeitetes Modulhandbuch via factory an den Server
     $scope.update = function() {
     	ModuleHandbookFactory.updateModuleHandbook($scope.moduleHandbook, function() {
     		$location.path("/show/modulehandbooks");
@@ -328,14 +472,28 @@ function updateModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandboo
 
 }
 
+/*
+
+	Funktion: createModulehandbookCtrl
+
+	Beschreibung: Implementiert das Erstellen eines Modulhandbuchs, holt dazu alle eventuell zugehörigen
+	Studiengänge vom Server und läd diese in die View.
+
+	Die Methode create() sendet die vom Benutzer eingegebenen Daten via factory an den Server weiter
+
+ */
 function createModulehandbookCtrl ($scope, $location, ModuleHandbookFactory, StudycourseFactory) {
+
+	// Studiengänge holen
     StudycourseFactory.getStudycourses().then(function (studycourses) {
         $scope.studycourses = cleanResults(studycourses);
 
     });
 
+    // modulHandbook Variable sicherheitshalber leeren
     $scope.moduleHandbook = {};
 
+    // Methode create: Um die Daten weiterzuschicken
     $scope.create = function () {
         ModuleHandbookFactory.createModuleHandbook($scope.moduleHandbook, function () {
             $location.url("/show/modulehandbooks");
@@ -343,6 +501,13 @@ function createModulehandbookCtrl ($scope, $location, ModuleHandbookFactory, Stu
     }
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function deleteModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandbookFactory) {
 	ModuleHandbookFactory.deleteModuleHandbook($routeParams.modulehandbookID).then(function(moduleHandbook) {
 		if(parseInt($routeParams.modulehandbookID) === moduleHandbook.moduleHandbookID) {
@@ -357,8 +522,20 @@ function deleteModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandboo
 	});
 }
 /*
+* 
+* 
 * PRINT MODULEHANDBOOK CONTROLLER
+*
+* 
 */
+
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function printModulehandbookCtrl($scope, $routeParams, ModuleHandbookFactory, StudycourseFactory, ActiveUserFactory, SubjectFactory, ModuleFactory, EventFactory) {
 	if($routeParams.modulehandbookID) {
 		ModuleHandbookFactory.getModuleHandbook($routeParams.modulehandbookID).then(function(moduleHandbook) {
@@ -410,8 +587,20 @@ function printModulehandbookCtrl($scope, $routeParams, ModuleHandbookFactory, St
 }
 
 /*
+* 
+* 
 * SUBJECT CONTROLLER
+*
+* 
 */
+
+/*
+
+	Funktion: 
+
+	Beschreibung: Holt via factory alle Fächer vom Server und schickt diese an die View
+
+ */
 function showSubjectsCtrl($scope, SubjectFactory, StudycourseFactory, ActiveUserFactory) {
 	StudycourseFactory.getStudycourses().then(function(studycourses) {
 		$scope.studycourses = cleanResults(studycourses);
@@ -435,6 +624,13 @@ function showSubjectsCtrl($scope, SubjectFactory, StudycourseFactory, ActiveUser
     }
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, ModuleHandbookFactory) {
 	if($routeParams.subjectID) {
 		SubjectFactory.getSubject($routeParams.subjectID).then(function(subject) {
@@ -461,6 +657,13 @@ function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, Mo
 	}
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function createSubjectCtrl($scope, $location, SubjectFactory, ModuleHandbookFactory) {
 
 	ModuleHandbookFactory.getModuleHandbooks().then(function(data) {;
@@ -486,6 +689,13 @@ function createSubjectCtrl($scope, $location, SubjectFactory, ModuleHandbookFact
 	};
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function updateSubjectCtrl($scope, $routeParams, $location, SubjectFactory, ModuleFactory, ModuleHandbookFactory) {
 	showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, ModuleHandbookFactory);
 
@@ -502,6 +712,13 @@ function updateSubjectCtrl($scope, $routeParams, $location, SubjectFactory, Modu
 	};
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function deleteSubjectCtrl($scope, $routeParams, $location, SubjectFactory) {
 	SubjectFactory.deleteSubject($routeParams.subjectID).then(function(subject) {
 		if(parseInt($routeParams.subjectID) === subject.subjectID) {
@@ -517,8 +734,20 @@ function deleteSubjectCtrl($scope, $routeParams, $location, SubjectFactory) {
 }
 
 /*
+* 
+* 
 * MODULE CONTROLLER
+*
+* 
 */
+
+/*
+
+	Funktion: 
+
+	Beschreibung: Holt via factory alle Module vom Server und schickt diese an die View
+
+ */
 function showModulesCtrl($scope, ModuleFactory, SubjectFactory, ActiveUserFactory) {
 	SubjectFactory.getSubjects().then(function(subjects) {
 		$scope.subjects = cleanResults(subjects);
@@ -542,6 +771,13 @@ function showModulesCtrl($scope, ModuleFactory, SubjectFactory, ActiveUserFactor
     }
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, SubjectFactory) {
 	if($routeParams.moduleID) {
 		ModuleFactory.getModule($routeParams.moduleID).then(function(module) {
@@ -570,6 +806,13 @@ function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, Subje
 	}
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function createModuleCtrl($scope, $location, ModuleFactory, SubjectFactory, EmployeeFactory) {
 	$scope.subjectList = [];
 	var subjects;
@@ -629,6 +872,13 @@ function createModuleCtrl($scope, $location, ModuleFactory, SubjectFactory, Empl
 	};
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function updateModuleCtrl($scope, $routeParams, $location, ModuleFactory, EventFactory, SubjectFactory, EmployeeFactory) {
 	showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, SubjectFactory);
 
@@ -651,6 +901,13 @@ function updateModuleCtrl($scope, $routeParams, $location, ModuleFactory, EventF
 	};
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function deleteModuleCtrl($scope, $routeParams, $location, ModuleFactory) {
 	ModuleFactory.deleteModule($routeParams.moduleID).then(function(module) {
 		if(parseInt($routeParams.moduleID) === module.moduleID) {
@@ -666,8 +923,20 @@ function deleteModuleCtrl($scope, $routeParams, $location, ModuleFactory) {
 }
 
 /*
+* 
+* 
 * EVENT CONTROLLER
+*
+* 
 */
+
+/*
+
+	Funktion: 
+
+	Beschreibung: Holt via factory alle Veranstaltungen vom Server und schickt diese an die View
+
+ */
 function showEventsCtrl($scope, EventFactory, ModuleFactory, ActiveUserFactory) {
 	ModuleFactory.getModules().then(function(modules) {
 		$scope.modules = cleanResults(modules);
@@ -692,6 +961,13 @@ function showEventsCtrl($scope, EventFactory, ModuleFactory, ActiveUserFactory) 
     }
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory, UserFactory) {
 	if($routeParams.eventID) {
 		EventFactory.getEvent($routeParams.eventID).then(function(_event) {
@@ -721,6 +997,13 @@ function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory, UserFa
 	}
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function updateEventCtrl($scope, $location, $routeParams, EventFactory, ModuleFactory, UserFactory) {
 
 	EventFactory.getEvent($routeParams.eventID).then(function(event) {
@@ -758,6 +1041,13 @@ function updateEventCtrl($scope, $location, $routeParams, EventFactory, ModuleFa
     }
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function createEventCtrl($scope, $location, EventFactory, ModuleFactory, UserFactory) {
 
     $scope.moduleList = [];
@@ -822,8 +1112,13 @@ function createEventCtrl($scope, $location, EventFactory, ModuleFactory, UserFac
 	};
 }
 
+/*
 
+	Funktion: 
 
+	Beschreibung: 
+
+ */
 function deleteEventCtrl($scope, $routeParams, $location, EventFactory) {
 	// "event" ist in Javascript bereits reserviert, deswegen "_event"
 	EventFactory.deleteEvent($routeParams.eventID).then(function(_event) {
@@ -840,8 +1135,20 @@ function deleteEventCtrl($scope, $routeParams, $location, EventFactory) {
 }
 
 /*
+* 
+* 
 * USER CONTROLLER
+*
+* 
 */
+
+/*
+
+	Funktion: 
+
+	Beschreibung: Holt via factory alle Benutzer vom Server und schickt diese an die View
+
+ */
 function showUsersCtrl($scope, UserFactory) {
 	UserFactory.getUsers().then(function(users) {
 		$scope.users = cleanResults(users);
@@ -850,6 +1157,13 @@ function showUsersCtrl($scope, UserFactory) {
 	});
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function showUserCtrl($scope, $routeParams, UserFactory) {
 	if($routeParams.email) {
 		UserFactory.getUser($routeParams.email).then(function(user) {
@@ -865,6 +1179,13 @@ function showUserCtrl($scope, $routeParams, UserFactory) {
 	}
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function createUserCtrl($scope, $location, UserFactory, StudycourseFactory, ModuleHandbookFactory, SubjectFactory, ModuleFactory, EventFactory) {
 
 	$scope.createUser = function() {
@@ -1034,6 +1355,13 @@ function createUserCtrl($scope, $location, UserFactory, StudycourseFactory, Modu
     }
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function updateUserCtrl($scope, $location, $routeParams, UserFactory, StudycourseFactory, ModuleHandbookFactory, SubjectFactory, ModuleFactory, EventFactory) {
     var user;
     if($routeParams.email) {
@@ -1158,6 +1486,13 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory, Studycours
     }
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function deleteUserCtrl($scope, $routeParams, $location, UserFactory) {
 	UserFactory.deleteUser($routeParams.email).then(function(user) {
 		if(user.email === $routeParams.email) {
@@ -1172,29 +1507,21 @@ function deleteUserCtrl($scope, $routeParams, $location, UserFactory) {
 	});
 }
 
-function confirmCtrl($scope, $routeParams, $http) {
-
-	function init () {
-		console.log($routeParams.token);
-		$http({
-				method: 'GET',
-				url: "http://sopra.ex-studios.net:8080/mms/confirm?token=" + $routeParams.token
-		}).
-			success(function(data, status, headers, config) {
-				$scope.success = data.success;
-			}).
-			error(function(data, status, headers, config) {
-				sendError(data);
-			});
-	}
-
-	init();
-}
-
 /*
+* 
+* 
 * DEADLINE CONTROLLER
+*
+* 
 */
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function createDeadlineCtrl($scope, $location, DeadlineFactory) {
 	$scope.create = function() {
 		console.log($scope.deadline);
@@ -1204,6 +1531,13 @@ function createDeadlineCtrl($scope, $location, DeadlineFactory) {
 	};
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function showDeadlinesCtrl($scope, DeadlineFactory) {
 		DeadlineFactory.getDeadlines().then(function(deadlines) {
 			console.log(deadlines[0]);
@@ -1213,6 +1547,13 @@ function showDeadlinesCtrl($scope, DeadlineFactory) {
 	});
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function showDeadlineCtrl($scope, $routeParams, DeadlineFactory) {
 	if($routeParams.sose && $routeParams.year) {
 		DeadlineFactory.getDeadline($routeParams.sose, $routeParams.year).then(function(deadline) {
@@ -1226,6 +1567,13 @@ function showDeadlineCtrl($scope, $routeParams, DeadlineFactory) {
 	}
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function updateDeadlineCtrl($scope, $routeParams, $location, DeadlineFactory) {
 	showDeadlineCtrl($scope, $routeParams, DeadlineFactory);
 
@@ -1236,13 +1584,24 @@ function updateDeadlineCtrl($scope, $routeParams, $location, DeadlineFactory) {
 	};
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
 function deleteDeadlineCtrl($scope) {
 
 }
 
+/*
 
+	Funktion: 
 
+	Beschreibung: 
 
+ */
 function requestCtrl($scope, $http) {
     $scope.url = "http://sopra.ex-studios.net:8080/mms/";
 
@@ -1276,6 +1635,39 @@ function requestCtrl($scope, $http) {
     }
 }
 
+/*
+
+	Funktion: 
+
+	Beschreibung: 
+
+ */
+function confirmCtrl($scope, $routeParams, $http) {
+
+	function init () {
+		console.log($routeParams.token);
+		$http({
+				method: 'GET',
+				url: "http://sopra.ex-studios.net:8080/mms/confirm?token=" + $routeParams.token
+		}).
+			success(function(data, status, headers, config) {
+				$scope.success = data.success;
+			}).
+			error(function(data, status, headers, config) {
+				sendError(data);
+			});
+	}
+
+	init();
+}
+
+/*
+
+	Funktion: cleanResults
+
+	Beschreibung: Bereinigt die vom Server erhaltenen Objekte von null-Einträgen
+
+ */
 function cleanResults(object) {
 	for(var prop in object) {
 		if(object[prop] === "null") {

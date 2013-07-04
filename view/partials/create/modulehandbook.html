@@ -29,9 +29,12 @@
                             <input type="text" ng-model="moduleHandbook.year" placeholder="2012" required>
                             <span class="help-block">Bitte w&auml;len Sie das passende Jahr.</span>
 
-                            <label>Semester*</label>
-                            <input type="text" ng-model="moduleHandbook.semester" placeholder="SoSe" required>
-                            <span class="help-block">Bitte w&auml;len Sie das passende Semester.</span>
+                           <label>Semester</label>
+                            <select ng-model="moduleHandbook.sose" required>
+                            	<option value="true">Sommersemester</option>
+                            	<option value="false">Wintersemester</option>
+                            </select>
+                            <span class="help-block">Bitte w&auml;hlen Sie das passende Semester.</span>
 
 						    <label>Beschreibung</label>
 						    <textarea rows="5" ng-model="moduleHandbook.content" placeholder="Beschreibung des Modulhandbuchs"></textarea>

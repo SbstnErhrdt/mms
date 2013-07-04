@@ -20,7 +20,7 @@
 							<legend>Modul Daten</legend>
 						    <label>Name*</label>
 						    <input type="text" ng-model="module.name" required>
-						    <span class="help-block">Bitte w&auml;len Sie einen Modulnamen.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie einen Modulnamen.</span>
 
 						    <label>Zugehöriges Fach*</label>
 						    <div ng-repeat="id in module.subjectIDs">
@@ -53,18 +53,11 @@
 						    <span class="help-block">Bitte w&auml;hlen Sie die Sprache des Moduls.</span>
 
 						    <label>Dauer</label>
-						    <input type="text" ng-model="module.director_email"  maxlength="20">
+						    <input type="text" ng-model="module.duration"  maxlength="20">
 						    <span class="help-block"> w&auml;hlen Sie die Dauer des Moduls.</span>
 
 						    <label>Modulverantwortlicher</label>
-						    <select>
-							  <option>Hans Peter Reck</option>
-							  <option>Franz Hauck</option>
-							  <option>Kargl</option>
-							  <option>Prof. Dr. Dr. Peter Dadam</option>
-							  <option>Uwe</option>
-							  <option>OGB</option>
-							</select>
+						   <select ng-model="module.director_email" ng-options="user.email as user.title +' '+ user.firstName +' '+user.lastName for user in users"></select>
 						    <span class="help-block">Bitte w&auml;hlen Sie den Modulverantwortlichen.</span>
 						</fieldset>
 						<fieldset class="span8">

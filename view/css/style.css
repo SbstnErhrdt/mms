@@ -1,3 +1,7 @@
+body {
+	/*background-image: url(../img/skelatal_weave.png);*/
+}
+
 svg {
 	-webkit-transform-origin-y: 0%;
 	width: 100%;
@@ -145,7 +149,6 @@ ul.forward, ul.backward {
 	opacity: 0;
 	margin-top: -4px;
 	font-size: 14px;
-	margin:0 0 10px 0;
 }
 .full-width {
     width: 100%;

@@ -120,6 +120,7 @@ SONDERFALL PASSWORT!!!
                                     <th class="rightName">Studiengang Name<a style="margin-left: 20px;" ng-click="addStudyCourse()"><i class="icon-plus"></i></a></th>
                                     <th class="rightEdit">Bearbeiten</th>
                                     <th class="rightDelete">L&ouml;schen</th>
+                                    <th class="rightCreate">Erweitern</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -129,6 +130,7 @@ SONDERFALL PASSWORT!!!
                                     </select><a style="margin-left: 10px;" ng-click="removeStudyCourse()"><i class="icon-minus"></i></a></td>
                                     <td><input type="checkbox" ng-model="studycourseright.canEdit"></td>
                                     <td> <input type="checkbox" ng-model="studycourseright.canDelete"></td>
+                                    <td> <input type="checkbox" ng-model="studycourseright.canCreateChilds"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -142,6 +144,7 @@ SONDERFALL PASSWORT!!!
                                     <th class="rightName">Modulhandbuch Name<a style="margin-left: 20px;" ng-click="addModuleHandbook()"><i class="icon-plus"></i></a></th>
                                     <th class="rightEdit">Bearbeiten</th>
                                     <th class="rightDelete">L&ouml;schen</th>
+                                    <th class="rightCreate">Erweitern</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -150,6 +153,7 @@ SONDERFALL PASSWORT!!!
                                     <td><select ng-model="modulhandbookright.moduleHandbookID" ng-options="ModuleHandbook.moduleHandbookID as ModuleHandbook.name for ModuleHandbook in ModuleHandbookList"></select><a style="margin-left: 10px;" ng-click="removeModuleHandbook()"><i class="icon-minus"></i></a></td>
                                     <td><input type="checkbox" ng-model="modulhandbookright.canEdit"></td>
                                     <td> <input type="checkbox" ng-model="modulhandbookright.canDelete"></td>
+                                    <td> <input type="checkbox" ng-model="modulhandbookright.canCreateChilds"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -162,6 +166,7 @@ SONDERFALL PASSWORT!!!
                                     <th class="rightName">Fach Name<a style="margin-left: 20px;" ng-click="addSubject()"><i class="icon-plus"></i></a></th>
                                     <th class="rightEdit">Bearbeiten</th>
                                     <th class="rightDelete">L&ouml;schen</th>
+                                    <th class="rightCreate">Erweitern</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -170,6 +175,7 @@ SONDERFALL PASSWORT!!!
                                     <td><select ng-model="subjectright.subjectID" ng-options="Subject.subjectID as Subject.name for Subject in SubjectList"></select><a style="margin-left: 10px;" ng-click="removeSubject()"><i class="icon-minus"></i></a></td>
                                     <td><input type="checkbox" ng-model="subjectright.canEdit"></td>
                                     <td> <input type="checkbox" ng-model="subjectright.canDelete"></td>
+                                    <td> <input type="checkbox" ng-model="subjectright.canCreateChilds"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -182,6 +188,7 @@ SONDERFALL PASSWORT!!!
                                     <th class="rightName">Modul Name<a style="margin-left: 20px;" ng-click="addModule()"><i class="icon-plus"></i></a></th>
                                     <th class="rightEdit">Bearbeiten</th>
                                     <th class="rightDelete">L&ouml;schen</th>
+                                    <th class="rightCreate">Erweitern</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -190,6 +197,7 @@ SONDERFALL PASSWORT!!!
                                     <td><select ng-model="moduleright.moduleID" ng-options="Module.moduleID as Module.name for Module in ModuleList"></select><a style="margin-left: 10px;" ng-click="removeModule()"><i class="icon-minus"></i></a></td>
                                     <td><input type="checkbox" ng-model="moduleright.canEdit"></td>
                                     <td><input type="checkbox" ng-model="moduleright.canDelete"></td>
+                                    <td> <input type="checkbox" ng-model="moduleright.canCreateChilds"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -202,6 +210,7 @@ SONDERFALL PASSWORT!!!
                                     <th class="rightName">Event Name<a style="margin-left: 20px;" ng-click="addEvent()"><i class="icon-plus"></i></a></th>
                                     <th class="rightEdit">Bearbeiten</th>
                                     <th class="rightDelete">L&ouml;schen</th>
+                                    <th class="rightCreate">Erweitern</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -209,6 +218,7 @@ SONDERFALL PASSWORT!!!
                                     <td>{{eventright.eventID}}</td>
                                     <td><select ng-model="eventright.eventID" ng-options="Event.eventID as Event.name for Event in EventList"></select><a style="margin-left: 10px;" ng-click="removeEvent()"><i class="icon-minus"></i></a></td>
                                     <td><input type="checkbox" ng-model="eventright.canEdit"></td>
+                                    <td> <input type="checkbox" ng-model="eventright.canDelete"></td>
                                     <td> <input type="checkbox" ng-model="eventright.canDelete"></td>
                                 </tr>
                                 </tbody>

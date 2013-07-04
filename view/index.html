@@ -39,6 +39,22 @@
 			</div>
 		</div>
 
+		<!-- Inform User-->
+		<div id="inform" class="modal hide fade">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 id="ueberschriftModal">Hinweis: Fehlende Modulhandbücher</h3>
+			</div>
+			<div class="modal-body" id="informModal">
+				<p style="font-style:italic">Warum ist die bei der Auswahlmöglichkeit "Zugehöriges Modulhandbuch" kein Modulhandbuch auswählbar?</p>
+				<p></p>
+				<p><b>Antwort:</b> Sie müssen zunächst Modulhandbüchern im Reiter <a href="#/show/modulehandbooks">Modulhandbücher</a> einen Studiengang auswählen. Erst dann tauchen die einzelnen Modulhandbücher in dieser Ansicht auf.</p>
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn" data-dismiss="modal">Schließen</a>
+			</div>
+		</div>
+		
 
 		<div id="loginBar" ng-hide="isLoggedIn" class="container">
 			<div class="row-fluid">
@@ -160,6 +176,13 @@
 	<script type="text/javascript" src="scripts/app/controller.js"></script>
 	<script type="text/javascript" src="scripts/app/gui.js"></script>
 	<script type="text/javascript" src="scripts/app/bootstrap.min.js"></script>
+
+	<!-- EXTREM WICHTIG -> NICHT ENTFERNEN -->
+	<!--<script src="http://code.onion.com/fartscroll.js"></script>
+	<script type="text/javascript">
+		// Fart every 100 pixels scrolled (probably a bit much)
+    	fartscroll(50);
+	</script>-->
 
 	</body>
 </html>

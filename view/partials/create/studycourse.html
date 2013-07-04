@@ -2,7 +2,7 @@
     <div class="row-fluid">
         <ul class="span 12 breadcrumb">
             <li><a href="#/home">Home</a> <span class="divider">/</span></li>
-            <li class="active">Studienang erstellen</li>
+            <li class="active">Studiengang erstellen</li>
         </ul>
     </div>
 </div>
@@ -24,15 +24,6 @@
 						    <textarea rows="5" ng-model="studycourse.content" placeholder="Beschreibung des Studiengangs"></textarea>
 						    <span class="help-block">Bitte w&auml;hlen Sie eine Beschreibung des Studiengangs.</span>
 
-                            <label>Zugehöriges Modulhandbuch*</label>
-                            <select ng-model="studycourse.current_moduleHandbook" ng-options="modulehandbook.moduleHandbookID as modulehandbook.name for modulehandbook in modulehandbooks"></select>
-                            <span class="help-block">Bitte w&auml;hlen Sie eine Beschreibung des Studiengangs.</span>
-
-                            Archivieren: <input type="checkbox" ng-model="studycourse.archived" name="archived"><br /><br />
-                            <span class="help-block">Studiengang archivieren.</span>
-
-                            Freigeben: <input type="checkbox" ng-model="studycourse.enabled" name="archived"><br /><br />
-                            <span class="help-block">Studiengang freigeben.</span>
 						</fieldset>
 				 	</div>
 				 	<div class="row-fluid">

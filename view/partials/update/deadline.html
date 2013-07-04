@@ -14,14 +14,16 @@
             <form>
 				<legend>Deadline Daten</legend>
 				<label>Jahr</label>
-				<input type="text" ng-model="deadline.year" name="year" required>
+				<input type="text" ng-model="deadline.year" name="year" placeholder="2013" required>
 				<label>Wintersemester / Sommersemester</label>
-				<input type="radio" ng-model="sose" value="true"> Sommersemester<br />
-				<input type="radio" ng-model="sose" value="false"> Wintersemester
+				<select ng-model="deadline.sose" required>
+                	<option value="true">Sommersemester</option>
+                	<option value="false">Wintersemester</option>
+                </select>
 				<label>Deadline</label>
-				<input type="date" placeholder="2013" ng-model="deadline" >
+				<input type="date" placeholder="2013" ng-model="deadline.deadline" >
 				<hr />
-			<input ng-click="update()" type="submit" name="submit" class="btn btn-success" value="Deadline bearbeiten" />
+			<input ng-click="create()" type="submit" name="submit" class="btn btn-success" value="Deadline erstellen" />
             </form>
 		</div>
     </div>
