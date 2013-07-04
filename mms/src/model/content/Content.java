@@ -4,11 +4,28 @@ import model.DbControllable;
 
 public class Content implements DbControllable {
 
-	protected String name;
+	protected String name, content;
+	protected java.sql.Date lastModified;
 	protected boolean archived, enabled;
-	protected String content;
+	protected int version;
 
 	
+	public java.sql.Date getLastModified() {
+		return lastModified;
+	}
+
+	public void setLastModified(java.sql.Date lastModified) {
+		this.lastModified = lastModified;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
 	public boolean isEnabled() {
 		return enabled;
 	}
