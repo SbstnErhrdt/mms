@@ -140,7 +140,32 @@ public class UserDbController extends DbController {
 				e.printStackTrace();
 				return false;
 			}
-		
+
+			// EventRights
+			ArrayList<EventRights> eventRightsList = employeeRights.getEventRightsList();
+			if(!eventRightsList.isEmpty()) {
+				
+				for(EventRights eventRights : eventRightsList) {
+					query = "INSERT INTO event_rights (users_email, ";
+							
+					// Names
+					query += eventRights.toValueNames() + ") VALUES('"+user.getEmail()+"', ";
+					
+					// Values
+					query += eventRights.toValues() + ");";
+					
+					System.out.println(query);	// DEBUG
+					
+					try {
+						db.createStatement().executeUpdate(query);
+					} catch(SQLException e) {
+						e.printStackTrace();
+						return false;
+					}
+				}
+			}
+			
+			
 			// check, if list is empty, else create new module_rights entries
 			// ModuleRights
 			ArrayList<ModuleRights> moduleRightsList = employeeRights.getModuleRightsList();
@@ -165,18 +190,19 @@ public class UserDbController extends DbController {
 					}
 				}
 			}
-			// EventRights
-			ArrayList<EventRights> eventRightsList = employeeRights.getEventRightsList();
-			if(!eventRightsList.isEmpty()) {
+
+			// SubjectRights
+			ArrayList<SubjectRights> subjectRightsList = employeeRights.getSubjectRightsList();
+			if(!subjectRightsList.isEmpty()) {
 				
-				for(EventRights eventRights : eventRightsList) {
-					query = "INSERT INTO event_rights (users_email, ";
-							
+				for(SubjectRights subjectRights : subjectRightsList) {
+					query = "INSERT INTO subject_rights (users_email, ";
+										
 					// Names
-					query += eventRights.toValueNames() + ") VALUES('"+user.getEmail()+"', ";
+					query += subjectRights.toValueNames() + ") VALUES('"+user.getEmail()+"', ";
 					
 					// Values
-					query += eventRights.toValues() + ");";
+					query += subjectRights.toValues() + ");";
 					
 					System.out.println(query);	// DEBUG
 					
@@ -187,11 +213,11 @@ public class UserDbController extends DbController {
 						return false;
 					}
 				}
-			}
-
+			}			
+			
 			// ModuleHandbookRights
 			ArrayList<ModuleHandbookRights> moduleHandbookRightsList = employeeRights.getModuleHandbookRightsList();
-			if(!eventRightsList.isEmpty()) {
+			if(!moduleHandbookRightsList.isEmpty()) {
 				
 				for(ModuleHandbookRights mhbr : moduleHandbookRightsList) {
 					query = "INSERT INTO module_handbook_rights (users_email, ";
@@ -225,29 +251,6 @@ public class UserDbController extends DbController {
 					
 					// Values
 					query += studycourseRights.toValues() + ");";
-					
-					System.out.println(query);	// DEBUG
-					
-					try {
-						db.createStatement().executeUpdate(query);
-					} catch(SQLException e) {
-						e.printStackTrace();
-						return false;
-					}
-				}
-			}
-			// SubjectRights
-			ArrayList<SubjectRights> subjectRightsList = employeeRights.getSubjectRightsList();
-			if(!subjectRightsList.isEmpty()) {
-				
-				for(SubjectRights subjectRights : subjectRightsList) {
-					query = "INSERT INTO subject_rights (users_email, ";
-										
-					// Names
-					query += subjectRights.toValueNames() + ") VALUES('"+user.getEmail()+"', ";
-					
-					// Values
-					query += subjectRights.toValues() + ");";
 					
 					System.out.println(query);	// DEBUG
 					

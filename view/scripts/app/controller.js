@@ -23,7 +23,15 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 			}).
 				success(function(data, status, headers, config) {
 					if(data.error) {
-						sendError("Servernachricht: "+data.error.message);
+
+						if(data.error.method ==="login(...)") {
+							$("#ueberschriftModal").html("Fehler beim Einloggen!");
+							$("#informModal").html("<p>Im Moment können Sie sich nicht einloggen, da Sie ihre E-Mail-Adresse noch nicht bestätigt haben. Öffnen Sie zur Lösung des Problems die von uns erhaltene Email und folgen Sie dem angegebenen Link.</p>");
+
+							$("#inform").modal("show");
+						} else {
+							sendError("Servernachricht: "+data.error.message);
+						}
 					} else {
 						if(data[1].jsessionID) {
 							$cookies.JSESSIONID = data[1].jsessionID;
@@ -60,7 +68,6 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
             $scope.isLoggedIn = true;
   		}, function(error) {
  			$scope.isLoggedIn = false;
- 			console.log("ERROR HALLO TIM");
 			sendError(error);
 		});
 	} else {
@@ -80,8 +87,6 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 	};
 
 	$scope.deleteContentModal = function(id, name, type) {
-		console.log(name);
-
 		if(type || type === "studycourse" || type === "modulehandbook" || type === "module" || type === "subject" || type === "event") {
 			$scope.toDeleteObject = {
 				name: name
@@ -96,6 +101,10 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 	$scope.hide = function() {
 		$("#delete").modal('hide');
 	};
+}
+
+function updateActiveUserCtrl($scope) {
+
 }
 
 function homeCtrl($scope, $http, $cookies, $location, ActiveUserFactory) {
@@ -190,7 +199,27 @@ function showStudycourseCtrl($scope, $routeParams, StudycourseFactory, ModuleHan
 }
 
 function updateStudycourseCtrl($scope, $routeParams, $location, StudycourseFactory, ModuleHandbookFactory) {
-	showStudycourseCtrl($scope, $routeParams, StudycourseFactory, ModuleHandbookFactory);
+	if($routeParams.studycourseID) {
+		StudycourseFactory.getStudycourse($routeParams.studycourseID).then(function(studycourse) {
+			$scope.studycourse = cleanResults(studycourse);
+
+			if(studycourse.current_moduleHandbook < 1) {
+				// Informiere den Benutzer über seine auswählbaren Modulhandbücher
+				$("#inform").modal("show");
+			}
+
+			ModuleHandbookFactory.getModuleHandbooks(studycourse.studycourseID).then(function(moduleHandbooks) {
+				$scope.moduleHandbooks = cleanResults(moduleHandbooks);
+			}, function(error) {
+				sendError(error);
+			});
+		}, function(error) {
+			sendError(error);
+		});
+	} else {
+		// Error
+		sendError("No query");
+	}
 
 	$scope.update = function() {
 		StudycourseFactory.updateStudycourse($scope.studycourse, function() {
@@ -337,32 +366,37 @@ function printModulehandbookCtrl($scope, $routeParams, ModuleHandbookFactory, St
 			SubjectFactory.getSubjects(moduleHandbook.moduleHandbookID).then(function(subjects) {
 				console.log(subjects);
 				$scope.subjects = cleanResults(subjects);
-				for(var i = 0; i < subjects.length; i++) {
-					var y = i;
-					ModuleFactory.getModules(subjects[i].subjectID).then(function(modules) {
-						//console.log(modules);
+				(function outerForFunct(index1) {
+					var i = index1;
 
+					if(i >= subjects.length) {
+						return 0;
+					} else {
+						ModuleFactory.getModules($scope.subjects[i].subjectID).then(function(modules) {
+							//console.log(modules);
+
+							//console.log($scope.subjects[y]);
+							$scope.subjects[i].modules = cleanResults(modules);
+			
+							(function innerForFunct(index) {
+								if(index >= modules.length) {
+									return 0;
+								} else {
+									EventFactory.getEvents(modules[index].moduleID, function(events) {
+										
+										$scope.subjects[i].modules[index].events = cleanResults(events);
+										//console.log("modules[j]"+$scope.subjects[y].modules[index].events);
+									});
+
+									return innerForFunct(index+1);
+								}
+							})(0);
+						})
+						//console.log("$scope.subjects["+y+"]");
 						//console.log($scope.subjects[y]);
-						$scope.subjects[y].modules = cleanResults(modules);
-
-						
-						(function forFunct(index) {
-							if(index >= modules.length) {
-								return 0;
-							} else {
-								EventFactory.getEvents(modules[index].moduleID, function(events) {
-									console.log(events);
-									$scope.subjects[y].modules[index].events = cleanResults(events);
-									//console.log("modules[j]"+$scope.subjects[y].modules[index].events);
-								});
-
-								return forFunct(index+1);
-							}
-						})(0);
-					})
-					//console.log("$scope.subjects["+y+"]");
-					//console.log($scope.subjects[y]);
-				}
+						return outerForFunct(i+1);
+					}
+				})(0);
 			}, function(error) {
 				sendError(error);
 			});
@@ -404,7 +438,7 @@ function showSubjectsCtrl($scope, SubjectFactory, StudycourseFactory, ActiveUser
 function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, ModuleHandbookFactory) {
 	if($routeParams.subjectID) {
 		SubjectFactory.getSubject($routeParams.subjectID).then(function(subject) {
-			console.log(subject);
+			
 			$scope.subject = cleanResults(subject);
 			ModuleFactory.getModules(subject.subjectID).then(function(modules) {
 				$scope.modules = cleanResults(modules);
@@ -412,7 +446,7 @@ function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, Mo
 				sendError(error);
 			});
 			ModuleHandbookFactory.getModuleHandbook(subject.moduleHandbooks_moduleHandbookID).then(function(moduleHandbook) {
-				console.log(moduleHandbook);
+				
 				$scope.modulehandbook = cleanResults(moduleHandbook);
 			}, function(error) {
 				sendError(error);
@@ -536,7 +570,7 @@ function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, Subje
 	}
 }
 
-function createModuleCtrl($scope, $location, ModuleFactory, SubjectFactory) {
+function createModuleCtrl($scope, $location, ModuleFactory, SubjectFactory, EmployeeFactory) {
 	$scope.subjectList = [];
 	var subjects;
 	$scope.idList = [];
@@ -548,6 +582,12 @@ function createModuleCtrl($scope, $location, ModuleFactory, SubjectFactory) {
 		$scope.subjectList.push(data);
 	}, function(error) {
 		sendError("Error: "+error);
+	});
+
+	EmployeeFactory.getEmployees().then(function(employees) {
+		$scope.users = employees;
+	}, function(error) {
+		sendError(error);
 	});
 
 	$scope.addSubject = function () {
@@ -589,11 +629,17 @@ function createModuleCtrl($scope, $location, ModuleFactory, SubjectFactory) {
 	};
 }
 
-function updateModuleCtrl($scope, $routeParams, $location, ModuleFactory, EventFactory, SubjectFactory) {
+function updateModuleCtrl($scope, $routeParams, $location, ModuleFactory, EventFactory, SubjectFactory, EmployeeFactory) {
 	showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, SubjectFactory);
 
 	SubjectFactory.getSubjects().then(function(subjects) {
 		$scope.subjects = cleanResults(subjects);
+	}, function(error) {
+		sendError(error);
+	});
+
+	EmployeeFactory.getEmployees().then(function(employees) {
+		$scope.users = employees;
 	}, function(error) {
 		sendError(error);
 	});
@@ -1145,8 +1191,22 @@ function confirmCtrl($scope, $routeParams, $http) {
 	init();
 }
 
+/*
+* DEADLINE CONTROLLER
+*/
+
+function createDeadlineCtrl($scope, $location, DeadlineFactory) {
+	$scope.create = function() {
+		console.log($scope.deadline);
+		DeadlineFactory.createDeadline($scope.deadline, function() {
+			$location.path("/show/deadlines");
+		});
+	};
+}
+
 function showDeadlinesCtrl($scope, DeadlineFactory) {
 		DeadlineFactory.getDeadlines().then(function(deadlines) {
+			console.log(deadlines[0]);
 		$scope.deadlines = cleanResults(deadlines);
 	}, function(error) {
 		sendError(error);
@@ -1174,6 +1234,10 @@ function updateDeadlineCtrl($scope, $routeParams, $location, DeadlineFactory) {
 			$location.path("/show/deadlines");
 		});
 	};
+}
+
+function deleteDeadlineCtrl($scope) {
+
 }
 
 

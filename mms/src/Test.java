@@ -397,6 +397,5 @@ public class Test {
 		cdbc.updateEvent(event);
 		
 		
-		
 	}
 }

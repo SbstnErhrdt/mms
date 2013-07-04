@@ -2,6 +2,9 @@ package routes;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -1701,7 +1704,7 @@ public class ContentRoutes extends Routes{
 		
 		// enabled changed?
 		boolean enabledChanged = false;
-		Subject oldStudycourse = db.getSubject(studycourse.getID());
+		Studycourse oldStudycourse = db.getStudycourse(studycourse.getID());
 		if(oldStudycourse.isEnabled() != studycourse.isEnabled()) {
 			enabledChanged = true;
 		}
@@ -1846,7 +1849,7 @@ public class ContentRoutes extends Routes{
 		
 		// enabled changed?
 		boolean enabledChanged = false;
-		Subject oldModuleHandbook = db.getSubject(moduleHandbook.getID());
+		ModuleHandbook oldModuleHandbook = db.getModuleHandbook(moduleHandbook.getID());
 		if(oldModuleHandbook.isEnabled() != moduleHandbook.isEnabled()) {
 			enabledChanged = true;
 		}	
@@ -1886,41 +1889,42 @@ public class ContentRoutes extends Routes{
 						return;	
 					}
 				}
-			}
-			ArrayList<ModuleHandbookRights> actorUserModuleHandbookRightsList = actorEmployee.getEmployeeRights().getModuleHandbookRightsList();
-			if(actorUserModuleHandbookRightsList.isEmpty()) {
-				json = gson.toJson(new JsonErrorContainer(new JsonError(
-						"not allowed to update this moduleHandbook (moduleHandbookID: "+moduleHandbook.getID()+") (actorUser has no ModuleHandbookRights)", 
-						"updateModuleHandbook(...)")));		
-				try {
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
+			
+				ArrayList<ModuleHandbookRights> actorUserModuleHandbookRightsList = actorEmployee.getEmployeeRights().getModuleHandbookRightsList();
+				if(actorUserModuleHandbookRightsList.isEmpty()) {
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
+							"not allowed to update this moduleHandbook (moduleHandbookID: "+moduleHandbook.getID()+") (actorUser has no ModuleHandbookRights)", 
+							"updateModuleHandbook(...)")));		
+					try {
+						response.getWriter().write(json);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
 				}
-				return;
-			}
-			boolean canUpdate = false;
-			for(ModuleHandbookRights mhbr : actorUserModuleHandbookRightsList) {
-				if(mhbr.getModuleHandbookID() == moduleHandbook.getID()) {
-					if(mhbr.getCanEdit()) {
-						System.out.println("actorUser is allowed to update this moduleHandbook");
-						canUpdate = true;
-					} else {
-						System.out.println("actorUser is not allowed to update this moduleHandbook");
-						canUpdate = false;
+				boolean canUpdate = false;
+				for(ModuleHandbookRights mhbr : actorUserModuleHandbookRightsList) {
+					if(mhbr.getModuleHandbookID() == moduleHandbook.getID()) {
+						if(mhbr.getCanEdit()) {
+							System.out.println("actorUser is allowed to update this moduleHandbook");
+							canUpdate = true;
+						} else {
+							System.out.println("actorUser is not allowed to update this moduleHandbook");
+							canUpdate = false;
+						}
 					}
 				}
-			}
-			if(!canUpdate) {	// no entry found or canUpdate=false
-				json = gson.toJson(new JsonErrorContainer(new JsonError(
-						"not allowed to update this moduleHandbook (moduleHandbookID: "+moduleHandbook.getID()+") (no fitting StudycourseRights found or canDelete=false)", 
-						"updateModuleHandbook(...)")));		
-				try {
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
+				if(!canUpdate) {	// no entry found or canUpdate=false
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
+							"not allowed to update this moduleHandbook (moduleHandbookID: "+moduleHandbook.getID()+") (no fitting StudycourseRights found or canDelete=false)", 
+							"updateModuleHandbook(...)")));		
+					try {
+						response.getWriter().write(json);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
 				}
-				return;
 			}
 		} else {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
@@ -1986,8 +1990,28 @@ public class ContentRoutes extends Routes{
 		
 		json = getRequestBody(request);
 		
-		Deadline deadline = gson.fromJson(json, Deadline.class);
+		JsonObject obj = gson.fromJson(json, JsonObject.class);
 		
+		String deadlineString = obj.get("deadline").getAsString();
+		
+		boolean sose = obj.get("sose").getAsBoolean();
+		
+		int year = obj.get("year").getAsInt();
+		
+		DateFormat df= new SimpleDateFormat("yyyy-MM-dd");
+		
+		java.sql.Date deadlineDate;
+		Deadline deadline = null;
+		
+		try {
+			deadlineDate = new java.sql.Date(df.parse(deadlineString).getTime());
+			deadline = new Deadline(sose, year, deadlineDate);
+		} catch (ParseException e1) {
+			
+			e1.printStackTrace();
+		}
+		
+	
 		if(db.createDeadline(deadline)) {
 			json = gson.toJson(deadline);
 		} else {
