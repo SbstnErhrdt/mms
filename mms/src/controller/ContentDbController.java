@@ -1680,7 +1680,7 @@ public class ContentDbController extends DbController {
 
 	public boolean createOwnerEventRights(String email, int eventID) {
 		String query = "INSERT INTO event_rights(users_email, eventID, canEdit, canDelete) " +
-				"VALUES(?,?,1,1);";
+				"VALUES(?,?,1,1) ON DUPLICATE KEY UPDATE canDelete=1, canDelete=1;";
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
@@ -1711,7 +1711,7 @@ public class ContentDbController extends DbController {
 
 	public boolean createOwnerModuleRights(String email, int moduleID) {
 		String query = "INSERT INTO module_rights(users_email, moduleID, canEdit, canCreateChilds, canDelete) " +
-				"VALUES(?,?,1,1,1);";
+				"VALUES(?,?,1,1,1) ON DUPLICATE KEY UPDATE canDelete=1, canDelete=1, canCreateChilds=1;";
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
@@ -1742,7 +1742,7 @@ public class ContentDbController extends DbController {
 
 	public boolean createOwnerSubjectRights(String email, int subjectID) {		
 		String query = "INSERT INTO subject_rights(users_email, subjectID, canEdit, canCreateChilds, canDelete) " +
-				"VALUES(?,?,1,1,1);";
+				"VALUES(?,?,1,1,1) ON DUPLICATE KEY UPDATE canDelete=1, canDelete=1, canCreateChilds=1;";
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
@@ -1774,7 +1774,7 @@ public class ContentDbController extends DbController {
 	public boolean createOwnerModuleHandbookRights(String email, int moduleHandbookID) {
 		String query = "INSERT INTO module_handbook_rights(users_email, module_handbooks_modulehandbookID, " +
 				"canEdit, canCreateChilds, canDelete) " +
-				"VALUES(?,?,1,1,1);";
+				"VALUES(?,?,1,1,1) ON DUPLICATE KEY UPDATE canDelete=1, canDelete=1, canCreateChilds=1;";
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
