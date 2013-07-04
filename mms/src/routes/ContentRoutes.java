@@ -1128,14 +1128,15 @@ public class ContentRoutes extends Routes{
 		
 		Event event = gson.fromJson(json, Event.class);
 		
-		User actorUser = getActorUser(request);
+		// enabling?
+		boolean enabling = false;
+		boolean enabled = false;
+		if(request.getParameter("enabled") != null) {
+			enabled = Boolean.parseBoolean(request.getParameter("enabled"));
+			enabling = true;
+		}
 		
-		// enabled changed?
-		boolean enabledChanged = false;
-		Event oldEvent = db.getEvent(event.getID());
-		if(oldEvent.isEnabled() != event.isEnabled()) {
-				enabledChanged = true;
-		}		
+		User actorUser = getActorUser(request);		
 		
 		// check rights
 		if(actorUser.isEmployee()) {
@@ -1143,21 +1144,7 @@ public class ContentRoutes extends Routes{
 			if(actorEmployee.getEmployeeRights().isAdmin()) {
 				System.out.println("actorUser is admin");
 			} else {		
-				if(enabledChanged) {
-					if(!actorEmployee.getEmployeeRights().isCanDeblockModule()) {
-						json = gson.toJson(new JsonErrorContainer(new JsonError(
-								"not allowed to enable or disable this event " +
-								"(eventID: "+event.getID()+") " +
-								"(actorUser cannot enable content)", 
-								"updateEvent(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						return;
-					}
-				} else if(db.getEariliestDeadline(event) != null) {
+				if(db.getEariliestDeadline(event) != null) {
 					if(db.getEariliestDeadline(event).after(currentDate)) {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"deadline expired for this event " +
@@ -1171,40 +1158,56 @@ public class ContentRoutes extends Routes{
 						return;	
 					}
 				}
-				ArrayList<EventRights> actorUserEventRightsList = actorEmployee.getEmployeeRights().getEventRightsList();
-				if(actorUserEventRightsList.isEmpty()) {
-					json = gson.toJson(new JsonErrorContainer(new JsonError(
-							"not allowed to update this event (eventID: "+event.getID()+") (actorUser has no EventRights)", 
-							"updateEvent(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
+				if(enabling) {
+					if(!actorEmployee.getEmployeeRights().isCanDeblockModule()) {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"not allowed to enable or disable this event " +
+								"(eventID: "+event.getID()+") " +
+								"(actorUser cannot enable content)", 
+								"updateEvent(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					} 
+				} else {
+					ArrayList<EventRights> actorUserEventRightsList = actorEmployee.getEmployeeRights().getEventRightsList();
+					if(actorUserEventRightsList.isEmpty()) {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"not allowed to update this event (eventID: "+event.getID()+") (actorUser has no EventRights)", 
+								"updateEvent(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
 					}
-					return;
-				}
-				boolean canUpdate = false;
-				for(EventRights er : actorUserEventRightsList) {
-					if(er.getEventID() == event.getID()) {
-						if(er.getCanEdit()) {
-							System.out.println("actorUser is allowed to update this event");
-							canUpdate = true;
-						} else {
-							System.out.println("actorUser is not allowed to update this event");
-							canUpdate = false;
+					boolean canUpdate = false;
+					for(EventRights er : actorUserEventRightsList) {
+						if(er.getEventID() == event.getID()) {
+							if(er.getCanEdit()) {
+								System.out.println("actorUser is allowed to update this event");
+								canUpdate = true;
+							} else {
+								System.out.println("actorUser is not allowed to update this event");
+								canUpdate = false;
+							}
 						}
 					}
-				}
-				if(!canUpdate) {	// no entry found or canUpdate=false
-					json = gson.toJson(new JsonErrorContainer(new JsonError(
-							"not allowed to update this event (eventID: "+event.getID()+") (no fitting EventRights found or canDelete=false)", 
-							"updateEvent(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
+					if(!canUpdate) {	// no entry found or canUpdate=false
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"not allowed to update this event (eventID: "+event.getID()+") (no fitting EventRights found or canDelete=false)", 
+								"updateEvent(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
 					}
-					return;
 				}
 			}
 		} else {
@@ -1218,15 +1221,30 @@ public class ContentRoutes extends Routes{
 			}
 			return;
 		}
-
 		
-		if(db.updateEvent(event)) {
-			json = gson.toJson(event);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
+		// enable or disable event
+		if(enabling) {
+			if(db.enableEvent(event.getID(), enabled)) {
+				json = "{\"eventID\":"+event.getID()+"}";
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"db.enableEvent(event.getID(), enabled) failed", 
+						"updateEvent(...)")));
 			}
+		// update event content
+		} else {
+			if(db.updateEvent(event)) {
+				json = gson.toJson(event);
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"db.updateEvent(event) failed", 
+						"updateEvent(...)")));	
+			}
+		}
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -1342,11 +1360,12 @@ public class ContentRoutes extends Routes{
 		
 		User actorUser = getActorUser(request);
 		
-		// enabled changed?
-		boolean enabledChanged = false;
-		Module oldModule = db.getModule(module.getID());
-		if(oldModule.isEnabled() != module.isEnabled()) {
-			enabledChanged = true;
+		// enabling?
+		boolean enabling = false;
+		boolean enabled = false;
+		if(request.getParameter("enabled") != null) {
+			enabled = Boolean.parseBoolean(request.getParameter("enabled"));
+			enabling = true;
 		}
 		
 		// check rights
@@ -1355,9 +1374,23 @@ public class ContentRoutes extends Routes{
 					
 			if(actorEmployee.getEmployeeRights().isAdmin()) {
 				System.out.println("actorUser is admin");
-			} else {	
-				if(enabledChanged && !module.isCritical()) {
-					if(!actorEmployee.getEmployeeRights().isCanDeblockModule()) {
+			} else {
+				if(db.getEariliestDeadline(module) != null) {
+					if(db.getEariliestDeadline(module).after(currentDate)) {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"deadline expired for this module " +
+								"(moduleID: "+module.getID()+")",
+								"updateModule(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;	
+					}
+				}
+				if(enabling) {
+					if(!module.isCritical() && !actorEmployee.getEmployeeRights().isCanDeblockModule()) {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to enable or disable this module (moduleID: "+module.getID()+") (actorUser cannot enable content)", 
 								"updateModule(...)")));		
@@ -1367,7 +1400,7 @@ public class ContentRoutes extends Routes{
 							e.printStackTrace();
 						}
 						return;
-					} else if(enabledChanged && module.isCritical()) {
+					} else if(module.isCritical() && !actorEmployee.getEmployeeRights().isCanDeblockCriticalModule()) {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to enable or disable this module (moduleID: "+module.getID()+") " +
 										"(actorUser cannot deblock critical modules)", 
@@ -1378,55 +1411,43 @@ public class ContentRoutes extends Routes{
 							e.printStackTrace();
 						}
 						return;
-					} else if(db.getEariliestDeadline(module) != null) {
-						if(db.getEariliestDeadline(module).after(currentDate)) {
-							json = gson.toJson(new JsonErrorContainer(new JsonError(
-									"deadline expired for this module " +
-									"(moduleID: "+module.getID()+")",
-									"updateModule(...)")));		
-							try {
-								response.getWriter().write(json);
-							} catch (IOException e) {
-								e.printStackTrace();
+					} 
+				} else {
+					ArrayList<ModuleRights> actorUserModuleRightsList = actorEmployee.getEmployeeRights().getModuleRightsList();
+					if(actorUserModuleRightsList.isEmpty()) {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"not allowed to update this module (moduleID: "+module.getID()+") (actorUser has no ModuleRights)", 
+								"updateModule(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+					boolean canUpdate = false;
+					for(ModuleRights mr : actorUserModuleRightsList) {
+						if(mr.getModuleID() == module.getID()) {
+							if(mr.getCanEdit()) {
+								System.out.println("actorUser is allowed to update this module");
+								canUpdate = true;
+							} else {
+								System.out.println("actorUser is not allowed to update this module");
+								canUpdate = false;
 							}
-							return;	
 						}
 					}
-				}
-				ArrayList<ModuleRights> actorUserModuleRightsList = actorEmployee.getEmployeeRights().getModuleRightsList();
-				if(actorUserModuleRightsList.isEmpty()) {
-					json = gson.toJson(new JsonErrorContainer(new JsonError(
-							"not allowed to update this module (moduleID: "+module.getID()+") (actorUser has no ModuleRights)", 
-							"updateModule(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					return;
-				}
-				boolean canUpdate = false;
-				for(ModuleRights mr : actorUserModuleRightsList) {
-					if(mr.getModuleID() == module.getID()) {
-						if(mr.getCanEdit()) {
-							System.out.println("actorUser is allowed to update this module");
-							canUpdate = true;
-						} else {
-							System.out.println("actorUser is not allowed to update this module");
-							canUpdate = false;
+					if(!canUpdate) {	// no entry found or canDelete=false
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"not allowed to update this module (moduleID: "+module.getID()+") (no fitting ModuleRights found or canDelete=false)", 
+								"updateModule(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
+						return;
 					}
-				}
-				if(!canUpdate) {	// no entry found or canDelete=false
-					json = gson.toJson(new JsonErrorContainer(new JsonError(
-							"not allowed to update this module (moduleID: "+module.getID()+") (no fitting ModuleRights found or canDelete=false)", 
-							"updateModule(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					return;
 				}
 			}
 		} else {
@@ -1441,18 +1462,30 @@ public class ContentRoutes extends Routes{
 			return;
 		}
 		
-		if(db.updateModule(module)) {
-			json = gson.toJson(module);
+		// enable or disable module
+		if(enabling) {
+			if(db.enableModule(module.getID(), enabled)) {
+				json = "{\"moduleID\":"+module.getID()+"}";
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"db.enableModule(module.getID(), enabled) failed", 
+						"updateModule(...)")));
+			}
+		// update module content
 		} else {
-			json = gson.toJson(new JsonErrorContainer(new JsonError(
-					"db.updateModule(module) failed", 
-					"updateModule(...)")));
+			if(db.updateModule(module)) {
+				json = gson.toJson(module);
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"db.updateEvent(event) failed", 
+						"updateModule(...)")));	
+			}
 		}
 		try {
 			response.getWriter().write(json);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}	
 	}
 
 	/**

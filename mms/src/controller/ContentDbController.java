@@ -53,7 +53,7 @@ public class ContentDbController extends DbController {
 			ps.setString(3, event.getLecturer_email());		// lecturer_email
 			ps.setBoolean(4, event.isArchived());			// archived
 			ps.setString(5, event.getContent());			// content
-			ps.setBoolean(6, event.isEnabled());			// enabled
+			//ps.setBoolean(6, event.isEnabled());			// enabled
 			ps.setString(7, event.getRoom());				// room
 			ps.setString(8, event.getPlace());				// place
 			ps.setString(9, event.getType());				// type
@@ -144,7 +144,7 @@ public class ContentDbController extends DbController {
 			ps.setString(3, event.getLecturer_email());		// lecturer_email
 			ps.setBoolean(4, event.isArchived());			// archived
 			ps.setString(5, event.getContent());			// content
-			ps.setBoolean(6, event.isEnabled());			// enabled
+			//ps.setBoolean(6, event.isEnabled());			// enabled
 			ps.setString(7, event.getRoom());				// room
 			ps.setString(8, event.getPlace());				// place
 			ps.setString(9, event.getType());				// type
@@ -1678,6 +1678,12 @@ public class ContentDbController extends DbController {
 		}
 	}
 
+	/**
+	 * inserts all rights for the passed email for the passed eventID
+	 * @param email
+	 * @param eventID
+	 * @return true, if the event rights were inserted successfully
+	 */
 	public boolean createOwnerEventRights(String email, int eventID) {
 		String query = "INSERT INTO event_rights(users_email, eventID, canEdit, canDelete) " +
 				"VALUES(?,?,1,1) ON DUPLICATE KEY UPDATE canDelete=1, canDelete=1;";
@@ -1709,6 +1715,12 @@ public class ContentDbController extends DbController {
 		}		
 	}
 
+	/**
+	 * inserts all rights for the passed email for the passed moduleID
+	 * @param email
+	 * @param moduleID
+	 * @return true, if the module rights were inserted successfully
+	 */
 	public boolean createOwnerModuleRights(String email, int moduleID) {
 		String query = "INSERT INTO module_rights(users_email, moduleID, canEdit, canCreateChilds, canDelete) " +
 				"VALUES(?,?,1,1,1) ON DUPLICATE KEY UPDATE canDelete=1, canDelete=1, canCreateChilds=1;";
@@ -1740,6 +1752,12 @@ public class ContentDbController extends DbController {
 		}
 	}
 
+	/**
+	 * inserts all rights for the passed email for the passed subjectID
+	 * @param email
+	 * @param subjectID
+	 * @return true, if the subject rights were inserted successfully
+	 */
 	public boolean createOwnerSubjectRights(String email, int subjectID) {		
 		String query = "INSERT INTO subject_rights(users_email, subjectID, canEdit, canCreateChilds, canDelete) " +
 				"VALUES(?,?,1,1,1) ON DUPLICATE KEY UPDATE canDelete=1, canDelete=1, canCreateChilds=1;";
@@ -1771,6 +1789,12 @@ public class ContentDbController extends DbController {
 		}
 	}
 
+	/**
+	 * inserts all rights for the passed email for the passed moduleHandbookID
+	 * @param email
+	 * @param moduleHandbookID
+	 * @return true, if the modulehandbook rights were inserted successfully
+	 */
 	public boolean createOwnerModuleHandbookRights(String email, int moduleHandbookID) {
 		String query = "INSERT INTO module_handbook_rights(users_email, module_handbooks_modulehandbookID, " +
 				"canEdit, canCreateChilds, canDelete) " +
@@ -1802,4 +1826,77 @@ public class ContentDbController extends DbController {
 			}
 		}
 	}
+
+	/**
+	 * updates the events table and sets enabled as passed
+	 * @param eventID
+	 * @param enabled
+	 * @return true, if the event was enabled/disabled successfully
+	 */
+	public boolean enableEvent(int eventID, boolean enabled) {
+		String query = "UPDATE events SET enabled=? WHERE eventID=?;";
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setBoolean(1, enabled);
+			ps.setInt(2, eventID);
+			
+			System.out.println(ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
+			
+			return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}		
+	}
+	
+	/**
+	 * updates the modules table and sets enabled as passed
+	 * @param moduleID
+	 * @param enabled
+	 * @return true, if the event was enabled/disabled successfully
+	 */
+	public boolean enableModule(int moduleID, boolean enabled) {
+		String query = "UPDATE modules SET enabled=? WHERE eventID=?;";
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setBoolean(1, enabled);
+			ps.setInt(2, moduleID);
+			
+			System.out.println(ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
+			
+			return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}		
+	}
+
 }
