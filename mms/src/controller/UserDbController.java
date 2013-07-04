@@ -518,8 +518,9 @@ public class UserDbController extends DbController {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			while(rs.next()) {
 				moduleHandbookRights.setModuleHandbookID(rs.getInt(1)); 	// moduleHandbookID
-				moduleHandbookRights.setCanEdit(rs.getBoolean(2)); 	// canEdit
-				moduleHandbookRights.setCanDelete(rs.getBoolean(3));// canDelete
+				moduleHandbookRights.setCanEdit(rs.getBoolean(2)); 			// canEdit
+				moduleHandbookRights.setCanDelete(rs.getBoolean(3));		// canDelete
+				moduleHandbookRights.setCanCreateChilds(rs.getBoolean(4)); 	// canCreateChilds
 				moduleHandbookRightsList.add(moduleHandbookRights);
 				moduleHandbookRights = new ModuleHandbookRights();
 			} 

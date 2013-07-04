@@ -39,14 +39,25 @@
 					<td><a href="#/show/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}">{{handbook.name}}</a></td>
 					<td><span ng-hide="handbook.sose">Wintersemester</span><span ng-show="handbook.sose">Sommersemester</span> {{handbook.year}}</td>
 					<td><span class="label" ng-hide="handbook.archived">nicht archiviert</span><span class="label label-warning" ng-show="handbook.archived">archiviert</span></td>
-					<td><span class="label" ng-hide="handbook.enabled">nicht freigegeben</span><span class="label label-success" ng-show="handbook.enabled">freigegeben</span></td>
+					<td ng-hide="canDeblockContent()">
+						<span class="label" ng-hide="handbook.enabled">nicht freigegeben</span>
+						<span class="label label-success" ng-show="handbook.enabled">freigegeben</span>
+					</td>
+					<td ng-show="canDeblockContent()">
+						
+						<a ng-hide="handbook.enabled" href="#enable" ng-click="enableContentModal(handbook.moduleHandbookID, handbook.name, 'modulehandbook', true)" class="btn btn-mini btn-info" data-target="#enable" data-toggle="modal"><i class="icon-eye-open icon-white"></i> Freigeben</a>
+
+						<a ng-show="handbook.enabled" href="#enable" ng-click="enableContentModal(handbook.moduleHandbookID, handbook.name, 'modulehandbook', false)" class="btn btn-mini btn-warning" data-target="#enable" data-toggle="modal"><i class="icon-eye-close icon-white"></i> Revidieren</a>
+
+					</td>
+
 					<td><a href="#/print/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}" class="btn btn-mini"><i class="icon icon-print"></i> Drucken</a></td>
 					<td ng-show="isAuthorised()">
 
 						<a href="#delete" class="btn btn-mini btn-danger" ng-click="deleteContentModal(handbook.moduleHandbookID, handbook.name, 'modulehandbook')" data-target="#delete" data-toggle="modal" ng-show="canDelete(handbook.moduleHandbookID)"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
 
 
-						<a href="#/update/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}" class="btn btn-mini btn-warning" ng-show="canEdit(handbook.moduleHandbookID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
+						<a href="#/update/modulehandbook?modulehandbookID={{handbook.moduleHandbookID}}" class="btn btn-mini btn-primary" ng-show="canEdit(handbook.moduleHandbookID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
 						</td>
 				</tr>
 		    	</tbody>

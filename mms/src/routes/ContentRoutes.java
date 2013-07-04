@@ -1025,6 +1025,8 @@ public class ContentRoutes extends Routes{
 		
 		User actorUser = getActorUser(request);
 		
+		boolean actorUserIsAdmin = false;
+		
 		String json = getRequestBody(request);
 	
 		Event event = gson.fromJson(json, Event.class);
@@ -1033,6 +1035,7 @@ public class ContentRoutes extends Routes{
 		if(actorUser.isEmployee()) {
 			Employee actorEmployee = (Employee) actorUser;
 			if(actorEmployee.getEmployeeRights().isAdmin()) {
+				actorUserIsAdmin = true;
 				System.out.println("actorUser is admin");
 			} else {
 				System.out.println("actorUser is no admin");
@@ -1097,7 +1100,10 @@ public class ContentRoutes extends Routes{
 		}
 
 		if(db.createEvent(event)) {
-			
+			// give the user all rights for his created event
+			if(!actorUserIsAdmin) {
+				db.createOwnerEventRights(actorUser.getEmail(), event.getID());
+			}
 			json = gson.toJson(event);
 		} else {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
@@ -1235,12 +1241,15 @@ public class ContentRoutes extends Routes{
 		
 		Module module = gson.fromJson(json, Module.class);
 		
+		boolean actorUserIsAdmin = false;
+		
 		User actorUser = getActorUser(request);
 		
 		// check rights
 		if(actorUser.isEmployee()) {
 			Employee actorEmployee = (Employee) actorUser;
 			if(actorEmployee.getEmployeeRights().isAdmin()) {
+				actorUserIsAdmin = true;
 				System.out.println("actorUser is admin");
 			} else {
 				System.out.println("actorUser is no admin");
@@ -1308,6 +1317,10 @@ public class ContentRoutes extends Routes{
 		}		
 		
 		if(db.createModule(module)) {
+			// give the user all rights for his created module
+			if(!actorUserIsAdmin) {
+				db.createOwnerModuleRights(actorUser.getEmail(), module.getID());
+			}
 			json = gson.toJson(module);
 			try {
 				response.getWriter().write(json);
@@ -1454,10 +1467,13 @@ public class ContentRoutes extends Routes{
 		
 		User actorUser = getActorUser(request);
 		
+		boolean actorUserIsAdmin = false;
+		
 		// check rights
 		if(actorUser.isEmployee()) {
 			Employee actorEmployee = (Employee) actorUser;
 			if(actorEmployee.getEmployeeRights().isAdmin()) {
+				actorUserIsAdmin = true;
 				System.out.println("actorUser is admin");
 			} else {
 				System.out.println("actorUser is no admin");
@@ -1475,27 +1491,27 @@ public class ContentRoutes extends Routes{
 					return;
 				}
 				
-				int studycourseID = subject.getStudycourses_studycourseID();
+				int moduleHandbookID = subject.getModuleHandbooks_moduleHandbookID();
 				
-				ArrayList<StudycourseRights> actorUserStudycourseRightsList = actorEmployee.getEmployeeRights().getStudycourseRightsList();
+				ArrayList<ModuleHandbookRights> actorUserModuleHandbookRightsList = actorEmployee.getEmployeeRights().getModuleHandbookRightsList();
 				
 				boolean canCreateChilds = false;
-				for(StudycourseRights scr : actorUserStudycourseRightsList) {
-					if(studycourseID == scr.getStudycourseID()) {
-						if(scr.getCanCreateChilds()) {
+				for(ModuleHandbookRights mhbr : actorUserModuleHandbookRightsList) {
+					if(moduleHandbookID == mhbr.getModuleHandbookID()) {
+						if(mhbr.getCanCreateChilds()) {
 							System.out.println("actorUser is allowed to create " +
-									"childs for this studycourses (studycourseID: "+studycourseID+")");
+									"childs for this modulehandbook (moduleHandbookID: "+moduleHandbookID+")");
 							canCreateChilds = true;
 						} else {
 							System.out.println("actorUser is not allowed to create " +
-									"childs for this studycourses (studycourseID: "+studycourseID+")");
+									"childs for this modulehandbook (moduleHandbookID: "+moduleHandbookID+")");
 						}
 					}
 				}
 				if(!canCreateChilds) {
 					json = gson.toJson(new JsonErrorContainer(new JsonError(
-							"actorUser is not allowed to create subjects for this studycourseID " +
-							"(studycourseID: "+studycourseID+")", 
+							"actorUser is not allowed to create subjects for this moduleHandbookID " +
+							"(moduleHandbookID: "+moduleHandbookID+")", 
 							"createSubject(...)")));		
 					try {
 						response.getWriter().write(json);
@@ -1518,6 +1534,10 @@ public class ContentRoutes extends Routes{
 		}		
 				
 		if(db.createSubject(subject)) {
+			// give the user all rights for his created subject
+			if(!actorUserIsAdmin) {
+				db.createOwnerSubjectRights(actorUser.getEmail(), subject.getID());
+			}
 			json = gson.toJson(subject);
 			try {
 				response.getWriter().write(json);
@@ -1799,6 +1819,8 @@ public class ContentRoutes extends Routes{
 		ModuleHandbook moduleHandbook = gson.fromJson(json, ModuleHandbook.class);
 		
 		User actorUser = getActorUser(request);
+	
+		boolean actorUserIsAdmin = false;
 		
 		if(moduleHandbook.isEnabled() && !actorUser.isEmployee()) {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
@@ -1811,9 +1833,9 @@ public class ContentRoutes extends Routes{
 				e.printStackTrace();
 			}
 			return;
-		} else if(moduleHandbook.isEnabled() && actorUser.isEmployee()) {
+		} else if(actorUser.isEmployee()) {
 			Employee actorEmployee = (Employee) actorUser;
-			if(!actorEmployee.getEmployeeRights().isAdmin()) {
+			if(moduleHandbook.isEnabled() && !actorEmployee.getEmployeeRights().isAdmin()) {
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"actorUser is not allowed to create moduleHandbooks that are enabled " +
 						"(actorUser is no admin)", 
@@ -1825,9 +1847,52 @@ public class ContentRoutes extends Routes{
 				}
 				return;
 			}
+			
+			if(actorEmployee.getEmployeeRights().isAdmin()) {
+				actorUserIsAdmin = true;
+				System.out.println("actorUser is admin");
+			} else {
+				System.out.println("actorUser is no admin");
+			
+			
+				int studycourseID = moduleHandbook.getStudycourses_studycourseID();
+				
+				ArrayList<StudycourseRights> actorUserStudycourseRightsList = actorEmployee.getEmployeeRights().getStudycourseRightsList();
+				
+				boolean canCreateChilds = false;
+				for(StudycourseRights scr : actorUserStudycourseRightsList) {
+					if(studycourseID == scr.getStudycourseID()) {
+						if(scr.getCanCreateChilds()) {
+							System.out.println("actorUser is allowed to create " +
+									"childs for this studycourse (studycourseID: "+studycourseID+")");
+							canCreateChilds = true;
+						} else {
+							System.out.println("actorUser is not allowed to create " +
+									"childs for this studycourseID (studycourseID: "+studycourseID+")");
+						}
+					}
+				}
+				if(!canCreateChilds) {
+					json = gson.toJson(new JsonErrorContainer(new JsonError(
+							"actorUser is not allowed to create modulehandboks for this studycourse " +
+							"(studycourseID: "+studycourseID+")", 
+							"createModuleHandbook(...)")));		
+					try {
+						response.getWriter().write(json);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
+				} 
+			}
 		}
 		
 		if(db.createModuleHandbook(moduleHandbook)) {
+			// give the user all rights for his created modulehandbook
+			if(!actorUserIsAdmin) {
+				db.createOwnerModuleHandbookRights(actorUser.getEmail(), moduleHandbook.getID());
+			}
+
 			json = gson.toJson(moduleHandbook);
 			try {
 				response.getWriter().write(json);

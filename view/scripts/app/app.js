@@ -1,11 +1,4 @@
-"use strict"
-/*
-
-	Tabs Projekt! Spaces könnt ihr nehmen, dann aber VIER und ja nicht 2!!!
-	I DREH EICH OIGAHENDIG S KNICK ROM A WENN IH
-*/
-
-
+"use strict";
 
 var MMSApp = angular.module("MMS", ["ngCookies"]);
 
@@ -216,7 +209,31 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 		templateUrl: pURL+"show/deadline.html",
 		controller: deleteDeadlineCtrl
 	});
-	$routeProvider.otherwise({redirectTo: "/home"});
+
+
+/*
+	*	ENABLE ROUTES
+	*/
+	$routeProvider.when("/enable/studycourse", {
+		templateUrl: pURL+"show/studycourses.html",
+		controller: enableStudycourseCtrl
+	});
+	$routeProvider.when("/enable/modulehandbook", {
+		templateUrl: pURL+"show/modulehandbooks.html",
+		controller: enableModuleHandbookCtrl
+	});
+	$routeProvider.when("/enable/subject", {
+		templateUrl: pURL+"show/subjects.html",
+		controller: enableSubjectCtrl
+	});
+	$routeProvider.when("/enable/module", {
+		templateUrl: pURL+"show/modules.html",
+		controller: enableModuleCtrl
+	});
+	$routeProvider.when("/enable/event", {
+		templateUrl: pURL+"show/events.html",
+		controller: enableEventCtrl
+	});
 
 
 	/*
@@ -239,6 +256,8 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 		templateUrl: pURL+"print/modulehandbook.html",
 		controller: printModulehandbookCtrl
 	});
+
+	$routeProvider.otherwise({redirectTo: "/home"});
 
 });
 

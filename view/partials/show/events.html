@@ -37,12 +37,22 @@
 							<td>{{event.place}} - {{event.room}}</td>
 							<td>{{event.times}}</td>
 							<td><span class="label" ng-hide="event.archived">nicht archiviert</span><span class="label label-warning" ng-show="event.archived">archiviert</span></td>
-							<td><span class="label" ng-hide="event.enabled">nicht freigegeben</span><span class="label label-success" ng-show="event.enabled">freigegeben</span></td>
+							<td ng-hide="canDeblockContent()">
+								<span class="label" ng-hide="event.enabled">nicht freigegeben</span>
+								<span class="label label-success" ng-show="event.enabled">freigegeben</span>
+							</td>
+							<td ng-show="canDeblockContent()">
+								
+							<a ng-hide="event.enabled" href="#enable" ng-click="enableContentModal(event.eventID, event.name, 'event', true)" class="btn btn-mini btn-info" data-target="#enable" data-toggle="modal"><i class="icon-eye-open icon-white"></i> Freigeben</a>
+
+							<a ng-show="event.enabled" href="#enable" ng-click="enableContentModal(event.eventID, event.name, 'event', false)" class="btn btn-mini btn-warning" data-target="#enable" data-toggle="modal"><i class="icon-eye-close icon-white"></i> Revidieren</a>
+
+							</td>
 							<td ng-show="isAuthorised()" >
 
 								<a href="#delete" class="btn btn-mini btn-danger" ng-click="deleteContentModal(event.eventID, event.name, 'event')" data-target="#delete" data-toggle="modal" ng-show="canDelete(event.eventID)"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
 
-								<a href="#/update/event?eventID={{event.eventID}}" class="btn btn-mini btn-warning" ng-show="canEdit(event.eventID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
+								<a href="#/update/event?eventID={{event.eventID}}" class="btn btn-mini btn-primary" ng-show="canEdit(event.eventID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
 							</td>
 						</tr>
 					</tbody>

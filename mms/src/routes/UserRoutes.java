@@ -150,24 +150,10 @@ public class UserRoutes extends Routes {
 		User actorUser = getActorUser(request);
 		if(actorUser != null) {
 			if(actorUser.isEmployee()) {
-				Employee actorEmployee = (Employee) actorUser;
-				if(!actorEmployee.getEmployeeRights().isAdmin()) {
-					System.out.println("actorUser is no admin");
-					json = gson.toJson(new JsonErrorContainer(new JsonError(
-							"not allowed to read all users (actorUser is no admin)", 
-							"readUsers(...)")));
-					try { 
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					return;
-				} else {
-					System.out.println("actorUser is admin");
-				}
+				System.out.println("actorUser is employee");
 			} else {
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
-						"not allowed to read all users (actorUser is no employee (and therefore no admin))", 
+						"not allowed to read all users (actorUser is no employee)", 
 						"readUsers(...)")));
 				try { 
 					response.getWriter().write(json);

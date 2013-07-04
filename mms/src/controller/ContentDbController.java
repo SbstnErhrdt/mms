@@ -1677,4 +1677,129 @@ public class ContentDbController extends DbController {
 			}
 		}
 	}
+
+	public boolean createOwnerEventRights(String email, int eventID) {
+		String query = "INSERT INTO event_rights(users_email, eventID, canEdit, canDelete) " +
+				"VALUES(?,?,1,1);";
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setString(1, email);
+			ps.setInt(2, eventID);
+			
+			System.out.println(ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
+			
+			return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}		
+	}
+
+	public boolean createOwnerModuleRights(String email, int moduleID) {
+		String query = "INSERT INTO module_rights(users_email, moduleID, canEdit, canCreateChilds, canDelete) " +
+				"VALUES(?,?,1,1,1);";
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setString(1, email);
+			ps.setInt(2, moduleID);
+			
+			System.out.println(ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
+			
+			return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public boolean createOwnerSubjectRights(String email, int subjectID) {		
+		String query = "INSERT INTO subject_rights(users_email, subjectID, canEdit, canCreateChilds, canDelete) " +
+				"VALUES(?,?,1,1,1);";
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setString(1, email);
+			ps.setInt(2, subjectID);
+			
+			System.out.println(ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
+			
+			return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public boolean createOwnerModuleHandbookRights(String email, int moduleHandbookID) {
+		String query = "INSERT INTO module_handbook_rights(users_email, module_handbooks_modulehandbookID, " +
+				"canEdit, canCreateChilds, canDelete) " +
+				"VALUES(?,?,1,1,1);";
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setString(1, email);
+			ps.setInt(2, moduleHandbookID);
+			
+			System.out.println(ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
+			
+			return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

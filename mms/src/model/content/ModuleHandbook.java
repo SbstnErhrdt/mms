@@ -111,5 +111,21 @@ public class ModuleHandbook extends Content {
 		this.moduleHandbookID = moduleHandbookID;
 	}
 
+	public int getModuleHandbookID() {
+		return moduleHandbookID;
+	}
+
+	public void setModuleHandbookID(int moduleHandbookID) {
+		this.moduleHandbookID = moduleHandbookID;
+	}
+
+	public int getStudycourses_studycourseID() {
+		return studycourses_studycourseID;
+	}
+
+	public void setStudycourses_studycourseID(int studycourses_studycourseID) {
+		this.studycourses_studycourseID = studycourses_studycourseID;
+	}
+
 	
 }

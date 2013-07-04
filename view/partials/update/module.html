@@ -78,13 +78,8 @@
 						    <textarea rows="5" ng-model="module.content" spellcheck="ture" ></textarea>
 						    <span class="help-block">Bitte nennen Sie passende Literatur f&uuml;r das Modul.</span>
 
-						    <span ng-show="canDeblockContent" ng-hide="module.isCritical">
-						    	Freigeben:  <input type="checkbox" ng-model="module.enabled" name="enabled"><br /><br />
-						    	<span class="help-block">Modul freigeben.</span>
-							</span>
-
 							<span ng-show="canDeblockCriticalModule&&module.isCritical">
-						    	Freigeben:  <input type="checkbox" ng-model="module.enabled" name="enabled"><br /><br />
+						    	kritisches Modul freigeben:  <input type="checkbox" ng-model="module.enabled" name="enabled"><br /><br />
 						    	<span class="help-block">(kritisches) Modul freigeben.</span>
 							</span>
 

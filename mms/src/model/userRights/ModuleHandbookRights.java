@@ -4,6 +4,7 @@ import util.Utilities;
 
 public class ModuleHandbookRights extends ContentRights {
 	private int moduleHandbookID;
+	private boolean canCreateChilds;
 	
 	/**
 	 * constructor
@@ -12,10 +13,19 @@ public class ModuleHandbookRights extends ContentRights {
 	 * @param canEdit
 	 */
 	public ModuleHandbookRights(int moduleHandbookID, boolean canDelete,
-			boolean canEdit) {
+			boolean canEdit, boolean canCreateChilds) {
 		this.moduleHandbookID = moduleHandbookID;
 		this.canDelete = canDelete;
 		this.canEdit = canEdit;
+		this.canCreateChilds = canCreateChilds;
+	}
+
+	public boolean getCanCreateChilds() {
+		return canCreateChilds;
+	}
+
+	public void setCanCreateChilds(boolean canCreateChilds) {
+		this.canCreateChilds = canCreateChilds;
 	}
 
 	/**
@@ -34,12 +44,12 @@ public class ModuleHandbookRights extends ContentRights {
 
 	
 	public String[] toValueNamesArray() {
-		String[] valueNames = {"module_handbooks_moduleHandbookID", "canEdit", "canDelete"};
+		String[] valueNames = {"module_handbooks_moduleHandbookID", "canEdit", "canDelete", "canCreateChilds"};
 		return valueNames;
 	}
 	
 	public String[] toValuesArray() {
-		String[] values = {""+moduleHandbookID, ""+canEdit, ""+canDelete};
+		String[] values = {""+moduleHandbookID, ""+canEdit, ""+canDelete, ""+canCreateChilds};
 		return values;
 	}
 	
@@ -52,6 +62,7 @@ public class ModuleHandbookRights extends ContentRights {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
+		result = prime * result + (canCreateChilds ? 1231 : 1237);
 		result = prime * result + moduleHandbookID;
 		return result;
 	}
@@ -65,6 +76,8 @@ public class ModuleHandbookRights extends ContentRights {
 		if (getClass() != obj.getClass())
 			return false;
 		ModuleHandbookRights other = (ModuleHandbookRights) obj;
+		if (canCreateChilds != other.canCreateChilds)
+			return false;
 		if (moduleHandbookID != other.moduleHandbookID)
 			return false;
 		return true;
