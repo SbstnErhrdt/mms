@@ -1867,10 +1867,10 @@ public class ContentDbController extends DbController {
 	 * updates the modules table and sets enabled as passed
 	 * @param moduleID
 	 * @param enabled
-	 * @return true, if the event was enabled/disabled successfully
+	 * @return true, if the module was enabled/disabled successfully
 	 */
 	public boolean enableModule(int moduleID, boolean enabled) {
-		String query = "UPDATE modules SET enabled=? WHERE eventID=?;";
+		String query = "UPDATE modules SET enabled=? WHERE moduleID=?;";
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
@@ -1897,6 +1897,114 @@ public class ContentDbController extends DbController {
 				e.printStackTrace();
 			}
 		}		
+	}
+
+	/**
+	 * updates the subjects table and sets enabled as passed
+	 * @param subjectID
+	 * @param enabled
+	 * @return true, if the subject was enabled/disabled successfully
+	 */
+	public boolean enableSubject(int subjectID, boolean enabled) {
+		String query = "UPDATE subjects SET enabled=? WHERE subjectID=?;";
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setBoolean(1, enabled);
+			ps.setInt(2, subjectID);
+			
+			System.out.println(ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
+			
+			return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}	
+	}
+
+	/**
+	 * updates the module_handbooks table and sets enabled as passed
+	 * @param moduleHandbookID
+	 * @param enabled
+	 * @return true, if the modulehandbook was enabled/disabled successfully
+	 */
+	public boolean enableModuleHandbook(int moduleHandbookID, boolean enabled) {
+		String query = "UPDATE module_handbooks SET enabled=? WHERE moduleHandbookID=?;";
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setBoolean(1, enabled);
+			ps.setInt(2, moduleHandbookID);
+			
+			System.out.println(ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
+			
+			return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * updates the studycourses table and sets enabled as passed
+	 * @param studycourseID
+	 * @param enabled
+	 * @return true, if the studycourse was enabled/disabled successfully 
+	 */
+	public boolean enableStudycourse(int studycourseID, boolean enabled) {
+		String query = "UPDATE studycourses SET enabled=? WHERE studycourseID=?;";
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setBoolean(1, enabled);
+			ps.setInt(2, studycourseID);
+			
+			System.out.println(ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
+			
+			return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

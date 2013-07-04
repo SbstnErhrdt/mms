@@ -1477,7 +1477,7 @@ public class ContentRoutes extends Routes{
 				json = gson.toJson(module);
 			} else {
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
-						"db.updateEvent(event) failed", 
+						"db.updateModule(module) failed", 
 						"updateModule(...)")));	
 			}
 		}
@@ -1592,11 +1592,12 @@ public class ContentRoutes extends Routes{
 	
 		User actorUser = getActorUser(request);
 		
-		// enabled changed?
-		boolean enabledChanged = false;
-		Subject oldSubject = db.getSubject(subject.getID());
-		if(oldSubject.isEnabled() != subject.isEnabled()) {
-			enabledChanged = true;
+		// enabling?
+		boolean enabling = false;
+		boolean enabled = false;
+		if(request.getParameter("enabled") != null) {
+			enabled = Boolean.parseBoolean(request.getParameter("enabled"));
+			enabling = true;
 		}
 		
 		// check rights
@@ -1605,21 +1606,7 @@ public class ContentRoutes extends Routes{
 			if(actorEmployee.getEmployeeRights().isAdmin()) {
 				System.out.println("actorUser is admin");
 			} else {
-				if(enabledChanged) {
-					if(!actorEmployee.getEmployeeRights().isCanDeblockModule()) {
-						json = gson.toJson(new JsonErrorContainer(new JsonError(
-								"not allowed to enable or disable this subject " +
-								"(subjectID: "+subject.getID()+") " +
-								"(actorUser cannot enable content)", 
-								"updateSubject(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						return;
-					}
-				} else if(db.getEariliestDeadline(subject) != null) {
+				if(db.getEariliestDeadline(subject) != null) {
 					if(db.getEariliestDeadline(subject).after(currentDate)) {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"deadline expired for this subject " +
@@ -1633,40 +1620,56 @@ public class ContentRoutes extends Routes{
 						return;	
 					}
 				}
-				ArrayList<SubjectRights> actorUserSubjectRightsList = actorEmployee.getEmployeeRights().getSubjectRightsList();
-				if(actorUserSubjectRightsList.isEmpty()) {
-					json = gson.toJson(new JsonErrorContainer(new JsonError(
-							"not allowed to update this subject (subjectID: "+subject.getID()+") (actorUser has no SubjectRights)", 
-							"updateSubject(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
+				if(enabling) {
+					if(!actorEmployee.getEmployeeRights().isCanDeblockModule()) {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"not allowed to enable or disable this subject " +
+								"(subjectID: "+subject.getID()+") " +
+								"(actorUser cannot enable content)", 
+								"updateSubject(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
 					}
-					return;
-				}
-				boolean canUpdate = false;
-				for(SubjectRights sr : actorUserSubjectRightsList) {
-					if(sr.getSubjectID() == subject.getID()) {
-						if(sr.getCanEdit()) {
-							System.out.println("actorUser is allowed to update this subject");
-							canUpdate = true;
-						} else {
-							System.out.println("actorUser is not allowed to update this subject");
-							canUpdate = false;
+				} else {
+					ArrayList<SubjectRights> actorUserSubjectRightsList = actorEmployee.getEmployeeRights().getSubjectRightsList();
+					if(actorUserSubjectRightsList.isEmpty()) {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"not allowed to update this subject (subjectID: "+subject.getID()+") (actorUser has no SubjectRights)", 
+								"updateSubject(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+					boolean canUpdate = false;
+					for(SubjectRights sr : actorUserSubjectRightsList) {
+						if(sr.getSubjectID() == subject.getID()) {
+							if(sr.getCanEdit()) {
+								System.out.println("actorUser is allowed to update this subject");
+								canUpdate = true;
+							} else {
+								System.out.println("actorUser is not allowed to update this subject");
+								canUpdate = false;
+							}
 						}
 					}
-				}
-				if(!canUpdate) {	// no entry found or canDelete=false
-					json = gson.toJson(new JsonErrorContainer(new JsonError(
-							"not allowed to update this subject (subjectID: "+subject.getID()+") (no fitting SubjectRights found or canDelete=false)", 
-							"updateSubject(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
+					if(!canUpdate) {	// no entry found or canDelete=false
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"not allowed to update this subject (subjectID: "+subject.getID()+") (no fitting SubjectRights found or canDelete=false)", 
+								"updateSubject(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
 					}
-					return;
 				}
 			}
 		} else {
@@ -1681,14 +1684,30 @@ public class ContentRoutes extends Routes{
 			return;
 		}
 			
-		if(db.updateSubject(subject)) {
-			json = gson.toJson(subject);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
+		// enable or disable subject
+		if(enabling) {
+			if(db.enableSubject(subject.getID(), enabled)) {
+				json = "{\"subjectID\":"+subject.getID()+"}";
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"db.enableSubject(subject.getID(), enabled) failed", 
+						"updateSubject(...)")));
+			}
+		// update subject content
+		} else {
+			if(db.updateSubject(subject)) {
+				json = gson.toJson(subject);
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"db.updateSubject(subject) failed", 
+						"updateSubject(...)")));	
 			}
 		}
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 	}
 
 	/**
@@ -1755,12 +1774,13 @@ public class ContentRoutes extends Routes{
 		
 		User actorUser = getActorUser(request);
 		
-		// enabled changed?
-		boolean enabledChanged = false;
-		Studycourse oldStudycourse = db.getStudycourse(studycourse.getID());
-		if(oldStudycourse.isEnabled() != studycourse.isEnabled()) {
-			enabledChanged = true;
-		}
+		// enabling?
+		boolean enabling = false;
+		boolean enabled = false;
+		if(request.getParameter("enabled") != null) {
+			enabled = Boolean.parseBoolean(request.getParameter("enabled"));
+			enabling = true;
+		}	
 		
 		// check rights
 		if(actorUser.isEmployee()) {
@@ -1768,7 +1788,7 @@ public class ContentRoutes extends Routes{
 			if(actorEmployee.getEmployeeRights().isAdmin()) {
 				System.out.println("actorUser is admin");
 			} else {
-				if(enabledChanged) {
+				if(enabling) {
 					if(!actorEmployee.getEmployeeRights().isCanDeblockModule()) {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to enable or disable this studycourse " +
@@ -1831,14 +1851,30 @@ public class ContentRoutes extends Routes{
 			return;
 		}			
 			
-		if(db.updateStudycourse(studycourse)) {
-			json = gson.toJson(studycourse);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
+		// enable or disable studycourse
+		if(enabling) {
+			if(db.enableStudycourse(studycourse.getID(), enabled)) {
+				json = "{\"studycourseID\":"+studycourse.getID()+"}";
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"db.enableStudycourse(studycourse.getID(), enabled) failed", 
+						"updateStudycourse(...)")));
+			}
+		// update studycourse content
+		} else {
+			if(db.updateStudycourse(studycourse)) {
+				json = gson.toJson(studycourse);
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"db.updateStudycourse(studycourse) failed", 
+						"updateStudycourse(...)")));	
 			}
 		}
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 	}
 
 	/**
@@ -1945,35 +1981,22 @@ public class ContentRoutes extends Routes{
 		
 		ModuleHandbook moduleHandbook = gson.fromJson(json, ModuleHandbook.class);
 		
-		// enabled changed?
-		boolean enabledChanged = false;
-		ModuleHandbook oldModuleHandbook = db.getModuleHandbook(moduleHandbook.getID());
-		if(oldModuleHandbook.isEnabled() != moduleHandbook.isEnabled()) {
-			enabledChanged = true;
-		}	
-		
 		User actorUser = getActorUser(request);
+		
+		// enabling?
+		boolean enabling = false;
+		boolean enabled = false;
+		if(request.getParameter("enabled") != null) {
+			enabled = Boolean.parseBoolean(request.getParameter("enabled"));
+			enabling = true;
+		}	
 		
 		if(actorUser.isEmployee()) {
 			Employee actorEmployee = (Employee) actorUser;
 			if(actorEmployee.getEmployeeRights().isAdmin()) {
 				System.out.println("actorUser is admin");
 			} else {
-				if(enabledChanged) {
-					if(!actorEmployee.getEmployeeRights().isCanDeblockModule()) {
-						json = gson.toJson(new JsonErrorContainer(new JsonError(
-								"not allowed to enable or disable this moduleHandbook " +
-								"(moduleHandbookID: "+moduleHandbook.getID()+") " +
-								"(actorUser cannot enable content)", 
-								"updateStudycourse(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						return;
-					}
-				} else if(db.getEariliestDeadline(moduleHandbook) != null) {
+				if(db.getEariliestDeadline(moduleHandbook) != null) {
 					if(db.getEariliestDeadline(moduleHandbook).after(currentDate)) {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"deadline expired for this moduleHandbook " +
@@ -1987,41 +2010,56 @@ public class ContentRoutes extends Routes{
 						return;	
 					}
 				}
-			
-				ArrayList<ModuleHandbookRights> actorUserModuleHandbookRightsList = actorEmployee.getEmployeeRights().getModuleHandbookRightsList();
-				if(actorUserModuleHandbookRightsList.isEmpty()) {
-					json = gson.toJson(new JsonErrorContainer(new JsonError(
-							"not allowed to update this moduleHandbook (moduleHandbookID: "+moduleHandbook.getID()+") (actorUser has no ModuleHandbookRights)", 
-							"updateModuleHandbook(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
+				if(enabling) {
+					if(!actorEmployee.getEmployeeRights().isCanDeblockModule()) {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"not allowed to enable or disable this moduleHandbook " +
+								"(moduleHandbookID: "+moduleHandbook.getID()+") " +
+								"(actorUser cannot enable content)", 
+								"updateStudycourse(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
 					}
-					return;
-				}
-				boolean canUpdate = false;
-				for(ModuleHandbookRights mhbr : actorUserModuleHandbookRightsList) {
-					if(mhbr.getModuleHandbookID() == moduleHandbook.getID()) {
-						if(mhbr.getCanEdit()) {
-							System.out.println("actorUser is allowed to update this moduleHandbook");
-							canUpdate = true;
-						} else {
-							System.out.println("actorUser is not allowed to update this moduleHandbook");
-							canUpdate = false;
+				} else {		
+					ArrayList<ModuleHandbookRights> actorUserModuleHandbookRightsList = actorEmployee.getEmployeeRights().getModuleHandbookRightsList();
+					if(actorUserModuleHandbookRightsList.isEmpty()) {
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"not allowed to update this moduleHandbook (moduleHandbookID: "+moduleHandbook.getID()+") (actorUser has no ModuleHandbookRights)", 
+								"updateModuleHandbook(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+					boolean canUpdate = false;
+					for(ModuleHandbookRights mhbr : actorUserModuleHandbookRightsList) {
+						if(mhbr.getModuleHandbookID() == moduleHandbook.getID()) {
+							if(mhbr.getCanEdit()) {
+								System.out.println("actorUser is allowed to update this moduleHandbook");
+								canUpdate = true;
+							} else {
+								System.out.println("actorUser is not allowed to update this moduleHandbook");
+								canUpdate = false;
+							}
 						}
 					}
-				}
-				if(!canUpdate) {	// no entry found or canUpdate=false
-					json = gson.toJson(new JsonErrorContainer(new JsonError(
-							"not allowed to update this moduleHandbook (moduleHandbookID: "+moduleHandbook.getID()+") (no fitting StudycourseRights found or canDelete=false)", 
-							"updateModuleHandbook(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
+					if(!canUpdate) {	// no entry found or canUpdate=false
+						json = gson.toJson(new JsonErrorContainer(new JsonError(
+								"not allowed to update this moduleHandbook (moduleHandbookID: "+moduleHandbook.getID()+") (no fitting StudycourseRights found or canDelete=false)", 
+								"updateModuleHandbook(...)")));		
+						try {
+							response.getWriter().write(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return;
 					}
-					return;
 				}
 			}
 		} else {
@@ -2036,14 +2074,30 @@ public class ContentRoutes extends Routes{
 			return;
 		}
 
-		if(db.updateModuleHandbook(moduleHandbook)) {
-			json = gson.toJson(moduleHandbook);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
+		// enable or disable modulehandbook
+		if(enabling) {
+			if(db.enableModuleHandbook(moduleHandbook.getID(), enabled)) {
+				json = "{\"moduleHandbookID\":"+moduleHandbook.getID()+"}";
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"db.enableModuleHandbook(moduleHandbook.getID(), enabled) failed", 
+						"updateModuleHandbook(...)")));
+			}
+		// update modulehandbook content
+		} else {
+			if(db.updateModuleHandbook(moduleHandbook)) {
+				json = gson.toJson(moduleHandbook);
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"db.updateModuleHandbook(moduleHandbook) failed", 
+						"updateModuleHandbook(...)")));	
 			}
 		}
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 	}
 	
 	/**
