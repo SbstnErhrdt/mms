@@ -1099,6 +1099,8 @@ public class ContentRoutes extends Routes{
 			return;
 		}
 
+		// add
+		
 		if(db.createEvent(event)) {
 			// give the user all rights for his created event
 			if(!actorUserIsAdmin) {

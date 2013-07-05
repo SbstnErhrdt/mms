@@ -34,16 +34,14 @@ public class ContentDbController extends DbController {
 	 */
 	public boolean createEvent(Event event) {
 
-		// GET VALUENAMES
-		String[] valueNamesArray = event.toValueNamesArray();
+		// GET VALUENAME
 		
-		String[] newValuesNamesArray = Arrays.copyOfRange(valueNamesArray, 1, valueNamesArray.length);
-		
-		String valueNames =  Utilities.arrayToString(newValuesNamesArray);
+		String valueNames = "name, sws, lecturer_email, archived, " + 
+				"content, enabled, room, place, type, times, modifier_email";
 		
 		// QUERY
 		String query = "INSERT INTO events (" +valueNames+ ") " +
-				"VALUES("+getXQuestionMarks(newValuesNamesArray.length)+");";		
+				"VALUES("+getXQuestionMarks(12)+");";		
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);	
@@ -53,11 +51,12 @@ public class ContentDbController extends DbController {
 			ps.setString(3, event.getLecturer_email());		// lecturer_email
 			ps.setBoolean(4, event.isArchived());			// archived
 			ps.setString(5, event.getContent());			// content
-			//ps.setBoolean(6, event.isEnabled());			// enabled
+			ps.setBoolean(6, false);			// enabled
 			ps.setString(7, event.getRoom());				// room
 			ps.setString(8, event.getPlace());				// place
 			ps.setString(9, event.getType());				// type
 			ps.setString(10, event.getTimes());				// times
+			ps.setString(11, event.getModifier_email());	// modifier_email	
 			
 			System.out.println("db:createEvent: " + ps);
 			
@@ -129,10 +128,10 @@ public class ContentDbController extends DbController {
 		// QUERY
 		String query = "UPDATE events SET ";
 
-		for (int i = 1; i < valueNames.length - 1; i++) {
+		for (int i = 1; i < valueNames.length-2; i++) {
 			query += valueNames[i] + "=?, ";
 		}
-		query += valueNames[valueNames.length - 1] + "=?";
+		query += valueNames[valueNames.length-2] + "=?";
 		query += " WHERE eventID = " + event.getID() + ";";
 
 		try {
@@ -144,11 +143,12 @@ public class ContentDbController extends DbController {
 			ps.setString(3, event.getLecturer_email());		// lecturer_email
 			ps.setBoolean(4, event.isArchived());			// archived
 			ps.setString(5, event.getContent());			// content
-			//ps.setBoolean(6, event.isEnabled());			// enabled
+			ps.setBoolean(6, false);						// enabled
 			ps.setString(7, event.getRoom());				// room
 			ps.setString(8, event.getPlace());				// place
 			ps.setString(9, event.getType());				// type
 			ps.setString(10, event.getTimes());				// times
+			ps.setString(11, event.getModifier_email()); 	// modifier_email
 
 			System.out.println("db:updateEvent: " + ps);
 			
@@ -225,7 +225,8 @@ public class ContentDbController extends DbController {
 				newEvent = new Event(rs.getInt(1), new ArrayList<Integer>(),
 						rs.getString(2), rs.getInt(3), rs.getString(4),
 						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), rs.getString(8), 
-						rs.getString(9), rs.getString(10), rs.getString(11));
+						rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), 
+						rs.getTimestamp(13));
 				rs.close();
 
 			} else {
@@ -298,7 +299,8 @@ public class ContentDbController extends DbController {
 				event = new Event(eventID, new ArrayList<Integer>(),
 						rs.getString(2), rs.getInt(3), rs.getString(4),
 						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), rs.getString(8), 
-						rs.getString(9), rs.getString(10), rs.getString(11));
+						rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), 
+						rs.getTimestamp(13));
 				
 				// moduleIDs
 				ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
@@ -338,35 +340,62 @@ public class ContentDbController extends DbController {
 	 */
 	public boolean createModule(Module module) {
 
-		// GET VALUENAMES & VALUES
-		String[] valuesArray = module.toValuesArray();
-		String[] valueNamesArray = module.toValueNamesArray();
-		
-		String[] newValuesArray = Arrays.copyOfRange(valuesArray, 1, valuesArray.length);
-		String[] newValuesNamesArray = Arrays.copyOfRange(valueNamesArray, 1, valueNamesArray.length);
-		
-		String values = Utilities.arrayToString(newValuesArray);
-		String valueNames =  Utilities.arrayToString(newValuesNamesArray);
+		// GET VALUENAMES
+		String valueNames = "name, token, englishTitle, lp, sws, language, " + 
+			"duration, director_email, requirement, learningTarget, content, literature, " + 
+			"archived, enabled, isCritical, modifier_email";
 		
 		// QUERY
-		String query = "INSERT INTO modules (" +valueNames+ ") VALUES ("+values+");";
-		
-		System.out.println("db:createModule " + query);
+		String query = "INSERT INTO modules (" +valueNames+ ") VALUES ("+getXQuestionMarks(16)+");";
 		
 		try {
-			Statement stmt = db.createStatement();	
-			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-			ResultSet rs = stmt.getGeneratedKeys();
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);	
+			
+			ps.setString(1, module.getName());				// name
+			ps.setString(2, module.getToken());				// token
+			ps.setString(3, module.getEnglishTitle());		// englishTitle
+			ps.setString(4, module.getLp());				// lp
+			ps.setString(5, module.getSws()); 				// sws
+			ps.setString(6, module.getLanguage()); 			// language
+			ps.setInt(7, module.getDuration()); 			// duration
+			ps.setString(8, module.getDirector_email()); 	// director_email
+			ps.setString(9, module.getRequirement()); 		// requirement
+			ps.setString(10, module.getLearningTarget()); 	// learningTarget
+			ps.setString(11, module.getContent()); 			// content
+			ps.setString(12, module.getLiterature()); 		// literature
+			ps.setBoolean(13, module.isArchived()); 		// archived
+			ps.setBoolean(14, false); 						// enabled
+			ps.setBoolean(15, module.isCritical()); 		// isCritical
+			ps.setString(16, module.getModifier_email()); 	// modifierEmail
+			
+
+			System.out.println("db:createModule: " + ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			// get generated moduleID
+			ResultSet rs = ps.getGeneratedKeys();
 			if (rs.next()) {
 				module.setID(rs.getInt(1));
-			    System.out.println("Generated eventID: " + module.getID());	    
+			    System.out.println("Generated moduleID: " + module.getID());	    
 			}
-			stmt.close();
+			
+			ps.close();
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
-		} 
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		// CREATE ENTRY IN TABLE modules_subjects
 		query = "INSERT INTO modules_subjects(moduleID, subjectID) VALUES ("+module.getID()+", ?)";
 		System.out.println(query);
@@ -402,27 +431,55 @@ public class ContentDbController extends DbController {
 	 */
 	public boolean updateModule(Module module) {
 
-		// GET VALUENAMES & VALUES
+		// GET VALUENAMES
 		String[] valueNames = module.toValueNamesArray();
-		String[] values = module.toValuesArray();
 
 		// QUERY
 		String query = "UPDATE modules SET ";
 
-		for (int i = 0; i < valueNames.length - 1; i++) {
-			query += valueNames[i] + " = " + values[i] + ", ";
+		for (int i = 0; i < valueNames.length - 2; i++) {
+			query += valueNames[i] + " =?, ";
 		}
-		query += valueNames[valueNames.length - 1] + "="
-				+ values[values.length - 1];
+		query += valueNames[valueNames.length - 2] + "=?";
 		query += " WHERE moduleID = " + module.getID() + ";";
 
-		System.out.println("db:updateModule " + query);
-
 		try {
-			db.createStatement().executeUpdate(query);
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);	
+			
+			ps.setString(1, module.getName());				// name
+			ps.setString(2, module.getToken());				// token
+			ps.setString(3, module.getEnglishTitle());		// englishTitle
+			ps.setString(4, module.getLp());				// lp
+			ps.setString(5, module.getSws()); 				// sws
+			ps.setString(6, module.getLanguage()); 			// language
+			ps.setInt(7, module.getDuration()); 			// duration
+			ps.setString(8, module.getDirector_email()); 	// director_email
+			ps.setString(9, module.getRequirement()); 		// requirement
+			ps.setString(10, module.getLearningTarget()); 	// learningTarget
+			ps.setString(11, module.getContent()); 			// content
+			ps.setString(12, module.getLiterature()); 		// literature
+			ps.setBoolean(13, module.isArchived()); 		// archived
+			ps.setBoolean(14, false); 						// enabled
+			ps.setBoolean(15, module.isCritical()); 		// isCritical
+			ps.setString(16, module.getModifier_email()); 	// modifierEmail	
+
+			System.out.println("db:updateModule: " + ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		// UPDATE modules_subjects: delete and recreate
@@ -482,9 +539,10 @@ public class ContentDbController extends DbController {
 						rs.getString(5), rs.getString(6), rs.getString(7),
 						rs.getInt(8), rs.getString(9), rs.getString(10),
 						rs.getString(11), rs.getString(12), rs.getString(13),
-						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16));
+						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16), 
+						rs.getString(17), rs.getTimestamp(18));
 			} else {
-				System.out.println("No Event found with this ID.");
+				System.out.println("No Module found with this ID.");
 				rs.close();
 				return null;
 			}
@@ -557,7 +615,8 @@ public class ContentDbController extends DbController {
 						rs.getString(5), rs.getString(6), rs.getString(7),
 						rs.getInt(8), rs.getString(9), rs.getString(10),
 						rs.getString(11), rs.getString(12), rs.getString(13),
-						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16));
+						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16), 
+						rs.getString(17), rs.getTimestamp(18));
 				
 				// subjectIDs
 				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
@@ -617,7 +676,8 @@ public class ContentDbController extends DbController {
 				event = new Event(eventID, new ArrayList<Integer>(),
 						rs.getString(2), rs.getInt(3), rs.getString(4),
 						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), rs.getString(8), 
-						rs.getString(9), rs.getString(10), rs.getString(11));
+						rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), 
+						rs.getTimestamp(13));
 				
 				// moduleIDs
 				ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
@@ -837,7 +897,8 @@ public class ContentDbController extends DbController {
 						rs.getString(5), rs.getString(6), rs.getString(7),
 						rs.getInt(8), rs.getString(9), rs.getString(10),
 						rs.getString(11), rs.getString(12), rs.getString(13),
-						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16));
+						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16), 
+						rs.getString(17), rs.getTimestamp(18));
 				
 				// subjectIDs
 				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();

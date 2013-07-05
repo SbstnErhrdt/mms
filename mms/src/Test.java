@@ -133,7 +133,8 @@ public class Test {
 		moduleIDs.add(2);
 		
 		Event event = new Event(5, moduleIDs, "Ana IIa", 4, "gerhard.baur@uni-ulm.de", false, 
-				"test", true, "irgend n Raum", "irgendwo", "Vorlesung", "Dienstag 10 bis 12");
+				"test", true, "irgend n Raum", "irgendwo", "Vorlesung", "Dienstag 10 bis 12", 
+				"rob@rob.com", null);
 		
 		ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
 		subjectIDs.add(1);
@@ -395,6 +396,8 @@ public class Test {
 		
 		
 		cdbc.updateEvent(event);
+		
+		System.out.println(gson.toJson(cdbc.getEvent(5)));
 		
 		
 	}

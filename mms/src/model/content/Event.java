@@ -1,5 +1,7 @@
 package model.content;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import util.Utilities;
@@ -43,10 +45,13 @@ public class Event extends Content {
 	 * @param place
 	 * @param type
 	 * @param times
+	 * @param modifier_email
+	 * @param lastModified
 	 */
 	public Event(int eventID, ArrayList<Integer> moduleIDs, String name, 
 			int sws, String lecturer_email, boolean archived, String content, 
-			boolean enabled, String room, String place, String type, String times) {
+			boolean enabled, String room, String place, String type, String times, 
+			String modifier_email, Timestamp lastModified) {
 		this.eventID = eventID;
 		this.moduleIDs = moduleIDs;
 		this.name = name;
@@ -59,6 +64,8 @@ public class Event extends Content {
 		this.place = place;
 		this.type = type;	
 		this.times = times;
+		this.modifier_email = modifier_email;
+		this.lastModified = lastModified;
 	}
 	
 	// Getter & Setter
@@ -138,7 +145,7 @@ public class Event extends Content {
 	@Override
 	public String[] toValueNamesArray() {
 		String[] valueNames = {"eventID", "name", "sws", "lecturer_email", "archived", 
-				"content", "enabled", "room", "place", "type", "times"};
+				"content", "enabled", "room", "place", "type", "times", "modifier_email", "lastModified"};
 		return valueNames;
 	}
 	
@@ -150,12 +157,16 @@ public class Event extends Content {
 			string += valueNames[i]+"="+values[i]+", ";
 		}
 		string += valueNames[values.length-1]+"="+values[values.length-1];
-		string += ", moduleIDs={";
-		for(int i=0; i<moduleIDs.size()-1; i++) {
-			string += moduleIDs.get(i) + ",";
-		}
-		string += moduleIDs.get(moduleIDs.size()-1) + "}]";
 		
+		
+		if(moduleIDs.size() != 0) {
+			string += ", moduleIDs={";
+			for(int i=0; i<moduleIDs.size()-1; i++) {
+				string += moduleIDs.get(i) + ",";
+			}
+			string += moduleIDs.get(moduleIDs.size()-1) + "}]";
+		}
+	
 		return string;
 	}
 

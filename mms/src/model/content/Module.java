@@ -1,5 +1,6 @@
 package model.content;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import util.Utilities;
@@ -53,7 +54,7 @@ public class Module extends Content {
 	 */
 	public Module(int moduleID, String name, ArrayList<Integer> subjectIDs, String token, String englishTitle, String lp, String sws, 
 			String language, int duration, String director_email, String requirement, String learningTarget, String content, String literature, 
-			boolean archived, boolean enabled, boolean isCritical) {
+			boolean archived, boolean enabled, boolean isCritical, String modifier_email, Timestamp lastModified) {
 		this.moduleID = moduleID;
 		this.name = name;
 		this.subjectIDs = subjectIDs;
@@ -71,6 +72,8 @@ public class Module extends Content {
 		this.archived = archived;
 		this.enabled = enabled;
 		this.isCritical = isCritical;
+		this.modifier_email = modifier_email;
+		this.lastModified = lastModified;
 	}
 
 	// Getter & Setter
@@ -217,7 +220,7 @@ public class Module extends Content {
 	public String[] toValueNamesArray() {
 		String[] valueNames = {"moduleID", "name", "token", "englishTitle", "lp", "sws", "language",
 			"duration", "director_email", "requirement", "learningTarget", "content", "literature", 
-			"archived", "enabled", "isCritical"}; 
+			"archived", "enabled", "isCritical", "modifier_email", "lastModified"}; 
 		return valueNames;
 	}
 	

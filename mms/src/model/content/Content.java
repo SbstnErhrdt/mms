@@ -4,19 +4,19 @@ import model.DbControllable;
 
 public class Content implements DbControllable {
 
-	protected String name, content;
-	protected java.sql.Date lastModified;
+	protected String name, content, modifier_email;
+	protected java.sql.Timestamp lastModified;
 	protected boolean archived, enabled;
 	protected int version;
 
 	
-	public java.sql.Date getLastModified() {
+	public java.sql.Timestamp getLastModified() {
 		return lastModified;
 	}
 
-	public void setLastModified(java.sql.Date lastModified) {
+	public void setLastModified(java.sql.Timestamp lastModified) {
 		this.lastModified = lastModified;
-	}
+	}	
 
 	public int getVersion() {
 		return version;
@@ -57,6 +57,14 @@ public class Content implements DbControllable {
 	public void setArchived(boolean archived) {
 		this.archived = archived;
 	}
+	
+	public String getModifier_email() {
+		return modifier_email;
+	}
+
+	public void setModifier_email(String modifier_email) {
+		this.modifier_email = modifier_email;
+	}
 
 	@Override
 	public String toValues() {
@@ -93,5 +101,4 @@ public class Content implements DbControllable {
 		
 		return string;
 	}
-
 }
