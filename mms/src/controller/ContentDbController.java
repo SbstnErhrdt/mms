@@ -20,7 +20,7 @@ import model.content.Subject;
 
 public class ContentDbController extends DbController {
 	
-	private final int MAX_VERSIONS = 20;
+	private final int MAX_VERSIONS = 15;
 	
 	/**
 	 * constructor
@@ -1499,7 +1499,7 @@ public class ContentDbController extends DbController {
 
 		Studycourse studycourse = new Studycourse(0);
 		
-		String query = "SELECT "+studycourse.toValueNames()+", version FROM module_handbooks_versions " +
+		String query = "SELECT "+studycourse.toValueNames()+", version FROM studycourses_versions " +
 				"WHERE studycourseID="+studycourseID+";";
 		System.out.println(query);
 		
@@ -1518,7 +1518,7 @@ public class ContentDbController extends DbController {
 			e.printStackTrace();
 		}
 		return studycourses;
-	}
+	}	
 
 	// STUDYCOURSE ENTFERNEN
 	/**

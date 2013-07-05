@@ -410,5 +410,7 @@ public class Test {
 		System.out.println(cdbc.cleanModuleHandbookVersionsTable(1));
 		
 		
+		System.out.println(gson.toJson(cdbc.getStudycourseVersions(1)));
+		
 	}
 }
