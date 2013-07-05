@@ -1,9 +1,19 @@
 package model.content;
 
+import java.sql.Timestamp;
+
 import util.Utilities;
 
 public class Studycourse extends Content {
 	
+	public int getCurrent_moduleHandbook() {
+		return current_moduleHandbook;
+	}
+
+	public void setCurrent_moduleHandbook(int current_moduleHandbook) {
+		this.current_moduleHandbook = current_moduleHandbook;
+	}
+
 	private int studycourseID, current_moduleHandbook;
 
 	// Konstruktor
@@ -15,15 +25,20 @@ public class Studycourse extends Content {
 	 * @param archived
 	 * @param content
 	 * @param enabled
+	 * @param modifier_email
+	 * @param lastModified
 	 */
 	public Studycourse (int studycourseID, int current_moduleHandbook, 
-			String name, boolean archived, String content, boolean enabled) {
+			String name, boolean archived, String content, boolean enabled, 
+			String modifier_email, Timestamp lastModified) {
 		this.studycourseID = studycourseID;
 		this.current_moduleHandbook = current_moduleHandbook;
 		this.name = name;
 		this.archived = archived;
 		this.content = content;
 		this.enabled = enabled;
+		this.modifier_email = modifier_email;
+		this.lastModified = lastModified;
 	}
 	
 	/**
@@ -57,7 +72,7 @@ public class Studycourse extends Content {
 	public String[] toValueNamesArray() {
 		// TODO Auto-generated method stub
 		String[] value = {"studycourseID", "current_moduleHandbook", "name", "archived", 
-				"content", "enabled"};
+				"content", "enabled", "modifier_email", "lastModified"};
 		return value;
 	}
 

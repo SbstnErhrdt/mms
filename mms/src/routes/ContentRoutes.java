@@ -25,6 +25,7 @@ import model.userRights.StudycourseRights;
 import model.userRights.SubjectRights;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import controller.ContentDbController;
@@ -58,6 +59,7 @@ public class ContentRoutes extends Routes{
 		
 		if(request.getParameter("eventID") != null) {
 			int eventID = Integer.parseInt(request.getParameter("eventID"));
+			
 			Event event = db.getEvent(eventID);
 			
 			if(event == null) {
@@ -73,7 +75,24 @@ public class ContentRoutes extends Routes{
 						"actorUser is not allowed to read this event (eventID: "+eventID+", event is not enabled)", 
 						"readEvent(...)")));
 			} else {
-				json = gson.toJson(event);
+				// get all versions of the event?
+				if(request.getParameter("getVersions") != null) {
+					boolean getVersions = Boolean.parseBoolean(request.getParameter("getVersions"));
+					if(getVersions) {
+						ArrayList<Event> events = db.getEventVersions(eventID);
+						if(events != null) {
+							json = gson.toJson(events);
+						} else {
+							json = gson.toJson(new JsonErrorContainer(new JsonError(
+									"no versions found for this eventID", 
+									"readEvent(...)")));
+						}
+					} else {
+						json = gson.toJson(event);
+					}
+				} else {
+					json = gson.toJson(event);
+				}
 			}
 			
 		} else {
@@ -235,7 +254,24 @@ public class ContentRoutes extends Routes{
 						"(moduleID: "+moduleID+", module is not enabled)", 
 						"readModule(...)")));
 			} else {				
-				json = gson.toJson(module);
+				// get all versions of the module?
+				if(request.getParameter("getVersions") != null) {
+					boolean getVersions = Boolean.parseBoolean(request.getParameter("getVersions"));
+					if(getVersions) {
+						ArrayList<Module> modules = db.getModuleVersions(moduleID);
+						if(modules != null) {
+							json = gson.toJson(modules);
+						} else {
+							json = gson.toJson(new JsonErrorContainer(new JsonError(
+									"no versions found for this moduleID", 
+									"readModule(...)")));
+						}
+					} else {
+						json = gson.toJson(module);
+					}
+				} else {
+					json = gson.toJson(module);
+				}
 			}
 		} else {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
@@ -403,7 +439,24 @@ public class ContentRoutes extends Routes{
 						"(subjectID: "+subjectID+", subject is not enabled)", 
 						"readSubject(...)")));
 			} else {
-				json = gson.toJson(subject);
+				// get all versions of the subject?
+				if(request.getParameter("getVersions") != null) {
+					boolean getVersions = Boolean.parseBoolean(request.getParameter("getVersions"));
+					if(getVersions) {
+						ArrayList<Subject> subjects = db.getSubjectVersions(subjectID);
+						if(subjects != null) {
+							json = gson.toJson(subjects);
+						} else {
+							json = gson.toJson(new JsonErrorContainer(new JsonError(
+									"no versions found for this subjectID", 
+									"readSubject(...)")));
+						}
+					} else {
+						json = gson.toJson(subject);
+					}
+				} else {
+					json = gson.toJson(subject);
+				}
 			}
 
 		} else {
@@ -894,8 +947,16 @@ public class ContentRoutes extends Routes{
 			boolean sose = Boolean.parseBoolean(request.getParameter("sose"));
 			int year = Integer.parseInt(request.getParameter("year"));
 			
-			json = gson.toJson(db.getDeadline(sose, year));
-		
+			Deadline deadline = db.getDeadline(sose, year);
+			
+			if(deadline != null) {
+				json = gson.toJson(deadline);				
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"no deadline with such sose and year", 
+						"readDeadline(...)")));
+			}
+			
 		} else {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified moduleHandbookID and unspecified sose or year in query", 
@@ -1099,7 +1160,8 @@ public class ContentRoutes extends Routes{
 			return;
 		}
 
-		// add
+		// add modifier_email
+		event.setModifier_email(actorUser.getEmail());
 		
 		if(db.createEvent(event)) {
 			// give the user all rights for his created event
@@ -1224,6 +1286,9 @@ public class ContentRoutes extends Routes{
 			return;
 		}
 		
+		// add modifier_email
+		event.setModifier_email(actorUser.getEmail());
+		
 		// enable or disable event
 		if(enabling) {
 			if(db.enableEvent(event.getID(), enabled)) {
@@ -1334,7 +1399,10 @@ public class ContentRoutes extends Routes{
 				e.printStackTrace();
 			}
 			return;
-		}		
+		}	
+		
+		// add modifier_email
+		module.setModifier_email(actorUser.getEmail());
 		
 		if(db.createModule(module)) {
 			// give the user all rights for his created module
@@ -1342,11 +1410,15 @@ public class ContentRoutes extends Routes{
 				db.createOwnerModuleRights(actorUser.getEmail(), module.getID());
 			}
 			json = gson.toJson(module);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		} else {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"db.createModule(module) failed", 
+					"createModule(...)")));	
+		}
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -1464,6 +1536,9 @@ public class ContentRoutes extends Routes{
 			return;
 		}
 		
+		// add modifier_email
+		module.setModifier_email(actorUser.getEmail());
+		
 		// enable or disable module
 		if(enabling) {
 			if(db.enableModule(module.getID(), enabled)) {
@@ -1481,13 +1556,14 @@ public class ContentRoutes extends Routes{
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"db.updateModule(module) failed", 
 						"updateModule(...)")));	
-			}
+			}	
 		}
 		try {
 			response.getWriter().write(json);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}	
+		}
+		
 	}
 
 	/**
@@ -1566,7 +1642,10 @@ public class ContentRoutes extends Routes{
 				e.printStackTrace();
 			}
 			return;
-		}		
+		}
+		
+		// add modifier_email
+		subject.setModifier_email(actorUser.getEmail());
 				
 		if(db.createSubject(subject)) {
 			// give the user all rights for his created subject
@@ -1574,11 +1653,15 @@ public class ContentRoutes extends Routes{
 				db.createOwnerSubjectRights(actorUser.getEmail(), subject.getID());
 			}
 			json = gson.toJson(subject);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		} else {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"db.createSubject(subject) failed", 
+					"createSubject(...)")));	
+		}
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -1685,6 +1768,9 @@ public class ContentRoutes extends Routes{
 			}
 			return;
 		}
+		
+		// add modifier_email
+		subject.setModifier_email(actorUser.getEmail());
 			
 		// enable or disable subject
 		if(enabling) {
@@ -1754,13 +1840,20 @@ public class ContentRoutes extends Routes{
 			return;
 		}
 		
+		// add modifier_email
+		studycourse.setModifier_email(actorUser.getEmail());
+		
 		if(db.createStudycourse(studycourse)) {
 			json = gson.toJson(studycourse);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		} else {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"db.createStudycourse(studycourse) failed", 
+					"createStudycourse(...)")));
+		}
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -1852,6 +1945,9 @@ public class ContentRoutes extends Routes{
 			}
 			return;
 		}			
+		
+		// add modifier_email
+		studycourse.setModifier_email(actorUser.getEmail());
 			
 		// enable or disable studycourse
 		if(enabling) {
@@ -1958,6 +2054,9 @@ public class ContentRoutes extends Routes{
 			}
 		}
 		
+		// add modifier_email
+		moduleHandbook.setModifier_email(actorUser.getEmail());
+		
 		if(db.createModuleHandbook(moduleHandbook)) {
 			// give the user all rights for his created modulehandbook
 			if(!actorUserIsAdmin) {
@@ -1965,11 +2064,15 @@ public class ContentRoutes extends Routes{
 			}
 
 			json = gson.toJson(moduleHandbook);
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		} else {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"db.createModuleHandbook(moduleHandbook) failed", 
+					"createModuleHandbook(...)")));
+		}
+		try {
+			response.getWriter().write(json);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -2075,6 +2178,9 @@ public class ContentRoutes extends Routes{
 			}
 			return;
 		}
+		
+		// add modifier_email
+		moduleHandbook.setModifier_email(actorUser.getEmail());
 
 		// enable or disable modulehandbook
 		if(enabling) {
@@ -2160,12 +2266,10 @@ public class ContentRoutes extends Routes{
 		try {
 			deadlineDate = new java.sql.Date(df.parse(deadlineString).getTime());
 			deadline = new Deadline(sose, year, deadlineDate);
-		} catch (ParseException e1) {
-			
+		} catch (ParseException e1) {	
 			e1.printStackTrace();
 		}
 		
-	
 		if(db.createDeadline(deadline)) {
 			json = gson.toJson(deadline);
 		} else {
@@ -2223,7 +2327,25 @@ public class ContentRoutes extends Routes{
 		
 		json = getRequestBody(request);
 	
-		Deadline deadline = gson.fromJson(json, Deadline.class);
+		JsonObject obj = gson.fromJson(json, JsonObject.class);
+		
+		String deadlineString = obj.get("deadline").getAsString();
+		
+		boolean sose = obj.get("sose").getAsBoolean();
+		
+		int year = obj.get("year").getAsInt();
+		
+		DateFormat df= new SimpleDateFormat("yyyy-MM-dd");
+		
+		java.sql.Date deadlineDate;
+		Deadline deadline = null;
+		
+		try {
+			deadlineDate = new java.sql.Date(df.parse(deadlineString).getTime());
+			deadline = new Deadline(sose, year, deadlineDate);
+		} catch (ParseException e1) {	
+			e1.printStackTrace();
+		}
 		
 		if(db.updateDeadline(deadline)) {
 			json = gson.toJson(deadline);

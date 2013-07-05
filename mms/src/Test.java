@@ -141,7 +141,7 @@ public class Test {
 		subjectIDs.add(2);
 		
 		Module module = new Module(3, "Testmodul3", subjectIDs, "", "", "5 LP", "3", 
-				"Deutsch", 2, "gerhard.baur@uni-ulm.de", "", "", "", "", false, true, false);
+				"Deutsch", 2, "gerhard.baur@uni-ulm.de", "", "", "", "", false, true, false, "rob@rob.com", null);
 		
 		
 		ContentDbController cdbc = new ContentDbController();

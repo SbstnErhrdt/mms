@@ -1,5 +1,7 @@
 package model.content;
 
+import java.sql.Timestamp;
+
 import util.Utilities;
 
 public class Subject extends Content {
@@ -24,9 +26,12 @@ public class Subject extends Content {
 	 * @param archived
 	 * @param content
 	 * @param enabled
+	 * @param modifier_email
+	 * @param lastModified
 	 */
 	public Subject (int subjectID, int studycourses_studycourseID, int moduleHandbooks_moduleHandbookID,
-			String name, boolean archived, String content, boolean enabled) {
+			String name, boolean archived, String content, boolean enabled, String modifier_email, 
+			Timestamp lastModified) {
 		this.subjectID = subjectID; 
 		this.studycourses_studycourseID = studycourses_studycourseID;
 		this.moduleHandbooks_moduleHandbookID = moduleHandbooks_moduleHandbookID;
@@ -34,6 +39,8 @@ public class Subject extends Content {
 		this.archived = archived;
 		this.content = content;
 		this.enabled = enabled;
+		this.modifier_email = modifier_email;
+		this.lastModified = lastModified;
 	}
 	
 	/** 
@@ -71,7 +78,7 @@ public class Subject extends Content {
 		// TODO Auto-generated method stub
 		String[] values = {"subjectID", "studycourses_studycourseID", 
 				"module_handbooks_modulehandbookID", "name", "archived", 
-				"content", "enabled"};
+				"content", "enabled", "modifier_email", "lastModified"};
 		return values;
 	}
 

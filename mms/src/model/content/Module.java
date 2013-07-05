@@ -51,6 +51,8 @@ public class Module extends Content {
 	 * @param archived
 	 * @param enabled
 	 * @param isCritical
+	 * @param modifier_email
+	 * @param lastModified
 	 */
 	public Module(int moduleID, String name, ArrayList<Integer> subjectIDs, String token, String englishTitle, String lp, String sws, 
 			String language, int duration, String director_email, String requirement, String learningTarget, String content, String literature, 

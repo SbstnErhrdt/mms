@@ -41,7 +41,7 @@ public class ContentDbController extends DbController {
 		
 		// QUERY
 		String query = "INSERT INTO events (" +valueNames+ ") " +
-				"VALUES("+getXQuestionMarks(12)+");";		
+				"VALUES("+getXQuestionMarks(11)+");";		
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);	
@@ -128,10 +128,10 @@ public class ContentDbController extends DbController {
 		// QUERY
 		String query = "UPDATE events SET ";
 
-		for (int i = 1; i < valueNames.length-2; i++) {
+		for (int i = 1; i < valueNames.length-1; i++) {
 			query += valueNames[i] + "=?, ";
 		}
-		query += valueNames[valueNames.length-2] + "=?";
+		query += valueNames[valueNames.length-1] + "=CURRENT_TIMESTAMP";
 		query += " WHERE eventID = " + event.getID() + ";";
 
 		try {
@@ -274,6 +274,57 @@ public class ContentDbController extends DbController {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * @param eventID
+	 * @return a list of all versions of the event
+	 */
+	public ArrayList<Event> getEventVersions(int eventID) {
+		ArrayList<Event> events = new ArrayList<Event>();
+
+		Event event = new Event(0);
+		
+		String query = "SELECT "+event.toValueNames()+", version FROM events_versions " +
+				"WHERE eventID="+eventID+";";
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+
+			while (rs.next()) {
+				event = null;
+				event = new Event(eventID, new ArrayList<Integer>(),
+						rs.getString(2), rs.getInt(3), rs.getString(4),
+						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), rs.getString(8), 
+						rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), 
+						rs.getTimestamp(13));
+				event.setVersion(rs.getInt(14));
+				
+				// moduleIDs
+				ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
+				query = "SELECT moduleID FROM events_modules WHERE eventID="+eventID+";";
+				System.out.println(query);
+				
+				try {
+					ResultSet rs1 = db.createStatement().executeQuery(query);
+					while(rs1.next()) {
+						moduleIDs.add(rs1.getInt(1)); 	// moduleID
+					}
+					event.setModuleIDs(moduleIDs);
+				} catch(SQLException e) {
+					e.printStackTrace();
+				}
+				events.add(event);
+			}
+
+			rs.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return events;
 	}
 	
 	/**
@@ -437,10 +488,10 @@ public class ContentDbController extends DbController {
 		// QUERY
 		String query = "UPDATE modules SET ";
 
-		for (int i = 0; i < valueNames.length - 2; i++) {
+		for (int i = 1; i < valueNames.length - 1; i++) {
 			query += valueNames[i] + " =?, ";
 		}
-		query += valueNames[valueNames.length - 2] + "=?";
+		query += valueNames[valueNames.length - 1] + "=CURRENT_TIMESTAMP";
 		query += " WHERE moduleID = " + module.getID() + ";";
 
 		try {
@@ -591,6 +642,61 @@ public class ContentDbController extends DbController {
 	}
 	
 	/**
+	 * @param moduleID
+	 * @return a list of all versions of the module that belongs to the passed moduleID
+	 */
+	public ArrayList<Module> getModuleVersions(int moduleID) {
+		ArrayList<Module> modules = new ArrayList<Module>();
+
+		Module module = new Module(0);
+		
+		String query = "SELECT "+module.toValueNames()+", version FROM modules_versions " +
+				"WHERE moduleID="+moduleID+";";
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+
+			while (rs.next()) {
+				module = null;
+				module = new Module(moduleID, rs.getString(2),
+						new ArrayList<Integer>(), rs.getString(3), rs.getString(4),
+						rs.getString(5), rs.getString(6), rs.getString(7),
+						rs.getInt(8), rs.getString(9), rs.getString(10),
+						rs.getString(11), rs.getString(12), rs.getString(13),
+						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16), 
+						rs.getString(17), rs.getTimestamp(18));
+				module.setVersion(rs.getInt(19));
+				
+				// subjectIDs
+				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
+				query = "SELECT subjectID FROM modules_subjects WHERE moduleID="+moduleID+";";
+				System.out.println(query);
+				
+				try {
+					ResultSet rs1 = db.createStatement().executeQuery(query);
+					while(rs1.next()) {
+						subjectIDs.add(rs1.getInt(1)); 	// subjectID
+					}
+					rs1.close();
+					module.setSubjectIDs(subjectIDs);
+				} catch(SQLException e) {
+					e.printStackTrace();
+				}		
+				
+				modules.add(module);
+			}
+
+			rs.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return modules;
+	}
+	
+	/**
 	 * @param getOnlyEnabled
 	 * @return list of modules, if getOnlyEnabled is true, only modules that have enabled=true are selected
 	 */
@@ -716,35 +822,52 @@ public class ContentDbController extends DbController {
 	 */
 	public boolean createSubject(Subject subject) {
 
-		// GET VALUENAMES & VALUES
-		String[] valuesArray = subject.toValuesArray();
-		String[] valueNamesArray = subject.toValueNamesArray();
-		
-		String[] newValuesArray = Arrays.copyOfRange(valuesArray, 1, valuesArray.length);
-		String[] newValuesNamesArray = Arrays.copyOfRange(valueNamesArray, 1, valueNamesArray.length);
-		
-		String values = Utilities.arrayToString(newValuesArray);
-		String valueNames =  Utilities.arrayToString(newValuesNamesArray);
+		// VALUENAMES
+		String valueNames = "studycourses_studycourseID, " +
+				"module_handbooks_modulehandbookID, name, archived, " + 
+				"content, enabled, modifier_email";
 
 		// QUERY
 		String query = "INSERT INTO subjects (" + valueNames + ") VALUES ("
-				+ values + ");";
-		System.out.println("db:createSubject " + query);
+				+ getXQuestionMarks(7) + ");";
 		
 		try {
-			Statement stmt = db.createStatement();	
-			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-			ResultSet rs = stmt.getGeneratedKeys();
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);	
+			
+			ps.setInt(1, subject.getStudycourses_studycourseID()); 			// studycourses_studycourseID
+			ps.setInt(2, subject.getModuleHandbooks_moduleHandbookID());	// module_handbooks_module_handbookID
+			ps.setString(3, subject.getName());								// name
+			ps.setBoolean(4, subject.isArchived());							// archived
+			ps.setString(5, subject.getContent());							// content
+			ps.setBoolean(6, subject.isEnabled());							// enabled
+			ps.setString(7, subject.getModifier_email());					// modifier_email
+
+			System.out.println("db:createSubject: " + ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			// get generated subjectID
+			ResultSet rs = ps.getGeneratedKeys();
 			if (rs.next()) {
 				subject.setID(rs.getInt(1));
-			    System.out.println("Generated eventID: " + subject.getID());	    
+			    System.out.println("Generated subjectID: " + subject.getID());	    
 			}
-			stmt.close();
+			
+			ps.close();
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
-		} 
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		return true;
 	}
@@ -756,27 +879,46 @@ public class ContentDbController extends DbController {
 	 */
 	public boolean updateSubject(Subject subject) {
 
-		// GET VALUENAMES & VALUES
+		// GET VALUENAMES
 		String[] valueNames = subject.toValueNamesArray();
-		String[] values = subject.toValuesArray();
 
 		// QUERY
 		String query = "UPDATE subjects SET ";
 
-		for (int i = 0; i < valueNames.length - 1; i++) {
-			query += valueNames[i] + " = " + values[i] + ", ";
+		for (int i = 1; i < valueNames.length-1; i++) {
+			query += valueNames[i] + " = ?, ";
 		}
-		query += valueNames[valueNames.length - 1] + "="
-				+ values[values.length - 1];
+		query += valueNames[valueNames.length-1] + "=CURRENT_TIMESTAMP";
 		query += " WHERE subjectID = " + subject.getID() + ";";
 
-		System.out.println("db:updateSubject " + query);
-
 		try {
-			db.createStatement().executeUpdate(query);
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ps.setInt(1, subject.getStudycourses_studycourseID()); 			// studycourses_studycourseID
+			ps.setInt(2, subject.getModuleHandbooks_moduleHandbookID());	// module_handbooks_module_handbookID
+			ps.setString(3, subject.getName());								// name
+			ps.setBoolean(4, subject.isArchived());							// archived
+			ps.setString(5, subject.getContent());							// content
+			ps.setBoolean(6, subject.isEnabled());							// enabled
+			ps.setString(7, subject.getModifier_email());					// modifier_email
+
+			System.out.println("db:updateSubject: " + ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		return true;
@@ -797,7 +939,8 @@ public class ContentDbController extends DbController {
 
 			if (rs.next()) {
 				newSubject = new Subject(rs.getInt(1), rs.getInt(2), rs.getInt(3),
-						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
+						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), 
+						rs.getString(8), rs.getTimestamp(9));
 				rs.close();
 				return newSubject;
 
@@ -834,6 +977,41 @@ public class ContentDbController extends DbController {
 	}
 	
 	/**
+	 * @param subjectID
+	 * @return a list of all versions of the subject that belongs to the passed subjectID
+	 */
+	public ArrayList<Subject> getSubjectVersions(int subjectID) {
+		ArrayList<Subject> subjects = new ArrayList<Subject>();
+
+		Subject subject = new Subject(0);
+		
+		String query = "SELECT "+subject.toValueNames()+", version FROM subjects_versions " +
+				"WHERE subjectID="+subjectID+";";
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+
+			while (rs.next()) {
+				subject = null;
+				subject = new Subject(rs.getInt(1), rs.getInt(2),rs.getInt(3), 
+						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), 
+						rs.getString(8), rs.getTimestamp(9));
+				subject.setVersion(rs.getInt(10));
+				
+				subjects.add(subject);
+			}
+
+			rs.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return subjects;
+	}
+	
+	/**
 	 * @param getOnlyEnabled
 	 * @return list of subjects, if getOnlyEnabled = true, only enabled subjects are selected
 	 */
@@ -853,7 +1031,8 @@ public class ContentDbController extends DbController {
 			while (rs.next()) {
 				subject = null;
 				subject = new Subject(rs.getInt(1), rs.getInt(2),rs.getInt(3), 
-						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
+						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), 
+						rs.getString(8), rs.getTimestamp(9));
 
 				subjects.add(subject);
 			}
@@ -939,37 +1118,54 @@ public class ContentDbController extends DbController {
 	 */
 	public boolean createModuleHandbook(ModuleHandbook moduleHandbook) {
 
-		// GET VALUENAMES & VALUES
-		String[] valuesArray = moduleHandbook.toValuesArray();
-		String[] valueNamesArray = moduleHandbook.toValueNamesArray();
-		
-		String[] newValuesArray = Arrays.copyOfRange(valuesArray, 1, valuesArray.length);
-		String[] newValuesNamesArray = Arrays.copyOfRange(valueNamesArray, 1, valueNamesArray.length);
-		
-		String values = Utilities.arrayToString(newValuesArray);
-		String valueNames =  Utilities.arrayToString(newValuesNamesArray);
+		// GET VALUENAMES
+		String valueNames = "name, " + 
+				"studycourses_studycourseID, year, sose, " + 
+				"archived, content, enabled, modifier_email";
 
 		// QUERY
 		String query = "INSERT INTO module_handbooks (" + valueNames
-				+ ") VALUES (" + values + ");";
-		System.out.println("db:createModuleHandbook " + query);
+				+ ") VALUES (" + getXQuestionMarks(8) + ");";
 	
 		try {
-			Statement stmt = db.createStatement();	
-			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-			ResultSet rs = stmt.getGeneratedKeys();
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);	
+			
+			ps.setString(1, moduleHandbook.getName());						// name
+			ps.setInt(2, moduleHandbook.getStudycourses_studycourseID());	// studycourses_studycourseID
+			ps.setInt(3, moduleHandbook.getYear());							// year
+			ps.setBoolean(4, moduleHandbook.isSose());						// sose
+			ps.setBoolean(5, moduleHandbook.isArchived()); 					// archived
+			ps.setString(6, moduleHandbook.getContent());					// content
+			ps.setBoolean(7, moduleHandbook.isEnabled());					// enabled
+			ps.setString(8, moduleHandbook.getModifier_email());			// modifier_email
+			
+			System.out.println("db:createModuleHandbook: " + ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			// get generated moduleHandbookID
+			ResultSet rs = ps.getGeneratedKeys();
 			if (rs.next()) {
 				moduleHandbook.setID(rs.getInt(1));
-			    System.out.println("Generated eventID: " + moduleHandbook.getID());	    
+			    System.out.println("Generated moduleHandbookID: " + moduleHandbook.getID());	    
 			}
-			stmt.close();
+			
+			ps.close();
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
-		} 
-		
-
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	
 		return true;
 	}
 
@@ -980,27 +1176,47 @@ public class ContentDbController extends DbController {
 	 */
 	public boolean updateModuleHandbook(ModuleHandbook moduleHandbook) {
 
-		// GET VALUENAMES & VALUES
+		// GET VALUENAMES
 		String[] valueNames = moduleHandbook.toValueNamesArray();
-		String[] values = moduleHandbook.toValuesArray();
 
 		// QUERY
 		String query = "UPDATE module_handbooks SET ";
 
-		for (int i = 0; i < valueNames.length - 1; i++) {
-			query += valueNames[i] + "=" + values[i] + ", ";
+		for (int i = 1; i < valueNames.length-1; i++) {
+			query += valueNames[i] + "=?, ";
 		}
-		query += valueNames[valueNames.length - 1] + "="
-				+ values[values.length - 1];
+		query += valueNames[valueNames.length-1] + "=CURRENT_TIMESTAMP";
 		query += " WHERE moduleHandbookID=" + moduleHandbook.getID() + ";";
 
-		System.out.println("db:updateModuleHandbook " + query);
-
 		try {
-			db.createStatement().executeUpdate(query);
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ps.setString(1, moduleHandbook.getName());						// name
+			ps.setInt(2, moduleHandbook.getStudycourses_studycourseID());	// studycourses_studycourseID
+			ps.setInt(3, moduleHandbook.getYear());							// year
+			ps.setBoolean(4, moduleHandbook.isSose());						// sose
+			ps.setBoolean(5, moduleHandbook.isArchived()); 					// archived
+			ps.setString(6, moduleHandbook.getContent());					// content
+			ps.setBoolean(7, moduleHandbook.isEnabled());					// enabled
+			ps.setString(8, moduleHandbook.getModifier_email());			// modifier_email
+			
+			System.out.println("db:updateModuleHandbook: " + ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		return true;
@@ -1024,7 +1240,8 @@ public class ContentDbController extends DbController {
 			if (rs.next()) {
 				newModuleHandbook = new ModuleHandbook(
 						rs.getInt(1), rs.getString(2), rs.getInt(3),
-						rs.getInt(4), rs.getBoolean(5), rs.getBoolean(6), rs.getString(7), rs.getBoolean(8));
+						rs.getInt(4), rs.getBoolean(5), rs.getBoolean(6), rs.getString(7), 
+						rs.getBoolean(8), rs.getString(9), rs.getTimestamp(10));
 				rs.close();
 				return newModuleHandbook;
 
@@ -1084,7 +1301,9 @@ public class ContentDbController extends DbController {
 			while(rs.next()) {
 				moduleHandbook = new ModuleHandbook(
 						rs.getInt(1), rs.getString(2), rs.getInt(3),
-						rs.getInt(4), rs.getBoolean(5), rs.getBoolean(6), rs.getString(7), rs.getBoolean(8));
+						rs.getInt(4), rs.getBoolean(5), rs.getBoolean(6), 
+						rs.getString(7), rs.getBoolean(8), rs.getString(9), 
+						rs.getTimestamp(10));
 				moduleHandbooks.add(moduleHandbook);
 			}
 			rs.close();
@@ -1106,35 +1325,50 @@ public class ContentDbController extends DbController {
 	 */
 	public boolean createStudycourse(Studycourse studycourse) {
 
-		// GET VALUENAMES & VALUES
-		String[] valuesArray = studycourse.toValuesArray();
-		String[] valueNamesArray = studycourse.toValueNamesArray();
-		
-		String[] newValuesArray = Arrays.copyOfRange(valuesArray, 1, valuesArray.length);
-		String[] newValuesNamesArray = Arrays.copyOfRange(valueNamesArray, 1, valueNamesArray.length);
-		
-		String values = Utilities.arrayToString(newValuesArray);
-		String valueNames =  Utilities.arrayToString(newValuesNamesArray);
+		// VALUENAMES
+		String valueNames = "current_moduleHandbook, name, archived, " +
+				"content, enabled, modifier_email";
 
 		// QUERY
 		String query = "INSERT INTO studycourses (" + valueNames
-				+ ") VALUES (" + values + ");";
-		System.out.println("db:createStudycourse " + query);
+				+ ") VALUES (" + getXQuestionMarks(6) + ");";
 		
 		try {
-			Statement stmt = db.createStatement();	
-			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-			ResultSet rs = stmt.getGeneratedKeys();
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);	
+			
+			ps.setInt(1, studycourse.getCurrent_moduleHandbook());	// current_moduleHandbook
+			ps.setString(2, studycourse.getName());					// name
+			ps.setBoolean(3, studycourse.isArchived());				// archived
+			ps.setString(4, studycourse.getContent());				// content
+			ps.setBoolean(5, studycourse.isEnabled());				// enabled
+			ps.setString(6, studycourse.getModifier_email());		// modifier_email
+	
+			System.out.println("db:createStudycourse: " + ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			// get generated studycourseID
+			ResultSet rs = ps.getGeneratedKeys();
 			if (rs.next()) {
 				studycourse.setID(rs.getInt(1));
-			    System.out.println("Generated eventID: " + studycourse.getID());	    
+			    System.out.println("Generated studycourseID: " + studycourse.getID());	    
 			}
-			stmt.close();
+			
+			ps.close();
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
-		} 
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 		return true;
 	}
@@ -1146,27 +1380,45 @@ public class ContentDbController extends DbController {
 	 */
 	public boolean updateStudycourse(Studycourse studycourse) {
 
-		// GET VALUENAMES & VALUES
+		// GET VALUENAMES
 		String[] valueNames = studycourse.toValueNamesArray();
-		String[] values = studycourse.toValuesArray();
 
 		// QUERY
 		String query = "UPDATE studycourses SET ";
 
-		for (int i = 0; i < valueNames.length - 1; i++) {
-			query += valueNames[i] + " = " + values[i] + ", ";
+		for (int i = 1; i < valueNames.length-1; i++) {
+			query += valueNames[i] + " = ?, ";
 		}
-		query += valueNames[valueNames.length - 1] + " = "
-				+ values[values.length - 1] + " ";
-		query += "WHERE studycourseID = " + studycourse.getID() + ";";
-
-		System.out.println("db:updateStudycourse " + query);
+		query += valueNames[valueNames.length-1] + " =CURRENT_TIMESTAMP";
+		query += " WHERE studycourseID = " + studycourse.getID() + ";";
 
 		try {
-			db.createStatement().executeUpdate(query);
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);	
+			
+			ps.setInt(1, studycourse.getCurrent_moduleHandbook());	// current_moduleHandbook
+			ps.setString(2, studycourse.getName());					// name
+			ps.setBoolean(3, studycourse.isArchived());				// archived
+			ps.setString(4, studycourse.getContent());				// content
+			ps.setBoolean(5, studycourse.isEnabled());				// enabled
+			ps.setString(6, studycourse.getModifier_email());		// modifier_email
+	
+			System.out.println("db:updateStudycourse: " + ps);
+			
+			ps.executeUpdate();
+			db.commit();
+			
+			ps.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		return true;
@@ -1189,7 +1441,7 @@ public class ContentDbController extends DbController {
 			if (rs.next()) {
 				newStudycourse = new Studycourse(
 						rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getBoolean(4),
-						rs.getString(5), rs.getBoolean(6));
+						rs.getString(5), rs.getBoolean(6), rs.getString(7), rs.getTimestamp(8));
 				rs.close();
 				return newStudycourse;
 
@@ -1249,7 +1501,8 @@ public class ContentDbController extends DbController {
 			while (rs.next()) {
 				subject = null;
 				subject = new Subject(rs.getInt(1), rs.getInt(2),rs.getInt(3), 
-						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
+						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), 
+						rs.getString(8), rs.getTimestamp(9));
 
 				subjects.add(subject);
 			}
@@ -1285,7 +1538,8 @@ public class ContentDbController extends DbController {
 			while (rs.next()) {
 				subject = null;
 				subject = new Subject(rs.getInt(1), rs.getInt(2), rs.getInt(3), 
-						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7));
+						rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), 
+						rs.getString(8), rs.getTimestamp(9));
 				subjects.add(subject);
 			}
 
@@ -1319,7 +1573,8 @@ public class ContentDbController extends DbController {
 			
 			while(rs.next()) {
 				studycourses.add(new Studycourse(rs.getInt(1), rs.getInt(2), 
-						rs.getString(3), rs.getBoolean(4), rs.getString(5), rs.getBoolean(6)));
+						rs.getString(3), rs.getBoolean(4), rs.getString(5), rs.getBoolean(6), 
+						rs.getString(7), rs.getTimestamp(8)));
 			}
 			rs.close();
 		} catch(SQLException e) {
@@ -1351,7 +1606,7 @@ public class ContentDbController extends DbController {
 				moduleHandbook = new ModuleHandbook(
 						rs.getInt(1), rs.getString(2), rs.getInt(3),
 						rs.getInt(4), rs.getBoolean(5), rs.getBoolean(6), 
-						rs.getString(7), rs.getBoolean(8));
+						rs.getString(7), rs.getBoolean(8), rs.getString(9), rs.getTimestamp(10));
 				moduleHandbooks.add(moduleHandbook);
 			}
 			rs.close();
@@ -2067,5 +2322,4 @@ public class ContentDbController extends DbController {
 			}
 		}
 	}
-
 }

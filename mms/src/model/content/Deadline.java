@@ -1,11 +1,14 @@
 package model.content;
 
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class Deadline {
 	private boolean sose;
 	private int year;
-	private Date deadline;
+	private Date deadlineDate;
+	private String deadline;
 	
 	/**
 	 * constructor
@@ -13,11 +16,15 @@ public class Deadline {
 	 * @param year
 	 * @param deadline
 	 */
-	public Deadline(boolean sose, int year, Date deadline) {
+	public Deadline(boolean sose, int year, Date deadlineDate) {
 		super();
 		this.sose = sose;
 		this.year = year;
-		this.deadline = deadline;
+		this.deadlineDate = deadlineDate;
+		
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		// user the correct date format yyyy-MM-dd
+		deadline = df.format(deadlineDate);
 	}
 	
 	/**
@@ -47,10 +54,10 @@ public class Deadline {
 	}
 
 	public Date getDeadline() {
-		return deadline;
+		return deadlineDate;
 	}
 
 	public void setDeadline(Date deadline) {
-		this.deadline = deadline;
+		this.deadlineDate = deadline;
 	}
 }

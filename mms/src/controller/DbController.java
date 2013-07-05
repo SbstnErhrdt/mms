@@ -13,9 +13,9 @@ public class DbController {
 	 * constructor
 	 */
 	protected DbController() {
-		String url = "jdbc:mysql://localhost:3306/sopra";
-		String user = "sopratest";
-		String pw = "sopratest";
+		String url = "jdbc:mysql://localhost:3306/sopra?zeroDateTimeBehavior=convertToNull";
+		String user = "sopra";
+		String pw = "sopra";
 
 		String treiber = "org.gjt.mm.mysql.Driver";
 
