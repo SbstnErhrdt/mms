@@ -628,7 +628,24 @@ public class ContentRoutes extends Routes{
 						"(studycourseID: "+studycourseID+", studycourse is not enabled)", 
 						"readStudycourse(...)")));
 			} else {
-				json = gson.toJson(studycourse);
+				// get all versions of the studycourse?
+				if(request.getParameter("getVersions") != null) {
+					boolean getVersions = Boolean.parseBoolean(request.getParameter("getVersions"));
+					if(getVersions) {
+						ArrayList<Studycourse> studycourses = db.getStudycourseVersions(studycourseID);
+						if(studycourses != null) {
+							json = gson.toJson(studycourses);
+						} else {
+							json = gson.toJson(new JsonErrorContainer(new JsonError(
+									"no versions found for this studycourseID", 
+									"readStudycourse(...)")));
+						}
+					} else {
+						json = gson.toJson(studycourse);
+					}
+				} else {
+					json = gson.toJson(studycourse);
+				}
 			}
 
 		} else {
@@ -788,9 +805,25 @@ public class ContentRoutes extends Routes{
 						"(moduleHandbookID: "+moduleHandbookID+", moduleHandbook is not enabled)", 
 						"readModuleHandbook(...)")));
 			} else {
-				json = gson.toJson(moduleHandbook);
+				// get all versions of the modulehandbook?
+				if(request.getParameter("getVersions") != null) {
+					boolean getVersions = Boolean.parseBoolean(request.getParameter("getVersions"));
+					if(getVersions) {
+						ArrayList<ModuleHandbook> moduleHandbooks = db.getModuleHandbookVersions(moduleHandbookID);
+						if(moduleHandbooks != null) {
+							json = gson.toJson(moduleHandbooks);
+						} else {
+							json = gson.toJson(new JsonErrorContainer(new JsonError(
+									"no versions found for this moduleHandbookID", 
+									"readModuleHandbook(...)")));
+						}
+					} else {
+						json = gson.toJson(moduleHandbook);
+					}
+				} else {
+					json = gson.toJson(moduleHandbook);
+				}
 			}
-
 		} else {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified moduleHandbookID in query", 
@@ -1300,6 +1333,8 @@ public class ContentRoutes extends Routes{
 			}
 		// update event content
 		} else {
+			// clean events_versions table
+			db.cleanEventsVersionsTable(event.getID());
 			if(db.updateEvent(event)) {
 				json = gson.toJson(event);
 			} else {
@@ -1550,6 +1585,8 @@ public class ContentRoutes extends Routes{
 			}
 		// update module content
 		} else {
+			// clean modules_versions table
+			db.cleanModuleVersionsTable(module.getID());
 			if(db.updateModule(module)) {
 				json = gson.toJson(module);
 			} else {
@@ -1783,6 +1820,8 @@ public class ContentRoutes extends Routes{
 			}
 		// update subject content
 		} else {
+			// clean subjects_versions table
+			db.cleanSubjectVersionsTable(subject.getID());
 			if(db.updateSubject(subject)) {
 				json = gson.toJson(subject);
 			} else {
@@ -1960,6 +1999,8 @@ public class ContentRoutes extends Routes{
 			}
 		// update studycourse content
 		} else {
+			// clean studycourses_versions table
+			db.cleanStudycourseVersionsTable(studycourse.getID());
 			if(db.updateStudycourse(studycourse)) {
 				json = gson.toJson(studycourse);
 			} else {
@@ -2193,6 +2234,8 @@ public class ContentRoutes extends Routes{
 			}
 		// update modulehandbook content
 		} else {
+			// clean module_handbooks_versions table
+			db.cleanModuleHandbookVersionsTable(moduleHandbook.getID());
 			if(db.updateModuleHandbook(moduleHandbook)) {
 				json = gson.toJson(moduleHandbook);
 			} else {

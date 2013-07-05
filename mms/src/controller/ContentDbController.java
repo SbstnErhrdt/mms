@@ -20,6 +20,8 @@ import model.content.Subject;
 
 public class ContentDbController extends DbController {
 	
+	private final int MAX_VERSIONS = 20;
+	
 	/**
 	 * constructor
 	 */
@@ -1257,6 +1259,37 @@ public class ContentDbController extends DbController {
 		return null;
 	}
 
+	/**
+	 * @param moduleHandbookID
+	 * @return a list of all versions of the modulehandbook that belongs to the passed moduleHandbookID
+	 */
+	public ArrayList<ModuleHandbook> getModuleHandbookVersions(int moduleHandbookID) {
+		ArrayList<ModuleHandbook> moduleHandbooks = new ArrayList<ModuleHandbook>();
+
+		ModuleHandbook moduleHandbook = new ModuleHandbook(0);
+		
+		String query = "SELECT "+moduleHandbook.toValueNames()+", version FROM module_handbooks_versions " +
+				"WHERE moduleHandbookID="+moduleHandbookID+";";
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			while (rs.next()) {
+				moduleHandbook = null;
+				moduleHandbook = new ModuleHandbook(
+						rs.getInt(1), rs.getString(2), rs.getInt(3),
+						rs.getInt(4), rs.getBoolean(5), rs.getBoolean(6), 
+						rs.getString(7), rs.getBoolean(8), rs.getString(9), rs.getTimestamp(10));
+				moduleHandbook.setVersion(rs.getInt(11));		
+				moduleHandbooks.add(moduleHandbook);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return moduleHandbooks;
+	}
+	
 	// MODULE HANDBOOK ENTFERNEN
 	/**
 	 * @param moduleHandbook
@@ -1455,6 +1488,36 @@ public class ContentDbController extends DbController {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	/**
+	 * @param studycourseID
+	 * @return a list containing all versions of the studycourse that belongs to the passed studycourseID
+	 */
+	public ArrayList<Studycourse> getStudycourseVersions(int studycourseID) {
+		ArrayList<Studycourse> studycourses = new ArrayList<Studycourse>();
+
+		Studycourse studycourse = new Studycourse(0);
+		
+		String query = "SELECT "+studycourse.toValueNames()+", version FROM module_handbooks_versions " +
+				"WHERE studycourseID="+studycourseID+";";
+		System.out.println(query);
+		
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			while (rs.next()) {
+				studycourse = null;
+				studycourse = new Studycourse(rs.getInt(1), rs.getInt(2), 
+						rs.getString(3), rs.getBoolean(4), rs.getString(5), rs.getBoolean(6), 
+						rs.getString(7), rs.getTimestamp(8));
+				studycourse.setVersion(rs.getInt(9));		
+				studycourses.add(studycourse);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return studycourses;
 	}
 
 	// STUDYCOURSE ENTFERNEN
@@ -2322,4 +2385,417 @@ public class ContentDbController extends DbController {
 			}
 		}
 	}
+	
+	// clean versions tables
+	/**
+	 * delete events_versions entries if there are more than MAX_VERSIONS
+	 * @param eventID
+	 * @return true, if the oldest version was deleted successfully or MAX_VERSIONS is not reached yet
+	 */
+	public boolean cleanEventsVersionsTable(int eventID) {
+		String query = "SELECT version FROM events_versions " +
+				"WHERE eventID=? AND (SELECT COUNT(*) " +
+				"FROM events_versions WHERE eventID=?) > ? " +
+				"AND version = (SELECT MIN(v.version) " +
+				"FROM (SELECT version FROM events_versions WHERE eventID=?) AS v);";
+		
+		int version = 0;
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setInt(1, eventID);
+			ps.setInt(2, eventID);
+			ps.setInt(3, MAX_VERSIONS);
+			ps.setInt(4, eventID);
+			
+			System.out.println(ps);
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			if(rs.next()) {
+				version = rs.getInt(1); 	// version to delete
+			} else { 	// less than MAX_VERSIONS
+				System.out.println("MAX_VERSIONS in table events_versions not reached yet");
+				rs.close();
+				ps.close();
+				return true;
+			}
+			rs.close();
+			ps.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(version != 0) {
+			query = "DELETE FROM events_versions WHERE version=? AND eventID=?;";
+			
+			try {
+				db.setAutoCommit(false);
+				PreparedStatement ps = db.prepareStatement(query);
+			
+				ps.setInt(1, version);
+				ps.setInt(2, eventID);
+				
+				System.out.println(ps);
+				
+				ps.executeUpdate();
+				db.commit();
+				
+				ps.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			} finally {
+				try {
+					db.setAutoCommit(true);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @param moduleID
+	 * @return true, if the oldest version was deleted successfully or MAX_VERSIONS is not reached yet
+	 */
+	public boolean cleanModuleVersionsTable(int moduleID) {
+		String query = "SELECT version FROM modules_versions " +
+				"WHERE moduleID=? AND (SELECT COUNT(*) " +
+				"FROM modules_versions WHERE moduleID=?) > ? " +
+				"AND version = (SELECT MIN(v.version) " +
+				"FROM (SELECT version FROM modules_versions WHERE moduleID=?) AS v);";
+		
+		int version = 0;
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setInt(1, moduleID);
+			ps.setInt(2, moduleID);
+			ps.setInt(3, MAX_VERSIONS);
+			ps.setInt(4, moduleID);
+			
+			System.out.println(ps);
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			if(rs.next()) {
+				version = rs.getInt(1); 	// version to delete
+			} else { 	// less than MAX_VERSIONS
+				System.out.println("MAX_VERSIONS in table modules_versions not reached yet");
+				rs.close();
+				ps.close();
+				return true;
+			}
+			rs.close();
+			ps.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(version != 0) {
+			query = "DELETE FROM modules_versions WHERE version=? AND moduleID=?;";
+			
+			try {
+				db.setAutoCommit(false);
+				PreparedStatement ps = db.prepareStatement(query);
+			
+				ps.setInt(1, version);
+				ps.setInt(2, moduleID);
+				
+				System.out.println(ps);
+				
+				ps.executeUpdate();
+				db.commit();
+				
+				ps.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			} finally {
+				try {
+					db.setAutoCommit(true);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @param subjectID
+	 * @return true, if the oldest version was deleted successfully or MAX_VERSIONS is not reached yet
+	 */
+	public boolean cleanSubjectVersionsTable(int subjectID) {
+		String query = "SELECT version FROM subjects_versions " +
+				"WHERE subjectID=? AND (SELECT COUNT(*) " +
+				"FROM subjects_versions WHERE subjectID=?) > ? " +
+				"AND version = (SELECT MIN(v.version) " +
+				"FROM (SELECT version FROM subjects_versions WHERE subjectID=?) AS v);";
+		
+		int version = 0;
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setInt(1, subjectID);
+			ps.setInt(2, subjectID);
+			ps.setInt(3, MAX_VERSIONS);
+			ps.setInt(4, subjectID);
+			
+			System.out.println(ps);
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			if(rs.next()) {
+				version = rs.getInt(1); 	// version to delete
+			} else { 	// less than MAX_VERSIONS
+				System.out.println("MAX_VERSIONS in table subjects_versions not reached yet");
+				rs.close();
+				ps.close();
+				return true;
+			}
+			rs.close();
+			ps.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(version != 0) {
+			query = "DELETE FROM subjects_versions WHERE version=? AND subjectID=?;";
+			
+			try {
+				db.setAutoCommit(false);
+				PreparedStatement ps = db.prepareStatement(query);
+			
+				ps.setInt(1, version);
+				ps.setInt(2, subjectID);
+				
+				System.out.println(ps);
+				
+				ps.executeUpdate();
+				db.commit();
+				
+				ps.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			} finally {
+				try {
+					db.setAutoCommit(true);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}	
+	}
+
+	/**
+	 * @param studycourseID
+	 * @return true, if the oldest version was deleted successfully or MAX_VERSIONS is not reached yet
+	 */
+	public boolean cleanStudycourseVersionsTable(int studycourseID) {
+		String query = "SELECT version FROM studycourses_versions " +
+				"WHERE studycourseID=? AND (SELECT COUNT(*) " +
+				"FROM studycourses_versions WHERE studycourseID=?) > ? " +
+				"AND version = (SELECT MIN(v.version) " +
+				"FROM (SELECT version FROM studycourses_versions WHERE studycourseID=?) AS v);";
+		
+		int version = 0;
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setInt(1, studycourseID);
+			ps.setInt(2, studycourseID);
+			ps.setInt(3, MAX_VERSIONS);
+			ps.setInt(4, studycourseID);
+			
+			System.out.println(ps);
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			if(rs.next()) {
+				version = rs.getInt(1); 	// version to delete
+			} else { 	// less than MAX_VERSIONS
+				System.out.println("MAX_VERSIONS in table studycourses_versions not reached yet");
+				rs.close();
+				ps.close();
+				return true;
+			}
+			rs.close();
+			ps.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(version != 0) {
+			query = "DELETE FROM studycourses_versions WHERE version=? AND studycourseID=?;";
+			
+			try {
+				db.setAutoCommit(false);
+				PreparedStatement ps = db.prepareStatement(query);
+			
+				ps.setInt(1, version);
+				ps.setInt(2, studycourseID);
+				
+				System.out.println(ps);
+				
+				ps.executeUpdate();
+				db.commit();
+				
+				ps.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			} finally {
+				try {
+					db.setAutoCommit(true);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}	
+	}
+
+	/**
+	 * @param moduleHandbokID
+	 * @return true, if the oldest version was deleted successfully or MAX_VERSIONS is not reached yet
+	 */
+	public boolean cleanModuleHandbookVersionsTable(int moduleHandbookID) {
+		String query = "SELECT version FROM module_handbooks_versions " +
+				"WHERE moduleHandbookID=? AND (SELECT COUNT(*) " +
+				"FROM module_handbooks_versions WHERE moduleHandbookID=?) > ? " +
+				"AND version = (SELECT MIN(v.version) " +
+				"FROM (SELECT version FROM module_handbooks_versions WHERE moduleHandbookID=?) AS v);";
+		
+		int version = 0;
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+		
+			ps.setInt(1, moduleHandbookID);
+			ps.setInt(2, moduleHandbookID);
+			ps.setInt(3, MAX_VERSIONS);
+			ps.setInt(4, moduleHandbookID);
+			
+			System.out.println(ps);
+			
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+			
+			if(rs.next()) {
+				version = rs.getInt(1); 	// version to delete
+			} else { 	// less than MAX_VERSIONS
+				System.out.println("MAX_VERSIONS in table module_handbooks_versions not reached yet");
+				rs.close();
+				ps.close();
+				return true;
+			}
+			rs.close();
+			ps.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(version != 0) {
+			query = "DELETE FROM module_handbooks_versions WHERE version=? AND moduleHandbookID=?;";
+			
+			try {
+				db.setAutoCommit(false);
+				PreparedStatement ps = db.prepareStatement(query);
+			
+				ps.setInt(1, version);
+				ps.setInt(2, moduleHandbookID);
+				
+				System.out.println(ps);
+				
+				ps.executeUpdate();
+				db.commit();
+				
+				ps.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			} finally {
+				try {
+					db.setAutoCommit(true);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}		
+	}
+
 }

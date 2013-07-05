@@ -399,6 +399,16 @@ public class Test {
 		
 		System.out.println(gson.toJson(cdbc.getEvent(5)));
 		
+		System.out.println(cdbc.cleanEventsVersionsTable(77));
+		
+		System.out.println(cdbc.cleanModuleVersionsTable(1));
+		
+		System.out.println(cdbc.cleanSubjectVersionsTable(1));
+		
+		System.out.println(cdbc.cleanStudycourseVersionsTable(3));
+		
+		System.out.println(cdbc.cleanModuleHandbookVersionsTable(1));
+		
 		
 	}
 }
