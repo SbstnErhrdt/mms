@@ -1221,9 +1221,9 @@ public class ContentRoutes extends Routes{
 	 */
 	public void updateEvent(HttpServletRequest request,
 			HttpServletResponse response) {		
-		String json = getRequestBody(request);
 		
-		Event event = gson.fromJson(json, Event.class);
+		String json;
+		Event event;
 		
 		// enabling?
 		boolean enabling = false;
@@ -1231,6 +1231,18 @@ public class ContentRoutes extends Routes{
 		if(request.getParameter("enabled") != null) {
 			enabled = Boolean.parseBoolean(request.getParameter("enabled"));
 			enabling = true;
+			if(request.getParameter("eventID") != null) {
+				event = new Event(Integer.parseInt(request.getParameter("eventID")));
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"unspecified eventID in query", 
+						"updateEvent(...)")));	
+				respond(response, json);
+				return;
+			}
+		} else {
+			json = getRequestBody(request);
+			event = gson.fromJson(json, Event.class);
 		}
 		
 		User actorUser = getActorUser(request);		
@@ -1463,11 +1475,11 @@ public class ContentRoutes extends Routes{
 	 */
 	public void updateModule(HttpServletRequest request,
 			HttpServletResponse response) {		
-		String json = getRequestBody(request);
-		
-		Module module = gson.fromJson(json, Module.class);
 		
 		User actorUser = getActorUser(request);
+		
+		String json;
+		Module module;
 		
 		// enabling?
 		boolean enabling = false;
@@ -1475,6 +1487,18 @@ public class ContentRoutes extends Routes{
 		if(request.getParameter("enabled") != null) {
 			enabled = Boolean.parseBoolean(request.getParameter("enabled"));
 			enabling = true;
+			if(request.getParameter("moduleID") != null) {
+				module = new Module(Integer.parseInt(request.getParameter("moduleID")));
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"unspecified moduleID in query", 
+						"updateModule(...)")));	
+				respond(response, json);
+				return;
+			}
+		} else {
+			json = getRequestBody(request);
+			module = gson.fromJson(json, Module.class);
 		}
 		
 		// check rights
@@ -1708,11 +1732,11 @@ public class ContentRoutes extends Routes{
 	 */
 	public void updateSubject(HttpServletRequest request,
 			HttpServletResponse response) {		
-		String json = getRequestBody(request);
 		
-		Subject subject = gson.fromJson(json, Subject.class);
-	
 		User actorUser = getActorUser(request);
+		
+		String json;
+		Subject subject;
 		
 		// enabling?
 		boolean enabling = false;
@@ -1720,6 +1744,18 @@ public class ContentRoutes extends Routes{
 		if(request.getParameter("enabled") != null) {
 			enabled = Boolean.parseBoolean(request.getParameter("enabled"));
 			enabling = true;
+			if(request.getParameter("subjectID") != null) {
+				subject = new Subject(Integer.parseInt(request.getParameter("subjectID")));
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"unspecified subjectID in query", 
+						"updateSubject(...)")));	
+				respond(response, json);
+				return;
+			}
+		} else {
+			json = getRequestBody(request);
+			subject = gson.fromJson(json, Subject.class);
 		}
 		
 		// check rights
@@ -1902,11 +1938,11 @@ public class ContentRoutes extends Routes{
 	 */
 	public void updateStudycourse(HttpServletRequest request,
 			HttpServletResponse response) {
-		String json = getRequestBody(request);
-		
-		Studycourse studycourse = gson.fromJson(json, Studycourse.class);
 		
 		User actorUser = getActorUser(request);
+		
+		String json;
+		Studycourse studycourse;
 		
 		// enabling?
 		boolean enabling = false;
@@ -1914,7 +1950,19 @@ public class ContentRoutes extends Routes{
 		if(request.getParameter("enabled") != null) {
 			enabled = Boolean.parseBoolean(request.getParameter("enabled"));
 			enabling = true;
-		}	
+			if(request.getParameter("studycourseID") != null) {
+				studycourse = new Studycourse(Integer.parseInt(request.getParameter("studycourseID")));
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"unspecified studycourseID in query", 
+						"updateStudycourse(...)")));	
+				respond(response, json);
+				return;
+			}
+		} else {
+			json = getRequestBody(request);
+			studycourse = gson.fromJson(json, Studycourse.class);
+		}
 		
 		// check rights
 		if(actorUser.isEmployee()) {
@@ -2123,11 +2171,11 @@ public class ContentRoutes extends Routes{
 	 */
 	public void updateModuleHandbook(HttpServletRequest request,
 			HttpServletResponse response) {
-		String json = getRequestBody(request);
-		
-		ModuleHandbook moduleHandbook = gson.fromJson(json, ModuleHandbook.class);
 		
 		User actorUser = getActorUser(request);
+		
+		String json;
+		ModuleHandbook moduleHandbook;
 		
 		// enabling?
 		boolean enabling = false;
@@ -2135,6 +2183,18 @@ public class ContentRoutes extends Routes{
 		if(request.getParameter("enabled") != null) {
 			enabled = Boolean.parseBoolean(request.getParameter("enabled"));
 			enabling = true;
+			if(request.getParameter("moduleHandbookID") != null) {
+				moduleHandbook = new ModuleHandbook(Integer.parseInt(request.getParameter("moduleHandbookID")));
+			} else {
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"unspecified moduleHandbookID in query", 
+						"updateModuleHandbook(...)")));	
+				respond(response, json);
+				return;
+			}
+		} else {
+			json = getRequestBody(request);
+			moduleHandbook = gson.fromJson(json, ModuleHandbook.class);
 		}	
 		
 		if(actorUser.isEmployee()) {

@@ -35,8 +35,8 @@ var Event = {
     <div class="row-fluid">
         <ul class="span 12 breadcrumb">
             <li><a href="#/home">Home</a> <span class="divider">/</span></li>
-            <li><a href="#/home">Studiengang</a> <span class="divider">/</span></li>
-            <li><a href="#/home">Fach</a> <span class="divider">/</span></li>
+            <li><a href="#/show/studycourses">Studiengang</a> <span class="divider">/</span></li>
+            <li><a href="#/show/subjects">Fach</a> <span class="divider">/</span></li>
             <li class="active">{{module.name}}</li>
         </ul>
     </div>
@@ -118,7 +118,7 @@ var Event = {
 		</div>
 
     	<div class="span3">
-    		<h4>F&auml;cher von {{module.name}}</h4>
+    		<h4>{{module.name}} in F&auml;cher</h4>
     		<ul class="backward" ng-repeat="subject in subjects">
 				<li><a href="#/show/subject?subjectID={{subject.subjectID}}" class="btn"><i class="icon-arrow-left"></i> {{subject.name}}</a></li>
 			</ul>

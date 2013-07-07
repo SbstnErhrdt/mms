@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import controller.UserDbController;
 
@@ -66,6 +67,19 @@ public abstract class Routes {
 		User actorUser = db.getUser(new User(actorEmail));
 		System.out.println("actor: "+actorUser);
 		return actorUser;
+	}
+	
+	/**
+	 * writes the passed string in the response
+	 * @param response
+	 * @param content
+	 */
+	protected void respond(HttpServletResponse response, String content) {
+		try {
+			response.getWriter().write(content);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

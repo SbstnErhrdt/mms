@@ -6,18 +6,22 @@ import javax.mail.internet.*;
 
 public class EmailController {
 
+	// Sender's email
+	private final static String sender = "sopra@ex-studios.net";
+
+	// Sending host
+	private final static String host = "localhost";
+	
+	// message content
+	private final static String messageContent = "Danke für Ihre Registrierung beim Modul Management System der Universität Ulm. \n" +
+			"Damit Sie sich in Zukunft einloggen können, klicken Sie bitte auf diesen Link: \n";
+	
 	/**
 	 * @param recipient
 	 * @param hash
 	 * @return true, if the email was successfully sent
 	 */
 	public static boolean sendEmail(String recipient, String hash) {
-		
-		// Sender's email
-		String sender = "sopra@ex-studios.net";
-
-		// Sending host
-		String host = "localhost";
 
 		System.out.println("trying to send email from "+sender+" with host " +
 				host+" to "+recipient);
@@ -46,9 +50,9 @@ public class EmailController {
 			message.setSubject("Email Confirmation");
 			
 			
-			String content = "http://sopra.ex-studios.net/#/confirm?token="+hash;
+			String content = messageContent+"http://sopra.ex-studios.net/#/confirm?token="+hash;
 
-			// Now set the actual message
+			// set the actual message
 			message.setText(content);
 
 			// Send message

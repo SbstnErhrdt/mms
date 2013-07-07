@@ -71,7 +71,8 @@ public class FrontController extends HttpServlet {
 			response.setHeader("Access-Control-Max-Age", "15");
 			response.setHeader("Content-Type", "application/json; charset=utf-8");
 		
-			if(path.startsWith("/delete") || path.equals("/read/activeUser")) {
+			// of rights sensitive route, verify the user hash
+			if(path.startsWith("/delete") || path.startsWith("/update") || path.equals("/read/activeUser")) {
 				if(!userRoutes.verifyUserHash(request, response)) {
 					System.out.println("no valid hash found");
 					System.out.println("closing database connections");
@@ -81,8 +82,6 @@ public class FrontController extends HttpServlet {
 				} else System.out.println("user has valid hash");
 			} 
 		
-			
-			
 			// active User
 			if(path.equals("/read/activeUser")) {
 				userRoutes.readActiveUser(request, response);
@@ -101,6 +100,9 @@ public class FrontController extends HttpServlet {
 			// read Events
 			} else if(path.equals("/read/events")) {
 				contentRoutes.readEvents(request, response);
+			// update Event
+			} else if(path.equals("/update/event")) {
+				contentRoutes.updateEvent(request, response);
 			}
 				
 			// read Module
@@ -112,6 +114,9 @@ public class FrontController extends HttpServlet {
 			// read Modules
 			} else if(path.equals("/read/modules")) {
 				contentRoutes.readModules(request, response);
+			// update Module
+			} else if(path.equals("/update/module")) {
+				contentRoutes.updateModule(request, response);
 			}
 			
 			// read Subject
@@ -123,6 +128,9 @@ public class FrontController extends HttpServlet {
 			// read Modules
 			} else if(path.equals("/read/subjects")) {
 				contentRoutes.readSubjects(request, response);
+			// update Subject
+			} else if(path.equals("/update/subject")) {
+				contentRoutes.updateSubject(request, response);
 			}
 			
 			// read Studycourse
@@ -134,6 +142,9 @@ public class FrontController extends HttpServlet {
 			// read Studycourses
 			} else if(path.equals("/read/studycourses")) {
 				contentRoutes.readStudycourses(request, response);
+			// update Studycourse
+			} else if(path.equals("/update/studycourse")) {
+				contentRoutes.updateStudycourse(request, response);
 			}
 			
 			// read ModuleHandbook
@@ -145,7 +156,10 @@ public class FrontController extends HttpServlet {
 			// read ModuleHandbooks
 			} else if(path.equals("/read/modulehandbooks")) {
 				contentRoutes.readModuleHandbooks(request, response);
-			}	
+			// update ModuleHandbook
+			} else if(path.equals("/update/modulehandbook")) {
+				contentRoutes.updateModuleHandbook(request, response);
+			}
 			
 			// ####################################################
 			// User

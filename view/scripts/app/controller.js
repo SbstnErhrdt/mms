@@ -61,8 +61,8 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 							// Feedback Loginbar - jQuery
 							$("#inputEmail, #inputPassword").val("");
 
-                            $location.path("/overview");
-                            document.location.reload(true);
+							$location.path("/overview");
+							document.location.reload(true);
 						} else {
 							// Error
 							sendError("Es wurden keine Cookies übertragen");
@@ -85,13 +85,13 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 
 		ActiveUserFactory.getActiveUser().then(function(activeUser) {
 			$scope.activeUser = activeUser;
-            $scope.isAdmin = ActiveUserFactory.isAdmin();
-            $scope.isEmployee = ActiveUserFactory.isEmployee();
-            $scope.canDeblockContent = ActiveUserFactory.canDeblockContent();
-            $scope.canDeblockCriticalModule = ActiveUserFactory.canDeblockCriticalModule();
-            $scope.isLoggedIn = true;
-  		}, function(error) {
- 			$scope.isLoggedIn = false;
+			$scope.isAdmin = ActiveUserFactory.isAdmin();
+			$scope.isEmployee = ActiveUserFactory.isEmployee();
+			$scope.canDeblockContent = ActiveUserFactory.canDeblockContent();
+			$scope.canDeblockCriticalModule = ActiveUserFactory.canDeblockCriticalModule();
+			$scope.isLoggedIn = true;
+		}, function(error) {
+			$scope.isLoggedIn = false;
 			sendError(error);
 		});
 	} else {
@@ -102,13 +102,13 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 
 
 	// DELETE MODAL Funktionen
-	// 
+	//
 	// Methode deleteUserModal: Wird von der GUI aufgerufen und ändert den Link des Löschen Buttons des modalen Dialogs
 	// Methode wird nur aufgerufen beim Löschen eines Benutzers
 	$scope.deleteUserModal = function(email) {
 		$scope.toDeleteObject = {
 			name: email
-		}
+		};
 
 		$("#deleteButton").attr("href", "#/delete/user?email="+email);
 	};
@@ -124,7 +124,7 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 			$("#deleteButton").attr("href", "#/delete/"+type+"?"+type+"ID="+id);
 		} else {
 			sendError("Es wurde kein Typ angegeben bei deleteContentModal.");
-		}	
+		}
 	};
 
 	// Methode hide: Versteckt den modalen Dialog #delete
@@ -145,11 +145,11 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 				if(type === "module") $("#enableModal").html("Möchten Sie das Modul <b>"+name+"</b> wirklich freigeben?");
 				if(type === "subject") $("#enableModal").html("Möchten Sie das Fach <b>"+name+"</b> wirklich freigeben?");
 				if(type === "event") $("#enableModal").html("Möchten Sie die Veranstaltung <b>"+name+"</b> wirklich freigeben?");
-				
+
 				// Freigebenbutton hinzufügen
-				$("#enableButtons").html("")
+				$("#enableButtons").html("");
 				$("#enableButtons").append('<a href="#" class="btn" data-dismiss="modal">Schließen</a>');
-				$("#enableButtons").append('<a href="#/enable/'+type+'?'+type+'ID='+id+'&enable=true" class="btn btn-info" ng-click="hide()">Freigeben</a>');
+				$("#enableButtons").append('<a href="#/enable/'+type+'?'+type+'ID='+id+'&enable=true" class="btn btn-info" data-dismiss="modal">Freigeben</a>');
 			} else {
 				$("#ueberschriftEnable").html("Hinweis: "+name+" revidieren?");
 
@@ -158,11 +158,11 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 				if(type === "module") $("#enableModal").html("Möchten Sie das Modul <b>"+name+"</b> wirklich revidieren?");
 				if(type === "subject") $("#enableModal").html("Möchten Sie das Fach <b>"+name+"</b> wirklich revidieren?");
 				if(type === "event") $("#enableModal").html("Möchten Sie die Veranstaltung <b>"+name+"</b> wirklich revidieren?");
-				
+
 				// Freigebenbutton hinzufügen
-				$("#enableButtons").html("")
+				$("#enableButtons").html("");
 				$("#enableButtons").append('<a href="#" class="btn" data-dismiss="modal">Schließen</a>');
-				$("#enableButtons").append('<a href="#/enable/'+type+'?'+type+'ID='+id+'&enable=false" class="btn btn-warning" ng-click="hide()">Revidieren</a>');
+				$("#enableButtons").append('<a href="#/enable/'+type+'?'+type+'ID='+id+'&enable=false" class="btn btn-warning" data-dismiss="modal">Revidieren</a>');
 
 			}
 		} else {
@@ -192,15 +192,15 @@ function overviewCtrl($scope) {
  */
 function navigationCtrl($http, $scope, $cookies, $location, ActiveUserFactory) {
 	$scope.logout = function() {
-        console.log("click");
-        $http({method: 'GET', url: 'http://sopra.ex-studios.net:8080/mms/logout'}).
-            success(function(data, status, headers, config) {
-                delete $cookies['JSESSIONID'];
-                document.location.reload(true);
-            }).
-            error(function(data, status, headers, config) {
-                console.log("couldn't log out")
-            });
+		console.log("click");
+		$http({method: 'GET', url: 'http://sopra.ex-studios.net:8080/mms/logout'}).
+			success(function(data, status, headers, config) {
+				delete $cookies['JSESSIONID'];
+				document.location.reload(true);
+			}).
+			error(function(data, status, headers, config) {
+				console.log("couldn't log out")
+			});
 	};
 }
 
@@ -243,11 +243,11 @@ function registerCtrl($scope, $cookies, $location, ActiveUserFactory) {
 }
 
 /*
-* 
-* 
+*
+*
 * STUDYCOURSE CONTROLLER
 *
-* 
+*
 */
 
 /*
@@ -268,18 +268,18 @@ function showStudycoursesCtrl($scope, StudycourseFactory, ActiveUserFactory) {
 	});
 
 	// Rechte überprüfen
-    $scope.isAuthorised = function() {
-    	return ActiveUserFactory.isAuthorised("studycourse");
-    };
+	$scope.isAuthorised = function() {
+		return ActiveUserFactory.isAuthorised("studycourse");
+	};
 	$scope.canEdit = function (id) {
-        return ActiveUserFactory.canEdit(id, "studycourse");
-    };
-    $scope.canDeblockContent = function () {
-        return ActiveUserFactory.canDeblockContent();
-    };
+		return ActiveUserFactory.canEdit(id, "studycourse");
+	};
+	$scope.canDeblockContent = function () {
+		return ActiveUserFactory.canDeblockContent();
+	};
 	$scope.canDelete = function (id) {
-        return ActiveUserFactory.canDelete(id, "studycourse");
-    };
+		return ActiveUserFactory.canDelete(id, "studycourse");
+	};
 }
 
 /*
@@ -317,7 +317,7 @@ function showStudycourseCtrl($scope, $routeParams, StudycourseFactory, ModuleHan
 
 	Beschreibung: Ist für das Bearbeiten eines Studiengangs zuständig
 	Holt sich dazu Studiengang, sowie alle zugehörigen Modulhandbücher vom Server
-	Gibt es kein aktuell ausgewähltes Modulhandbuch, so wird ein modaler Dialog aufgerufen, der den Benutzer 
+	Gibt es kein aktuell ausgewähltes Modulhandbuch, so wird ein modaler Dialog aufgerufen, der den Benutzer
 	darauf aufmerktsam macht
 
  */
@@ -327,7 +327,7 @@ function updateStudycourseCtrl($scope, $routeParams, $location, StudycourseFacto
 		// Studiengang holen
 		StudycourseFactory.getStudycourse($routeParams.studycourseID).then(function(studycourse) {
 			$scope.studycourse = cleanResults(studycourse);
-			
+
 			// Modulhandbuch holen
 			ModuleHandbookFactory.getModuleHandbooks(studycourse.studycourseID).then(function(moduleHandbooks) {
 				$scope.moduleHandbooks = cleanResults(moduleHandbooks);
@@ -337,7 +337,7 @@ function updateStudycourseCtrl($scope, $routeParams, $location, StudycourseFacto
 					// Informiere den Benutzer über seine auswählbaren Modulhandbücher
 					$("#ueberschriftModal").html("Hinweis: Fehlende Modulhandbücher");
 					$("#informModal").html("<p style=\"font-style:italic\">Warum ist die bei der Auswahlmöglichkeit 'Zugehöriges Modulhandbuch' kein Modulhandbuch auswählbar?</p><p></p><p><b>Antwort:</b> Sie müssen zunächst Modulhandbüchern im Reiter <a href=\"#/show/modulehandbooks\">Modulhandbücher</a> einen Studiengang auswählen. Erst dann tauchen die einzelnen Modulhandbücher in dieser Ansicht auf.</p>");
-					
+
 					$("#inform").modal("show");
 				}
 
@@ -370,7 +370,7 @@ function updateStudycourseCtrl($scope, $routeParams, $location, StudycourseFacto
  */
 function deleteStudycourseCtrl($scope, $routeParams, $location, StudycourseFactory) {
 	StudycourseFactory.deleteStudycourse($routeParams.studycourseID).then(function(studycourse) {
-		if(parseInt($routeParams.studycourseID) === studycourse.studycourseID) {
+		if(parseInt($routeParams.studycourseID, 10) === studycourse.studycourseID) {
 			$location.path("/show/studycourses");
 		} else {
 			// ERROR
@@ -389,8 +389,19 @@ function deleteStudycourseCtrl($scope, $routeParams, $location, StudycourseFacto
 	Beschreibung:
 
  */
-function enableStudycourseCtrl($scope) {
-
+function enableStudycourseCtrl($scope, $routeParams, $location, StudycourseFactory) {
+	StudycourseFactory.enableStudycourse($routeParams.studycourseID, $routeParams.enable).then(function(studycourse) {
+		if(parseInt($routeParams.studycourseID, 10) === studycourse.studycourseID) {
+			$location.path("/show/studycourses");
+		} else {
+			// ERROR
+			sendError("Konnte Studiengang nicht freigeben.");
+			$location.path("/show/studycourses");
+		}
+	}, function(error) {
+		sendError(error);
+		$location.path("/show/studycourses");
+	});
 }
 
 /*
@@ -402,19 +413,19 @@ function enableStudycourseCtrl($scope) {
 
  */
 function createStudycourseCtrl ($scope, $location, StudycourseFactory, ModuleHandbookFactory) {
-    $scope.send = function () {
-        StudycourseFactory.createStudycourse($scope.studycourse, function() {
-            $location.url("/show/studycourses");
-        });
-    };
+	$scope.send = function () {
+		StudycourseFactory.createStudycourse($scope.studycourse, function() {
+			$location.url("/show/studycourses");
+		});
+	};
 }
 
 /*
-* 
-* 
+*
+*
 * MODULEHANDBOOK CONTROLLER
 *
-* 
+*
 */
 
 /*
@@ -441,18 +452,18 @@ function showModuleHandbooksCtrl($scope, ModuleHandbookFactory, StudycourseFacto
 	});
 
 	// Rechte des Benutzers überprüfen
-    $scope.isAuthorised = function() {
-    	return ActiveUserFactory.isAuthorised("moduleHandbook");
-    };
+	$scope.isAuthorised = function() {
+		return ActiveUserFactory.isAuthorised("moduleHandbook");
+	};
 	$scope.canEdit = function (id) {
-        return ActiveUserFactory.canEdit(id, "moduleHandbook");
-    };
-    $scope.canDeblockContent = function () {
-        return ActiveUserFactory.canDeblockContent();
-    };
+		return ActiveUserFactory.canEdit(id, "moduleHandbook");
+	};
+	$scope.canDeblockContent = function () {
+		return ActiveUserFactory.canDeblockContent();
+	};
 	$scope.canDelete = function (id) {
-        return ActiveUserFactory.canDelete(id, "moduleHandbook");
-    };
+		return ActiveUserFactory.canDelete(id, "moduleHandbook");
+	};
 }
 
 /*
@@ -505,27 +516,27 @@ function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, Sub
 	Beschreibung: Implementiert das Bearbeiten eines Modulhandbuchs, um die aktuellen Daten dieses zu bekommen
 	wird der Einfachheit halber showModuleHandbook aufgerufen und anschließend noch alle Studiengänge in die scope gespeißt
 
-	Es wird außerdem eine Methode update zur Verfügung gestellt, die via factory das bearbeitete Modulhandbuch an den 
+	Es wird außerdem eine Methode update zur Verfügung gestellt, die via factory das bearbeitete Modulhandbuch an den
 	Server übergibt
 
  */
 function updateModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandbookFactory, SubjectFactory, StudycourseFactory, DeadlineFactory) {
-	
+
 	// Lade Modulhandbuch in die View
 	showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory, StudycourseFactory, DeadlineFactory);
 
 	// Hole Studiengänge
 	StudycourseFactory.getStudycourses().then(function (studycourses) {
-        $scope.studycourses = cleanResults(studycourses);
+		$scope.studycourses = cleanResults(studycourses);
 
-    });
+	});
 
 	// Methode update: Sende bearbeitetes Modulhandbuch via factory an den Server
-    $scope.update = function() {
-    	ModuleHandbookFactory.updateModuleHandbook($scope.moduleHandbook, function() {
-    		$location.path("/show/modulehandbooks");
-    	});
-    };
+	$scope.update = function() {
+		ModuleHandbookFactory.updateModuleHandbook($scope.moduleHandbook, function() {
+			$location.path("/show/modulehandbooks");
+		});
+	};
 
 }
 
@@ -542,20 +553,20 @@ function updateModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandboo
 function createModulehandbookCtrl ($scope, $location, ModuleHandbookFactory, StudycourseFactory) {
 
 	// Studiengänge holen
-    StudycourseFactory.getStudycourses().then(function (studycourses) {
-        $scope.studycourses = cleanResults(studycourses);
+	StudycourseFactory.getStudycourses().then(function (studycourses) {
+		$scope.studycourses = cleanResults(studycourses);
 
-    });
+	});
 
-    // modulHandbook Variable sicherheitshalber leeren
-    $scope.moduleHandbook = {};
+	// modulHandbook Variable sicherheitshalber leeren
+	$scope.moduleHandbook = {};
 
-    // Methode create: Um die Daten weiterzuschicken
-    $scope.create = function () {
-        ModuleHandbookFactory.createModuleHandbook($scope.moduleHandbook, function () {
-            $location.url("/show/modulehandbooks");
-        });
-    }
+	// Methode create: Um die Daten weiterzuschicken
+	$scope.create = function () {
+		ModuleHandbookFactory.createModuleHandbook($scope.moduleHandbook, function () {
+			$location.url("/show/modulehandbooks");
+		});
+	};
 }
 
 /*
@@ -593,16 +604,27 @@ function deleteModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandboo
 	Beschreibung:
 
  */
-function enableModuleHandbookCtrl($scope) {
-
+function enableModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandbookFactory) {
+	ModuleHandbookFactory.enableModuleHandbook($routeParams.modulehandbookID, $routeParams.enable).then(function(moduleHandbook) {
+		if(parseInt($routeParams.modulehandbookID, 10) === moduleHandbook.moduleHandbookID) {
+			$location.path("/show/modulehandbooks");
+		} else {
+			// ERROR
+			sendError("Konnte Modulhandbuch nicht freigeben.");
+			$location.path("/show/modulehandbooks");
+		}
+	}, function(error) {
+		sendError(error);
+		$location.path("/show/modulehandbooks");
+	});
 }
 
 /*
-* 
-* 
+*
+*
 * PRINT MODULEHANDBOOK CONTROLLER
 *
-* 
+*
 */
 
 /*
@@ -626,7 +648,7 @@ function printModulehandbookCtrl($scope, $routeParams, ModuleHandbookFactory, St
 
 			// Hole alle Fächer eines Modulhandbuchs
 			SubjectFactory.getSubjects(moduleHandbook.moduleHandbookID).then(function(subjects) {
-				
+
 				$scope.subjects = cleanResults(subjects);
 
 				// Hole von allen Fächern, alle Module, daher die outerForFunct
@@ -641,14 +663,14 @@ function printModulehandbookCtrl($scope, $routeParams, ModuleHandbookFactory, St
 
 							//console.log($scope.subjects[y]);
 							$scope.subjects[i].modules = cleanResults(modules);
-			
+
 							// Hole aus allen Fächern alle Module und deren jeweilige Veranstaltungen
 							(function innerForFunct(index) {
 								if(index >= modules.length) {
 									return 0;
 								} else {
 									EventFactory.getEvents(modules[index].moduleID, function(events) {
-										
+
 										$scope.subjects[i].modules[index].events = cleanResults(events);
 										//console.log("modules[j]"+$scope.subjects[y].modules[index].events);
 									});
@@ -656,7 +678,7 @@ function printModulehandbookCtrl($scope, $routeParams, ModuleHandbookFactory, St
 									return innerForFunct(index+1);
 								}
 							})(0); // Sofortige initialisierung der Funktion bei 0
-						})
+						});
 						//console.log("$scope.subjects["+y+"]");
 						//console.log($scope.subjects[y]);
 						return outerForFunct(i+1);
@@ -675,11 +697,11 @@ function printModulehandbookCtrl($scope, $routeParams, ModuleHandbookFactory, St
 }
 
 /*
-* 
-* 
+*
+*
 * SUBJECT CONTROLLER
 *
-* 
+*
 */
 
 /*
@@ -698,20 +720,20 @@ function showSubjectsCtrl($scope, SubjectFactory, StudycourseFactory, ActiveUser
 	}, function(error) {
 		sendError(error);
 	});
-	
+
 	// Überprüfe die Rechte des Benutzers
-    $scope.isAuthorised = function() {
+	$scope.isAuthorised = function() {
 		return ActiveUserFactory.isAuthorised("subject");
-    };
+	};
 	$scope.canEdit = function (id) {
-        return ActiveUserFactory.canEdit(id, "subject");
-    };
-    $scope.canDeblockContent = function () {
-        return ActiveUserFactory.canDeblockContent();
-    };
+		return ActiveUserFactory.canEdit(id, "subject");
+	};
+	$scope.canDeblockContent = function () {
+		return ActiveUserFactory.canDeblockContent();
+	};
 	$scope.canDelete = function (id) {
-        return ActiveUserFactory.canDelete(id, "subject");
-    };
+		return ActiveUserFactory.canDelete(id, "subject");
+	};
 }
 
 /*
@@ -726,7 +748,7 @@ function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, Mo
 
 		// Hole Fächer
 		SubjectFactory.getSubject($routeParams.subjectID).then(function(subject) {
-			
+
 			$scope.subject = cleanResults(subject);
 
 			// Hole Module
@@ -738,7 +760,7 @@ function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, Mo
 
 			// Hole Modulhandbücher, zur Navigation wichtig
 			ModuleHandbookFactory.getModuleHandbook(subject.moduleHandbooks_moduleHandbookID).then(function(moduleHandbook) {
-				
+
 				$scope.modulehandbook = cleanResults(moduleHandbook);
 			}, function(error) {
 				sendError(error);
@@ -757,45 +779,45 @@ function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, Mo
 
 	Funktion: createSubjectCtrl
 
-	Beschreibung: Implementiert das 
+	Beschreibung: Implementiert das
 
  */
 function createSubjectCtrl($scope, $location, SubjectFactory, ModuleHandbookFactory) {
 
-	ModuleHandbookFactory.getModuleHandbooks().then(function(data) {;
-        $scope.moduleHandbooks = cleanResults(data);
+	ModuleHandbookFactory.getModuleHandbooks().then(function(data) {
+		$scope.moduleHandbooks = cleanResults(data);
 	}, function(error) {
 		sendError("Error: "+error);
 	});
 
 	$scope.createSubject = function() {
-        var subject = {
-            name : $scope.subject.name,
-            content : $scope.subject.content,
-            studycourses_studycourseID : $scope.subject.modulehandbook.studycourses_studycourseID,
-            moduleHandbooks_moduleHandbookID : $scope.subject.modulehandbook.moduleHandbookID,
-            archived : $scope.subject.archived,
-            enabled : false
-        };
+		var subject = {
+			name : $scope.subject.name,
+			content : $scope.subject.content,
+			studycourses_studycourseID : $scope.subject.modulehandbook.studycourses_studycourseID,
+			moduleHandbooks_moduleHandbookID : $scope.subject.modulehandbook.moduleHandbookID,
+			archived : $scope.subject.archived,
+			enabled : false
+		};
 
 		SubjectFactory.createSubject(subject, function() {
-        	$location.path("/show/subjects");
+			$location.path("/show/subjects");
 		});
 	};
 }
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function updateSubjectCtrl($scope, $routeParams, $location, SubjectFactory, ModuleFactory, ModuleHandbookFactory) {
 	showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, ModuleHandbookFactory);
 
-	ModuleHandbookFactory.getModuleHandbooks().then(function(data) {;
-        $scope.moduleHandbooks = cleanResults(data);
+	ModuleHandbookFactory.getModuleHandbooks().then(function(data) {
+		$scope.moduleHandbooks = cleanResults(data);
 	}, function(error) {
 		sendError("Error: "+error);
 	});
@@ -809,7 +831,7 @@ function updateSubjectCtrl($scope, $routeParams, $location, SubjectFactory, Modu
 
 /*
 
-	Funktion: 
+	Funktion:
 
 	Beschreibung: Die Methode löscht ein bestimmtes Fachs aus dem System
 	und ruft anschließend wieder die Fächerübersicht auf
@@ -817,7 +839,7 @@ function updateSubjectCtrl($scope, $routeParams, $location, SubjectFactory, Modu
  */
 function deleteSubjectCtrl($scope, $routeParams, $location, SubjectFactory) {
 	SubjectFactory.deleteSubject($routeParams.subjectID).then(function(subject) {
-		if(parseInt($routeParams.subjectID) === subject.subjectID) {
+		if(parseInt($routeParams.subjectID, 10) === subject.subjectID) {
 			$location.path("/show/subjects");
 		} else {
 			// ERROR
@@ -836,21 +858,31 @@ function deleteSubjectCtrl($scope, $routeParams, $location, SubjectFactory) {
 	Beschreibung:
 
  */
-function enableSubjectCtrl($scope) {
-
+function enableSubjectCtrl($scope, $routeParams, $location, SubjectFactory) {
+	SubjectFactory.enableSubject($routeParams.subjectID, $routeParams.enable).then(function(subject) {
+		if(parseInt($routeParams.subjectID, 10) === subject.subjectID) {
+			$location.path("/show/subjects");
+		} else {
+			sendError("Konnte Fach nicht freigeben.");
+			$location.path("/show/subjects");
+		}
+	}, function(error) {
+		sendError(error);
+		$location.path("/show/subjects");
+	});
 }
 
 /*
-* 
-* 
+*
+*
 * MODULE CONTROLLER
 *
-* 
+*
 */
 
 /*
 
-	Funktion: 
+	Funktion:
 
 	Beschreibung: Holt via factory alle Module vom Server und schickt diese an die View
 
@@ -867,25 +899,25 @@ function showModulesCtrl($scope, ModuleFactory, SubjectFactory, ActiveUserFactor
 	}, function(error) {
 		sendError(error);
 	});
-    $scope.isAuthorised = function() {
-    	return ActiveUserFactory.isAuthorised("module");
-    };
+	$scope.isAuthorised = function() {
+		return ActiveUserFactory.isAuthorised("module");
+	};
 	$scope.canEdit = function (id) {
-        return ActiveUserFactory.canEdit(id, "module");
-    };
-    $scope.canDeblockContent = function () {
-        return ActiveUserFactory.canDeblockContent();
-    };
+		return ActiveUserFactory.canEdit(id, "module");
+	};
+	$scope.canDeblockContent = function () {
+		return ActiveUserFactory.canDeblockContent();
+	};
 	$scope.canDelete = function (id) {
-        return ActiveUserFactory.canDelete(id, "module");
-    };
+		return ActiveUserFactory.canDelete(id, "module");
+	};
 }
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, SubjectFactory) {
@@ -918,9 +950,9 @@ function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, Subje
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function createModuleCtrl($scope, $location, ModuleFactory, SubjectFactory, EmployeeFactory) {
@@ -984,9 +1016,9 @@ function createModuleCtrl($scope, $location, ModuleFactory, SubjectFactory, Empl
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function updateModuleCtrl($scope, $routeParams, $location, ModuleFactory, EventFactory, SubjectFactory, EmployeeFactory) {
@@ -1013,7 +1045,7 @@ function updateModuleCtrl($scope, $routeParams, $location, ModuleFactory, EventF
 
 /*
 
-	Funktion: 
+	Funktion:
 
 	Beschreibung: Die Methode löscht ein bestimmtes Modul aus dem System
 	und ruft anschließend wieder die Modulsübersicht auf
@@ -1021,7 +1053,7 @@ function updateModuleCtrl($scope, $routeParams, $location, ModuleFactory, EventF
  */
 function deleteModuleCtrl($scope, $routeParams, $location, ModuleFactory) {
 	ModuleFactory.deleteModule($routeParams.moduleID).then(function(module) {
-		if(parseInt($routeParams.moduleID) === module.moduleID) {
+		if(parseInt($routeParams.moduleID, 10) === module.moduleID) {
 			$location.path("/show/modules");
 		} else {
 			// ERROR
@@ -1040,21 +1072,32 @@ function deleteModuleCtrl($scope, $routeParams, $location, ModuleFactory) {
 	Beschreibung:
 
  */
-function enableModuleCtrl($scope) {
+function enableModuleCtrl($scope, $routeParams, $location, ModuleFactory) {
+	ModuleFactory.enableModule($routeParams.moduleID, $routeParams.enable).then(function(module) {
+		if(parseInt($routeParams.moduleID, 10) === module.moduleID) {
+			$location.path("/show/modules");
 
+		} else {
+			$location.path("/show/modules");
+			sendError("Modul konnte nicht freigegeben werden.");
+		}
+	}, function(error) {
+		sendError(error);
+		$location.path("/show/modules");
+	});
 }
 
 /*
-* 
-* 
+*
+*
 * EVENT CONTROLLER
 *
-* 
+*
 */
 
 /*
 
-	Funktion: 
+	Funktion:
 
 	Beschreibung: Holt via factory alle Veranstaltungen vom Server und schickt diese an die View
 
@@ -1072,25 +1115,25 @@ function showEventsCtrl($scope, EventFactory, ModuleFactory, ActiveUserFactory) 
 	}, function(error) {
 		sendError(error);
 	});
-    $scope.isAuthorised = function() {
-    	return ActiveUserFactory.isAuthorised("event");
-    };
-    $scope.canEdit = function (id) {
-        return ActiveUserFactory.canEdit(id, "event");
-    };
-    $scope.canDeblockContent = function () {
-        return ActiveUserFactory.canDeblockContent();
-    };
-    $scope.canDelete = function (id) {
-        return ActiveUserFactory.canDelete(id, "event");
-    };
+	$scope.isAuthorised = function() {
+		return ActiveUserFactory.isAuthorised("event");
+	};
+	$scope.canEdit = function (id) {
+		return ActiveUserFactory.canEdit(id, "event");
+	};
+	$scope.canDeblockContent = function () {
+		return ActiveUserFactory.canDeblockContent();
+	};
+	$scope.canDelete = function (id) {
+		return ActiveUserFactory.canDelete(id, "event");
+	};
 }
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory, UserFactory) {
@@ -1124,20 +1167,20 @@ function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory, UserFa
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function updateEventCtrl($scope, $location, $routeParams, EventFactory, ModuleFactory, UserFactory) {
 
 	EventFactory.getEvent($routeParams.eventID).then(function(event) {
-        $scope._event = cleanResults(event);
-    }, function(error) {
-        sendError(error);
-    });
+		$scope._event = cleanResults(event);
+	}, function(error) {
+		sendError(error);
+	});
 
-    UserFactory.getUsers().then(function(users) {
+	UserFactory.getUsers().then(function(users) {
 		for(var i = 0; i < users.length; i++) {
 			if(!users[i].isEmployee) {
 				users.splice(i, 1);
@@ -1148,11 +1191,11 @@ function updateEventCtrl($scope, $location, $routeParams, EventFactory, ModuleFa
 		sendError("Error: "+error);
 	});
 
-    $scope.update = function () {
-        EventFactory.updateEvent($scope._event, function () {
-            $location.path("/show/events");
-        });
-    }
+	$scope.update = function () {
+		EventFactory.updateEvent($scope._event, function () {
+			$location.path("/show/events");
+		});
+	};
 
 	// Laden
 	ModuleFactory.getModules().then(function(modules) {
@@ -1161,30 +1204,30 @@ function updateEventCtrl($scope, $location, $routeParams, EventFactory, ModuleFa
 		sendError(error);
 	});
 
-    $scope.log = function () {
-        console.log($scope._event);
-    }
+	$scope.log = function () {
+		console.log($scope._event);
+	};
 }
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function createEventCtrl($scope, $location, EventFactory, ModuleFactory, UserFactory) {
 
-    $scope.moduleList = [];
-    var modules;
-    $scope.idList = [];
-    $scope.idList.length = $scope.moduleList.length;
+	$scope.moduleList = [];
+	var modules;
+	$scope.idList = [];
+	$scope.idList.length = $scope.moduleList.length;
 
 	// Laden
 	ModuleFactory.getModules().then(function(data) {
 		$scope.modules = data;
-        $scope.moduleList.push(data);
-        modules = data;
+		$scope.moduleList.push(data);
+		modules = data;
 	}, function(error) {
 		sendError(error);
 	});
@@ -1200,22 +1243,22 @@ function createEventCtrl($scope, $location, EventFactory, ModuleFactory, UserFac
 		sendError("Error: "+error);
 	});
 
-    $scope.addEvent = function () {
-        $scope.moduleList.push(modules);
-    };
+	$scope.addEvent = function () {
+		$scope.moduleList.push(modules);
+	};
 
-    $scope.removeEvent = function () {
-        $scope.moduleList.pop();
-    };
+	$scope.removeEvent = function () {
+		$scope.moduleList.pop();
+	};
 
 	// Abschicken
 	$scope.createEvent = function() {
 
-        idList = [];
-        for (var i=0; i < $scope.idList.length; i++) {
-            id = $scope.idList[i].split("-");
-            idList.push(parseInt(id[0], 10));
-        }
+		idList = [];
+		for (var i=0; i < $scope.idList.length; i++) {
+			id = $scope.idList[i].split("-");
+			idList.push(parseInt(id[0], 10));
+		}
 
 		var _event = {
 			moduleIDs: idList,
@@ -1239,7 +1282,7 @@ function createEventCtrl($scope, $location, EventFactory, ModuleFactory, UserFac
 
 /*
 
-	Funktion: 
+	Funktion:
 
 	Beschreibung: Die Methode löscht eine bestimmte Veranstaltung aus dem System
 	und ruft anschließend wieder die Veranstaltungsübersicht auf
@@ -1248,7 +1291,7 @@ function createEventCtrl($scope, $location, EventFactory, ModuleFactory, UserFac
 function deleteEventCtrl($scope, $routeParams, $location, EventFactory) {
 	// "event" ist in Javascript bereits reserviert, deswegen "_event"
 	EventFactory.deleteEvent($routeParams.eventID).then(function(_event) {
-		if(parseInt($routeParams.eventID) === _event.eventID) {
+		if(parseInt($routeParams.eventID, 10) === _event.eventID) {
 			$location.path("/show/events");
 		} else {
 			// ERROR
@@ -1267,21 +1310,32 @@ function deleteEventCtrl($scope, $routeParams, $location, EventFactory) {
 	Beschreibung:
 
  */
-function enableEventCtrl($scope) {
-
+function enableEventCtrl($scope, $routeParams, $location, EventFactory) {
+	EventFactory.enableEvent($routeParams.eventID, $routeParams.enable).then(function(event) {
+		if(parseInt($routeParams.eventID, 10) === event.eventID) {
+			$location.path("/show/events");
+		} else {
+			// ERROR
+			$location.path("/show/events");
+			sendError("Veranstaltung konnte nicht freigegeben werden.");
+		}
+	}, function(error) {
+		sendError(error);
+		$location.path("/show/events");
+	});
 }
 
 /*
-* 
-* 
+*
+*
 * USER CONTROLLER
 *
-* 
+*
 */
 
 /*
 
-	Funktion: 
+	Funktion:
 
 	Beschreibung: Holt via factory alle Benutzer vom Server und schickt diese an die View
 
@@ -1296,9 +1350,9 @@ function showUsersCtrl($scope, UserFactory) {
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function showUserCtrl($scope, $routeParams, UserFactory) {
@@ -1318,9 +1372,9 @@ function showUserCtrl($scope, $routeParams, UserFactory) {
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function createUserCtrl($scope, $location, UserFactory, StudycourseFactory, ModuleHandbookFactory, SubjectFactory, ModuleFactory, EventFactory) {
@@ -1361,11 +1415,11 @@ function createUserCtrl($scope, $location, UserFactory, StudycourseFactory, Modu
 							isAdmin: $scope.user.employeeRights.isAdmin,
 							canDeblockModule: $scope.user.employeeRights.canDeblockModule,
 							canDeblockCriticalModule: $scope.user.employeeRights.canDeblockCriticalModule,
-                            studycourseRightsList : $scope.user.employeeRights.studycourseRightsList,
-                            subjectRightsList : $scope.user.employeeRights.subjectRightsList,
-                            moduleRightsList : $scope.user.employeeRights.moduleRightsList,
-                            eventRightsList : $scope.user.employeeRights.eventRightsList,
-                            moduleHandbookRightsList : $scope.user.employeeRights.moduleHandbookRightsList
+							studycourseRightsList : $scope.user.employeeRights.studycourseRightsList,
+							subjectRightsList : $scope.user.employeeRights.subjectRightsList,
+							moduleRightsList : $scope.user.employeeRights.moduleRightsList,
+							eventRightsList : $scope.user.employeeRights.eventRightsList,
+							moduleHandbookRightsList : $scope.user.employeeRights.moduleHandbookRightsList
 
 						},
 						address: $scope.user.adress,
@@ -1374,8 +1428,6 @@ function createUserCtrl($scope, $location, UserFactory, StudycourseFactory, Modu
 
 					};
 				}
-
-				console.log(user);
 
 				UserFactory.createUser(user, function() {
 					$location.path("/show/users");
@@ -1389,122 +1441,122 @@ function createUserCtrl($scope, $location, UserFactory, StudycourseFactory, Modu
 		}
 	};
 
-    var employeeRights = {
-        studycourseRightsList : [],
-        subjectRightsList : [],
-        moduleHandbookRightsList : [],
-        moduleRightsList : [],
-        eventRightsList : []
-    }
-    $scope.user = {};
-    $scope.user.employeeRights = employeeRights;
+	var employeeRights = {
+		studycourseRightsList : [],
+		subjectRightsList : [],
+		moduleHandbookRightsList : [],
+		moduleRightsList : [],
+		eventRightsList : []
+	}
+	$scope.user = {};
+	$scope.user.employeeRights = employeeRights;
 
-    function init () {
-        StudycourseFactory.getStudycourses().then(function (studycourses) {
-            $scope.StudycourseList = studycourses;
-            console.log(studycourses);
-        });
-        ModuleHandbookFactory.getModuleHandbooks().then(function (modulehandbooks) {
-            $scope.ModuleHandbookList = modulehandbooks;
-        });
+	function init () {
+		StudycourseFactory.getStudycourses().then(function (studycourses) {
+			$scope.StudycourseList = studycourses;
+			console.log(studycourses);
+		});
+		ModuleHandbookFactory.getModuleHandbooks().then(function (modulehandbooks) {
+			$scope.ModuleHandbookList = modulehandbooks;
+		});
 
-        SubjectFactory.getSubjects().then(function (subjects) {
-            $scope.SubjectList = subjects;
-        });
+		SubjectFactory.getSubjects().then(function (subjects) {
+			$scope.SubjectList = subjects;
+		});
 
-        ModuleFactory.getModules().then(function (modules) {
-            $scope.ModuleList = modules;
-        });
+		ModuleFactory.getModules().then(function (modules) {
+			$scope.ModuleList = modules;
+		});
 
-        EventFactory.getEvents().then(function (events) {
-            $scope.EventList = events;
-            console.log(events);
-        });
-    }
-    init();
+		EventFactory.getEvents().then(function (events) {
+			$scope.EventList = events;
+			console.log(events);
+		});
+	}
+	init();
 
-    $scope.addStudyCourse = function () {
-        var newCourse = {
-            canCreateChilds : false,
-            canDelete : false,
-            canEdit : false,
-            studycourseID : 1
-        }
-        $scope.user.employeeRights.studycourseRightsList.push(newCourse);
-    }
+	$scope.addStudyCourse = function () {
+		var newCourse = {
+			canCreateChilds : false,
+			canDelete : false,
+			canEdit : false,
+			studycourseID : 1
+		}
+		$scope.user.employeeRights.studycourseRightsList.push(newCourse);
+	};
 
-    $scope.removeStudyCourse = function () {
-        $scope.user.employeeRights.studycourseRightsList.pop();
-    }
+	$scope.removeStudyCourse = function () {
+		$scope.user.employeeRights.studycourseRightsList.pop();
+	};
 
-    $scope.addModuleHandbook = function () {
-        var newHandbook = {
-            canDelete: false,
-            canEdit: false,
-            moduleHandbookID: 1
-        }
-        $scope.user.employeeRights.moduleHandbookRightsList.push(newHandbook);
-    }
+	$scope.addModuleHandbook = function () {
+		var newHandbook = {
+			canDelete: false,
+			canEdit: false,
+			moduleHandbookID: 1
+		}
+		$scope.user.employeeRights.moduleHandbookRightsList.push(newHandbook);
+	};
 
-    $scope.removeModuleHandbook = function () {
-        $scope.user.employeeRights.moduleHandbookRightsList.pop();
-    }
+	$scope.removeModuleHandbook = function () {
+		$scope.user.employeeRights.moduleHandbookRightsList.pop();
+	};
 
-    $scope.addSubject = function () {
-        var newSubject = {
-            canCreateChilds: false,
-            canDelete: false,
-            canEdit: false,
-            subjectID: 1
-        }
-        $scope.user.employeeRights.subjectRightsList.push(newSubject);
-    }
+	$scope.addSubject = function () {
+		var newSubject = {
+			canCreateChilds: false,
+			canDelete: false,
+			canEdit: false,
+			subjectID: 1
+		}
+		$scope.user.employeeRights.subjectRightsList.push(newSubject);
+	};
 
-    $scope.removeSubject = function () {
-        $scope.user.employeeRights.subjectRightsList.pop();
-    }
+	$scope.removeSubject = function () {
+		$scope.user.employeeRights.subjectRightsList.pop();
+	};
 
-    $scope.addModule = function () {
-        var newModule = {
-            canCreateChilds: false,
-            canDelete: false,
-            canEdit: false,
-            moduleID: 1
-        }
-        $scope.user.employeeRights.moduleRightsList.push(newModule);
-    }
+	$scope.addModule = function () {
+		var newModule = {
+			canCreateChilds: false,
+			canDelete: false,
+			canEdit: false,
+			moduleID: 1
+		}
+		$scope.user.employeeRights.moduleRightsList.push(newModule);
+	};
 
-    $scope.removeModule = function () {
-        $scope.user.employeeRights.moduleRightsList.pop();
-    }
+	$scope.removeModule = function () {
+		$scope.user.employeeRights.moduleRightsList.pop();
+	};
 
-    $scope.addEvent = function () {
-        var newEvent = {
-            canDelete: false,
-            canEdit: false,
-            eventID: 1
-        }
-        $scope.user.employeeRights.eventRightsList.push(newEvent);
-    }
+	$scope.addEvent = function () {
+		var newEvent = {
+			canDelete: false,
+			canEdit: false,
+			eventID: 1
+		}
+		$scope.user.employeeRights.eventRightsList.push(newEvent);
+	};
 
-    $scope.removeEvent = function () {
-        $scope.user.employeeRights.eventRightsList.pop();
-    }
+	$scope.removeEvent = function () {
+		$scope.user.employeeRights.eventRightsList.pop();
+	};
 }
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function updateUserCtrl($scope, $location, $routeParams, UserFactory, StudycourseFactory, ModuleHandbookFactory, SubjectFactory, ModuleFactory, EventFactory) {
-    var user;
-    if($routeParams.email) {
+	var user;
+	if($routeParams.email) {
 		UserFactory.getUser($routeParams.email).then(function(data) {
-            
-            user = cleanResults(data);
+
+			user = cleanResults(data);
 			$scope.user = data;
 		}, function(error) {
 			sendError(error);
@@ -1514,102 +1566,102 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory, Studycours
 		sendError("No query");
 	}
 
-    function init () {
-        StudycourseFactory.getStudycourses().then(function (studycourses) {
-            $scope.StudycourseList = studycourses;
-        });
-        ModuleHandbookFactory.getModuleHandbooks().then(function (modulehandbooks) {
-            $scope.ModuleHandbookList = modulehandbooks;
-        });
+	function init () {
+		StudycourseFactory.getStudycourses().then(function (studycourses) {
+			$scope.StudycourseList = studycourses;
+		});
+		ModuleHandbookFactory.getModuleHandbooks().then(function (modulehandbooks) {
+			$scope.ModuleHandbookList = modulehandbooks;
+		});
 
-        SubjectFactory.getSubjects().then(function (subjects) {
-            $scope.SubjectList = subjects;
-        });
+		SubjectFactory.getSubjects().then(function (subjects) {
+			$scope.SubjectList = subjects;
+		});
 
-        ModuleFactory.getModules().then(function (modules) {
-            $scope.ModuleList = modules;
-        });
+		ModuleFactory.getModules().then(function (modules) {
+			$scope.ModuleList = modules;
+		});
 
-        EventFactory.getEvents().then(function (events) {
-            $scope.EventList = events;
-            console.log(events);
-        });
-    }
-    init();
+		EventFactory.getEvents().then(function (events) {
+			$scope.EventList = events;
+			console.log(events);
+		});
+	}
+	init();
 
-    $scope.addStudyCourse = function () {
-        var newCourse = {
-            canCreateChilds : false,
-            canDelete : false,
-            canEdit : false,
-            studycourseID : 1
-        }
-        $scope.user.employeeRights.studycourseRightsList.push(newCourse);
-    }
+	$scope.addStudyCourse = function () {
+		var newCourse = {
+			canCreateChilds : false,
+			canDelete : false,
+			canEdit : false,
+			studycourseID : 1
+		};
+		$scope.user.employeeRights.studycourseRightsList.push(newCourse);
+	};
 
-    $scope.removeStudyCourse = function () {
-        $scope.user.employeeRights.studycourseRightsList.pop();
-    }
+	$scope.removeStudyCourse = function () {
+		$scope.user.employeeRights.studycourseRightsList.pop();
+	};
 
-    $scope.addModuleHandbook = function () {
-        var newHandbook = {
-            canDelete: false,
-            canEdit: false,
-            moduleHandbookID: 1
-        }
-        $scope.user.employeeRights.moduleHandbookRightsList.push(newHandbook);
-    }
+	$scope.addModuleHandbook = function () {
+		var newHandbook = {
+			canDelete: false,
+			canEdit: false,
+			moduleHandbookID: 1
+		}
+		$scope.user.employeeRights.moduleHandbookRightsList.push(newHandbook);
+	};
 
-    $scope.removeModuleHandbook = function () {
-        $scope.user.employeeRights.moduleHandbookRightsList.pop();
-    }
+	$scope.removeModuleHandbook = function () {
+		$scope.user.employeeRights.moduleHandbookRightsList.pop();
+	};
 
-    $scope.addSubject = function () {
-        var newSubject = {
-            canCreateChilds: false,
-            canDelete: false,
-            canEdit: false,
-            subjectID: 1
-        }
-        $scope.user.employeeRights.subjectRightsList.push(newSubject);
-    }
+	$scope.addSubject = function () {
+		var newSubject = {
+			canCreateChilds: false,
+			canDelete: false,
+			canEdit: false,
+			subjectID: 1
+		}
+		$scope.user.employeeRights.subjectRightsList.push(newSubject);
+	};
 
-    $scope.removeSubject = function () {
-        $scope.user.employeeRights.subjectRightsList.pop();
-    }
+	$scope.removeSubject = function () {
+		$scope.user.employeeRights.subjectRightsList.pop();
+	};
 
-    $scope.addModule = function () {
-        var newModule = {
-            canCreateChilds: false,
-            canDelete: false,
-            canEdit: false,
-            moduleID: 1
-        }
-        $scope.user.employeeRights.moduleRightsList.push(newModule);
-    }
+	$scope.addModule = function () {
+		var newModule = {
+			canCreateChilds: false,
+			canDelete: false,
+			canEdit: false,
+			moduleID: 1
+		};
+		$scope.user.employeeRights.moduleRightsList.push(newModule);
+	};
 
-    $scope.removeModule = function () {
-        $scope.user.employeeRights.moduleRightsList.pop();
-    }
+	$scope.removeModule = function () {
+		$scope.user.employeeRights.moduleRightsList.pop();
+	};
 
-    $scope.addEvent = function () {
-        var newEvent = {
-            canDelete: false,
-            canEdit: false,
-            eventID: 1
-        }
-        $scope.user.employeeRights.eventRightsList.push(newEvent);
-    }
+	$scope.addEvent = function () {
+		var newEvent = {
+			canDelete: false,
+			canEdit: false,
+			eventID: 1
+		}
+		$scope.user.employeeRights.eventRightsList.push(newEvent);
+	};
 
-    $scope.removeEvent = function () {
-        $scope.user.employeeRights.eventRightsList.pop();
-    }
+	$scope.removeEvent = function () {
+		$scope.user.employeeRights.eventRightsList.pop();
+	};
 
-    $scope.update = function () {
-        UserFactory.updateUser($scope.user, function () {
-            $location.path("/show/users");
-        });
-    }
+	$scope.update = function () {
+		UserFactory.updateUser($scope.user, function () {
+			$location.path("/show/users");
+		});
+	};
 
 	// Laden
 	UserFactory.getUsers().then(function(users) {
@@ -1618,14 +1670,14 @@ function updateUserCtrl($scope, $location, $routeParams, UserFactory, Studycours
 		sendError(error);
 	});
 
-    $scope.log = function () {
-        console.log($scope._event);
-    }
+	$scope.log = function () {
+		console.log($scope._event);
+	};
 }
 
 /*
 
-	Funktion: 
+	Funktion:
 
 	Beschreibung: Die Methode löscht einen bestimmten Benutzer aus dem System
 	und ruft anschließend wieder die Benutzerübersicht auf
@@ -1646,18 +1698,18 @@ function deleteUserCtrl($scope, $routeParams, $location, UserFactory) {
 }
 
 /*
-* 
-* 
+*
+*
 * DEADLINE CONTROLLER
 *
-* 
+*
 */
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function createDeadlineCtrl($scope, $location, DeadlineFactory) {
@@ -1671,9 +1723,9 @@ function createDeadlineCtrl($scope, $location, DeadlineFactory) {
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function showDeadlinesCtrl($scope, DeadlineFactory) {
@@ -1687,9 +1739,9 @@ function showDeadlinesCtrl($scope, DeadlineFactory) {
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function showDeadlineCtrl($scope, $routeParams, DeadlineFactory) {
@@ -1707,9 +1759,9 @@ function showDeadlineCtrl($scope, $routeParams, DeadlineFactory) {
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function updateDeadlineCtrl($scope, $routeParams, $location, DeadlineFactory) {
@@ -1724,7 +1776,7 @@ function updateDeadlineCtrl($scope, $routeParams, $location, DeadlineFactory) {
 
 /*
 
-	Funktion: 
+	Funktion:
 
 	Beschreibung: Die Methode löscht eine bestimmte Deadline aus dem System
 	und ruft anschließend wieder die Deadlineübersicht auf
@@ -1736,49 +1788,49 @@ function deleteDeadlineCtrl($scope) {
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function requestCtrl($scope, $http) {
-    $scope.url = "http://sopra.ex-studios.net:8080/mms/";
+	$scope.url = "http://sopra.ex-studios.net:8080/mms/";
 
-     $scope.get = function () {
-         $http({
-             method: 'GET',
-             url: $scope.url
-         }).
-             success(function(data, status, headers, config) {
-                 $scope.response = JSON.stringify(data);
-                 $scope.status = status;
-             }).
-             error(function(data, status, headers, config) {
-                 sendError(data);
-             });
-     }
+	 $scope.get = function () {
+		 $http({
+			 method: 'GET',
+			 url: $scope.url
+		 }).
+			 success(function(data, status, headers, config) {
+				 $scope.response = JSON.stringify(data);
+				 $scope.status = status;
+			 }).
+			 error(function(data, status, headers, config) {
+				 sendError(data);
+			 });
+	 }
 
-    $scope.post = function () {
-        $http({
-            method: 'POST',
-            url: $scope.url,
-            data: $scope.body
-        }).
-            success(function(data, status, headers, config) {
-                $scope.response = JSON.stringify(data);
-                $scope.status = status;
-            }).
-            error(function(data, status, headers, config) {
-                sendError(data);
-            });
-    }
+	$scope.post = function () {
+		$http({
+			method: 'POST',
+			url: $scope.url,
+			data: $scope.body
+		}).
+			success(function(data, status, headers, config) {
+				$scope.response = JSON.stringify(data);
+				$scope.status = status;
+			}).
+			error(function(data, status, headers, config) {
+				sendError(data);
+			});
+	};
 }
 
 /*
 
-	Funktion: 
+	Funktion:
 
-	Beschreibung: 
+	Beschreibung:
 
  */
 function confirmCtrl($scope, $routeParams, $http) {
