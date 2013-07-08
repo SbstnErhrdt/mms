@@ -61,12 +61,7 @@ public class UserRoutes extends Routes {
 							"unspecified email parameter in query", 
 							"readUser(...)")));
 		}
-			
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -105,11 +100,7 @@ public class UserRoutes extends Routes {
 					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"not allowed to delete this user (actorUser is no admin and does not equal user to delete)", 
 							"deleteUser(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					respond(response, json);
 					return;
 				} else {
 					System.out.println("actorUser equals user to delete");
@@ -127,13 +118,8 @@ public class UserRoutes extends Routes {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified email parameter in query", 
 					"deleteUser(...)")));
-			}
-		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
+		respond(response, json);
 	}
 
 	/**
@@ -155,33 +141,21 @@ public class UserRoutes extends Routes {
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to read all users (actorUser is no employee)", 
 						"readUsers(...)")));
-				try { 
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return;
 			}
 		} else {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to read all users (actorUser is not logged in)", 
 					"readUsers(...)")));
-			try { 
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}
 		
 		ArrayList<User> users = db.readReducedUsers();		
 		json = gson.toJson(users);
 		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 	
 	// ####################################################
@@ -209,11 +183,7 @@ public class UserRoutes extends Routes {
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to create users (actorUser is no admin)", 
 						"createUser(...)")));
-				try { 
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return;
 			} else {
 				System.out.println("actorUser is admin");
@@ -222,11 +192,7 @@ public class UserRoutes extends Routes {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to create users (actorUser is no employee (and therefore no admin))", 
 					"createUser(...)")));
-			try { 
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}
 		
@@ -242,11 +208,7 @@ public class UserRoutes extends Routes {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"invalid user object (conversion gson.fromJson(json, User.class) failed)", 
 					"createUser(...)")));
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		} 
 		
@@ -271,12 +233,7 @@ public class UserRoutes extends Routes {
 					"db.createUser(user) failed", 
 					"createUser(...)")));
 		}
-		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -316,11 +273,7 @@ public class UserRoutes extends Routes {
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to delete this user (actorUser is no admin and does not equal user to update)", 
 						"updateUser(...)")));		
-				try {
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return;
 			} else {
 				System.out.println("actorUser equals user to user");
@@ -332,17 +285,12 @@ public class UserRoutes extends Routes {
 					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"actorUser is not allowed to change his own rights (right=isEmployee) (actorUser is no admin)", 
 							"updateUser(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					respond(response, json);
 					return;
 				} else if(user.isEmployee() && oldUser.isEmployee()) {
 					Employee employee = (Employee) user;
 					Employee oldEmployee = (Employee) oldUser;
-					
-					
+						
 					EmployeeRights eR = employee.getEmployeeRights();
 					EmployeeRights oER = oldEmployee.getEmployeeRights();
 					
@@ -356,11 +304,7 @@ public class UserRoutes extends Routes {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"actorUser is not allowed to change his own rights (rights=EmployeeRights) (actorUser is no admin)", 
 								"updateUser(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 					// check ContentRights
@@ -383,11 +327,7 @@ public class UserRoutes extends Routes {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"actorUser is not allowed to change his own rights (rights=ContentRightsList) (actorUser is no admin)", 
 								"updateUser(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					} else {
 						// check ContentRights
@@ -401,11 +341,7 @@ public class UserRoutes extends Routes {
 								json = gson.toJson(new JsonErrorContainer(new JsonError(
 										"actorUser is not allowed to change his own rights (rights=EventRights) (actorUser is no admin)", 
 										"updateUser(...)")));		
-								try {
-									response.getWriter().write(json);
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
+								respond(response, json);
 								return;								
 							}
 						}
@@ -419,11 +355,7 @@ public class UserRoutes extends Routes {
 								json = gson.toJson(new JsonErrorContainer(new JsonError(
 										"actorUser is not allowed to change his own rights (rights=ModuleRights) (actorUser is no admin)", 
 										"updateUser(...)")));		
-								try {
-									response.getWriter().write(json);
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
+								respond(response, json);
 								return;								
 							}
 						}
@@ -437,11 +369,7 @@ public class UserRoutes extends Routes {
 								json = gson.toJson(new JsonErrorContainer(new JsonError(
 										"actorUser is not allowed to change his own rights (rights=SubjectRights) (actorUser is no admin)", 
 										"updateUser(...)")));		
-								try {
-									response.getWriter().write(json);
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
+								respond(response, json);
 								return;								
 							}
 						}						
@@ -455,11 +383,7 @@ public class UserRoutes extends Routes {
 								json = gson.toJson(new JsonErrorContainer(new JsonError(
 										"actorUser is not allowed to change his own rights (rights=ModuleHandbookRights) (actorUser is no admin)", 
 										"updateUser(...)")));		
-								try {
-									response.getWriter().write(json);
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
+								respond(response, json);
 								return;								
 							}
 						}	
@@ -473,35 +397,20 @@ public class UserRoutes extends Routes {
 								json = gson.toJson(new JsonErrorContainer(new JsonError(
 										"actorUser is not allowed to change his own rights (rights=StudycourseRights) (actorUser is no admin)", 
 										"updateUser(...)")));		
-								try {
-									response.getWriter().write(json);
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
+								respond(response, json);
 								return;								
 							}
 						}	
 					}
-				}
-				
+				}		
 			}
 		}
-	
-		// DEBUG START
-		System.out.println("#######################################");
-		System.out.println(user);
-		System.out.println("#######################################");
-		// DEBUG END
 		
 		// user is Employee?
 		if(user.isEmployee()) {
 			Employee employee = gson.fromJson(json, Employee.class);
 			user = employee;
 		}
-		
-		System.out.println("#######################################");
-		System.out.println(user);
-		System.out.println("#######################################");
 		
 		if(db.updateUser(user)) {
 			json = gson.toJson(user);
@@ -511,11 +420,7 @@ public class UserRoutes extends Routes {
 					"updateUser(...)")));
 		}
 		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -594,12 +499,7 @@ public class UserRoutes extends Routes {
 			json = gson.toJson(new JsonErrorContainer(new JsonError("unspecified email parameter in query", 
 					"login(...)")));
 		}		
-		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -617,11 +517,7 @@ public class UserRoutes extends Routes {
 			String json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"no valid hash found (request.getCookies() == null)", 
 					"verifyUserHash(...)")));
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return false;
 		} else {	
 			hash = request.getSession().getId();
@@ -634,11 +530,7 @@ public class UserRoutes extends Routes {
 				String json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"no valid hash found", 
 						"verifyUserHash(...)")));
-				try {
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return false;
 			}
 		}
@@ -705,11 +597,7 @@ public class UserRoutes extends Routes {
 				}
 			}
 		}
-		try { 
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -740,11 +628,7 @@ public class UserRoutes extends Routes {
 						"readActiveUser(...)")));
 			}
 		}
-		try { 
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -774,14 +658,8 @@ public class UserRoutes extends Routes {
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"unspecified token parameter in query", 
 					"confirmEmail(...)")));
-		}
-		
-		try { 
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		}	
+		respond(response, json);	
 	}
 	
 	/**

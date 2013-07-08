@@ -70,7 +70,7 @@ public abstract class Routes {
 	}
 	
 	/**
-	 * writes the passed string in the response
+	 * writes the passed string into the response
 	 * @param response
 	 * @param content
 	 */

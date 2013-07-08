@@ -98,11 +98,7 @@ public class ContentRoutes extends Routes{
 		} else {
 			json = gson.toJson(new JsonErrorContainer(new JsonError("unspecified eventID", "readEvent(...)")));
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 	
 	/**
@@ -131,11 +127,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this event (eventID: "+eventID+") (actorUser has no EventRights)", 
 								"deleteEvent(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 					boolean canDelete = false;
@@ -154,11 +146,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this event (eventID: "+eventID+") (no fitting EventRights found or canDelete=false)", 
 								"deleteEvent(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 				}
@@ -166,11 +154,7 @@ public class ContentRoutes extends Routes{
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to delete this event (eventID: "+eventID+") (actorUser is no employee)", 
 						"deleteEvent(...)")));		
-				try {
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return;
 			}
 			
@@ -182,11 +166,7 @@ public class ContentRoutes extends Routes{
 					"unspecified eventID in query", 
 					"deleteEvent(...)")));
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 	
 	/**
@@ -218,11 +198,7 @@ public class ContentRoutes extends Routes{
 			ArrayList<Event> events = db.getEvents(getOnlyEnabled);	
 			json = gson.toJson(events);
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -279,12 +255,7 @@ public class ContentRoutes extends Routes{
 					"readModule(...)")));
 		}
 			
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		respond(response, json);
 	}
 
 	/**
@@ -312,11 +283,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this module (moduleID: "+moduleID+") (actorUser has no ModuleRights)", 
 								"deleteModule(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 					boolean canDelete = false;
@@ -335,11 +302,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this module (moduleID: "+moduleID+") (no fitting ModuleRights found or canDelete=false)", 
 								"deleteModule(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 				}
@@ -347,11 +310,7 @@ public class ContentRoutes extends Routes{
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to delete this module (moduleID: "+moduleID+") (actorUser is no employee)", 
 						"deleteModule(...)")));		
-				try {
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return;
 			}
 						
@@ -363,11 +322,7 @@ public class ContentRoutes extends Routes{
 					"unspecified moduleID in query", 
 					"deleteModule(...)")));
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -400,11 +355,7 @@ public class ContentRoutes extends Routes{
 			
 			json = gson.toJson(modules);
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -464,12 +415,7 @@ public class ContentRoutes extends Routes{
 					"unspecified subjectID in query", 
 					"readSubject(...)")));
 		}
-			
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+		respond(response, json);	
 	}
 
 	/**
@@ -497,11 +443,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this subject (subjectID: "+subjectID+") (actorUser has no SubjectRights)", 
 								"deleteSubject(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 					boolean canDelete = false;
@@ -520,11 +462,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this subject (subjectID: "+subjectID+") (no fitting SubjectRights found or canDelete=false)", 
 								"deleteSubject(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 				}
@@ -532,11 +470,7 @@ public class ContentRoutes extends Routes{
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to delete this subject (subjectID: "+subjectID+") (actorUser is no employee)", 
 						"deleteSubject(...)")));		
-				try {
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return;
 			}
 					
@@ -549,11 +483,7 @@ public class ContentRoutes extends Routes{
 					"deleteSubject(...)")));
 		}
 		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
+		respond(response, json);		
 	}
 
 	/**
@@ -589,11 +519,7 @@ public class ContentRoutes extends Routes{
 		}
 		json = gson.toJson(subjects);
 		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 		
 	}
 
@@ -654,11 +580,7 @@ public class ContentRoutes extends Routes{
 					"readStudycourse(...)")));
 		}
 		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+		respond(response, json);	
 	}
 
 	/**
@@ -686,11 +608,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this studycourse (studycourseID: "+studycourseID+") (actorUser has no StudycourseRights)", 
 								"deleteStudycourse(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 					boolean canDelete = false;
@@ -709,11 +627,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this studycourse (studycourseID: "+studycourseID+") (no fitting StudycourseRights found or canDelete=false)", 
 								"deleteStudycourse(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 				}
@@ -721,11 +635,7 @@ public class ContentRoutes extends Routes{
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to delete this studycourse (studycourseID: "+studycourseID+") (actorUser is no employee)", 
 						"deleteStudycourse(...)")));		
-				try {
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return;
 			}			
 			
@@ -738,11 +648,7 @@ public class ContentRoutes extends Routes{
 					"deleteStudycourse(...)")));
 		}
 		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
+		respond(response, json);	
 	}
 
 	/**
@@ -766,11 +672,7 @@ public class ContentRoutes extends Routes{
 		
 		String json = gson.toJson(studycourses);
 		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+		respond(response, json);
 	}
 
 	/**
@@ -830,11 +732,7 @@ public class ContentRoutes extends Routes{
 					"readModuleHandbook(...)")));
 		}
 		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+		respond(response, json);	
 		
 	}
 
@@ -864,11 +762,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this moduleHandbook (moduleHandbookID: "+moduleHandbookID+") (actorUser has no StudycourseRights)", 
 								"deleteModuleHandbook(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 					boolean canDelete = false;
@@ -887,11 +781,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to delete this moduleHandbook (moduleHandbookID: "+moduleHandbookID+") (no fitting ModuleHandbookRights found or canDelete=false)", 
 								"deleteModuleHandbook(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 				}
@@ -899,11 +789,7 @@ public class ContentRoutes extends Routes{
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to delete this moduleHandbook (moduleHandbookID: "+moduleHandbookID+") (actorUser is no employee)", 
 						"deleteModuleHandbook(...)")));		
-				try {
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return;
 			}
 			
@@ -916,11 +802,7 @@ public class ContentRoutes extends Routes{
 					"deleteModuleHandbook(...)")));
 		}
 		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
+		respond(response, json);	
 	}
 
 	/**
@@ -953,11 +835,7 @@ public class ContentRoutes extends Routes{
 		
 		json = gson.toJson(moduleHandbooks);
 		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+		respond(response, json);
 		
 	}
 	
@@ -996,11 +874,7 @@ public class ContentRoutes extends Routes{
 					"readDeadline(...)"))); 
 		}
 		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+		respond(response, json);
 	}
 	
 	/**
@@ -1029,21 +903,13 @@ public class ContentRoutes extends Routes{
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to read deadlines (actorUser is no employee)", 
 					"deleteDeadline(...)")));
-			try { 
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}	
 		
 		json = gson.toJson(db.getDeadlines());
 		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
+		respond(response, json);	
 	}
 	
 	/**
@@ -1065,11 +931,7 @@ public class ContentRoutes extends Routes{
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to delete deadlines (actorUser is no admin)", 
 						"deleteDeadline()")));
-				try { 
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return;
 			} else {
 				System.out.println("actorUser is admin");
@@ -1078,11 +940,7 @@ public class ContentRoutes extends Routes{
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to delete deadlines (actorUser is no employee (and therefore no admin))", 
 					"deleteDeadline(...)")));
-			try { 
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}		
 		
@@ -1099,11 +957,7 @@ public class ContentRoutes extends Routes{
 					"deleteDeadline(...)"))); 
 		}
 		
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+		respond(response, json);	
 	}
 	
 	// ####################################################
@@ -1139,11 +993,7 @@ public class ContentRoutes extends Routes{
 							"actorUser is not allowed to create events that are enabled " +
 							"(actorUser is no admin)", 
 							"createEvent(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					respond(response, json);
 					return;
 				}
 				
@@ -1170,11 +1020,7 @@ public class ContentRoutes extends Routes{
 					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"actorUser is not allowed to create events for any of these moduleIDs (moduleIDs: "+moduleIDs+")", 
 							"createEvent(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					respond(response, json);
 					return;
 				} else {
 					// only set moduleIDs the actorUser is allowed to create childs for
@@ -1185,11 +1031,7 @@ public class ContentRoutes extends Routes{
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"actorUser is not allowed to create Events (actorUser is no employee)", 
 					"createEvent(...)")));		
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}
 
@@ -1208,11 +1050,7 @@ public class ContentRoutes extends Routes{
 					"createEvent(...)")));
 		}
 
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -1259,11 +1097,7 @@ public class ContentRoutes extends Routes{
 								"deadline expired for this event " +
 								"(eventID: "+event.getID()+")",
 								"updateEvent(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;	
 					}
 				}
@@ -1274,11 +1108,7 @@ public class ContentRoutes extends Routes{
 								"(eventID: "+event.getID()+") " +
 								"(actorUser cannot enable content)", 
 								"updateEvent(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					} 
 				} else {
@@ -1287,11 +1117,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to update this event (eventID: "+event.getID()+") (actorUser has no EventRights)", 
 								"updateEvent(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 					boolean canUpdate = false;
@@ -1310,11 +1136,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to update this event (eventID: "+event.getID()+") (no fitting EventRights found or canDelete=false)", 
 								"updateEvent(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 				}
@@ -1323,11 +1145,7 @@ public class ContentRoutes extends Routes{
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to update this event (eventID: "+event.getID()+") (actorUser is no employee)", 
 					"updateEvent(...)")));		
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}
 		
@@ -1355,11 +1173,7 @@ public class ContentRoutes extends Routes{
 						"updateEvent(...)")));	
 			}
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 	
 
@@ -1391,11 +1205,7 @@ public class ContentRoutes extends Routes{
 							"actorUser is not allowed to create modules that are enabled " +
 							"(actorUser is no admin)", 
 							"createModule(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					respond(response, json);
 					return;
 				}
 				
@@ -1425,11 +1235,7 @@ public class ContentRoutes extends Routes{
 							"actorUser is not allowed to create modules for any of these subjectIDs " +
 							"(subjectIDs: "+subjectIDs+")", 
 							"createModule(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					respond(response, json);
 					return;
 				} else {
 					// only set moduleIDs the actorUser is allowed to create childs for
@@ -1440,11 +1246,7 @@ public class ContentRoutes extends Routes{
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"actorUser is not allowed to create modules (actorUser is no employee)", 
 					"createModule(...)")));		
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}	
 		
@@ -1462,11 +1264,7 @@ public class ContentRoutes extends Routes{
 					"db.createModule(module) failed", 
 					"createModule(...)")));	
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -1514,11 +1312,7 @@ public class ContentRoutes extends Routes{
 								"deadline expired for this module " +
 								"(moduleID: "+module.getID()+")",
 								"updateModule(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;	
 					}
 				}
@@ -1527,22 +1321,14 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to enable or disable this module (moduleID: "+module.getID()+") (actorUser cannot enable content)", 
 								"updateModule(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					} else if(module.isCritical() && !actorEmployee.getEmployeeRights().isCanDeblockCriticalModule()) {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to enable or disable this module (moduleID: "+module.getID()+") " +
 										"(actorUser cannot deblock critical modules)", 
 								"updateModule(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					} 
 				} else {
@@ -1551,11 +1337,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to update this module (moduleID: "+module.getID()+") (actorUser has no ModuleRights)", 
 								"updateModule(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 					boolean canUpdate = false;
@@ -1574,11 +1356,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to update this module (moduleID: "+module.getID()+") (no fitting ModuleRights found or canDelete=false)", 
 								"updateModule(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 				}
@@ -1587,11 +1365,7 @@ public class ContentRoutes extends Routes{
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to delete this module (moduleID: "+module.getID()+") (actorUser is no employee)", 
 					"updateModule(...)")));		
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}
 		
@@ -1619,12 +1393,7 @@ public class ContentRoutes extends Routes{
 						"updateModule(...)")));	
 			}	
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		respond(response, json);
 	}
 
 	/**
@@ -1655,11 +1424,7 @@ public class ContentRoutes extends Routes{
 							"actorUser is not allowed to create subjects that are enabled " +
 							"(actorUser is no admin)", 
 							"createSubject(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					respond(response, json);
 					return;
 				}
 				
@@ -1685,11 +1450,7 @@ public class ContentRoutes extends Routes{
 							"actorUser is not allowed to create subjects for this moduleHandbookID " +
 							"(moduleHandbookID: "+moduleHandbookID+")", 
 							"createSubject(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					respond(response, json);
 					return;
 				} 
 			}
@@ -1697,11 +1458,7 @@ public class ContentRoutes extends Routes{
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"actorUser is not allowed to create subjects (actorUser is no employee)", 
 					"createSubject(...)")));		
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}
 		
@@ -1719,11 +1476,7 @@ public class ContentRoutes extends Routes{
 					"db.createSubject(subject) failed", 
 					"createSubject(...)")));	
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -1770,11 +1523,7 @@ public class ContentRoutes extends Routes{
 								"deadline expired for this subject " +
 								"(subjectID: "+subject.getID()+")",
 								"updateSubject(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;	
 					}
 				}
@@ -1785,11 +1534,7 @@ public class ContentRoutes extends Routes{
 								"(subjectID: "+subject.getID()+") " +
 								"(actorUser cannot enable content)", 
 								"updateSubject(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 				} else {
@@ -1798,11 +1543,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to update this subject (subjectID: "+subject.getID()+") (actorUser has no SubjectRights)", 
 								"updateSubject(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 					boolean canUpdate = false;
@@ -1821,11 +1562,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to update this subject (subjectID: "+subject.getID()+") (no fitting SubjectRights found or canDelete=false)", 
 								"updateSubject(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 				}
@@ -1834,11 +1571,7 @@ public class ContentRoutes extends Routes{
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to update this subject (subjectID: "+subject.getID()+") (actorUser is no employee)", 
 					"updateSubject(...)")));		
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}
 		
@@ -1866,11 +1599,7 @@ public class ContentRoutes extends Routes{
 						"updateSubject(...)")));	
 			}
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+		respond(response, json);	
 	}
 
 	/**
@@ -1894,11 +1623,7 @@ public class ContentRoutes extends Routes{
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"actorUser is not allowed to create studycourses (actorUser is no admin)", 
 						"createStudycourse(...)")));
-				try {
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return;
 			}
 		} else {
@@ -1907,11 +1632,7 @@ public class ContentRoutes extends Routes{
 					"actorUser is not allowed to create studycourses " +
 					"(actorUser is no employee and therefore no admin)", 
 					"createStudycourse(...)")));
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}
 		
@@ -1925,11 +1646,7 @@ public class ContentRoutes extends Routes{
 					"db.createStudycourse(studycourse) failed", 
 					"createStudycourse(...)")));
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -1977,11 +1694,7 @@ public class ContentRoutes extends Routes{
 								"(studycourseID: "+studycourse.getID()+") " +
 								"(actorUser cannot enable content)", 
 								"updateStudycourse(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 				} 
@@ -1990,11 +1703,7 @@ public class ContentRoutes extends Routes{
 					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"not allowed to update this studycourse (studycourseID: "+studycourse.getID()+") (actorUser has no StudycourseRights)", 
 							"updateStudycourse(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					respond(response, json);
 					return;
 				}
 				boolean canUpdate = false;
@@ -2013,11 +1722,7 @@ public class ContentRoutes extends Routes{
 					json = gson.toJson(new JsonErrorContainer(new JsonError(
 							"not allowed to update this studycourse (studycourseID: "+studycourse.getID()+") (no fitting StudycourseRights found or canDelete=false)", 
 							"updateStudycourse(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					respond(response, json);
 					return;
 				}
 			}
@@ -2025,11 +1730,7 @@ public class ContentRoutes extends Routes{
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to update this studycourse (studycourseID:"+studycourse.getID()+") (actorUser is no employee)", 
 					"updateStudycourse(...)")));		
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}			
 		
@@ -2057,11 +1758,7 @@ public class ContentRoutes extends Routes{
 						"updateStudycourse(...)")));	
 			}
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+		respond(response, json);
 	}
 
 	/**
@@ -2083,11 +1780,7 @@ public class ContentRoutes extends Routes{
 					"actorUser is not allowed to create moduleHandbooks that are enabled " +
 					"(actorUser is no employee and therefore no admin)", 
 					"createModuleHandbook(...)")));		
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		} else if(actorUser.isEmployee()) {
 			Employee actorEmployee = (Employee) actorUser;
@@ -2096,11 +1789,7 @@ public class ContentRoutes extends Routes{
 						"actorUser is not allowed to create moduleHandbooks that are enabled " +
 						"(actorUser is no admin)", 
 						"createModuleHandbook(...)")));		
-				try {
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return;
 			}
 			
@@ -2133,11 +1822,7 @@ public class ContentRoutes extends Routes{
 							"actorUser is not allowed to create modulehandboks for this studycourse " +
 							"(studycourseID: "+studycourseID+")", 
 							"createModuleHandbook(...)")));		
-					try {
-						response.getWriter().write(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					respond(response, json);
 					return;
 				} 
 			}
@@ -2158,11 +1843,7 @@ public class ContentRoutes extends Routes{
 					"db.createModuleHandbook(moduleHandbook) failed", 
 					"createModuleHandbook(...)")));
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 	/**
@@ -2208,11 +1889,7 @@ public class ContentRoutes extends Routes{
 								"deadline expired for this moduleHandbook " +
 								"(moduleHandbookID: "+moduleHandbook.getID()+")",
 								"updateModuleHandbook(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;	
 					}
 				}
@@ -2223,11 +1900,7 @@ public class ContentRoutes extends Routes{
 								"(moduleHandbookID: "+moduleHandbook.getID()+") " +
 								"(actorUser cannot enable content)", 
 								"updateStudycourse(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 				} else {		
@@ -2236,11 +1909,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to update this moduleHandbook (moduleHandbookID: "+moduleHandbook.getID()+") (actorUser has no ModuleHandbookRights)", 
 								"updateModuleHandbook(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 					boolean canUpdate = false;
@@ -2259,11 +1928,7 @@ public class ContentRoutes extends Routes{
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"not allowed to update this moduleHandbook (moduleHandbookID: "+moduleHandbook.getID()+") (no fitting StudycourseRights found or canDelete=false)", 
 								"updateModuleHandbook(...)")));		
-						try {
-							response.getWriter().write(json);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						respond(response, json);
 						return;
 					}
 				}
@@ -2272,11 +1937,7 @@ public class ContentRoutes extends Routes{
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to update this moduleHandbook (moduleHandbookID:"+moduleHandbook.getID()+") (actorUser is no employee)", 
 					"updateModuleHandbook(...)")));		
-			try {
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}
 		
@@ -2304,11 +1965,7 @@ public class ContentRoutes extends Routes{
 						"updateModuleHandbook(...)")));	
 			}
 		}
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+		respond(response, json);	
 	}
 	
 	/**
@@ -2330,11 +1987,7 @@ public class ContentRoutes extends Routes{
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to create deadlines (actorUser is no admin)", 
 						"createDeadline()")));
-				try { 
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return;
 			} else {
 				System.out.println("actorUser is admin");
@@ -2343,11 +1996,7 @@ public class ContentRoutes extends Routes{
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to create deadlines (actorUser is no employee (and therefore no admin))", 
 					"createDeadline(...)")));
-			try { 
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}
 		
@@ -2380,12 +2029,7 @@ public class ContentRoutes extends Routes{
 					"db.createDeadline(deadline) failed", 
 					"createDeadline(...)")));
 		}	
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		respond(response, json);		
 	}
 	
 	/**
@@ -2407,11 +2051,7 @@ public class ContentRoutes extends Routes{
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"not allowed to update deadlines (actorUser is no admin)", 
 						"updateDeadline()")));
-				try { 
-					response.getWriter().write(json);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				respond(response, json);
 				return;
 			} else {
 				System.out.println("actorUser is admin");
@@ -2420,11 +2060,7 @@ public class ContentRoutes extends Routes{
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
 					"not allowed to update deadlines (actorUser is no employee (and therefore no admin))", 
 					"updateDeadline(...)")));
-			try { 
-				response.getWriter().write(json);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respond(response, json);
 			return;
 		}
 		
@@ -2457,11 +2093,7 @@ public class ContentRoutes extends Routes{
 					"db.updateDeadline(...) failed", 
 					"updateDeadline(...)")));
 		}	
-		try {
-			response.getWriter().write(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		respond(response, json);
 	}
 
 
