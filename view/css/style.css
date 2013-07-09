@@ -153,3 +153,7 @@ ul.forward, ul.backward {
 .full-width {
     width: 100%;
 }
+
+.vco-feature {
+	display:none;
+}

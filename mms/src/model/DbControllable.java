@@ -5,5 +5,4 @@ public interface DbControllable {
 	public String toValueNames();
 	public String[] toValuesArray();
 	public String[] toValueNamesArray();
-	
 }

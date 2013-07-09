@@ -444,6 +444,7 @@ function showModuleHandbooksCtrl($scope, ModuleHandbookFactory, StudycourseFacto
 		sendError(error);
 	});
 
+
 	// Studiengänge holen
 	StudycourseFactory.getStudycourses().then(function(studycourses) {
 		$scope.studycourses = cleanResults(studycourses);
@@ -500,6 +501,15 @@ function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, Sub
 				sendError(error);
 			});
 
+			// Init Timeline
+			ModuleHandbookFactory.getModuleHandbooks($routeParams.modulehandbookID, true).then(function(moduleHandbooks) {
+				timelineInit(moduleHandbooks, function(data) {
+					$scope.moduleHandbook = cleanResults(data);
+					$scope.$apply();
+				});
+			}, function(error) {
+				sendError(error);
+			});
 		}, function(error) {
 			sendError(error);
 		});
@@ -529,6 +539,16 @@ function updateModuleHandbookCtrl($scope, $routeParams, $location, ModuleHandboo
 	StudycourseFactory.getStudycourses().then(function (studycourses) {
 		$scope.studycourses = cleanResults(studycourses);
 
+	});
+
+	// Init Timeline
+	ModuleHandbookFactory.getModuleHandbooks($routeParams.modulehandbookID, true).then(function(moduleHandbooks) {
+		timelineInit(moduleHandbooks, function(data) {
+			$scope.moduleHandbook = data;
+			$scope.$apply();
+		});
+	}, function(error) {
+		sendError(error);
 	});
 
 	// Methode update: Sende bearbeitetes Modulhandbuch via factory an den Server
@@ -939,6 +959,17 @@ function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, Subje
 					sendError("Error: "+error);
 				});
 			}
+
+			// Init Timeline
+			ModuleFactory.getModules($routeParams.eventID, true).then(function(modules) {
+				timelineInit(modules, function(data) {
+					$scope.module = cleanResults(data);
+					$scope.$apply();
+				});
+			}, function(error) {
+				sendError(error);
+			});
+
 		}, function(error) {
 			sendError(error);
 		});
@@ -984,9 +1015,9 @@ function createModuleCtrl($scope, $location, ModuleFactory, SubjectFactory, Empl
 	};
 
 	$scope.createModule = function() {
-		idList = [];
+		var idList = [];
 		for (var i=0; i < $scope.idList.length; i++) {
-			id = $scope.idList[i].split("-");
+			var id = $scope.idList[i].split("-");
 			idList.push(parseInt(id[0], 10));
 		}
 
@@ -1032,6 +1063,16 @@ function updateModuleCtrl($scope, $routeParams, $location, ModuleFactory, EventF
 
 	EmployeeFactory.getEmployees().then(function(employees) {
 		$scope.users = employees;
+	}, function(error) {
+		sendError(error);
+	});
+
+	// Init Timeline
+	ModuleFactory.getModules($routeParams.eventID, true).then(function(modules) {
+		timelineInit(modules, function(data) {
+			$scope.module = cleanResults(data);
+			$scope.$apply();
+		});
 	}, function(error) {
 		sendError(error);
 	});
@@ -1156,6 +1197,17 @@ function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory, UserFa
 					sendError("Error: "+error);
 				});
 			}
+
+			// Init Timeline
+			EventFactory.getEvents($routeParams.eventID, true).then(function(events) {
+				timelineInit(events, function(data) {
+					$scope._event = cleanResults(data);
+					$scope.$apply();
+				});
+			}, function(error) {
+				sendError(error);
+			});
+			// Init Timeline End
 		}, function(error) {
 			sendError("Error: "+error);
 		});
@@ -1189,6 +1241,16 @@ function updateEventCtrl($scope, $location, $routeParams, EventFactory, ModuleFa
 		$scope.lecturers = cleanResults(users);
 	}, function(error) {
 		sendError("Error: "+error);
+	});
+
+	// Init Timeline
+	EventFactory.getEvents($routeParams.eventID, true).then(function(events) {
+		timelineInit(events, function(data) {
+			$scope._event = cleanResults(data);
+			$scope.$apply();
+		});
+	}, function(error) {
+		sendError(error);
 	});
 
 	$scope.update = function () {
@@ -1254,9 +1316,9 @@ function createEventCtrl($scope, $location, EventFactory, ModuleFactory, UserFac
 	// Abschicken
 	$scope.createEvent = function() {
 
-		idList = [];
+		var idList = [];
 		for (var i=0; i < $scope.idList.length; i++) {
-			id = $scope.idList[i].split("-");
+			var id = $scope.idList[i].split("-");
 			idList.push(parseInt(id[0], 10));
 		}
 
@@ -1854,6 +1916,110 @@ function confirmCtrl($scope, $routeParams, $http) {
 
 /*
 
+	Funktion: timelineInit
+
+	Beschreibung:
+
+ */
+function timelineInit(contents, callback) {
+	if(contents.length === 1) {
+		callback(contents[0]);
+	} else if(contents.length === 0) {
+		return;
+	} else {
+		for(var i = 0; i < contents.length; i++) {
+			if(contents[i].lastModified !== "undefined") break;
+		}
+
+		var firstModify = new Date(contents[i].lastModified);
+		if(contents[contents.length-1].lastModified !== "undefined") {
+			var latestModify = new Date(contents[contents.length-1].lastModified)
+		}
+		
+
+		var source = {
+			"timeline":
+			{
+				"headline":"Bearbeitungen",
+				"type":"default",
+			"date": [],
+			"era": [
+					{
+						"startDate":firstModify.getFullYear()+","+(firstModify.getMonth()-1)+","+firstModify.getDate(),
+						"endDate":latestModify.getFullYear()+","+(latestModify.getMonth()+1)+","+latestModify.getDate()
+					}
+				]
+			}
+		};
+
+		contents = contents.sort(compare);
+		var modifyCounter = 1;
+
+		for(var j = 0; j < contents.length; j++) {
+			var date = new Date(contents[j].lastModified);
+			if(!isNaN(date.getTime())) {
+				source.timeline.date.push({
+					"startDate": date.getFullYear()+","+date.getMonth()+","+date.getDate(),
+	                "endDate": date.getFullYear()+","+date.getMonth()+","+date.getDate(),
+	                "headline": (modifyCounter)+". Bearbeitung",
+	                "text": (function() {
+	                	if(typeof contents[j].modifier_email !== "undefined") {
+	                		return contents[j].modifier_email;
+	                	} else {
+	                		return "Platzhalter@email.com";
+	                	}
+	                })()
+				});
+				modifyCounter++;
+			} else {
+				delete contents[j];
+			}
+		}
+
+		
+		// Seltsame Javascript Array Aufräumaktionen :()
+		var indToDel = [];
+		for(var k = 0; k < contents.length;k++) {
+			if(typeof contents[k] === "undefined") {
+				indToDel.push(k);
+			} 
+		}
+
+		for(var l = indToDel.length-1; l >= 0; l--) {
+			contents.splice(indToDel[l], 1);
+		}
+
+
+		if(contents.length !== 0) {
+			contents = contents.sort(compare);
+				createStoryJS({
+		        width: '100%',
+		        height: '250',
+		        source: source,
+		        lang: "de",
+		        embed_id: 'timeline'
+		    });
+
+			// Klick von Markerboxen aktivieren
+		    $('#storyjs-timeline').on("LOADED", function() {
+			    $("*[class^='marker']").each(function(index) {
+			    	if(index < contents.length) {
+			    		$(this).click(function() {
+			    			callback(contents[index]);
+			    		});
+			    	} else {
+			    		return;
+			    	}
+			    });
+			   callback(contents[$("*[class^='marker']").length-1])
+			});
+		} else {
+			$("#timelineWrapper").hide();
+		}	
+	}
+}
+/*
+
 	Funktion: cleanResults
 
 	Beschreibung: Bereinigt die vom Server erhaltenen Objekte von null-Einträgen
@@ -1866,4 +2032,18 @@ function cleanResults(object) {
 		}
 	}
 	return object;
+}
+
+function compare(a,b) {
+	if(a.lastModified !== "undefined" && b.lastModified !== "undefined") {
+		if (new Date(a.lastModified).getTime() < new Date(b.lastModified).getTime()) {
+			return -1;
+		}		
+		if (new Date(a.lastModified).getTime() > new Date(b.lastModified).getTime()) {
+			return 1;
+		} 
+		return 0;
+	} else {
+		return 0;
+	}
 }
