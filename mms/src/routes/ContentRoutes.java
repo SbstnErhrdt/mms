@@ -81,6 +81,7 @@ public class ContentRoutes extends Routes{
 					if(getVersions) {
 						ArrayList<Event> events = db.getEventVersions(eventID);
 						if(events != null) {
+							events.add(db.getEvent(eventID));		 // add current event
 							json = gson.toJson(events);
 						} else {
 							json = gson.toJson(new JsonErrorContainer(new JsonError(
@@ -236,6 +237,7 @@ public class ContentRoutes extends Routes{
 					if(getVersions) {
 						ArrayList<Module> modules = db.getModuleVersions(moduleID);
 						if(modules != null) {
+							modules.add(db.getModule(moduleID));	// add current module
 							json = gson.toJson(modules);
 						} else {
 							json = gson.toJson(new JsonErrorContainer(new JsonError(
@@ -396,6 +398,7 @@ public class ContentRoutes extends Routes{
 					if(getVersions) {
 						ArrayList<Subject> subjects = db.getSubjectVersions(subjectID);
 						if(subjects != null) {
+							subjects.add(db.getSubject(subjectID));		 // add current subject
 							json = gson.toJson(subjects);
 						} else {
 							json = gson.toJson(new JsonErrorContainer(new JsonError(
@@ -560,6 +563,7 @@ public class ContentRoutes extends Routes{
 					if(getVersions) {
 						ArrayList<Studycourse> studycourses = db.getStudycourseVersions(studycourseID);
 						if(studycourses != null) {
+							studycourses.add(db.getStudycourse(studycourseID));		 // add current studycourse
 							json = gson.toJson(studycourses);
 						} else {
 							json = gson.toJson(new JsonErrorContainer(new JsonError(
@@ -713,6 +717,7 @@ public class ContentRoutes extends Routes{
 					if(getVersions) {
 						ArrayList<ModuleHandbook> moduleHandbooks = db.getModuleHandbookVersions(moduleHandbookID);
 						if(moduleHandbooks != null) {
+							moduleHandbooks.add(db.getModuleHandbook(moduleHandbookID));	 // add current moduleHandbook
 							json = gson.toJson(moduleHandbooks);
 						} else {
 							json = gson.toJson(new JsonErrorContainer(new JsonError(
@@ -1092,7 +1097,7 @@ public class ContentRoutes extends Routes{
 				System.out.println("actorUser is admin");
 			} else {		
 				if(db.getEariliestDeadline(event) != null) {
-					if(db.getEariliestDeadline(event).after(currentDate)) {
+					if(currentDate.after(db.getEariliestDeadline(event))) {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"deadline expired for this event " +
 								"(eventID: "+event.getID()+")",
@@ -1286,7 +1291,7 @@ public class ContentRoutes extends Routes{
 			enabled = Boolean.parseBoolean(request.getParameter("enabled"));
 			enabling = true;
 			if(request.getParameter("moduleID") != null) {
-				module = new Module(Integer.parseInt(request.getParameter("moduleID")));
+				module = db.getModule(Integer.parseInt(request.getParameter("moduleID")));
 			} else {
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
 						"unspecified moduleID in query", 
@@ -1307,7 +1312,7 @@ public class ContentRoutes extends Routes{
 				System.out.println("actorUser is admin");
 			} else {
 				if(db.getEariliestDeadline(module) != null) {
-					if(db.getEariliestDeadline(module).after(currentDate)) {
+					if(currentDate.after(db.getEariliestDeadline(module))) {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"deadline expired for this module " +
 								"(moduleID: "+module.getID()+")",
@@ -1518,7 +1523,7 @@ public class ContentRoutes extends Routes{
 				System.out.println("actorUser is admin");
 			} else {
 				if(db.getEariliestDeadline(subject) != null) {
-					if(db.getEariliestDeadline(subject).after(currentDate)) {
+					if(currentDate.after(db.getEariliestDeadline(subject))) {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"deadline expired for this subject " +
 								"(subjectID: "+subject.getID()+")",
@@ -1884,7 +1889,7 @@ public class ContentRoutes extends Routes{
 				System.out.println("actorUser is admin");
 			} else {
 				if(db.getEariliestDeadline(moduleHandbook) != null) {
-					if(db.getEariliestDeadline(moduleHandbook).after(currentDate)) {
+					if(currentDate.after(db.getEariliestDeadline(moduleHandbook))) {
 						json = gson.toJson(new JsonErrorContainer(new JsonError(
 								"deadline expired for this moduleHandbook " +
 								"(moduleHandbookID: "+moduleHandbook.getID()+")",
