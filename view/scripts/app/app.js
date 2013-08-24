@@ -5,7 +5,7 @@ var MMSApp = angular.module("MMS", ["ngCookies"]);
 // Partials URL
 var pURL = "./partials/";
 
-// Host URL
+// Host URL - HIER AUF DOMAIN ÄNDERN BEIM INSTALLIEREN
 var hURL = "http://sopra.ex-studios.net:8080/mms/";
 
 // DEBUG MODE
@@ -306,6 +306,7 @@ MMSApp.factory("ActiveUserFactory", function($http, $q, $cookies) {
 
 			if(data.error) {
 				// Error
+				delete $cookies['JSESSIONID'];
 				console.log("Servernachricht: "+data.error.message);
 				return {
 					error: {
@@ -1296,7 +1297,7 @@ MMSApp.factory("ModuleFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
-	factory.getModules = function(id) {
+	factory.getModules = function(id, getVersions) {
 
 		var url = hURL;
 
@@ -1510,12 +1511,18 @@ MMSApp.factory("SubjectFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
-	factory.getSubjects = function(moduleHandbookID) {
+	factory.getSubjects = function(id, getVersions) {
 
-		var url = hURL+"read/subjects";
+		var url = hURL;
 
-		if(moduleHandbookID) {
-			url = url+"?moduleHandbookID="+moduleHandbookID;
+		if(id && typeof getVersions === "undefined") {
+			url = url+"read/subjects";
+			url = url+"?moduleHandbookID="+id;
+		} else if (id && typeof getVersions !== "undefined") {
+			url = url+"read/subject";
+			url = url+"?subjectID="+id+"&getVersions=true";
+		} else {
+			url = url+"read/subjects";
 		}
 
 		var deferred = $q.defer();
@@ -1835,35 +1842,6 @@ MMSApp.factory("ModuleHandbookFactory", function($http, $q) {
 
 	};
 
-	factory.getVersions = function(moduleHandbookID) {
-		var url = hURL+"read/modulehandbooks";
-
-		if(moduleHandbookID) {
-			url = url+"?moduleHandbookID="+moduleHandbookID+"&getVersions=true";
-		}
-
-		var deferred = $q.defer();
-		$http.get(url).success(function(data, status) {
-
-			if(data.error) {
-				// Error
-				console.log("Servernachricht: "+data.error.message);
-			} else if(data === "null") {
-				// Error
-				console.log("Der Server lieferte 'null' zurück.");
-			} else {
-				// Success
-				ModuleHandbooks = data;
-				deferred.resolve(ModuleHandbooks);
-			}
-
-		}).error(function(data, status) {
-			console.log("Error: "+data+" - Status:"+status);
-			deferred.reject(data);
-		});
-		return deferred.promise;
-	};
-
 	factory.deleteModuleHandbook = function(moduleHandbookID) {
 
 		moduleHandbookID = parseInt(moduleHandbookID);
@@ -2079,10 +2057,16 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 		return deferred.promise;
 	};
 
-	factory.getStudycourses = function() {
+	factory.getStudycourses = function(id, getVersions) {
 
+		var url = hURL;
 
-		var url = hURL+"read/studycourses";
+		if (id && typeof getVersions !== "undefined") {
+			url = url+"read/studycourse";
+			url = url+"?studycourseID="+id+"&getVersions=true";
+		} else {
+			url = url+"read/studycourses";
+		}
 
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {

@@ -26,7 +26,7 @@
 					    		<div ng-repeat="subjects in subjectList">
 								    <select ng-model="idList[$index]">		    	
 									  	<option ng-repeat="subject in subjects">{{subject.subjectID}} - {{subject.name}}</option>
-									</select>
+									  </select>
 									<a style="margin-left: 10px;" ng-click="removeSubject()"><i class="icon-minus"></i></a>
 								</div>
 							<br>							

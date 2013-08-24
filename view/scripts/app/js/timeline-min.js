@@ -5211,7 +5211,8 @@ if(typeof VMM != 'undefined' && typeof VMM.Slider == 'undefined') {
 			
 			VMM.Lib.width($slides_items, (slides.length * config.slider.content.width));
 			
-			if (_from_start) {
+			if (_from_start && slides[current_slide]) {
+				// TIMFIX
 				VMM.Lib.css($slider_container, "left", slides[current_slide].leftpos());
 			}
 			
@@ -7938,7 +7939,7 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 			
 			current_marker = 	n;
 			
-			timenav_pos.left			= (config.width/2) - markers[current_marker].pos_left
+			if(typeof markers[current_marker] !== "undefined")timenav_pos.left			= (config.width/2) - markers[current_marker].pos_left
 			timenav_pos.visible.left	= Math.abs(timenav_pos.left) - 100;
 			timenav_pos.visible.right	= Math.abs(timenav_pos.left) + config.width + 100;
 			
@@ -7961,7 +7962,7 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 				VMM.Lib.addClass(markers[0].marker, "start");
 			}
 			
-			VMM.Lib.addClass(markers[current_marker].marker, "active");
+			if(markers[current_marker]) VMM.Lib.addClass(markers[current_marker].marker, "active");
 			
 			// ANIMATE MARKER
 			VMM.Lib.stop($timenav);

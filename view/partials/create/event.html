@@ -18,9 +18,9 @@
 							<legend>Veranstaltung-Daten</legend>
 						    <label>Name*</label>
 						    <input type="text" ng-model="_event.name" placeholder="Fach" required>
-						    <span class="help-block">Bitte w&auml;len Sie eine Veranstaltungsname.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie eine Veranstaltungsname.</span>
 
-                            <label>Zugehöriges Fach*<a style="margin-left: 20px;" ng-click="addEvent()"><i class="icon-plus"></i></a></label>
+                            <label>Zugehöriges Modul*<a style="margin-left: 20px;" ng-click="addEvent()"><i class="icon-plus"></i></a></label>
                             <div ng-repeat="modules in moduleList">
                                 <select ng-model="idList[$index]">
                                     <option ng-repeat="module in modules">{{module.moduleID}} - {{module.name}}</option>
@@ -32,15 +32,15 @@
 
 						    <label>Semesterwochenstunden</label>
 						    <input type="text" ng-model="_event.sws" placeholder="4" maxlength="4">
-						    <span class="help-block">Bitte w&auml;len Sie eine Stundenanzahl.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie eine Stundenanzahl.</span>
 
 						    <label>Dozent</label>
 						    <select ng-model="_event.lecturer_email" ng-options="lecturer.email as lecturer.firstName +' '+ lecturer.lastName for lecturer in lecturers"></select>
-						    <span class="help-block">Bitte w&auml;len Sie den Dozenten.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie den Dozenten.</span>
 
 						    <label>Beschreibung</label>
 						    <textarea rows="5" ng-model="_event.content" placeholder="Beschreibung der Veranstaltung"></textarea>
-						    <span class="help-block">Bitte w&auml;len Sie eine Beschreibung der Veranstaltung.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie eine Beschreibung der Veranstaltung.</span>
 
 						</fieldset>
 						<fieldset class="span6">
@@ -54,20 +54,20 @@
 							  <option value="praktikum">Praktikum</option>
 							  <option value="versuch">Versuch</option>
 							</select>
-						    <span class="help-block">Bitte w&auml;len Sie den Typ.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie den Typ.</span>
 
 						    <label>Ort</label>
 						    <input type="text" ng-model="_event.place" placeholder="N24">
-						    <span class="help-block">Bitte w&auml;len Sie den Ort.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie den Ort.</span>
 
 						    <label>Raum</label>
 						    <input type="text" ng-model="_event.room" placeholder="222">
-						    <span class="help-block">Bitte w&auml;len Sie den Raum.</span>
+						    <span class="help-block">Bitte w&auml;hlen Sie den Raum.</span>
 
 						    <label>Zeiten</label>
 						    <textarea rows="3" ng-model="_event.times"></textarea>
 						    <span class="help-block">
-						    	Bitte w&auml;len Sie die Zeiten der Veranstaltung.<br />
+						    	Bitte w&auml;hlen Sie die Zeiten der Veranstaltung.<br />
 						    	<strong>Form:</strong> FR 08:00 - 10:00<br />
 						    </span>
 

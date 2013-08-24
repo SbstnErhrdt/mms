@@ -49,6 +49,10 @@ public class Studycourse extends Content {
 		this.studycourseID = studycourseID;
 	}
 	
+	public Studycourse() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public String toValues() {
 		String value = Utilities.arrayToString(toValuesArray());

@@ -22,11 +22,12 @@
 						    <input type="text" ng-model="module.name" required>
 						    <span class="help-block">Bitte w&auml;hlen Sie einen Modulnamen.</span>
 
-						    <label>Zugehöriges Fach*</label>
+						    <label>Zugehöriges Fach*<a style="margin-left: 20px;" ng-click="add()"><i class="icon-plus"></i></a></label>
 						    <div ng-repeat="id in module.subjectIDs">
-                                <select ng-model="module.subjectIDs[$index]" ng-options="subject.subjectID as subject.name for subject in subjects">
-                                </select>
-                            </div>
+                    <select ng-model="module.subjectIDs[$index]" ng-options="subject.subjectID as subject.name for subject in subjects">
+                    </select>
+                    <a style="margin-left: 10px;" ng-click="remove()"><i class="icon-minus"></i></a>
+                </div>
 						    <span class="help-block">Bitte w&auml;hlen Sie das zugehörige Fach.</span>
 
 						    <label>Englischer Titel</label>

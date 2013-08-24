@@ -36,7 +36,7 @@
 							<span class="label" ng-hide="module.enabled">nicht freigegeben</span>
 							<span class="label label-success" ng-show="module.enabled">freigegeben</span>
 						</td>
-						<td ng-show="canDeblockContent()">
+						<td ng-show="!module.isCritical && canDeblockContent() || module.isCritical && canDeblockCriticalModule()">
 								
 							<a ng-hide="module.enabled" href="#enable" ng-click="enableContentModal(module.moduleID, module.name, 'module', true)" class="btn btn-mini btn-info" data-target="#enable" data-toggle="modal"><i class="icon-eye-open icon-white"></i> Freigeben</a>
 

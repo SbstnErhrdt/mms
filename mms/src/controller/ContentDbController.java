@@ -394,34 +394,48 @@ public class ContentDbController extends DbController {
 	public boolean createModule(Module module) {
 
 		// GET VALUENAMES
-		String valueNames = "name, token, englishTitle, lp, sws, language, " + 
-			"duration, director_email, requirement, learningTarget, content, literature, " + 
-			"archived, enabled, isCritical, modifier_email";
+		String valueNames = "duration, effort_presenceTime, " +
+			"effort_preAndPost, name, content, " + 
+			"modifier_email, token, englishTitle, " +
+			"lp, sws, language, director_email, " +
+			"requirement_formal, requirement_content, " +
+			"rotation, performanceRecord, gradeFormation, " +
+			"basisFor, ilias, learningTarget, " +
+			"literature, isCritical, periodicalRotation, " +
+			"archived, enabled";
 		
 		// QUERY
-		String query = "INSERT INTO modules (" +valueNames+ ") VALUES ("+getXQuestionMarks(16)+");";
+		String query = "INSERT INTO modules (" +valueNames+ ") VALUES ("+getXQuestionMarks(25)+");";
 		
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);	
 			
-			ps.setString(1, module.getName());				// name
-			ps.setString(2, module.getToken());				// token
-			ps.setString(3, module.getEnglishTitle());		// englishTitle
-			ps.setString(4, module.getLp());				// lp
-			ps.setString(5, module.getSws()); 				// sws
-			ps.setString(6, module.getLanguage()); 			// language
-			ps.setInt(7, module.getDuration()); 			// duration
-			ps.setString(8, module.getDirector_email()); 	// director_email
-			ps.setString(9, module.getRequirement()); 		// requirement
-			ps.setString(10, module.getLearningTarget()); 	// learningTarget
-			ps.setString(11, module.getContent()); 			// content
-			ps.setString(12, module.getLiterature()); 		// literature
-			ps.setBoolean(13, module.isArchived()); 		// archived
-			ps.setBoolean(14, false); 						// enabled
-			ps.setBoolean(15, module.isCritical()); 		// isCritical
-			ps.setString(16, module.getModifier_email()); 	// modifierEmail
-			
+			ps.setInt(1, module.getDuration());					// duration
+			ps.setInt(2, module.getEffort_presenceTime());		// effort_presenceTime
+			ps.setInt(3, module.getEffort_preAndPost());		// effort_preAndPost
+			ps.setString(4, module.getName());					// name
+			ps.setString(5, module.getContent());				// content
+			ps.setString(6, module.getModifier_email());		// modifier_email
+			ps.setString(7, module.getToken());					// token
+			ps.setString(8, module.getEnglishTitle());			// englishTitle
+			ps.setString(9, module.getLp());					// lp
+			ps.setString(10, module.getSws());					// sws
+			ps.setString(11, module.getLanguage());				// language
+			ps.setString(12, module.getDirector_email());		// director_email
+			ps.setString(13, module.getRequirement_formal());	// requirement_formal
+			ps.setString(14, module.getRequirement_content());	// requirement_content
+			ps.setString(15, module.getRotation());				// rotation
+			ps.setString(16, module.getPerformanceRecord());	// performanceRecord
+			ps.setString(17, module.getGradeFormation());		// gradeFormation
+			ps.setString(18, module.getBasisFor());				// basisFor
+			ps.setString(19, module.getIlias());				// ilias
+			ps.setString(20, module.getLearningTarget());		// learningTarget
+			ps.setString(21, module.getLiterature());			// literature
+			ps.setBoolean(22, module.isCritical());				// isCritical
+			ps.setBoolean(23, module.isPeriodicalRotation());	// periodicalRotation
+			ps.setBoolean(24, module.isArchived());				// archived
+			ps.setBoolean(25, false);							// enabled		
 
 			System.out.println("db:createModule: " + ps);
 			
@@ -449,17 +463,46 @@ public class ContentDbController extends DbController {
 			}
 		}
 		
-		// CREATE ENTRY IN TABLE modules_subjects
+		// CREATE ENTRIES IN TABLE modules_subjects
 		query = "INSERT INTO modules_subjects(moduleID, subjectID) VALUES ("+module.getID()+", ?)";
-		System.out.println(query);
 		
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
 			
+			System.out.println(ps);
+			
 			ArrayList<Integer> subjectIDs = module.getSubjectIDs();
 			for(int subjectID : subjectIDs) {
 				ps.setInt(1, subjectID);
+				ps.executeUpdate();
+				db.commit();
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		// CREATE ENTRIES IN TABLE modules_lecturers
+		query = "INSERT INTO module_lecturers(modules_moduleID, employees_email) " +
+				"VALUES ("+module.getID()+", ?)";
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			System.out.println(ps);
+			
+			ArrayList<String> lecturers = module.getLecturers();
+			for(String lecturer_email : lecturers) {
+				ps.setString(1, lecturer_email);
 				ps.executeUpdate();
 				db.commit();
 			}
@@ -491,31 +534,40 @@ public class ContentDbController extends DbController {
 		String query = "UPDATE modules SET ";
 
 		for (int i = 1; i < valueNames.length - 1; i++) {
-			query += valueNames[i] + " =?, ";
+			query += valueNames[i] + "=?, ";
 		}
 		query += valueNames[valueNames.length - 1] + "=CURRENT_TIMESTAMP";
-		query += " WHERE moduleID = " + module.getID() + ";";
+		query += " WHERE moduleID=" + module.getID() + ";";
 
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);	
 			
-			ps.setString(1, module.getName());				// name
-			ps.setString(2, module.getToken());				// token
-			ps.setString(3, module.getEnglishTitle());		// englishTitle
-			ps.setString(4, module.getLp());				// lp
-			ps.setString(5, module.getSws()); 				// sws
-			ps.setString(6, module.getLanguage()); 			// language
-			ps.setInt(7, module.getDuration()); 			// duration
-			ps.setString(8, module.getDirector_email()); 	// director_email
-			ps.setString(9, module.getRequirement()); 		// requirement
-			ps.setString(10, module.getLearningTarget()); 	// learningTarget
-			ps.setString(11, module.getContent()); 			// content
-			ps.setString(12, module.getLiterature()); 		// literature
-			ps.setBoolean(13, module.isArchived()); 		// archived
-			ps.setBoolean(14, false); 						// enabled
-			ps.setBoolean(15, module.isCritical()); 		// isCritical
-			ps.setString(16, module.getModifier_email()); 	// modifierEmail	
+			ps.setInt(1, module.getDuration());					// duration
+			ps.setInt(2, module.getEffort_presenceTime());		// effort_presenceTime
+			ps.setInt(3, module.getEffort_preAndPost());		// effort_preAndPost
+			ps.setString(4, module.getName());					// name
+			ps.setString(5, module.getContent());				// content
+			ps.setString(6, module.getModifier_email());		// modifier_email
+			ps.setString(7, module.getToken());					// token
+			ps.setString(8, module.getEnglishTitle());			// englishTitle
+			ps.setString(9, module.getLp());					// lp
+			ps.setString(10, module.getSws());					// sws
+			ps.setString(11, module.getLanguage());				// language
+			ps.setString(12, module.getDirector_email());		// director_email
+			ps.setString(13, module.getRequirement_formal());	// requirement_formal
+			ps.setString(14, module.getRequirement_content());	// requirement_content
+			ps.setString(15, module.getRotation());				// rotation
+			ps.setString(16, module.getPerformanceRecord());	// performanceRecord
+			ps.setString(17, module.getGradeFormation());		// gradeFormation
+			ps.setString(18, module.getBasisFor());				// basisFor
+			ps.setString(19, module.getIlias());				// ilias
+			ps.setString(20, module.getLearningTarget());		// learningTarget
+			ps.setString(21, module.getLiterature());			// literature
+			ps.setBoolean(22, module.isCritical());				// isCritical
+			ps.setBoolean(23, module.isPeriodicalRotation());	// periodicalRotation
+			ps.setBoolean(24, module.isArchived());				// archived
+			ps.setBoolean(25, false);							// enabled
 
 			System.out.println("db:updateModule: " + ps);
 			
@@ -571,6 +623,46 @@ public class ContentDbController extends DbController {
 				e.printStackTrace();
 			}
 		}
+	
+		// UPDATE modules_lecturers: delete and recreate
+		query = "DELETE FROM module_lecturers WHERE modules_moduleID="+module.getID();
+		
+		System.out.println(query);
+		
+		try {
+			db.createStatement().executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		// CREATE ENTRIES IN TABLE modules_lecturers
+		query = "INSERT INTO module_lecturers(modules_moduleID, employees_email) " +
+				"VALUES ("+module.getID()+", ?)";
+		
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ArrayList<String> lecturers = module.getLecturers();
+			for(String lecturer_email : lecturers) {
+				ps.setString(1, lecturer_email);
+				System.out.println(ps);
+				ps.executeUpdate();
+				db.commit();
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		return true;
 	}
 
@@ -580,20 +672,20 @@ public class ContentDbController extends DbController {
 	 * @return module with specified moduleID
 	 */
 	public Module getModule(int moduleID) {
-		Module newModule = new Module(moduleID);
-		String query = "SELECT "+newModule.toValueNames()+" FROM modules WHERE moduleID="+moduleID+";";
+		Module module = new Module(moduleID);
+		String query = "SELECT "+module.toValueNames()+" FROM modules WHERE moduleID="+moduleID+";";
 		System.out.println("db:getModule " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
 			if (rs.next()) {
-				newModule = new Module(rs.getInt(1), rs.getString(2),
-						new ArrayList<Integer>(), rs.getString(3), rs.getString(4),
-						rs.getString(5), rs.getString(6), rs.getString(7),
-						rs.getInt(8), rs.getString(9), rs.getString(10),
-						rs.getString(11), rs.getString(12), rs.getString(13),
-						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16), 
-						rs.getString(17), rs.getTimestamp(18));
+				module = new Module(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), 
+						rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), 
+						rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), 
+						rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19), 
+						rs.getString(20), rs.getString(21), rs.getString(22), rs.getBoolean(23), rs.getBoolean(24), 
+						rs.getBoolean(25), rs.getBoolean(26), rs.getTimestamp(27), new ArrayList<Integer>(), 
+						new ArrayList<String>());
 			} else {
 				System.out.println("No Module found with this ID.");
 				rs.close();
@@ -615,12 +707,32 @@ public class ContentDbController extends DbController {
 			while(rs.next()) {
 				subjectIDs.add(rs.getInt(1));
 			}
-			newModule.setSubjectIDs(subjectIDs);
+			module.setSubjectIDs(subjectIDs);
 			rs.close();
-			return newModule;
 		} catch(SQLException e) {
 			e.printStackTrace();
-			return newModule;
+			return module;
+		}	
+		
+		// lecturers
+		query = "SELECT employees_email FROM module_lecturers WHERE modules_moduleID=?;";
+		try {
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ps.setInt(1, moduleID);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			ArrayList<String> lecturers = new ArrayList<String>();
+			while(rs.next()) {
+				lecturers.add(rs.getString(1));
+			}
+			module.setLecturers(lecturers);
+			rs.close();
+			return module;
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return module;
 		}	
 	}
 
@@ -661,14 +773,14 @@ public class ContentDbController extends DbController {
 
 			while (rs.next()) {
 				module = null;
-				module = new Module(moduleID, rs.getString(2),
-						new ArrayList<Integer>(), rs.getString(3), rs.getString(4),
-						rs.getString(5), rs.getString(6), rs.getString(7),
-						rs.getInt(8), rs.getString(9), rs.getString(10),
-						rs.getString(11), rs.getString(12), rs.getString(13),
-						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16), 
-						rs.getString(17), rs.getTimestamp(18));
-				module.setVersion(rs.getInt(19));
+				module = new Module(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), 
+						rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), 
+						rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), 
+						rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19), 
+						rs.getString(20), rs.getString(21), rs.getString(22), rs.getBoolean(23), rs.getBoolean(24), 
+						rs.getBoolean(25), rs.getBoolean(26), rs.getTimestamp(27), new ArrayList<Integer>(), 
+						new ArrayList<String>());
+				module.setVersion(rs.getInt(28));
 				
 				// subjectIDs
 				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
@@ -684,7 +796,26 @@ public class ContentDbController extends DbController {
 					module.setSubjectIDs(subjectIDs);
 				} catch(SQLException e) {
 					e.printStackTrace();
-				}		
+				}
+				
+				// lecturers
+				query = "SELECT employees_email FROM module_lecturers WHERE modules_moduleID=?;";
+				try {
+					PreparedStatement ps = db.prepareStatement(query);
+					
+					ps.setInt(1, moduleID);
+					
+					ResultSet rs2 = ps.executeQuery();
+					
+					ArrayList<String> lecturers = new ArrayList<String>();
+					while(rs2.next()) {
+						lecturers.add(rs.getString(1));
+					}
+					module.setLecturers(lecturers);
+					rs2.close();
+				} catch(SQLException e) {
+					e.printStackTrace();
+				}	
 				
 				modules.add(module);
 			}
@@ -718,13 +849,13 @@ public class ContentDbController extends DbController {
 			while (rs.next()) {
 				module = null;
 				int moduleID = rs.getInt(1);
-				module = new Module(moduleID, rs.getString(2),
-						new ArrayList<Integer>(), rs.getString(3), rs.getString(4),
-						rs.getString(5), rs.getString(6), rs.getString(7),
-						rs.getInt(8), rs.getString(9), rs.getString(10),
-						rs.getString(11), rs.getString(12), rs.getString(13),
-						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16), 
-						rs.getString(17), rs.getTimestamp(18));
+				module = new Module(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), 
+						rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), 
+						rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), 
+						rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19), 
+						rs.getString(20), rs.getString(21), rs.getString(22), rs.getBoolean(23), rs.getBoolean(24), 
+						rs.getBoolean(25), rs.getBoolean(26), rs.getTimestamp(27), new ArrayList<Integer>(), 
+						new ArrayList<String>());
 				
 				// subjectIDs
 				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
@@ -740,7 +871,26 @@ public class ContentDbController extends DbController {
 					module.setSubjectIDs(subjectIDs);
 				} catch(SQLException e) {
 					e.printStackTrace();
-				}		
+				}	
+				
+				// lecturers
+				query = "SELECT employees_email FROM module_lecturers WHERE modules_moduleID=?;";
+				try {
+					PreparedStatement ps = db.prepareStatement(query);
+					
+					ps.setInt(1, moduleID);
+					
+					ResultSet rs2 = ps.executeQuery();
+					
+					ArrayList<String> lecturers = new ArrayList<String>();
+					while(rs2.next()) {
+						lecturers.add(rs.getString(1));
+					}
+					module.setLecturers(lecturers);
+					rs2.close();
+				} catch(SQLException e) {
+					e.printStackTrace();
+				}	
 				
 				modules.add(module);
 			}
@@ -957,6 +1107,36 @@ public class ContentDbController extends DbController {
 		}
 		return null;
 	}
+	
+	public int getSubjectID(String name, int studycourseID) {
+		String query = "SELECT subjectID FROM subjects WHERE name=? AND " +
+				"studycourses_studycourseID=?;";
+		
+		try {
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ps.setString(1, name);
+			ps.setInt(2, studycourseID);
+			
+			System.out.println("db:getSubject " + ps);
+		
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+				int subjectID = rs.getInt(1); 
+				rs.close();
+				return subjectID;
+			} else {
+				System.out.println("No Subject found with this name.");
+				rs.close();
+				return -1;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
 
 	// SUBJECT ENTFERNEN
 	/**
@@ -1073,13 +1253,13 @@ public class ContentDbController extends DbController {
 			while (rs.next()) {
 				module = null;
 				int moduleID = rs.getInt(1);
-				module = new Module(moduleID, rs.getString(2),
-						new ArrayList<Integer>(), rs.getString(3), rs.getString(4),
-						rs.getString(5), rs.getString(6), rs.getString(7),
-						rs.getInt(8), rs.getString(9), rs.getString(10),
-						rs.getString(11), rs.getString(12), rs.getString(13),
-						rs.getBoolean(14), rs.getBoolean(15), rs.getBoolean(16), 
-						rs.getString(17), rs.getTimestamp(18));
+				module = new Module(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), 
+						rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), 
+						rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), 
+						rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19), 
+						rs.getString(20), rs.getString(21), rs.getString(22), rs.getBoolean(23), rs.getBoolean(24), 
+						rs.getBoolean(25), rs.getBoolean(26), rs.getTimestamp(27), new ArrayList<Integer>(), 
+						new ArrayList<String>());
 				
 				// subjectIDs
 				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
@@ -1095,7 +1275,26 @@ public class ContentDbController extends DbController {
 					module.setSubjectIDs(subjectIDs);
 				} catch(SQLException e) {
 					e.printStackTrace();
-				}		
+				}	
+				
+				// lecturers
+				query = "SELECT employees_email FROM module_lecturers WHERE modules_moduleID=?;";
+				try {
+					PreparedStatement ps = db.prepareStatement(query);
+					
+					ps.setInt(1, moduleID);
+					
+					ResultSet rs2 = ps.executeQuery();
+					
+					ArrayList<String> lecturers = new ArrayList<String>();
+					while(rs2.next()) {
+						lecturers.add(rs.getString(1));
+					}
+					module.setLecturers(lecturers);
+					rs2.close();
+				} catch(SQLException e) {
+					e.printStackTrace();
+				}	
 				
 				modules.add(module);
 			}
@@ -2796,6 +2995,68 @@ public class ContentDbController extends DbController {
 		} else {
 			return false;
 		}		
+	}
+
+	public Integer getStudycourseID(String name) {
+		String query = "SELECT studycourseID FROM studycourses WHERE name=?;";
+		try {
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ps.setString(1, name);
+			
+			System.out.println("db:getStudycourseID " + ps);
+			
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+				int subjectID = rs.getInt(1); 
+				rs.close();
+				return subjectID;
+			} else {
+				System.out.println("No Studycourse found with this name.");
+				rs.close();
+				return -1;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
+
+	public Event getEvent(String name, String lecturer_email) {
+		Event event = new Event();
+		
+		String query = "SELECT "+event.toValueNames()+" FROM events WHERE name=? AND lecturer_email=?;";
+		
+		try {
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ps.setString(1, name);
+			ps.setString(2, lecturer_email);
+			
+			System.out.println("db:getEvent " + ps);
+			
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+				event = new Event(rs.getInt(1), new ArrayList<Integer>(),
+						rs.getString(2), rs.getInt(3), rs.getString(4),
+						rs.getBoolean(5), rs.getString(6), rs.getBoolean(7), rs.getString(8), 
+						rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), 
+						rs.getTimestamp(13));
+				rs.close();
+				return event;
+			} else {
+				System.out.println("No Event found with this ID.");
+				rs.close();
+				return null;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

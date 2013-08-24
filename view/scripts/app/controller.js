@@ -91,11 +91,13 @@ function activeUserCtrl($scope, $cookies, $http, $location, ActiveUserFactory) {
 			$scope.canDeblockCriticalModule = ActiveUserFactory.canDeblockCriticalModule();
 			$scope.isLoggedIn = true;
 		}, function(error) {
+			delete $cookies['JSESSIONID'];
 			$scope.isLoggedIn = false;
 			sendError(error);
 		});
 	} else {
 		console.log("DEBUG: NOT loged in");
+		delete $cookies['JSESSIONID'];
 		ActiveUserFactory.setActiveUser({});
 		$scope.activeUser = {};
 	}
@@ -289,7 +291,10 @@ function showStudycoursesCtrl($scope, StudycourseFactory, ActiveUserFactory) {
 	Beschreibung: Holt einen bestimmten Studiengang und dessen Modulhandbücher vom Server und zeigt diese in der View an
 
  */
-function showStudycourseCtrl($scope, $routeParams, StudycourseFactory, ModuleHandbookFactory) {
+function showStudycourseCtrl($scope, $routeParams, StudycourseFactory, ModuleHandbookFactory, ActiveUserFactory) {
+	$scope.isAuthorised = function() {
+		return ActiveUserFactory.isAuthorised("studycourse");
+	};
 	if($routeParams.studycourseID) {
 
 		// Studiengang holen
@@ -302,6 +307,17 @@ function showStudycourseCtrl($scope, $routeParams, StudycourseFactory, ModuleHan
 			}, function(error) {
 				sendError(error);
 			});
+
+			// Init Timeline
+			StudycourseFactory.getStudycourses($routeParams.studycourseID, true).then(function(studycourses) {
+				timelineInit(studycourses, function(data) {
+					$scope.studycourse = cleanResults(data);
+					$scope.$apply();
+				});
+			}, function(error) {
+				sendError(error);
+			});
+
 		}, function(error) {
 			sendError(error);
 		});
@@ -344,6 +360,17 @@ function updateStudycourseCtrl($scope, $routeParams, $location, StudycourseFacto
 			}, function(error) {
 				sendError(error);
 			});
+
+			// Init Timeline
+			StudycourseFactory.getStudycourses($routeParams.studycourseID, true).then(function(studycourses) {
+				timelineInit(studycourses, function(data) {
+					$scope.studycourse = cleanResults(data);
+					$scope.$apply();
+				});
+			}, function(error) {
+				sendError(error);
+			});
+
 		}, function(error) {
 			sendError(error);
 		});
@@ -475,7 +502,10 @@ function showModuleHandbooksCtrl($scope, ModuleHandbookFactory, StudycourseFacto
 	und Deadlines benötigt
 
  */
-function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory, StudycourseFactory, DeadlineFactory) {
+function showModuleHandbookCtrl($scope, $routeParams, ModuleHandbookFactory, SubjectFactory, StudycourseFactory, DeadlineFactory, ActiveUserFactory) {
+	$scope.isAuthorised = function() {
+		return ActiveUserFactory.isAuthorised("moduleHandbook");
+	};
 	if($routeParams.modulehandbookID) {
 
 		// Modulhandbuch holen
@@ -763,7 +793,10 @@ function showSubjectsCtrl($scope, SubjectFactory, StudycourseFactory, ActiveUser
 	Beschreibung: Implementiert das Anzeigen eines bestimmten Fachs und dessen zugehörige Module
 
  */
-function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, ModuleHandbookFactory) {
+function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, ModuleHandbookFactory, ActiveUserFactory) {
+	$scope.isAuthorised = function() {
+		return ActiveUserFactory.isAuthorised("subject");
+	};
 	if($routeParams.subjectID) {
 
 		// Hole Fächer
@@ -782,6 +815,16 @@ function showSubjectCtrl($scope, $routeParams, SubjectFactory, ModuleFactory, Mo
 			ModuleHandbookFactory.getModuleHandbook(subject.moduleHandbooks_moduleHandbookID).then(function(moduleHandbook) {
 
 				$scope.modulehandbook = cleanResults(moduleHandbook);
+			}, function(error) {
+				sendError(error);
+			});
+
+			// Init Timeline
+			SubjectFactory.getSubjects($routeParams.subjectID, true).then(function(subjects) {
+				timelineInit(subjects, function(data) {
+					$scope.subject = cleanResults(data);
+					$scope.$apply();
+				});
 			}, function(error) {
 				sendError(error);
 			});
@@ -840,6 +883,16 @@ function updateSubjectCtrl($scope, $routeParams, $location, SubjectFactory, Modu
 		$scope.moduleHandbooks = cleanResults(data);
 	}, function(error) {
 		sendError("Error: "+error);
+	});
+
+	// Init Timeline
+	SubjectFactory.getSubjects($routeParams.subjectID, true).then(function(subjects) {
+		timelineInit(subjects, function(data) {
+			$scope.subject = cleanResults(data);
+			$scope.$apply();
+		});
+	}, function(error) {
+		sendError(error);
 	});
 
 	$scope.update = function() {
@@ -931,6 +984,11 @@ function showModulesCtrl($scope, ModuleFactory, SubjectFactory, ActiveUserFactor
 	$scope.canDelete = function (id) {
 		return ActiveUserFactory.canDelete(id, "module");
 	};
+
+    $scope.canDeblockCriticalModule = function () {
+        console.log(ActiveUserFactory.canDeblockCriticalModule());
+        return ActiveUserFactory.canDeblockCriticalModule();
+    }
 }
 
 /*
@@ -940,7 +998,10 @@ function showModulesCtrl($scope, ModuleFactory, SubjectFactory, ActiveUserFactor
 	Beschreibung:
 
  */
-function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, SubjectFactory) {
+function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, SubjectFactory, ActiveUserFactory, UserFactory) {
+	$scope.isAuthorised = function() {
+		return ActiveUserFactory.isAuthorised("module");
+	};
 	if($routeParams.moduleID) {
 		ModuleFactory.getModule($routeParams.moduleID).then(function(module) {
 			$scope.module = cleanResults(module);
@@ -949,6 +1010,15 @@ function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, Subje
 			}, function(error) {
 				sendError(error);
 			});
+
+			if(module.director_email) {
+				UserFactory.getUser(module.director_email).then(function(user) {
+					$scope.module.director_email = user.firstName+" "+user.lastName;
+				}, function(error) {
+					sendError("Error: "+error);
+				});
+			}
+			
 
 			$scope.subjects = [];
 
@@ -961,9 +1031,18 @@ function showModuleCtrl($scope, $routeParams, ModuleFactory, EventFactory, Subje
 			}
 
 			// Init Timeline
-			ModuleFactory.getModules($routeParams.eventID, true).then(function(modules) {
+			ModuleFactory.getModules($routeParams.moduleID, true).then(function(modules) {
 				timelineInit(modules, function(data) {
 					$scope.module = cleanResults(data);
+
+					if(module.director_email) {
+						UserFactory.getUser(module.director_email).then(function(user) {
+							$scope.module.director_email = user.firstName+" "+user.lastName;
+						}, function(error) {
+							sendError("Error: "+error);
+						});
+					}
+
 					$scope.$apply();
 				});
 			}, function(error) {
@@ -1068,7 +1147,7 @@ function updateModuleCtrl($scope, $routeParams, $location, ModuleFactory, EventF
 	});
 
 	// Init Timeline
-	ModuleFactory.getModules($routeParams.eventID, true).then(function(modules) {
+	ModuleFactory.getModules($routeParams.moduleID, true).then(function(modules) {
 		timelineInit(modules, function(data) {
 			$scope.module = cleanResults(data);
 			$scope.$apply();
@@ -1082,6 +1161,14 @@ function updateModuleCtrl($scope, $routeParams, $location, ModuleFactory, EventF
 			$location.path("/show/modules");
 		});
 	};
+
+    $scope.add = function () {
+        $scope.module.subjectIDs.push(0);
+    };
+
+    $scope.remove = function () {
+        $scope.module.subjectIDs.pop();
+    };
 }
 
 /*
@@ -1177,16 +1264,20 @@ function showEventsCtrl($scope, EventFactory, ModuleFactory, ActiveUserFactory) 
 	Beschreibung:
 
  */
-function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory, UserFactory) {
+function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory, UserFactory, ActiveUserFactory) {
+	$scope.isAuthorised = function() {
+		return ActiveUserFactory.isAuthorised("event");
+	};
 	if($routeParams.eventID) {
 		EventFactory.getEvent($routeParams.eventID).then(function(_event) {
 			$scope._event = cleanResults(_event);
-
-			UserFactory.getUser(_event.lecturer_email).then(function(user) {
-				$scope._event.lecturer_name = user.firstName+" "+user.lastName;
-			}, function(error) {
-				sendError("Error: "+error);
-			});
+			if(_event.lecturer_email) {
+				UserFactory.getUser(_event.lecturer_email).then(function(user) {
+					$scope._event.lecturer_name = user.firstName+" "+user.lastName;
+				}, function(error) {
+					sendError("Error: "+error);
+				});
+			}
 
 			$scope.modules = [];
 
@@ -1202,7 +1293,13 @@ function showEventCtrl($scope, $routeParams, EventFactory, ModuleFactory, UserFa
 			EventFactory.getEvents($routeParams.eventID, true).then(function(events) {
 				timelineInit(events, function(data) {
 					$scope._event = cleanResults(data);
-					$scope.$apply();
+					if(_event.lecturer_email) {
+						UserFactory.getUser(_event.lecturer_email).then(function(user) {
+							$scope._event.lecturer_name = user.firstName+" "+user.lastName;
+						}, function(error) {
+							sendError("Error: "+error);
+						});
+					}
 				});
 			}, function(error) {
 				sendError(error);
@@ -1265,6 +1362,14 @@ function updateEventCtrl($scope, $location, $routeParams, EventFactory, ModuleFa
 	}, function(error) {
 		sendError(error);
 	});
+
+    $scope.add = function () {
+        $scope._event.moduleIDs.push(0);
+    };
+
+    $scope.remove = function () {
+        $scope._event.moduleIDs.pop();
+    };
 
 	$scope.log = function () {
 		console.log($scope._event);
@@ -1792,7 +1897,6 @@ function createDeadlineCtrl($scope, $location, DeadlineFactory) {
  */
 function showDeadlinesCtrl($scope, DeadlineFactory) {
 		DeadlineFactory.getDeadlines().then(function(deadlines) {
-			console.log(deadlines[0]);
 		$scope.deadlines = cleanResults(deadlines);
 	}, function(error) {
 		sendError(error);
@@ -1844,8 +1948,10 @@ function updateDeadlineCtrl($scope, $routeParams, $location, DeadlineFactory) {
 	und ruft anschließend wieder die Deadlineübersicht auf
 
  */
-function deleteDeadlineCtrl($scope) {
-
+function deleteDeadlineCtrl($scope, $routeParams, $location, DeadlineFactory) {
+	DeadlineFactory.deleteDeadline($routeParams.sose, $routeParams.year).then(function() {
+		$location.path("/show/deadlines");
+	});
 }
 
 /*
@@ -1898,7 +2004,6 @@ function requestCtrl($scope, $http) {
 function confirmCtrl($scope, $routeParams, $http) {
 
 	function init () {
-		console.log($routeParams.token);
 		$http({
 				method: 'GET',
 				url: "http://sopra.ex-studios.net:8080/mms/confirm?token=" + $routeParams.token
@@ -1922,9 +2027,9 @@ function confirmCtrl($scope, $routeParams, $http) {
 
  */
 function timelineInit(contents, callback) {
-	if(contents.length === 1) {
-		callback(contents[0]);
-	} else if(contents.length === 0) {
+	if(contents.length === 0) {
+		$("#timelineWrapper").hide();
+		console.log("Debug: Hide Timeline 3");
 		return;
 	} else {
 		for(var i = 0; i < contents.length; i++) {
@@ -1942,13 +2047,7 @@ function timelineInit(contents, callback) {
 			{
 				"headline":"Bearbeitungen",
 				"type":"default",
-			"date": [],
-			"era": [
-					{
-						"startDate":firstModify.getFullYear()+","+(firstModify.getMonth()-1)+","+firstModify.getDate(),
-						"endDate":latestModify.getFullYear()+","+(latestModify.getMonth()+1)+","+latestModify.getDate()
-					}
-				]
+				"date": []
 			}
 		};
 
@@ -1960,7 +2059,6 @@ function timelineInit(contents, callback) {
 			if(!isNaN(date.getTime())) {
 				source.timeline.date.push({
 					"startDate": date.getFullYear()+","+date.getMonth()+","+date.getDate(),
-	                "endDate": date.getFullYear()+","+date.getMonth()+","+date.getDate(),
 	                "headline": (modifyCounter)+". Bearbeitung",
 	                "text": (function() {
 	                	if(typeof contents[j].modifier_email !== "undefined") {
@@ -1989,10 +2087,9 @@ function timelineInit(contents, callback) {
 			contents.splice(indToDel[l], 1);
 		}
 
-
 		if(contents.length !== 0) {
 			contents = contents.sort(compare);
-				createStoryJS({
+			createStoryJS({
 		        width: '100%',
 		        height: '250',
 		        source: source,
@@ -2008,12 +2105,15 @@ function timelineInit(contents, callback) {
 			    			callback(contents[index]);
 			    		});
 			    	} else {
+			    		console.log("Debug: Hide Timeline 2");
+			    		$("#timelineWrapper").hide();
 			    		return;
 			    	}
 			    });
-			   callback(contents[$("*[class^='marker']").length-1])
+			   //callback(contents[$("*[class^='marker']").length-1])
 			});
 		} else {
+			console.log("Debug: Hide Timeline");
 			$("#timelineWrapper").hide();
 		}	
 	}

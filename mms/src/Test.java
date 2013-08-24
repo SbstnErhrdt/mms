@@ -34,6 +34,7 @@ import controller.UserDbController;
 public class Test {
 	public static void main(String[] args) {
 		
+		/*
 		System.out.println(""+Utilities.createRandomHash());
 		
 		
@@ -129,19 +130,27 @@ public class Test {
 		//System.out.println(emp.getEmployeeRights());
 	
 		ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
-		moduleIDs.add(1);
-		moduleIDs.add(2);
+		moduleIDs.add(248);
+		moduleIDs.add(249);
 		
 		Event event = new Event(5, moduleIDs, "Ana IIa", 4, "gerhard.baur@uni-ulm.de", false, 
 				"test", true, "irgend n Raum", "irgendwo", "Vorlesung", "Dienstag 10 bis 12", 
 				"rob@rob.com", null);
 		
-		ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
-		subjectIDs.add(1);
-		subjectIDs.add(2);
+		*/
 		
-		Module module = new Module(3, "Testmodul3", subjectIDs, "", "", "5 LP", "3", 
-				"Deutsch", 2, "gerhard.baur@uni-ulm.de", "", "", "", "", false, true, false, "rob@rob.com", null);
+		ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
+		subjectIDs.add(248);
+		subjectIDs.add(249);
+		
+		ArrayList<String> lecturers = new ArrayList<String>();
+		lecturers.add("abc@uni-ulm.de");
+		lecturers.add("efg@uni-ulm.de");
+		
+		Module module = new Module(0, 1, 20, 90, "Testmodul", "", "", "abc", "testmodule", 
+				"6", "4", "german", "slomka@uni-ulm.de", "keine", "keine", "WiSe", "muendl", "bissele schwatze", 
+				"dein Leben", "was soll des sein", "überleben", "Mikey Maus", false, true, false, false, null, 
+				subjectIDs, lecturers);
 		
 		
 		ContentDbController cdbc = new ContentDbController();
@@ -157,15 +166,23 @@ public class Test {
 		*/
 		// System.out.println(module);
 		
-		// cdbc.createModule(module);
+		cdbc.createModule(module);
 		
-		//module.setDuration(3);
+		module.setDuration(3);
 		
-		//cdbc.updateModule(module);
-		/*
+		lecturers.add("test@testermann.de");
+		
+		lecturers = new ArrayList<String>();
+		
+		module.setLecturers(lecturers);
+		
+		cdbc.updateModule(module);
+		
 		module = cdbc.getModule(3);
 		System.out.println(module);
-		*/
+		
+		System.out.println(cdbc.getSubjectModules(248, false));
+		
 		/*
 		Subject subject = new Subject(3, 1, "New TestSubject", false);
 		
@@ -303,6 +320,8 @@ public class Test {
 		System.out.println(cdbc.getModuleHandbook(1));
 		*/
 		
+		/*
+		
 		System.out.println(cdbc.getModuleHandbookSubjects(1, false));
 		
 		System.out.println(cdbc.getSubject(1));
@@ -358,7 +377,7 @@ public class Test {
 		System.out.println(BCrypt.hashpw("rob"+pepper, BCrypt.gensalt()));
 		
 		
-		/*
+		
 		try {
 			System.out.println(udbc.updateUser(user));
 		} catch (SQLException e) {
@@ -391,6 +410,7 @@ public class Test {
 		}
 		*/
 		
+		/*
 		event.setRoom("H22");
 		//cdbc.createEvent(event);
 		
@@ -411,6 +431,8 @@ public class Test {
 		
 		
 		System.out.println(gson.toJson(cdbc.getStudycourseVersions(1)));
+		
+		*/
 		
 	}
 }

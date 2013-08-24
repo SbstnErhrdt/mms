@@ -68,6 +68,10 @@ public class Event extends Content {
 		this.lastModified = lastModified;
 	}
 	
+	public Event() {
+		// TODO Auto-generated constructor stub
+	}
+
 	// Getter & Setter
 	public String getRoom() {
 		return room;
@@ -157,7 +161,6 @@ public class Event extends Content {
 			string += valueNames[i]+"="+values[i]+", ";
 		}
 		string += valueNames[values.length-1]+"="+values[values.length-1];
-		
 		
 		if(moduleIDs.size() != 0) {
 			string += ", moduleIDs={";
