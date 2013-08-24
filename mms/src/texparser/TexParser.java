@@ -203,10 +203,14 @@ public class TexParser {
 	}
 
 	private ArrayList<String> adaptLecturers(String content) {
-		// TODO match multiple lecturers
 		ArrayList<String> lecturers = new ArrayList<String>();
-		lecturers.add("test1@email.de");
-		lecturers.add("test2@email.de");
+		// match multiple lecturers
+		Pattern pattern = Pattern.compile("\\\\(.*?)\\{(.*?)\\}");
+		Matcher matcher = pattern.matcher(content);
+		while(matcher.find()) {
+			// TODO get email of prof
+			lecturers.add(matcher.group(1));
+		}
 		return lecturers;
 	}
 
@@ -466,7 +470,7 @@ public class TexParser {
 
 	private String adaptDirector(String director) {
 		/* TODO
-		 * replace \Prof etc correctly and get their email?
+		 * replace \StudiendekanInf etc correctly and get their email?
 		 */
 		
 		return "todo@ex-studios.net";

@@ -9,8 +9,12 @@ import java.util.ArrayList;
 import model.content.Module;
 
 public class TexParseController {
+
 	
 	public void parse(String path) throws IOException {
+		double startTime = System.currentTimeMillis();
+		int numberOfModules = 0;
+		
 		File file = new File(path);
 		
 		if(file.isDirectory()) {
@@ -18,12 +22,17 @@ public class TexParseController {
 			for(File f : listOfFiles) {
 				if(f.isFile()) {
 					parseTexFile(path + "/" + f.getName());
+					numberOfModules += 1;
 				}
 			}
 		} else {
 			// single file
 			parseTexFile(file.getName());
+			numberOfModules = 1;
 		}
+		double endTime = System.currentTimeMillis();
+		double parseTime = (endTime-startTime)/1000;
+		System.out.println(numberOfModules+ " Modules parsed in "+parseTime+" seconds.");
 	}
 	
 	private void parseTexFile(String filename) throws IOException {
