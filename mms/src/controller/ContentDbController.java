@@ -175,7 +175,7 @@ public class ContentDbController extends DbController {
 		// UPDATE EVENTS_MODULES: delete and recreate
 		query = "DELETE FROM events_modules WHERE eventID="+event.getID();
 		
-		System.out.println(query);
+		System.out.println("db:updateEvent: "+query);
 		
 		try {
 			db.createStatement().executeUpdate(query);
@@ -185,7 +185,7 @@ public class ContentDbController extends DbController {
 		}
 		
 		query = "INSERT INTO events_modules(eventID, moduleID) VALUES ("+event.getID()+", ?)";
-		System.out.println(query);
+		System.out.println("db:updateEvent: "+query);
 		
 		try {
 			db.setAutoCommit(false);
@@ -220,7 +220,7 @@ public class ContentDbController extends DbController {
 		Event newEvent = new Event(eventID);
 		
 		String query = "SELECT "+newEvent.toValueNames()+" FROM events WHERE eventID="+eventID+";";
-		System.out.println("db:getEvent " + query);
+		System.out.println("db:getEvent: " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
@@ -244,6 +244,7 @@ public class ContentDbController extends DbController {
 		
 		// moduleIDs
 		query = "SELECT moduleID FROM events_modules WHERE eventID="+eventID;
+		System.out.println("db:getEvent: " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			
@@ -471,7 +472,7 @@ public class ContentDbController extends DbController {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
 			
-			System.out.println(ps);
+			System.out.println("db:createModule: "+ps);
 			
 			ArrayList<Integer> subjectIDs = module.getSubjectIDs();
 			for(int subjectID : subjectIDs) {
@@ -591,7 +592,7 @@ public class ContentDbController extends DbController {
 		// UPDATE modules_subjects: delete and recreate
 		query = "DELETE FROM modules_subjects WHERE moduleID="+module.getID();
 		
-		System.out.println(query);
+		System.out.println("db:updateModule: "+query);
 		
 		try {
 			db.createStatement().executeUpdate(query);
@@ -601,7 +602,7 @@ public class ContentDbController extends DbController {
 		}
 		
 		query = "INSERT INTO modules_subjects(moduleID, subjectID) VALUES ("+module.getID()+", ?)";
-		System.out.println(query);
+		System.out.println("db:updateModule: "+query);
 		
 		try {
 			db.setAutoCommit(false);
@@ -628,7 +629,7 @@ public class ContentDbController extends DbController {
 		// UPDATE modules_lecturers: delete and recreate
 		query = "DELETE FROM module_lecturers WHERE modules_moduleID="+module.getID();
 		
-		System.out.println(query);
+		System.out.println("db:updateModule: "+query);
 		
 		try {
 			db.createStatement().executeUpdate(query);
@@ -652,6 +653,8 @@ public class ContentDbController extends DbController {
 				ps.executeUpdate();
 				db.commit();
 			}
+			
+			System.out.println("db:updateModule: "+ps);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -702,6 +705,7 @@ public class ContentDbController extends DbController {
 		// subjectIDs
 		query = "SELECT subjectID FROM modules_subjects WHERE moduleID="+moduleID;
 		try {
+			System.out.println("db:getModule " +query);
 			ResultSet rs = db.createStatement().executeQuery(query);
 			
 			ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
@@ -721,6 +725,8 @@ public class ContentDbController extends DbController {
 			PreparedStatement ps = db.prepareStatement(query);
 			
 			ps.setInt(1, moduleID);
+			
+			System.out.println("db:getModule " +ps);
 			
 			ResultSet rs = ps.executeQuery();
 			
@@ -3047,7 +3053,6 @@ public class ContentDbController extends DbController {
 						rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), 
 						rs.getTimestamp(13));
 				rs.close();
-				return event;
 			} else {
 				System.out.println("No Event found with this ID.");
 				rs.close();
@@ -3057,6 +3062,24 @@ public class ContentDbController extends DbController {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
+		}
+		
+		// moduleIDs
+		query = "SELECT moduleID FROM events_modules WHERE eventID="+event.getID();
+		System.out.println("db:getEvent: " + query);
+		try {
+			ResultSet rs = db.createStatement().executeQuery(query);
+			
+			ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
+			while(rs.next()) {
+				moduleIDs.add(rs.getInt(1));
+			}
+			event.setModuleIDs(moduleIDs);
+			rs.close();
+			return event;
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return event;
 		}
 	}
 

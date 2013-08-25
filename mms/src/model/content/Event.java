@@ -152,26 +152,6 @@ public class Event extends Content {
 				"content", "enabled", "room", "place", "type", "times", "modifier_email", "lastModified"};
 		return valueNames;
 	}
-	
-	public String toString() {
-		String string = "[";
-		String[] values = toValuesArray();
-		String[] valueNames = toValueNamesArray();
-		for(int i=0; i<values.length-1; i++) {
-			string += valueNames[i]+"="+values[i]+", ";
-		}
-		string += valueNames[values.length-1]+"="+values[values.length-1];
-		
-		if(moduleIDs.size() != 0) {
-			string += ", moduleIDs={";
-			for(int i=0; i<moduleIDs.size()-1; i++) {
-				string += moduleIDs.get(i) + ",";
-			}
-			string += moduleIDs.get(moduleIDs.size()-1) + "}]";
-		}
-	
-		return string;
-	}
 
 	public int getID() {
 		return eventID;
@@ -179,6 +159,17 @@ public class Event extends Content {
 
 	public void setID(int eventID) {
 		this.eventID = eventID;
+	}
+
+	@Override
+	public String toString() {
+		return "Event [lecturer_email=" + lecturer_email + ", room=" + room
+				+ ", place=" + place + ", times=" + times + ", type=" + type
+				+ ", eventID=" + eventID + ", sws=" + sws + ", moduleIDs="
+				+ moduleIDs + ", name=" + name + ", content=" + content
+				+ ", modifier_email=" + modifier_email + ", lastModified="
+				+ lastModified + ", archived=" + archived + ", enabled="
+				+ enabled + ", version=" + version + "]";
 	}
 	
 }
