@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import texparser.TexParseController;
+
 import model.Employee;
 import model.User;
 import model.content.Deadline;
@@ -356,6 +358,37 @@ public class ContentRoutes extends Routes{
 			ArrayList<Module> modules = db.getModules(getOnlyEnabled);
 			
 			json = gson.toJson(modules);
+		}
+		respond(response, json);
+	}
+	
+	/**
+	 * imports a module from the server at the path passed in the query
+	 * @param request
+	 * @param response
+	 */
+	public void importModules(HttpServletRequest request,
+			HttpServletResponse response) {
+		String json = "";
+		
+		User actorUser = getActorUser(request);
+		
+		// TODO check rights
+		
+		String path = request.getParameter("path");
+		if(path != null) {	
+			try {
+				json = gson.toJson(new TexParseController().parse(path));
+			} catch (IOException e) {
+				e.printStackTrace();
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						"IOException", 
+						"TexParseController.parse(path)")));	
+			}
+		} else {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"unspecified path in query", 
+					"importModule(...)")));
 		}
 		respond(response, json);
 	}

@@ -11,7 +11,7 @@ import model.content.Module;
 public class TexParseController {
 
 	
-	public void parse(String path) throws IOException {
+	public ArrayList<String> parse(String path) throws IOException {
 		
 		System.out.println("...................................");
 		System.out.println("Starting to parse modules at " + path);
@@ -20,20 +20,29 @@ public class TexParseController {
 		double startTime = System.currentTimeMillis();
 		int numberOfModules = 0;
 		
+		ArrayList<String> names = new ArrayList<String>();
+		
 		File file = new File(path);
 		
 		if(file.isDirectory()) {
-			File[] listOfFiles = file.listFiles();
+			ArrayList<File> listOfFiles = getAllFiles(file);
+			System.out.println("listOfFiles: " + listOfFiles);
 			for(File f : listOfFiles) {
-				if(f.isFile()) {
-					parseTexFile(path + "/" + f.getName());
+				String name = f.getName();
+				if(name.substring(name.lastIndexOf('.')).equals(".tex")) {
+					names.add(parseTexFile(f));
 					numberOfModules += 1;
+				} else {
+					System.out.println("ignoring non-tex file " + name);
 				}
 			}
 		} else {
 			// single file
-			parseTexFile(file.getName());
-			numberOfModules = 1;
+			String name = file.getName();
+			if(name.substring(name.lastIndexOf('.')).equals(".tex")) {
+				names.add(parseTexFile(file));
+				numberOfModules = 1;
+			} 
 		}
 		double endTime = System.currentTimeMillis();
 		double parseTime = (endTime-startTime)/1000;
@@ -41,11 +50,31 @@ public class TexParseController {
 		System.out.println("...................................");
 		System.out.println(numberOfModules+ " Modules parsed in "+parseTime+" seconds.");
 		System.out.println("...................................");
+		
+		return names;
 	}
 	
-	private void parseTexFile(String filename) throws IOException {
+	/**
+	 * @param file
+	 * @return a list of all files in the directory and its subdirectories
+	 */
+	private ArrayList<File> getAllFiles(File file) {
+		ArrayList<File> files = new ArrayList<File>();
+		File[] listOfFiles = file.listFiles();
+		for(File f : listOfFiles) {
+			if(f.isFile()) {
+				files.add(f);
+			} else if(f.isDirectory()) {
+				// recursively add all files in subdirectories
+				files.addAll(getAllFiles(f));
+			}
+		}
+		return files;
+	}
+
+	private String parseTexFile(File file) throws IOException {
 		
-		BufferedReader br = new BufferedReader(new FileReader(filename));
+		BufferedReader br = new BufferedReader(new FileReader(file));
 		
 		String everything = "";
 		
@@ -74,6 +103,7 @@ public class TexParseController {
 		
 		System.out.println(module);
 		
+		return module.getName();
 		// System.out.println(module.getLearningTarget());
 		// System.out.println(module.getLiterature());
 	}
