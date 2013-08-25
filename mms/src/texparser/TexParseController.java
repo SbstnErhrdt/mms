@@ -12,6 +12,11 @@ public class TexParseController {
 
 	
 	public void parse(String path) throws IOException {
+		
+		System.out.println("...................................");
+		System.out.println("Starting to parse modules at " + path);
+		System.out.println("...................................");
+		
 		double startTime = System.currentTimeMillis();
 		int numberOfModules = 0;
 		
@@ -32,7 +37,10 @@ public class TexParseController {
 		}
 		double endTime = System.currentTimeMillis();
 		double parseTime = (endTime-startTime)/1000;
+		
+		System.out.println("...................................");
 		System.out.println(numberOfModules+ " Modules parsed in "+parseTime+" seconds.");
+		System.out.println("...................................");
 	}
 	
 	private void parseTexFile(String filename) throws IOException {
@@ -51,7 +59,7 @@ public class TexParseController {
 				line = br.readLine();
 			}
 			everything = sb.toString();
-			System.out.println(everything);
+			// DEBUG System.out.println(everything);
 		} finally {
 			br.close();
 		}
@@ -60,7 +68,7 @@ public class TexParseController {
 		
 		ArrayList<TexNode> texNodes = tp.parseTexNodes(everything);
 		
-		System.out.println(texNodes);
+		// DEBGUG System.out.println(texNodes);
 		
 		Module module = tp.convertToModuleAndDumpInDatabase(texNodes);
 		

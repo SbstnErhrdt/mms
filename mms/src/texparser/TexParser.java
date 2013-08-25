@@ -19,8 +19,13 @@ import model.content.Subject;
 public class TexParser {
 	
 	private int curlyCounter = 0;
-	private String systemEmail = "sopra@ex-studios.net";
+	private final String systemEmail = "sopra@ex-studios.net";
 	
+	/**
+	 * @param tex
+	 * @return an ArrayList with the splitted TexNodes
+	 * @throws IOException
+	 */
 	public ArrayList<TexNode> parseTexNodes(String tex) throws IOException {
 		BufferedReader reader = new BufferedReader(new StringReader(tex));
 		String line = reader.readLine();
@@ -69,10 +74,25 @@ public class TexParser {
 		
 	}
 	
+	/**
+	 * @param line
+	 * @return the line without '%' and everything after it (but checks if the % is countered as '\%')
+	 */
 	private String removeComment(String line) {
-		if(line.indexOf("%") != -1) {
-			return line.substring(0, line.indexOf("%"));
+		int index = line.indexOf("%");
+		if(index != -1) {
+			if(index == 0) { // '%' at line beginning
+				return line.substring(0, index);
+			} else {
+				if(line.charAt(index-1) == '\\') { // '\%'
+					// go on searching for '%'s recursive 
+					return line.substring(0, index+1) + removeComment(line.substring(index+1));
+				} else {
+					return line.substring(0, index);
+				}
+			}
 		} else {
+			// no '%'s found
 			return line;
 		}
 	}
@@ -193,9 +213,7 @@ public class TexParser {
 		
 		db.createModule(module);
 		
-		int createdID = module.getID();
-		
-		createChildEvents(teachingForms, createdID);
+		createChildEvents(teachingForms, module.getID());
 			
 		db.closeConnection();
 		
@@ -209,7 +227,7 @@ public class TexParser {
 		Matcher matcher = pattern.matcher(content);
 		while(matcher.find()) {
 			// TODO get email of prof
-			lecturers.add(matcher.group(1));
+			lecturers.add(matcher.group(1) + ". " +  matcher.group(2));
 		}
 		return lecturers;
 	}
@@ -279,7 +297,6 @@ public class TexParser {
 			moduleIDs.add(moduleID);
 			event.setModuleIDs(moduleIDs);
 			event.setType(teachingForm);
-			System.out.println(event);
 			createOrUpdateIfExists(event, moduleID);
 		}
 		
@@ -381,7 +398,7 @@ public class TexParser {
 			}
 		}
 		
-		System.out.println(subjectIDs);
+		System.out.println("ascertained subjectIDs: " + subjectIDs);
 		
 		db.closeConnection();
 		
@@ -442,7 +459,6 @@ public class TexParser {
 		Matcher matcher = pattern.matcher(content);
 		
 		while(matcher.find()) {
-			System.out.println(matcher.group(1));
 			String tag1 = matcher.group(1);
 			tag1 = tag1.replace("\\Inf{\\Ba}", "Bachelor Informatik");
 			tag1 = tag1.replace("\\Inf{\\Ma}", "Master Informatik");

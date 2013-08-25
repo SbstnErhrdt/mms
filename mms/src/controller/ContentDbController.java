@@ -88,11 +88,12 @@ public class ContentDbController extends DbController {
 				
 		// CREATE ENTRY IN TABLE EVENTS_MODULES
 		query = "INSERT INTO events_modules(eventID, moduleID) VALUES ("+event.getID()+", ?);";
-		System.out.println(query);
 		
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
+			
+			System.out.println("db:createEvent:" + ps);
 			
 			ArrayList<Integer> moduleIDs = event.getModuleIDs();
 			for(int moduleID : moduleIDs) {
@@ -1118,7 +1119,7 @@ public class ContentDbController extends DbController {
 			ps.setString(1, name);
 			ps.setInt(2, studycourseID);
 			
-			System.out.println("db:getSubject " + ps);
+			System.out.println("db:getSubjectID " + ps);
 		
 			ResultSet rs = ps.executeQuery();
 
