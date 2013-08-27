@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 import controller.ContentDbController;
+import controller.DbController;
+import controller.GlobalVarDbController;
 import controller.UserDbController;
 
 import model.content.Event;
@@ -558,10 +560,28 @@ public class TexParser {
 	 * @return the adapted content string
 	 */
 	private String adaptDirector(String director) {
-		/* TODO
-		 * replace \StudiendekanInf etc correctly and get their email?
-		 */
-		return "todo@ex-studios.net";
+		String email;
+		
+		if(director.contains("\\StudiendekanInf")) {
+			GlobalVarDbController db = new GlobalVarDbController();
+			email = db.getGlobalVar("StudiendekanInf");
+		} else {
+			Pattern pattern = Pattern.compile("\\\\(.*?)\\{(.*?)\\}");
+			Matcher matcher = pattern.matcher(director);
+			if(matcher.find()) {
+				// get email of prof
+				email = getEmailByName(matcher.group(2));
+				if(email == null) {
+					// no email found => set the name as email
+					email = matcher.group(2);
+				}
+			} else {
+				// patttern failed => set original string
+				email = director;
+			}
+		}
+
+		return email;
 	}
 }
 
