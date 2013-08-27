@@ -10,12 +10,17 @@ import model.content.Module;
 
 public class TexParseController {
 
+	private String modifier_email;
+	
+	public TexParseController(String modifier_email) {
+		this.modifier_email = modifier_email;
+	}
 	
 	public ArrayList<String> parse(String path) throws IOException {
 		
-		System.out.println("...................................");
-		System.out.println("Starting to parse modules at " + path);
-		System.out.println("...................................");
+		System.out.println("....................................................");
+		System.out.println("[texparser] Starting to parse modules at " + path);
+		System.out.println("....................................................");
 		
 		double startTime = System.currentTimeMillis();
 		int numberOfModules = 0;
@@ -26,14 +31,14 @@ public class TexParseController {
 		
 		if(file.isDirectory()) {
 			ArrayList<File> listOfFiles = getAllFiles(file);
-			System.out.println("listOfFiles: " + listOfFiles);
+			System.out.println("[texparser] listOfFiles: " + listOfFiles);
 			for(File f : listOfFiles) {
 				String name = f.getName();
 				if(name.substring(name.lastIndexOf('.')).equals(".tex")) {
 					names.add(parseTexFile(f));
 					numberOfModules += 1;
 				} else {
-					System.out.println("ignoring non-tex file " + name);
+					System.out.println("[texparser] ignoring non-tex file " + name);
 				}
 			}
 		} else {
@@ -47,9 +52,9 @@ public class TexParseController {
 		double endTime = System.currentTimeMillis();
 		double parseTime = (endTime-startTime)/1000;
 		
-		System.out.println("...................................");
-		System.out.println(numberOfModules+ " Modules parsed in "+parseTime+" seconds.");
-		System.out.println("...................................");
+		System.out.println("....................................................");
+		System.out.println("[texparser] "+numberOfModules+" Modules parsed in "+parseTime+" seconds.");
+		System.out.println("....................................................");
 		
 		return names;
 	}
@@ -99,12 +104,10 @@ public class TexParseController {
 		
 		// DEBGUG System.out.println(texNodes);
 		
-		Module module = tp.convertToModuleAndDumpInDatabase(texNodes);
+		Module module = tp.convertToModuleAndDumpInDatabase(texNodes, modifier_email);
 		
-		System.out.println(module);
+		System.out.println("[texparser] "+module);
 		
 		return module.getName();
-		// System.out.println(module.getLearningTarget());
-		// System.out.println(module.getLiterature());
 	}
 }

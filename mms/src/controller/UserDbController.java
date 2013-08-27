@@ -1026,4 +1026,37 @@ public class UserDbController extends DbController {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * @param firstName
+	 * @param lastName
+	 * @return the email that belongs to the passed firstName and lastname or null if no entry found
+	 */
+	public String getUserEmail(String firstName, String lastName) {
+		String query = "SELECT email FROM users WHERE firstName=? AND lastName=?;";
+		
+		try {
+			PreparedStatement ps = db.prepareStatement(query);
+			
+			ps.setString(1, firstName);
+			ps.setString(2, lastName);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			if(rs.next()) {
+				String email = rs.getString(1);
+				rs.close();
+				return email;
+			} else {
+				rs.close();
+				return null;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+	}
 }

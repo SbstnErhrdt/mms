@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 import controller.ContentDbController;
+import controller.UserDbController;
 
 import model.content.Event;
 import model.content.Module;
@@ -132,14 +133,22 @@ public class TexParser {
 	
 				// replace multiple whitespaces by one
 				contentString = contentString.replaceAll("\\s+", " ");
+				
 				contentString = contentString.trim();
+			
 				tn.setContent(contentString);
 			}
 		}
 		return texNodes;
 	}
 	
-	public Module convertToModuleAndDumpInDatabase(ArrayList<TexNode> texNodes) {
+	/**
+	 * converts a list of texnodes to a Module object snd dumps it in the database
+	 * @param texNodes
+	 * @param modifier_email
+	 * @return the converted module
+	 */
+	public Module convertToModuleAndDumpInDatabase(ArrayList<TexNode> texNodes, String modifier_email) {
 		Module module = new Module();
 		String teachingForms = "";
 		
@@ -167,7 +176,6 @@ public class TexParser {
 			} else if(tnName.equals("Modulverantwortlicher")) {
 				module.setDirector_email(adaptDirector(tn.getContent()));
 			} else if(tnName.equals("Dozenten")) {
-				// TODO adapt to model
 				ArrayList<String> lecturers = adaptLecturers(tn.getContent());
 				module.setLecturers(lecturers);
 			} else if(tnName.equals("Einordnung")) {
@@ -179,59 +187,109 @@ public class TexParser {
 			} else if(tnName.equals("Lernziele")) {
 				module.setLearningTarget(adaptLearningTargetAndContent(tn.getContent()));
 			} else if(tnName.equals("Inhalt")) {
-				module.setLearningTarget(adaptLearningTargetAndContent(tn.getContent()));
+				module.setContent(adaptLearningTargetAndContent(tn.getContent()));
 			} else if(tnName.equals("Literatur")) {
 				module.setLiterature(adaptLiterature(tn.getContent()));
 			} else if(tnName.equals("Lehrformen")) {
 				// handle later
 				teachingForms = tn.getContent();				
 			} else if(tnName.equals("Arbeitsaufwand")) {
-				// TODO adapt to model
 				int[] efforts = adaptEffort(tn.getContent());
 				module.setEffort_presenceTime(efforts[0]);
 				module.setEffort_preAndPost(efforts[1]);
 			} else if(tnName.equals("Leistungsnachweis")) {
-				// TODO adapt to model
 				module.setPerformanceRecord(tn.getContent());
 			} else if(tnName.equals("Notenbildung")) {
-				// TODO adapt to model
 				module.setGradeFormation(tn.getContent());
 			} else if(tnName.equals("Grundlagen")) {
-				// TODO adapt to model
 				module.setBasisFor(tn.getContent());
 			} else if(tnName.equals("Ilias")) {
-				// TODO adapt to model	
 				module.setIlias(tn.getContent());
 			}
 		}
 	
-		module.setModifier_email(systemEmail);
+		if(modifier_email == null) {
+			module.setModifier_email(systemEmail);
+		} else {
+			module.setModifier_email(modifier_email);
+		}
 		
-		ContentDbController db = new ContentDbController();
-	
-		System.out.println(module);
-		
-		db.createModule(module);
-		
-		createChildEvents(teachingForms, module.getID());
+		// at least the name must not be null
+		if(module.getName() != null) {
+			ContentDbController db = new ContentDbController();
 			
-		db.closeConnection();
-		
+			db.createModule(module);
+			
+			createChildEvents(teachingForms, module.getID());
+				
+			db.closeConnection();
+		} else {
+			System.out.println("[texparser] no module has been created because there was no name found.");
+		}
+
 		return module;
 	}
 
+	/**
+	 * @param content
+	 * @return the adapted content string
+	 */
 	private ArrayList<String> adaptLecturers(String content) {
 		ArrayList<String> lecturers = new ArrayList<String>();
 		// match multiple lecturers
 		Pattern pattern = Pattern.compile("\\\\(.*?)\\{(.*?)\\}");
 		Matcher matcher = pattern.matcher(content);
 		while(matcher.find()) {
-			// TODO get email of prof
-			lecturers.add(matcher.group(1) + ". " +  matcher.group(2));
+			// get email of prof
+			String email = getEmailByName(matcher.group(2));
+			if(email == null) {
+				// no email found => insert the name
+				lecturers.add(matcher.group(1) + ". " +  matcher.group(2));
+			} else {
+				lecturers.add(email);
+			}	
 		}
 		return lecturers;
 	}
 
+
+	/**
+	 * tries to find an email that belongs to the passed title and name
+	 * @param name
+	 * @return the email of the user with the passed title and name (if exists)
+	 */
+	private String getEmailByName(String name) {
+		String[] fields = extractTitleFirstNameLastName(name);
+		UserDbController db = new UserDbController();
+		
+		String email = db.getUserEmail(fields[1], fields[2]);
+		
+		return email;
+	}
+
+	/**
+	 * @param name
+	 * @return {title, firstName, lastName}
+	 */
+	private String[] extractTitleFirstNameLastName(String name) {
+		String[] fields = new String[3];
+		
+		Pattern pattern = Pattern.compile("((Dr.(-Ing.)?)\\s)?(\\w+)\\s(\\w+)");
+		Matcher matcher = pattern.matcher(name);
+		
+		if(matcher.find()) {
+			fields[0] = matcher.group(2);
+			fields[1] = matcher.group(4);
+			fields[2] = matcher.group(5);
+		}
+		
+		return fields;
+	}
+
+	/**
+	 * @param content
+	 * @return the adapted content string
+	 */
 	private String[] adaptRotation(String content) {
 		String[] rotations = new String[2];
 		// match \sporadisch
@@ -251,6 +309,10 @@ public class TexParser {
 		return rotations;
 	}
 
+	/**
+	 * @param content
+	 * @return the presence time and preAndPost effort in an array with two entries
+	 */
 	private int[] adaptEffort(String content) {
 		int[] efforts = new int[2];
 		// match Praesenzzeit, VorNachbereitung
@@ -267,6 +329,12 @@ public class TexParser {
 		return efforts;
 	}
 
+	/**
+	 * creates the child events found in the content string
+	 * @param content
+	 * @param moduleID
+	 * @return true if successfull
+	 */
 	private boolean createChildEvents(String content, int moduleID) {
 	
 		// find \Prj, Vlg, Ubg etc
@@ -303,6 +371,11 @@ public class TexParser {
 		return true;
 	}
 
+	/**
+	 * updates the passed event in the database if it already exists, if not creates a new one
+	 * @param event
+	 * @param moduleID
+	 */
 	private void createOrUpdateIfExists(Event event, int moduleID) {
 		ContentDbController db = new ContentDbController();
 		Event existingEvent = db.getEvent(event.getName(), event.getLecturer_email());
@@ -311,7 +384,7 @@ public class TexParser {
 			db.createEvent(event);
 		} else {
 			// update existing event
-			// add moduleID to the list
+			// add moduleID to its list
 			ArrayList<Integer> moduleIDs = existingEvent.getModuleIDs();
 			moduleIDs.add(moduleID);
 			existingEvent.setModuleIDs(moduleIDs);
@@ -321,43 +394,41 @@ public class TexParser {
 		db.closeConnection();
 	}
 
+	/**
+	 * @param contentString
+	 * @return the adapted content string
+	 */
 	private String adaptLiterature(String contentString) {
 		// replace \skript, \buch etc
-		contentString = contentString.replaceAll("\\\\buch\\{(.*?)\\}", "Buch: $1");
-		contentString = contentString.replaceAll("\\\\buch \\{(.*?)\\}", "Buch: $1");
-		contentString = contentString.replaceAll("\\\\skript\\{(.*?)\\}", "Skript: $1");
-		contentString = contentString.replaceAll("\\\\skript \\{(.*?)\\}", "Skript: $1");
-		contentString = contentString.replaceAll("\\\\aufsatz\\{(.*?)\\}", "Aufsatz: $1");
-		contentString = contentString.replaceAll("\\\\aufsatz \\{(.*?)\\}", "Aufsatz: $1");
+		contentString = contentString.replaceAll("\\\\buch\\s?\\{(.*?)\\}", "Buch: $1");
+		contentString = contentString.replaceAll("\\\\skript\\s?\\{(.*?)\\}", "Skript: $1");
+		contentString = contentString.replaceAll("\\\\aufsatz\\s?\\{(.*?)\\}", "Aufsatz: $1");
 		return contentString;
 	}
 
-	private String adaptLearningTargetAndContent(String contentString) {
-		String content = "";
+	/**
+	 * @param content
+	 * @return the adapted content string
+	 */
+	private String adaptLearningTargetAndContent(String content) {
+		// replace \spiegelstrich with <ul> <li><\li> ... </ul>		
+		Pattern pattern = Pattern.compile("((\\\\spiegelstrich\\s?\\{.*?\\}\\s?)+)");
+		Matcher matcher = pattern.matcher(content);
 		
-		// replace "\spiegelstrich" with " - "
-		int index =	contentString.indexOf("\\spiegelstrich");
-		if(index != -1) {
-			curlyCounter = 0;
-			content += contentString.substring(0, index);
-			content += " - " + contentString.substring(contentString.indexOf("{", index)+1, 
-					contentString.indexOf("{", index)+indexOfClosingTag(contentString.substring(contentString.indexOf("{", index))));
-			index =	contentString.indexOf("\\spiegelstrich", index+15);
-			while(index != -1 && contentString.indexOf("{", index) != -1) {
-				curlyCounter = 0;
-				content += " - " + contentString.substring(contentString.indexOf("{", index)+1, 
-						contentString.indexOf("{", index) + 
-						indexOfClosingTag(contentString.substring(contentString.indexOf("{", index))));
-				index =	contentString.indexOf("\\spiegelstrich", index+15);
-			}
-			// add the rest
-			if(contentString.indexOf("{", contentString.lastIndexOf("\\spiegelstrich")) != -1) {
-				content += contentString.substring(contentString.indexOf("{", contentString.lastIndexOf("\\spiegelstrich"))+
-						indexOfClosingTag(contentString.substring(contentString.indexOf("{", contentString.lastIndexOf("\\spiegelstrich"))-1)));
-			}
+		while(matcher.find()) {
+			content = matcher.replaceAll("<ul>"+replaceBulletPoints(matcher.group(1))+"</ul>");
 		}
 		
 		return content;
+	}
+
+	/**
+	 * @param string
+	 * @return the string with \spiegelstrich{...} replaced by <li>...</li>
+	 */
+	private String replaceBulletPoints(String string) {
+		string = string.replaceAll("\\\\spiegelstrich\\s?\\{(.*?)\\}", "<li>$1</li>");
+		return string;
 	}
 
 	/**
@@ -376,8 +447,6 @@ public class TexParser {
 		
 		ArrayList<Integer> studycourseIDs = getStudyourseIDs(names);
 		
-		
-		// TODO get IDs of the subjects in the contentString
 		ContentDbController db = new ContentDbController();
 	
 		for(int i=0; i<tags.size(); i++) {
@@ -398,7 +467,7 @@ public class TexParser {
 			}
 		}
 		
-		System.out.println("ascertained subjectIDs: " + subjectIDs);
+		System.out.println("[texparser] ascertained subjectIDs: " + subjectIDs);
 		
 		db.closeConnection();
 		
@@ -450,7 +519,7 @@ public class TexParser {
 
 	/**
 	 * @param content
-	 * @return each extracted String between every third curly braces 
+	 * @return the extracted tags in a list of string arrays
 	 */
 	private ArrayList<String[]> getClassificationTags(String content) {
 		ArrayList<String[]> cTags = new ArrayList<String[]>();
@@ -484,11 +553,14 @@ public class TexParser {
 		return cTags;
 	}
 
+	/**
+	 * @param director
+	 * @return the adapted content string
+	 */
 	private String adaptDirector(String director) {
 		/* TODO
 		 * replace \StudiendekanInf etc correctly and get their email?
 		 */
-		
 		return "todo@ex-studios.net";
 	}
 }

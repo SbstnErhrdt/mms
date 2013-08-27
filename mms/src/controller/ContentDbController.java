@@ -60,7 +60,7 @@ public class ContentDbController extends DbController {
 			ps.setString(10, event.getTimes());				// times
 			ps.setString(11, event.getModifier_email());	// modifier_email	
 			
-			System.out.println("db:createEvent: " + ps);
+			System.out.println("[db] createEvent: " + ps);
 			
 			ps.executeUpdate();
 			db.commit();
@@ -69,7 +69,7 @@ public class ContentDbController extends DbController {
 			ResultSet rs = ps.getGeneratedKeys();
 			if (rs.next()) {
 				event.setID(rs.getInt(1));
-			    System.out.println("Generated eventID: " + event.getID());	    
+			    // System.out.println("Generated eventID: " + event.getID());	    
 			}
 			
 			ps.close();
@@ -93,7 +93,7 @@ public class ContentDbController extends DbController {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
 			
-			System.out.println("db:createEvent:" + ps);
+			System.out.println("[db] createEvent:" + ps);
 			
 			ArrayList<Integer> moduleIDs = event.getModuleIDs();
 			for(int moduleID : moduleIDs) {
@@ -153,7 +153,7 @@ public class ContentDbController extends DbController {
 			ps.setString(10, event.getTimes());				// times
 			ps.setString(11, event.getModifier_email()); 	// modifier_email
 
-			System.out.println("db:updateEvent: " + ps);
+			System.out.println("[db] updateEvent: " + ps);
 			
 			ps.executeUpdate();
 			db.commit();
@@ -175,7 +175,7 @@ public class ContentDbController extends DbController {
 		// UPDATE EVENTS_MODULES: delete and recreate
 		query = "DELETE FROM events_modules WHERE eventID="+event.getID();
 		
-		System.out.println("db:updateEvent: "+query);
+		System.out.println("[db] updateEvent: "+query);
 		
 		try {
 			db.createStatement().executeUpdate(query);
@@ -185,7 +185,7 @@ public class ContentDbController extends DbController {
 		}
 		
 		query = "INSERT INTO events_modules(eventID, moduleID) VALUES ("+event.getID()+", ?)";
-		System.out.println("db:updateEvent: "+query);
+		System.out.println("[db] updateEvent: "+query);
 		
 		try {
 			db.setAutoCommit(false);
@@ -220,7 +220,7 @@ public class ContentDbController extends DbController {
 		Event newEvent = new Event(eventID);
 		
 		String query = "SELECT "+newEvent.toValueNames()+" FROM events WHERE eventID="+eventID+";";
-		System.out.println("db:getEvent: " + query);
+		System.out.println("[db] getEvent: " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
@@ -244,7 +244,7 @@ public class ContentDbController extends DbController {
 		
 		// moduleIDs
 		query = "SELECT moduleID FROM events_modules WHERE eventID="+eventID;
-		System.out.println("db:getEvent: " + query);
+		System.out.println("[db] getEvent: " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			
@@ -270,7 +270,7 @@ public class ContentDbController extends DbController {
 
 		String query = "DELETE FROM events ";
 		query += "WHERE eventID = " + event.getID() + ";";
-		System.out.println("db:deleteEvent " + query);
+		System.out.println("[db] deleteEvent " + query);
 		try {
 			db.createStatement().executeUpdate(query);
 		} catch (SQLException e) {
@@ -439,7 +439,7 @@ public class ContentDbController extends DbController {
 			ps.setBoolean(24, module.isArchived());				// archived
 			ps.setBoolean(25, false);							// enabled		
 
-			System.out.println("db:createModule: " + ps);
+			System.out.println("[db] createModule: " + ps);
 			
 			ps.executeUpdate();
 			db.commit();
@@ -448,7 +448,7 @@ public class ContentDbController extends DbController {
 			ResultSet rs = ps.getGeneratedKeys();
 			if (rs.next()) {
 				module.setID(rs.getInt(1));
-			    System.out.println("Generated moduleID: " + module.getID());	    
+				// System.out.println("Generated moduleID: " + module.getID());	    
 			}
 			
 			ps.close();
@@ -472,7 +472,7 @@ public class ContentDbController extends DbController {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
 			
-			System.out.println("db:createModule: "+ps);
+			System.out.println("[db] createModule: "+ps);
 			
 			ArrayList<Integer> subjectIDs = module.getSubjectIDs();
 			for(int subjectID : subjectIDs) {
@@ -500,7 +500,7 @@ public class ContentDbController extends DbController {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
 			
-			System.out.println(ps);
+			System.out.println("[db] createModule: "+ps);
 			
 			ArrayList<String> lecturers = module.getLecturers();
 			for(String lecturer_email : lecturers) {
@@ -571,7 +571,7 @@ public class ContentDbController extends DbController {
 			ps.setBoolean(24, module.isArchived());				// archived
 			ps.setBoolean(25, false);							// enabled
 
-			System.out.println("db:updateModule: " + ps);
+			System.out.println("[db] updateModule: " + ps);
 			
 			ps.executeUpdate();
 			db.commit();
@@ -592,7 +592,7 @@ public class ContentDbController extends DbController {
 		// UPDATE modules_subjects: delete and recreate
 		query = "DELETE FROM modules_subjects WHERE moduleID="+module.getID();
 		
-		System.out.println("db:updateModule: "+query);
+		System.out.println("[db] updateModule: "+query);
 		
 		try {
 			db.createStatement().executeUpdate(query);
@@ -602,7 +602,7 @@ public class ContentDbController extends DbController {
 		}
 		
 		query = "INSERT INTO modules_subjects(moduleID, subjectID) VALUES ("+module.getID()+", ?)";
-		System.out.println("db:updateModule: "+query);
+		System.out.println("[db] updateModule: "+query);
 		
 		try {
 			db.setAutoCommit(false);
@@ -629,7 +629,7 @@ public class ContentDbController extends DbController {
 		// UPDATE modules_lecturers: delete and recreate
 		query = "DELETE FROM module_lecturers WHERE modules_moduleID="+module.getID();
 		
-		System.out.println("db:updateModule: "+query);
+		System.out.println("[db] updateModule: "+query);
 		
 		try {
 			db.createStatement().executeUpdate(query);
@@ -654,7 +654,7 @@ public class ContentDbController extends DbController {
 				db.commit();
 			}
 			
-			System.out.println("db:updateModule: "+ps);
+			System.out.println("[db] updateModule: "+ps);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -678,7 +678,7 @@ public class ContentDbController extends DbController {
 	public Module getModule(int moduleID) {
 		Module module = new Module(moduleID);
 		String query = "SELECT "+module.toValueNames()+" FROM modules WHERE moduleID="+moduleID+";";
-		System.out.println("db:getModule " + query);
+		System.out.println("[db] getModule " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
@@ -705,7 +705,7 @@ public class ContentDbController extends DbController {
 		// subjectIDs
 		query = "SELECT subjectID FROM modules_subjects WHERE moduleID="+moduleID;
 		try {
-			System.out.println("db:getModule " +query);
+			System.out.println("[db] getModule " +query);
 			ResultSet rs = db.createStatement().executeQuery(query);
 			
 			ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
@@ -726,7 +726,7 @@ public class ContentDbController extends DbController {
 			
 			ps.setInt(1, moduleID);
 			
-			System.out.println("db:getModule " +ps);
+			System.out.println("[db] getModule " +ps);
 			
 			ResultSet rs = ps.executeQuery();
 			
@@ -752,7 +752,7 @@ public class ContentDbController extends DbController {
 
 		String query = "DELETE FROM modules ";
 		query += "WHERE moduleID = " + module.getID() + ";";
-		System.out.println("db:deleteModule " + query);
+		System.out.println("[db] deleteModule " + query);
 		try {
 			db.createStatement().executeUpdate(query);
 		} catch (SQLException e) {
@@ -1002,7 +1002,7 @@ public class ContentDbController extends DbController {
 			ps.setBoolean(6, subject.isEnabled());							// enabled
 			ps.setString(7, subject.getModifier_email());					// modifier_email
 
-			System.out.println("db:createSubject: " + ps);
+			System.out.println("[db] createSubject: " + ps);
 			
 			ps.executeUpdate();
 			db.commit();
@@ -1011,7 +1011,7 @@ public class ContentDbController extends DbController {
 			ResultSet rs = ps.getGeneratedKeys();
 			if (rs.next()) {
 				subject.setID(rs.getInt(1));
-			    System.out.println("Generated subjectID: " + subject.getID());	    
+			    // System.out.println("Generated subjectID: " + subject.getID());	    
 			}
 			
 			ps.close();
@@ -1062,7 +1062,7 @@ public class ContentDbController extends DbController {
 			ps.setBoolean(6, subject.isEnabled());							// enabled
 			ps.setString(7, subject.getModifier_email());					// modifier_email
 
-			System.out.println("db:updateSubject: " + ps);
+			System.out.println("[db] updateSubject: " + ps);
 			
 			ps.executeUpdate();
 			db.commit();
@@ -1092,7 +1092,7 @@ public class ContentDbController extends DbController {
 		Subject newSubject = new Subject(subjectID);
 		
 		String query = "SELECT "+newSubject.toValueNames()+" FROM subjects WHERE subjectID="+subjectID+";";
-		System.out.println("db:getSubject " + query);
+		System.out.println("[db] getSubject " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
@@ -1125,7 +1125,7 @@ public class ContentDbController extends DbController {
 			ps.setString(1, name);
 			ps.setInt(2, studycourseID);
 			
-			System.out.println("db:getSubjectID " + ps);
+			System.out.println("[db] getSubjectID " + ps);
 		
 			ResultSet rs = ps.executeQuery();
 
@@ -1154,7 +1154,7 @@ public class ContentDbController extends DbController {
 
 		String query = "DELETE FROM subjects ";
 		query += "WHERE subjectID=" + subject.getID() + ";";
-		System.out.println("db:deleteSubject " + query);
+		System.out.println("[db] deleteSubject " + query);
 		try {
 			db.createStatement().executeUpdate(query);
 		} catch (SQLException e) {
@@ -1348,7 +1348,7 @@ public class ContentDbController extends DbController {
 			ps.setBoolean(7, moduleHandbook.isEnabled());					// enabled
 			ps.setString(8, moduleHandbook.getModifier_email());			// modifier_email
 			
-			System.out.println("db:createModuleHandbook: " + ps);
+			System.out.println("[db] createModuleHandbook: " + ps);
 			
 			ps.executeUpdate();
 			db.commit();
@@ -1357,7 +1357,7 @@ public class ContentDbController extends DbController {
 			ResultSet rs = ps.getGeneratedKeys();
 			if (rs.next()) {
 				moduleHandbook.setID(rs.getInt(1));
-			    System.out.println("Generated moduleHandbookID: " + moduleHandbook.getID());	    
+			    // System.out.println("Generated moduleHandbookID: " + moduleHandbook.getID());	    
 			}
 			
 			ps.close();
@@ -1409,7 +1409,7 @@ public class ContentDbController extends DbController {
 			ps.setBoolean(7, moduleHandbook.isEnabled());					// enabled
 			ps.setString(8, moduleHandbook.getModifier_email());			// modifier_email
 			
-			System.out.println("db:updateModuleHandbook: " + ps);
+			System.out.println("[db] updateModuleHandbook: " + ps);
 			
 			ps.executeUpdate();
 			db.commit();
@@ -1441,7 +1441,7 @@ public class ContentDbController extends DbController {
 		String query = "SELECT "+newModuleHandbook.toValueNames()+
 				" FROM module_handbooks WHERE moduleHandbookID="
 				+ moduleHandbookID + ";";
-		System.out.println("db:getModuleHandbook " + query);
+		System.out.println("[db] getModuleHandbook " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
@@ -1505,7 +1505,7 @@ public class ContentDbController extends DbController {
 
 		String query = "DELETE FROM module_handbooks ";
 		query += "WHERE moduleHandbookID = " + moduleHandbook.getID() + ";";
-		System.out.println("db:deleteModuleHandbook " + query);
+		System.out.println("[db] deleteModuleHandbook " + query);
 		try {
 			db.createStatement().executeUpdate(query);
 		} catch (SQLException e) {
@@ -1583,7 +1583,7 @@ public class ContentDbController extends DbController {
 			ps.setBoolean(5, studycourse.isEnabled());				// enabled
 			ps.setString(6, studycourse.getModifier_email());		// modifier_email
 	
-			System.out.println("db:createStudycourse: " + ps);
+			System.out.println("[db] createStudycourse: " + ps);
 			
 			ps.executeUpdate();
 			db.commit();
@@ -1592,7 +1592,7 @@ public class ContentDbController extends DbController {
 			ResultSet rs = ps.getGeneratedKeys();
 			if (rs.next()) {
 				studycourse.setID(rs.getInt(1));
-			    System.out.println("Generated studycourseID: " + studycourse.getID());	    
+			    // System.out.println("Generated studycourseID: " + studycourse.getID());	    
 			}
 			
 			ps.close();
@@ -1642,7 +1642,7 @@ public class ContentDbController extends DbController {
 			ps.setBoolean(5, studycourse.isEnabled());				// enabled
 			ps.setString(6, studycourse.getModifier_email());		// modifier_email
 	
-			System.out.println("db:updateStudycourse: " + ps);
+			System.out.println("[db] updateStudycourse: " + ps);
 			
 			ps.executeUpdate();
 			db.commit();
@@ -1673,7 +1673,7 @@ public class ContentDbController extends DbController {
 		
 		String query = "SELECT "+newStudycourse.toValueNames()+
 				" FROM studycourses WHERE studycourseID="+studycourseID+";";
-		System.out.println("db:getStudycourse " + query);
+		System.out.println("[db] getStudycourse " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 
@@ -1735,7 +1735,7 @@ public class ContentDbController extends DbController {
 
 		String query = "DELETE FROM studycourses ";
 		query += "WHERE studycourseID=" + studycourse.getID() + ";";
-		System.out.println("db:deleteStudycourse " + query);
+		System.out.println("[db] deleteStudycourse " + query);
 		try {
 			db.createStatement().executeUpdate(query);
 		} catch (SQLException e) {
@@ -3011,7 +3011,7 @@ public class ContentDbController extends DbController {
 			
 			ps.setString(1, name);
 			
-			System.out.println("db:getStudycourseID " + ps);
+			System.out.println("[db] getStudycourseID " + ps);
 			
 			ResultSet rs = ps.executeQuery();
 
@@ -3042,7 +3042,7 @@ public class ContentDbController extends DbController {
 			ps.setString(1, name);
 			ps.setString(2, lecturer_email);
 			
-			System.out.println("db:getEvent " + ps);
+			System.out.println("[db] getEvent " + ps);
 			
 			ResultSet rs = ps.executeQuery();
 
@@ -3066,7 +3066,7 @@ public class ContentDbController extends DbController {
 		
 		// moduleIDs
 		query = "SELECT moduleID FROM events_modules WHERE eventID="+event.getID();
-		System.out.println("db:getEvent: " + query);
+		System.out.println("[db] getEvent: " + query);
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
 			

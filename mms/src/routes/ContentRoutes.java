@@ -378,7 +378,7 @@ public class ContentRoutes extends Routes{
 		String path = request.getParameter("path");
 		if(path != null) {	
 			try {
-				json = gson.toJson(new TexParseController().parse(path));
+				json = gson.toJson(new TexParseController(actorUser.getEmail()).parse(path));
 			} catch (IOException e) {
 				e.printStackTrace();
 				json = gson.toJson(new JsonErrorContainer(new JsonError(

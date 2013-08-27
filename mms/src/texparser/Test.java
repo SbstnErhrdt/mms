@@ -10,6 +10,6 @@ public class Test {
 		
 		Gson gson = new Gson();
 		
-		System.out.println(gson.toJson(new TexParseController().parse("./texfiles")));		
+		System.out.println(gson.toJson(new TexParseController(null).parse("./texfiles")));		
 	}
 }
