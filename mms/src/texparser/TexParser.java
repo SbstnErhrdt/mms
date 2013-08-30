@@ -442,26 +442,28 @@ public class TexParser {
 		ArrayList<String[]> tags = getClassificationTags(content);
 		ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
 		
-		ArrayList<String> names = new ArrayList<String>();
+		ArrayList<String[]> graduationsAndNames = new ArrayList<String[]>();
 		for(int i=0; i<tags.size(); i++) {
-			names.add(tags.get(i)[0]);
+			String[] graduationAndName = {tags.get(i)[0], tags.get(i)[1]};
+			graduationsAndNames.add(graduationAndName);
 		}
 		
-		ArrayList<Integer> studycourseIDs = getStudyourseIDs(names);
+		ArrayList<Integer> studycourseIDs = getStudyourseIDs(graduationsAndNames);
 		
 		ContentDbController db = new ContentDbController();
 	
 		for(int i=0; i<tags.size(); i++) {
 			String[] tag = tags.get(i);
 			int studycourseID = studycourseIDs.get(i);
-			int subjectID = db.getSubjectID(tag[1], studycourseID);
+			int subjectID = db.getSubjectID(tag[2], tag[3], studycourseID);
 			if(subjectID != -1) {
 				// Subject does exist
 				subjectIDs.add(subjectID);
 			} else {
 				// Subject does not exist
 				Subject subject = new Subject();
-				subject.setName(tag[1]);
+				subject.setType(tag[2]);
+				subject.setName(tag[3]);
 				subject.setStudycourses_studycourseID(studycourseID);
 				subject.setModifier_email(systemEmail);
 				db.createSubject(subject);
@@ -491,23 +493,26 @@ public class TexParser {
 
 	/**
 	 * creates nonexistent studycourses
-	 * @param names
+	 * @param graduationsAndNames
 	 * @return the studycourseIDs that belong to the committed names
 	 */
-	private ArrayList<Integer> getStudyourseIDs(ArrayList<String> names) {
+	private ArrayList<Integer> getStudyourseIDs(ArrayList<String[]> graduationsAndNames) {
 		ArrayList<Integer> studycourseIDs = new ArrayList<Integer>();
 		
 		ContentDbController db = new ContentDbController();
 		
-		for(int i=0; i<names.size(); i++) {
-			int studycourseID = db.getStudycourseID(names.get(i));
+		for(int i=0; i<graduationsAndNames.size(); i++) {
+			String graduation = graduationsAndNames.get(i)[0];
+			String name = graduationsAndNames.get(i)[1];
+			int studycourseID = db.getStudycourseID(graduation, name);
 			if(studycourseID != -1) {
 				// studycourse exists
 				studycourseIDs.add(studycourseID);
 			} else {
 				// stuycourse does not exist => create it
 				Studycourse studycourse = new Studycourse();
-				studycourse.setName(names.get(i));
+				studycourse.setGraduation(graduation);
+				studycourse.setName(name);
 				studycourse.setModifier_email(systemEmail);
 				db.createStudycourse(studycourse);
 				studycourseIDs.add(studycourse.getID());
@@ -526,29 +531,28 @@ public class TexParser {
 	private ArrayList<String[]> getClassificationTags(String content) {
 		ArrayList<String[]> cTags = new ArrayList<String[]>();
 		
-		Pattern pattern = Pattern.compile("(\\\\.*?\\{.*?\\})\\{\\\\(.*?)\\}\\{(.*?)\\}");
+		Pattern pattern = Pattern.compile("\\\\(.*?)\\{\\\\(.*?)\\}\\{\\\\(.*?)\\}\\{(.*?)\\}");
 		Matcher matcher = pattern.matcher(content);
 		
 		while(matcher.find()) {
 			String tag1 = matcher.group(1);
-			tag1 = tag1.replace("\\Inf{\\Ba}", "Bachelor Informatik");
-			tag1 = tag1.replace("\\Inf{\\Ma}", "Master Informatik");
-			tag1 = tag1.replace("\\MedInf{\\Ba}", "Bachelor Medieninformatik");
-			tag1 = tag1.replace("\\MedInf{\\Ma}", "Master Medieninformatik");
-			tag1 = tag1.replace("\\SwEng{\\Ba}", "Bachelor Software Engineering");
-			tag1 = tag1.replace("\\SwEng{\\Ma}", "Master Software Engineering");	
-			tag1 = tag1.replace("\\IST{\\Ba}", "Bachelor Informationssystemtechnik");
-			tag1 = tag1.replace("\\IST{\\Ma}", "Master Informationssystemtechnik");
-			tag1 = tag1.replace("\\ET{\\Ba}", "Bachelor Elektrotechnik");
-			tag1 = tag1.replace("\\ET{\\Ma}", "Master Elektrotechnik");
-			tag1 = tag1.replace("\\Comm{\\Ma}", "Master Communications Technology");
-			tag1 = tag1.replace("\\Inf{\\La}", "Lehramt Informatik");
+			tag1 = tag1.replace("Inf", "Informatik");
+			tag1 = tag1.replace("MedInf", "Medieninformatik");
+			tag1 = tag1.replace("SwEng", "Software Engineering");
+			tag1 = tag1.replace("IST", "Informationssystemtechnik");
+			tag1 = tag1.replace("ET", "Elektrotechnik");
+			tag1 = tag1.replace("Comm", "Communications Technology");
 			
-			String tag3 = matcher.group(3);
-			tag3 = tag3.replace("\\MEI", "Mediale Informatik");
-			tag3 = tag3.replace("\\PAI", "Praktische und Angewandte Informatik");
+			String tag2 = matcher.group(2);
+			tag2 = tag2.replace("Ba", "Bachelor");
+			tag2 = tag2.replace("Ma", "Master");
+			tag2 = tag2.replace("La", "Lehramt");
+				
+			String tag4 = matcher.group(4);
+			tag4 = tag4.replace("\\MEI", "Mediale Informatik");
+			tag4 = tag4.replace("\\PAI", "Praktische und Angewandte Informatik");
 			
-			String[] tags = {tag1, matcher.group(2) + " " + tag3};
+			String[] tags = {tag2, tag1, matcher.group(3), tag4};
 			cTags.add(tags);
 		}
 		

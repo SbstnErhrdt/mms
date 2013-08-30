@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import controller.ContentDbController;
 
 import model.content.Module;
+import model.content.Studycourse;
 import model.content.Subject;
 
 public class ModuleParser {
@@ -192,10 +193,28 @@ public class ModuleParser {
 		
 		Subject subject = db.getSubject(subjectID);
 		
-		
+		Studycourse studycourse = db.getStudycourse(subject.getStudycourses_studycourseID());
 		
 		db.closeConnection();
 		
-		return "TODO "+subjectID;
+		String studycourseName = studycourse.getName();
+		
+		studycourseName = studycourseName.replace("Informatik", "Inf");
+		studycourseName = studycourseName.replace("Medieninformatik", "MedInf");
+		studycourseName = studycourseName.replace("Software Engineering", "SwEng");
+		studycourseName = studycourseName.replace("Informationssystemtechnik", "IST");
+		studycourseName = studycourseName.replace("Elektrotechnik", "ET");
+		studycourseName = studycourseName.replace("Communications Technology", "Comm");
+		
+		String studycourseGraduation = studycourse.getGraduation();
+		studycourseGraduation = studycourseGraduation.replace("Bachelor", "Ba");
+		studycourseGraduation = studycourseGraduation.replace("Master","Ma");
+		studycourseGraduation = studycourseGraduation.replace("Lehramt", "La");
+		
+		String subjectName = subject.getName();
+		subjectName = subjectName.replace("Mediale Informatik", "\\MEI");
+		subjectName = subjectName.replace("Praktische und Angewandte Informatik", "\\PAI");
+		
+		return "\\"+studycourseName+"{\\"+studycourseGraduation+"}{\\"+subject.getType()+"}{"+subjectName+"}";
 	}
 }

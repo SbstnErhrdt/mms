@@ -5,22 +5,18 @@ import java.sql.Timestamp;
 import util.Utilities;
 
 public class Studycourse extends Content {
-	
-	public int getCurrent_moduleHandbook() {
-		return current_moduleHandbook;
-	}
-
-	public void setCurrent_moduleHandbook(int current_moduleHandbook) {
-		this.current_moduleHandbook = current_moduleHandbook;
-	}
 
 	private int studycourseID, current_moduleHandbook;
+
+	private String graduation;
 
 	// Konstruktor
 	/**
 	 * constructor
+	 * 
 	 * @param studycourseID
 	 * @param current_moduleHandbook
+	 * @param graduation
 	 * @param name
 	 * @param archived
 	 * @param content
@@ -28,11 +24,12 @@ public class Studycourse extends Content {
 	 * @param modifier_email
 	 * @param lastModified
 	 */
-	public Studycourse (int studycourseID, int current_moduleHandbook, 
-			String name, boolean archived, String content, boolean enabled, 
-			String modifier_email, Timestamp lastModified) {
+	public Studycourse(int studycourseID, int current_moduleHandbook,
+			String graduation, String name, boolean archived, String content,
+			boolean enabled, String modifier_email, Timestamp lastModified) {
 		this.studycourseID = studycourseID;
 		this.current_moduleHandbook = current_moduleHandbook;
+		this.graduation = graduation;
 		this.name = name;
 		this.archived = archived;
 		this.content = content;
@@ -40,15 +37,16 @@ public class Studycourse extends Content {
 		this.modifier_email = modifier_email;
 		this.lastModified = lastModified;
 	}
-	
+
 	/**
 	 * constructor
+	 * 
 	 * @param studycourseID
 	 */
 	public Studycourse(int studycourseID) {
 		this.studycourseID = studycourseID;
 	}
-	
+
 	public Studycourse() {
 		// TODO Auto-generated constructor stub
 	}
@@ -64,19 +62,21 @@ public class Studycourse extends Content {
 		String value = Utilities.arrayToString(toValueNamesArray());
 		return value;
 	}
-	
+
 	@Override
 	public String[] toValuesArray() {
-		String[] value = {""+studycourseID, ""+current_moduleHandbook, "'"+name+"'",""+archived, 
-				"'"+content+"'", ""+enabled};
+		String[] value = { "" + studycourseID, "" + current_moduleHandbook,
+				"'" + graduation + "'", "'" + name + "'", "" + archived,
+				"'" + content + "'", "" + enabled };
 		return value;
 	}
 
 	@Override
 	public String[] toValueNamesArray() {
 		// TODO Auto-generated method stub
-		String[] value = {"studycourseID", "current_moduleHandbook", "name", "archived", 
-				"content", "enabled", "modifier_email", "lastModified"};
+		String[] value = { "studycourseID", "current_moduleHandbook",
+				"graduation", "name", "archived", "content", "enabled",
+				"modifier_email", "lastModified" };
 		return value;
 	}
 
@@ -87,5 +87,21 @@ public class Studycourse extends Content {
 	public void setID(int studycourseID) {
 		this.studycourseID = studycourseID;
 	}
-	
+
+	public int getCurrent_moduleHandbook() {
+		return current_moduleHandbook;
+	}
+
+	public void setCurrent_moduleHandbook(int current_moduleHandbook) {
+		this.current_moduleHandbook = current_moduleHandbook;
+	}
+
+	public String getGraduation() {
+		return graduation;
+	}
+
+	public void setGraduation(String graduation) {
+		this.graduation = graduation;
+	}
+
 }

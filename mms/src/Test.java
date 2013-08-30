@@ -166,6 +166,8 @@ public class Test {
 		*/
 		// System.out.println(module);
 		
+		/*
+		
 		cdbc.createModule(module);
 		
 		module.setDuration(3);
@@ -182,9 +184,10 @@ public class Test {
 		System.out.println(module);
 		
 		System.out.println(cdbc.getSubjectModules(248, false));
+		*/
 		
 		/*
-		Subject subject = new Subject(3, 1, "New TestSubject", false);
+		Subject subject = new Subject(1, 104, 0, "Pflichtfach", "Testfach", false, null, false, "sopra@ex-studios.net", null);
 		
 		System.out.println(subject);
 		
@@ -195,11 +198,14 @@ public class Test {
 		
 		cdbc.updateSubject(subject);
 		
-		subject = cdbc.getSubject(3);
+		subject = cdbc.getSubject(272);
 		
 		System.out.println(subject);
+		*/
 		
-		Studycourse studycourse = new Studycourse(2, "Maedcheninformatik", false);
+		
+		
+		Studycourse studycourse = new Studycourse(1, 2, "Bachelor", "Medieninformatik", false, null, false, "sopra@ex-studios.net", null);
 		
 		System.out.println(studycourse);
 		
@@ -210,9 +216,11 @@ public class Test {
 		
 		cdbc.updateStudycourse(studycourse);
 		
-		studycourse = cdbc.getStudycourse(2);
+		studycourse = cdbc.getStudycourse(115);
 		
 		System.out.println(studycourse);
+		
+		/*
 		
 		ModuleHandbook mhb = new ModuleHandbook(2, "Neues Testmodulhandbuch", 2, "SoSe2013", false);
 		

@@ -15,6 +15,8 @@ public class Subject extends Content {
 		
 	private int subjectID, moduleHandbooks_moduleHandbookID, studycourses_studycourseID;
 	
+	private String type;
+	
 	
 	// Konstruktor
 	/**
@@ -22,6 +24,7 @@ public class Subject extends Content {
 	 * @param subjectID
 	 * @param studycourses_studycourseID
 	 * @param moduleHandbooks_moduleHandbookID
+	 * @param type
 	 * @param name
 	 * @param archived
 	 * @param content
@@ -30,11 +33,12 @@ public class Subject extends Content {
 	 * @param lastModified
 	 */
 	public Subject (int subjectID, int studycourses_studycourseID, int moduleHandbooks_moduleHandbookID,
-			String name, boolean archived, String content, boolean enabled, String modifier_email, 
+			String type, String name, boolean archived, String content, boolean enabled, String modifier_email, 
 			Timestamp lastModified) {
 		this.subjectID = subjectID; 
 		this.studycourses_studycourseID = studycourses_studycourseID;
 		this.moduleHandbooks_moduleHandbookID = moduleHandbooks_moduleHandbookID;
+		this.type = type;
 		this.name = name;
 		this.archived = archived;
 		this.content = content;
@@ -42,7 +46,7 @@ public class Subject extends Content {
 		this.modifier_email = modifier_email;
 		this.lastModified = lastModified;
 	}
-	
+
 	/** 
 	 * constructor
 	 * @param subjectID
@@ -72,7 +76,7 @@ public class Subject extends Content {
 	@Override
 	public String[] toValuesArray() {
 		String[] values = {""+subjectID, ""+studycourses_studycourseID, 
-				""+moduleHandbooks_moduleHandbookID, "'"+name+"'",
+				""+moduleHandbooks_moduleHandbookID, "'"+type+"'", "'"+name+"'",
 				""+archived, "'"+content+"'", ""+enabled};
 		return values;
 	}
@@ -81,7 +85,7 @@ public class Subject extends Content {
 	public String[] toValueNamesArray() {
 		// TODO Auto-generated method stub
 		String[] values = {"subjectID", "studycourses_studycourseID", 
-				"module_handbooks_modulehandbookID", "name", "archived", 
+				"module_handbooks_modulehandbookID", "type", "name", "archived", 
 				"content", "enabled", "modifier_email", "lastModified"};
 		return values;
 	}
@@ -112,4 +116,12 @@ public class Subject extends Content {
 	public void setStudycourses_studycourseID(int studycourses_studycourseID) {
 		this.studycourses_studycourseID = studycourses_studycourseID;
 	}	
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 }
