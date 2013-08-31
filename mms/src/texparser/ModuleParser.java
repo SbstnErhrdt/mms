@@ -1,15 +1,21 @@
 package texparser;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import controller.ContentDbController;
+import controller.UserDbController;
 
+import model.User;
+import model.content.Event;
 import model.content.Module;
 import model.content.Studycourse;
 import model.content.Subject;
 
 public class ModuleParser {
+	
+	private String newLine = System.getProperty("line.separator");
 	
 	/**
 	 * @param module
@@ -17,7 +23,6 @@ public class ModuleParser {
 	 */
 	public String convertToTex(Module module) {
 		String texString = "";
-		String newLine = System.getProperty("line.separator");
 		
 		// svnid
 		texString+="\\svnid{$Id$}"+newLine;
@@ -70,7 +75,7 @@ public class ModuleParser {
 		
 		// director
 		// TODO adapt to model: get Name oe variable name
-		texString+="\\Modulverantwortlicher{"+module.getDirector_email()+"}"+newLine;
+		texString+="\\Modulverantwortlicher{"+adaptDirector(module.getDirector_email())+"}"+newLine;
 		texString+=newLine;
 		
 		// subjectIDs
@@ -95,13 +100,13 @@ public class ModuleParser {
 		
 		// learningTarget
 		texString+="\\Lernziele{"+newLine;
-		texString+=adaptLearningTarget(module.getLearningTarget(), newLine)+newLine;
+		texString+=adaptLearningTarget(module.getLearningTarget())+newLine;
 		texString+="}"+newLine;
 		texString+=newLine;
 		
 		// content
 		texString+="\\Inhalt{"+newLine;
-		texString+=adaptContent(module.getContent(), newLine)+newLine;
+		texString+=adaptContent(module.getContent())+newLine;
 		texString+="}"+newLine;
 		texString+=newLine;
 		
@@ -161,17 +166,52 @@ public class ModuleParser {
 		return texString;
 	}
 
-	private String adaptTeachingForm(int id) {
-		// TODO get Event names and types
-		return null;
+	private String adaptDirector(String director_email) {
+		UserDbController db = new UserDbController();
+		User user = db.getUser(new User(director_email));
+		db.closeConnection();
+		if(user != null) {
+			return user.getTitle()+" "+user.getFirstName()+" "+user.getLastName();
+		} else {
+			return director_email;
+		}
+		
 	}
+
+	private String adaptTeachingForm(int moduleID) {
+		// TODO get Event names and types
+		ContentDbController db = new ContentDbController();
+		
+		// TODO getOnlyEnabled
+		ArrayList<Event> events = db.getModuleEvents(moduleID, false);
+		
+		db.closeConnection();
+		
+		String teachingForm = "";
+		
+		for(Event e : events) {
+			String type = e.getType();
+			if(type.equals("Vorlesung")) type = "Vlg";
+			else if(type.equals("Übung")) type = "Ubg";
+			else if(type.equals("Projekt")) type = "Prj";
+			else if(type.equals("Tutorium")) type = "Tut";
+			else if(type.equals("Laborpraktikum")) type = "Lab";
+			else if(type.equals("Seminar")) type = "Sem";
+			else if(type.equals("Proseminar")) type = "ProSem";
+			
+			teachingForm += newLine+"\\"+type+"{"+e.getName()+"}{"+adaptDirector(e.getLecturer_email())+"}";
+		}
+			
+		return teachingForm.trim();
+	}
+
 
 	private String adaptLiterature(String literature) {
 		// TODO replace \buch etc
 		return literature;
 	}
 
-	private String adaptContent(String content, String newLine) {
+	private String adaptContent(String content) {
 		
 		// remove <ul> and </ul>
 		content = content.replace("<ul>", "");
@@ -179,11 +219,11 @@ public class ModuleParser {
 		
 		content = content.replaceAll("<li>(.*?)</li>\\s?", newLine+"\\\\spiegelstrich{$1}");
 		
-		return content;
+		return content.trim();
 	}
 
-	private String adaptLearningTarget(String learningTarget, String newLine) {
-		learningTarget = adaptContent(learningTarget, newLine);
+	private String adaptLearningTarget(String learningTarget) {
+		learningTarget = adaptContent(learningTarget);
 		return learningTarget;
 	}
 
@@ -198,18 +238,19 @@ public class ModuleParser {
 		db.closeConnection();
 		
 		String studycourseName = studycourse.getName();
-		
-		studycourseName = studycourseName.replace("Informatik", "Inf");
-		studycourseName = studycourseName.replace("Medieninformatik", "MedInf");
-		studycourseName = studycourseName.replace("Software Engineering", "SwEng");
-		studycourseName = studycourseName.replace("Informationssystemtechnik", "IST");
-		studycourseName = studycourseName.replace("Elektrotechnik", "ET");
-		studycourseName = studycourseName.replace("Communications Technology", "Comm");
+				
+		if(studycourseName.equals("Informatik")) studycourseName = "Inf";
+		else if(studycourseName.equals("Medieninformatik")) studycourseName = "MedInf";
+		else if(studycourseName.equals("Software Engineering")) studycourseName = "SwEng";
+		else if(studycourseName.equals("Informationssystemtechnik")) studycourseName = "IST";
+		else if(studycourseName.equals("Elektrotechnik")) studycourseName = "ET";
+		else if(studycourseName.equals("Communications Technology")) studycourseName = "Comm";
 		
 		String studycourseGraduation = studycourse.getGraduation();
-		studycourseGraduation = studycourseGraduation.replace("Bachelor", "Ba");
-		studycourseGraduation = studycourseGraduation.replace("Master","Ma");
-		studycourseGraduation = studycourseGraduation.replace("Lehramt", "La");
+		
+		if(studycourseGraduation.equals("Bachelor")) studycourseGraduation = "Ba";
+		else if(studycourseGraduation.equals("Master")) studycourseGraduation = "Ma";
+		else if(studycourseGraduation.equals("Lehramt")) studycourseGraduation = "La";
 		
 		String subjectName = subject.getName();
 		subjectName = subjectName.replace("Mediale Informatik", "\\MEI");

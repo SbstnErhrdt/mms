@@ -276,7 +276,7 @@ public class TexParser {
 	private String[] extractTitleFirstNameLastName(String name) {
 		String[] fields = new String[3];
 		
-		Pattern pattern = Pattern.compile("((Dr.(-Ing.)?)\\s)?(\\w+)\\s(\\w+)");
+		Pattern pattern = Pattern.compile("(((Dr|Dipl).(-Ing.)?)\\s)?(\\w+)\\s(\\w+)");
 		Matcher matcher = pattern.matcher(name);
 		
 		if(matcher.find()) {
@@ -536,17 +536,17 @@ public class TexParser {
 		
 		while(matcher.find()) {
 			String tag1 = matcher.group(1);
-			tag1 = tag1.replace("Inf", "Informatik");
-			tag1 = tag1.replace("MedInf", "Medieninformatik");
-			tag1 = tag1.replace("SwEng", "Software Engineering");
-			tag1 = tag1.replace("IST", "Informationssystemtechnik");
-			tag1 = tag1.replace("ET", "Elektrotechnik");
-			tag1 = tag1.replace("Comm", "Communications Technology");
+			if(tag1.equals("Inf")) tag1 = "Informatik";
+			else if(tag1.equals("MedInf")) tag1 = "Medieninformatik";
+			else if(tag1.equals("SwEng")) tag1 = "Software Engineering";
+			else if(tag1.equals("IST")) tag1 = "Informationssystemtechnik";
+			else if(tag1.equals("ET")) tag1 = "Elektrotechnik";
+			else if(tag1.equals("Comm")) tag1 = "Communications Technology";
 			
 			String tag2 = matcher.group(2);
-			tag2 = tag2.replace("Ba", "Bachelor");
-			tag2 = tag2.replace("Ma", "Master");
-			tag2 = tag2.replace("La", "Lehramt");
+			if(tag2.equals("Ba")) tag2 = "Bachelor";
+			else if(tag2.equals("Ma")) tag2 = "Master";
+			else if(tag2.equals("La")) tag2 = "Lehramt";
 				
 			String tag4 = matcher.group(4);
 			tag4 = tag4.replace("\\MEI", "Mediale Informatik");
