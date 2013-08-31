@@ -374,6 +374,14 @@ public class ContentRoutes extends Routes{
 		User actorUser = getActorUser(request);
 		
 		// TODO check rights
+		if(!actorUser.isEmployee()) {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"actorUser is no employee and can therefore not import modules", 
+					"importModules(...)")));
+			respond(response, json);
+			return;
+		}
+		
 		
 		String path = request.getParameter("path");
 		if(path != null) {	
@@ -391,6 +399,29 @@ public class ContentRoutes extends Routes{
 					"importModule(...)")));
 		}
 		respond(response, json);
+	}
+	
+	/** exports the module with the moduleID passed in the query as tex-File
+	 * @param request
+	 * @param response
+	 */
+	public void exportModule(HttpServletRequest request,
+			HttpServletResponse response) {
+		
+		// TODO insert logic
+		
+		String json = "";
+		
+		String moduleIDString = request.getParameter("moduleID");
+		
+		if(moduleIDString != null) {
+			int moduleID = Integer.parseInt(moduleIDString);
+		} else {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"unspecified moduleID in query", 
+					"exportModule(...)")));
+		}
+		respond(response, json);	
 	}
 
 	/**

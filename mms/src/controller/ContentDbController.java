@@ -297,7 +297,7 @@ public class ContentDbController extends DbController {
 		String query = "SELECT " + event.toValueNames()
 				+ ", version FROM events_versions " + "WHERE eventID="
 				+ eventID + ";";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -315,7 +315,7 @@ public class ContentDbController extends DbController {
 				ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
 				query = "SELECT moduleID FROM events_modules WHERE eventID="
 						+ eventID + ";";
-				System.out.println(query);
+				System.out.println("[db] " + query);
 
 				try {
 					ResultSet rs1 = db.createStatement().executeQuery(query);
@@ -352,7 +352,7 @@ public class ContentDbController extends DbController {
 		if (getOnlyEnabled)
 			query += " WHERE enabled=true";
 		query += ";";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -370,7 +370,7 @@ public class ContentDbController extends DbController {
 				ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
 				query = "SELECT moduleID FROM events_modules WHERE eventID="
 						+ eventID + ";";
-				System.out.println(query);
+				System.out.println("[db] " + query);
 
 				try {
 					ResultSet rs1 = db.createStatement().executeQuery(query);
@@ -795,7 +795,7 @@ public class ContentDbController extends DbController {
 		String query = "SELECT " + module.toValueNames()
 				+ ", version FROM modules_versions " + "WHERE moduleID="
 				+ moduleID + ";";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -819,7 +819,7 @@ public class ContentDbController extends DbController {
 				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
 				query = "SELECT subjectID FROM modules_subjects WHERE moduleID="
 						+ moduleID + ";";
-				System.out.println(query);
+				System.out.println("[db] " + query);
 
 				try {
 					ResultSet rs1 = db.createStatement().executeQuery(query);
@@ -877,7 +877,7 @@ public class ContentDbController extends DbController {
 			query += " WHERE enabled=true";
 		query += ";";
 
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -901,7 +901,7 @@ public class ContentDbController extends DbController {
 				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
 				query = "SELECT subjectID FROM modules_subjects WHERE moduleID="
 						+ moduleID + ";";
-				System.out.println(query);
+				System.out.println("[db] " + query);
 
 				try {
 					ResultSet rs1 = db.createStatement().executeQuery(query);
@@ -967,7 +967,7 @@ public class ContentDbController extends DbController {
 		if (getOnlyEnabled)
 			query += " AND enabled=true";
 		query += ";";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -985,7 +985,7 @@ public class ContentDbController extends DbController {
 				ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
 				query = "SELECT moduleID FROM events_modules WHERE eventID="
 						+ eventID + ";";
-				System.out.println(query);
+				System.out.println("[db] " + query);
 
 				try {
 					ResultSet rs1 = db.createStatement().executeQuery(query);
@@ -1224,7 +1224,7 @@ public class ContentDbController extends DbController {
 		String query = "SELECT " + subject.toValueNames()
 				+ ", version FROM subjects_versions " + "WHERE subjectID="
 				+ subjectID + ";";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -1263,7 +1263,7 @@ public class ContentDbController extends DbController {
 			query += " WHERE enabled=true";
 		query += ";";
 
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -1307,7 +1307,7 @@ public class ContentDbController extends DbController {
 			query += " AND enabled=true";
 		query += ";";
 
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -1331,7 +1331,7 @@ public class ContentDbController extends DbController {
 				ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
 				query = "SELECT subjectID FROM modules_subjects WHERE moduleID="
 						+ moduleID + ";";
-				System.out.println(query);
+				System.out.println("[db] " + query);
 
 				try {
 					ResultSet rs1 = db.createStatement().executeQuery(query);
@@ -1516,7 +1516,8 @@ public class ContentDbController extends DbController {
 				return newModuleHandbook;
 
 			} else {
-				System.out.println("[db] No ModuleHandbook found with this ID.");
+				System.out
+						.println("[db] No ModuleHandbook found with this ID.");
 				rs.close();
 				return null;
 			}
@@ -1541,7 +1542,7 @@ public class ContentDbController extends DbController {
 		String query = "SELECT " + moduleHandbook.toValueNames()
 				+ ", version FROM module_handbooks_versions "
 				+ "WHERE moduleHandbookID=" + moduleHandbookID + ";";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -1602,7 +1603,7 @@ public class ContentDbController extends DbController {
 			query += " AND enabled=true";
 		query += ";";
 
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -1784,7 +1785,7 @@ public class ContentDbController extends DbController {
 		String query = "SELECT " + studycourse.toValueNames()
 				+ ", version FROM studycourses_versions "
 				+ "WHERE studycourseID=" + studycourseID + ";";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -1845,7 +1846,7 @@ public class ContentDbController extends DbController {
 		if (getOnlyEnabled)
 			query += " AND enabled=true";
 		query += ";";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -1887,7 +1888,7 @@ public class ContentDbController extends DbController {
 		if (getOnlyEnabled)
 			query += " AND enabled=true";
 		query += ";";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -1927,7 +1928,7 @@ public class ContentDbController extends DbController {
 		if (getOnlyEnabled)
 			query += " WHERE enabled=true";
 		query += ";";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -1962,7 +1963,7 @@ public class ContentDbController extends DbController {
 			query += " WHERE enabled=true";
 		query += ";";
 
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -1992,7 +1993,7 @@ public class ContentDbController extends DbController {
 
 		String query = "SELECT sose, year, deadline FROM content_deadlines WHERE sose=? AND year=?;";
 
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			db.setAutoCommit(false);
@@ -2032,7 +2033,7 @@ public class ContentDbController extends DbController {
 	public Deadline getDeadline(boolean sose, int year) {
 		String query = "SELECT sose, year, deadline FROM content_deadlines WHERE sose=? AND year=?;";
 
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			db.setAutoCommit(false);
@@ -2071,7 +2072,7 @@ public class ContentDbController extends DbController {
 		String query = "SELECT sose, year, deadline FROM content_deadlines "
 				+ "ORDER BY deadline DESC;";
 
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -2103,7 +2104,7 @@ public class ContentDbController extends DbController {
 		String query = "UPDATE content_deadlines SET deadline=? "
 				+ "WHERE sose=? AND year=?;";
 
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			db.setAutoCommit(false);
@@ -2136,7 +2137,7 @@ public class ContentDbController extends DbController {
 	public boolean createDeadline(Deadline deadline) {
 		String query = "INSERT INTO content_deadlines(deadline, sose, year) VALUES(?,?,?);";
 
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			db.setAutoCommit(false);
@@ -2170,7 +2171,7 @@ public class ContentDbController extends DbController {
 	public boolean deleteDeadline(boolean sose, int year) {
 		String query = "DELETE FROM content_deadlines WHERE sose=? AND year=?;";
 
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			db.setAutoCommit(false);
@@ -2206,7 +2207,7 @@ public class ContentDbController extends DbController {
 				+ "WHERE subjectID IN (SELECT subjectID FROM modules_subjects "
 				+ "WHERE moduleID IN (SELECT moduleID FROM modules WHERE moduleID IN "
 				+ "(SELECT moduleID FROM events_modules WHERE eventID=?)))));";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			db.setAutoCommit(false);
@@ -2248,7 +2249,7 @@ public class ContentDbController extends DbController {
 				+ "(SELECT sose, year FROM module_handbooks WHERE moduleHandbookID IN "
 				+ "(SELECT module_handbooks_modulehandbookID FROM subjects WHERE subjectID IN "
 				+ "(SELECT subjectID FROM modules_subjects WHERE moduleID=?)));";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			db.setAutoCommit(false);
@@ -2290,7 +2291,7 @@ public class ContentDbController extends DbController {
 				+ "(SELECT sose, year FROM module_handbooks WHERE moduleHandbookID IN "
 				+ "(SELECT module_handbooks_modulehandbookID FROM subjects "
 				+ "WHERE subjectID=?))";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			db.setAutoCommit(false);
@@ -2330,7 +2331,7 @@ public class ContentDbController extends DbController {
 	public java.sql.Date getEariliestDeadline(ModuleHandbook moduleHandbook) {
 		String query = "SELECT deadline FROM content_deadlines WHERE (sose, year) IN "
 				+ "(SELECT sose, year FROM module_handbooks WHERE moduleHandbookID=?)";
-		System.out.println(query);
+		System.out.println("[db] " + query);
 
 		try {
 			db.setAutoCommit(false);
@@ -2372,7 +2373,7 @@ public class ContentDbController extends DbController {
 	 */
 	public boolean createOwnerEventRights(String email, int eventID) {
 		String query = "INSERT INTO event_rights(users_email, eventID, canEdit, canDelete) "
-				+ "VALUES(?,?,1,1) ON DUPLICATE KEY UPDATE canDelete=1, canDelete=1;";
+				+ "VALUES(?,?,1,1) ON DUPLICATE KEY UPDATE canDelete=1, canEdit=1;";
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
@@ -3126,8 +3127,8 @@ public class ContentDbController extends DbController {
 	}
 
 	public Integer getStudycourseID(String graduation, String name) {
-		String query = "SELECT studycourseID FROM studycourses WHERE graduation=? " +
-				"AND name=?;";
+		String query = "SELECT studycourseID FROM studycourses WHERE graduation=? "
+				+ "AND name=?;";
 		try {
 			PreparedStatement ps = db.prepareStatement(query);
 
@@ -3143,7 +3144,8 @@ public class ContentDbController extends DbController {
 				rs.close();
 				return subjectID;
 			} else {
-				System.out.println("[db] No Studycourse found with this graduation and name.");
+				System.out
+						.println("[db] No Studycourse found with this graduation and name.");
 				rs.close();
 				return -1;
 			}

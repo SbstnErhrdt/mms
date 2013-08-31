@@ -39,7 +39,7 @@ public class UserDbController extends DbController {
 		
 		query += getXQuestionMarks(8) + ")";
 		
-		System.out.println(query);	// DEBUG
+		System.out.println("[db] "+query);	// DEBUG
 				
 		try {
 			db.setAutoCommit(false);
@@ -54,7 +54,7 @@ public class UserDbController extends DbController {
 			ps.setInt(7, user.getMatricNum());
 			ps.setInt(8, user.getSemester());
 			
-			System.out.println("db:createUser: " + ps);		// DEBUG
+			System.out.println("[db] [db] createUser: " + ps);		// DEBUG
 			
 			ps.executeUpdate();
 			db.commit();
@@ -82,7 +82,7 @@ public class UserDbController extends DbController {
 		
 		query += userRights.toValues() + ");";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			db.createStatement().executeUpdate(query);
@@ -113,7 +113,7 @@ public class UserDbController extends DbController {
 			// Values
 			query += employee.toEmployeeValues() + ");";
 			
-			System.out.println(query);	// DEBUG
+			System.out.println("[db] "+query);	// DEBUG
 			
 			try {
 				db.createStatement().executeUpdate(query);
@@ -132,7 +132,7 @@ public class UserDbController extends DbController {
 			// Values
 			query += "'"+user.getEmail() + "', " + employeeRights.toEmployeeValues() + ");";
 			
-			System.out.println(query);	// DEBUG
+			System.out.println("[db] "+query);	// DEBUG
 			
 			try {
 				db.createStatement().executeUpdate(query);
@@ -154,7 +154,7 @@ public class UserDbController extends DbController {
 					// Values
 					query += eventRights.toValues() + ");";
 					
-					System.out.println(query);	// DEBUG
+					System.out.println("[db] "+query);	// DEBUG
 					
 					try {
 						db.createStatement().executeUpdate(query);
@@ -180,7 +180,7 @@ public class UserDbController extends DbController {
 					// Values
 					query += moduleRights.toValues() + ");";
 					
-					System.out.println(query);	// DEBUG
+					System.out.println("[db] "+query);	// DEBUG
 					
 					try {
 						db.createStatement().executeUpdate(query);
@@ -204,7 +204,7 @@ public class UserDbController extends DbController {
 					// Values
 					query += subjectRights.toValues() + ");";
 					
-					System.out.println(query);	// DEBUG
+					System.out.println("[db] "+query);	// DEBUG
 					
 					try {
 						db.createStatement().executeUpdate(query);
@@ -228,7 +228,7 @@ public class UserDbController extends DbController {
 					// Values
 					query += mhbr.toValues() + ");";
 					
-					System.out.println(query);	// DEBUG
+					System.out.println("[db] "+query);	// DEBUG
 					
 					try {
 						db.createStatement().executeUpdate(query);
@@ -252,7 +252,7 @@ public class UserDbController extends DbController {
 					// Values
 					query += studycourseRights.toValues() + ");";
 					
-					System.out.println(query);	// DEBUG
+					System.out.println("[db] "+query);	// DEBUG
 					
 					try {
 						db.createStatement().executeUpdate(query);
@@ -295,7 +295,7 @@ public class UserDbController extends DbController {
 		String email = user.getEmail();
 		String query = "DELETE FROM users WHERE email = '" + email + "';";
 
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			db.createStatement().executeUpdate(query);
@@ -315,7 +315,7 @@ public class UserDbController extends DbController {
 		String query = "SELECT " + user.toValueNames() +
 				" FROM users WHERE email ='"+ user.getEmail()+"';";
 			
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -329,7 +329,7 @@ public class UserDbController extends DbController {
 				user.setMatricNum(rs.getInt(7));	// matricNum
 				user.setSemester(rs.getInt(8));		// semester
 			} else {
-				System.out.println("No user found with this email.");
+				System.out.println("[db] [db] No user found with this email.");
 				rs.close();
 				return null;
 			}
@@ -344,7 +344,7 @@ public class UserDbController extends DbController {
 		query = "SELECT " + userRights.toValueNames() +
 				" FROM user_rights WHERE email ='"+user.getEmail() + "';";
 			
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -352,7 +352,7 @@ public class UserDbController extends DbController {
 			if(rs.next()) {
 				userRights.setCanLogin(rs.getBoolean(1));	// canLogin
 			} else {
-				System.out.println("No user_rights found with this email");
+				System.out.println("[db] [db] No user_rights found with this email");
 				rs.close();
 				return null;
 			}	
@@ -370,7 +370,7 @@ public class UserDbController extends DbController {
 		query = "SELECT "+employee.toEmployeeValueNames()+ " FROM employees " +
 				"WHERE email='"+user.getEmail()+"';";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -381,7 +381,7 @@ public class UserDbController extends DbController {
 				employee.setPhoneNum(rs.getString(3));	// phoneNum
 				employee.setTalkTime(rs.getString(4)); 	// talkTime
 			} else {
-				System.out.println("No employees found with this email");
+				System.out.println("[db] [db] No employees found with this email");
 				rs.close();
 				return user;		// return user
 			}	
@@ -397,7 +397,7 @@ public class UserDbController extends DbController {
 		query = "SELECT "+employeeRights.toEmployeeValueNames() +
 				" FROM employee_rights WHERE email='"+user.getEmail()+"';";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -406,7 +406,7 @@ public class UserDbController extends DbController {
 				employeeRights.setCanDeblockModule(rs.getBoolean(2)); 	// canDeblockModule
 				employeeRights.setAdmin(rs.getBoolean(3));				// isAdmin
 			} else {
-				System.out.println("No employee_rights found with this email");
+				System.out.println("[db] [db] No employee_rights found with this email");
 				return employee;		// return user
 			}
 			rs.close();
@@ -422,7 +422,7 @@ public class UserDbController extends DbController {
 		query = "SELECT "+eventRights.toValueNames()+
 				" FROM event_rights WHERE users_email='"+employee.getEmail()+"';";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -435,7 +435,7 @@ public class UserDbController extends DbController {
 				eventRights = new EventRights();
 			} 
 			if(eventRightsList.isEmpty()) {
-				System.out.println("No event_rights found with this users_email");
+				System.out.println("[db] No event_rights found with this users_email");
 			} else {
 				// set eventRightsList of EmployeeRights
 				employeeRights.setEventRightsList(eventRightsList);
@@ -452,7 +452,7 @@ public class UserDbController extends DbController {
 		query = "SELECT "+moduleRights.toValueNames()+
 				" FROM module_rights WHERE users_email='"+employee.getEmail()+"';";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -465,7 +465,7 @@ public class UserDbController extends DbController {
 				moduleRights = new ModuleRights();
 			} 
 			if(moduleRightsList.isEmpty()) {
-				System.out.println("No module_rights found with this users_email");
+				System.out.println("[db] No module_rights found with this users_email");
 			} else {
 				// set moduleRightsList of EmployeeRights
 				employeeRights.setModuleRightsList(moduleRightsList);
@@ -482,7 +482,7 @@ public class UserDbController extends DbController {
 		query = "SELECT "+subjectRights.toValueNames()+
 				" FROM subject_rights WHERE users_email='"+employee.getEmail()+"';";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -495,7 +495,7 @@ public class UserDbController extends DbController {
 				subjectRights = new SubjectRights();
 			} 
 			if(subjectRightsList.isEmpty()) {
-				System.out.println("No subject_rights found with this users_email");
+				System.out.println("[db] No subject_rights found with this users_email");
 			} else {
 				// set subjectRightsList of EmployeeRights
 				employeeRights.setSubjectRightsList(subjectRightsList);
@@ -512,7 +512,7 @@ public class UserDbController extends DbController {
 		query = "SELECT "+moduleHandbookRights.toValueNames()+
 				" FROM module_handbook_rights WHERE users_email='"+employee.getEmail()+"';";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -525,7 +525,7 @@ public class UserDbController extends DbController {
 				moduleHandbookRights = new ModuleHandbookRights();
 			} 
 			if(moduleHandbookRightsList.isEmpty()) {
-				System.out.println("No module_handbook_rights found with this users_email");
+				System.out.println("[db] No module_handbook_rights found with this users_email");
 			} else {
 				// set moduleHandbookRightsList of EmployeeRights
 				employeeRights.setModuleHandbookRightsList(moduleHandbookRightsList);
@@ -542,7 +542,7 @@ public class UserDbController extends DbController {
 		query = "SELECT "+studycourseRights.toValueNames()+
 				" FROM studycourse_rights WHERE users_email='"+employee.getEmail()+"';";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			ResultSet rs = db.createStatement().executeQuery(query);
@@ -555,7 +555,7 @@ public class UserDbController extends DbController {
 				studycourseRights = new StudycourseRights();
 			} 
 			if(studycourseRightsList.isEmpty()) {
-				System.out.println("No studycourse_rights found with this users_email");
+				System.out.println("[db] No studycourse_rights found with this users_email");
 			} else {
 				// set studycourseRightsList of EmployeeRights
 				employeeRights.setStudycourseRightsList(studycourseRightsList);
@@ -634,7 +634,7 @@ public class UserDbController extends DbController {
 	String query = "SELECT canDeblockModule, canDeblockCriticalModule, isAdmin " +
 			"FROM employee_rights WHERE email=?;";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			db.setAutoCommit(false);
@@ -697,12 +697,12 @@ public class UserDbController extends DbController {
 					user.setMatricNum(rs.getInt(7));	// matricNum
 					user.setSemester(rs.getInt(8));		// semester
 				} else {
-					System.out.println("wrong password");
+					System.out.println("[db] wrong password");
 					rs.close();
 					return null;
 				}
 			} else {
-				System.out.println("No user found with this email");
+				System.out.println("[db] No user found with this email");
 				rs.close();
 				return null;
 			}
@@ -728,7 +728,7 @@ public class UserDbController extends DbController {
 	public boolean insertUserHash(String email, String hash) {
 		String query = "DELETE FROM user_hashes WHERE users_email=?";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			db.setAutoCommit(false);
@@ -752,7 +752,7 @@ public class UserDbController extends DbController {
 		
 		query = "INSERT INTO user_hashes(users_email, hash) VALUES(?,?);";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			db.setAutoCommit(false);
@@ -788,7 +788,7 @@ public class UserDbController extends DbController {
 				"WHERE users_email=? AND "+
 				"hash=?;";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			db.setAutoCommit(false);
@@ -828,7 +828,7 @@ public class UserDbController extends DbController {
 		String query = "SELECT users_email FROM user_hashes " +
 				"WHERE hash=?;";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			db.setAutoCommit(false);
@@ -869,7 +869,7 @@ public class UserDbController extends DbController {
 		String query = "INSERT INTO user_confirmation_hashes(users_email, hash) " +
 				"VALUES(?,?);";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			db.setAutoCommit(false);
@@ -904,7 +904,7 @@ public class UserDbController extends DbController {
 		String query = "SELECT users_email FROM user_confirmation_hashes " +
 				"WHERE hash=?;";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			db.setAutoCommit(false);
@@ -945,7 +945,7 @@ public class UserDbController extends DbController {
 	private void updateCanLogin(String email, boolean canLogin) {
 		String query = "UPDATE user_rights SET canLogin=? WHERE email=?;";
 		
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			db.setAutoCommit(false);
@@ -975,7 +975,7 @@ public class UserDbController extends DbController {
 	public boolean deleteConfirmationHash(String email) {
 		String query = "DELETE FROM user_confirmation_hashes WHERE users_email=?";
 	
-		System.out.println(query);
+		System.out.println("[db] "+query);
 		
 		try {
 			db.setAutoCommit(false);

@@ -10,19 +10,17 @@ public class DbController {
 
 	protected Connection db = null;
 	private static DbController instance = null;
+	private final String user = "sopratest";
+	private final String pw = "sopratest";
+	private final String driver = "org.gjt.mm.mysql.Driver";
+	private final String url = "jdbc:mysql://localhost:3306/sopra?zeroDateTimeBehavior=convertToNull";
 
 	/**
 	 * constructor
 	 */
 	protected DbController() {
-		String url = "jdbc:mysql://localhost:3306/sopra?zeroDateTimeBehavior=convertToNull";
-		String user = "sopratest";
-		String pw = "sopratest";
-
-		String treiber = "org.gjt.mm.mysql.Driver";
-
 		try {
-			Class.forName(treiber).newInstance();
+			Class.forName(driver).newInstance();
 			db = DriverManager.getConnection(url, user, pw);
 			instance = this;
 
@@ -42,20 +40,20 @@ public class DbController {
 		} else
 			return instance;
 	}
-	
+
 	/**
 	 * @param x
-	 * @return returns a string with x question marks, seperated with ","
+	 * @return a string with x question marks, seperated with ","
 	 */
 	protected String getXQuestionMarks(int x) {
 		String string = "";
-		for(int i=0; i<x-1; i++) {
+		for (int i = 0; i < x - 1; i++) {
 			string += "?, ";
 		}
 		string += "?";
 		return string;
 	}
-	
+
 	/**
 	 * closes the database connection
 	 */
