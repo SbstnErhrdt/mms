@@ -1,33 +1,27 @@
 package model;
 
-
 import model.userRights.UserRights;
 
 public class User implements DbControllable {
-	
-	/* DATENBANK User
+
+	/*
+	 * DATENBANK User
 	 * 
-	 * VAR email
-	 * VAR firstName
-	 * VAR lastName
-	 * VAR title
-	 * INT matricNum
-	 * INT current_semester
-	 * VAR graduation
-	 * VAR password
-	 * 
-	 * */
-	
-	protected String firstName = "", lastName= "", title= "", email = "", graduation = "";
+	 * VAR email VAR firstName VAR lastName VAR title INT matricNum INT
+	 * current_semester VAR graduation VAR password
+	 */
+
+	protected String firstName = "", lastName = "", profession = "",
+			title = "", email = "", graduation = "";
 	protected transient String password;
 	protected boolean isEmployee = false;
-	protected int matricNum, semester;	
-	protected UserRights userRights;	
-	
-	
-	// Konstruktor 
-	/** 
+	protected int matricNum, semester;
+	protected UserRights userRights;
+
+	// Konstruktor
+	/**
 	 * constructor
+	 * 
 	 * @param email
 	 * @param password
 	 */
@@ -35,9 +29,10 @@ public class User implements DbControllable {
 		this.email = email.toLowerCase();
 		this.password = password;
 	}
-	
+
 	/**
 	 * constructor
+	 * 
 	 * @param email
 	 * @param firstName
 	 * @param lastName
@@ -47,12 +42,14 @@ public class User implements DbControllable {
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
-	
-	// Konstruktor 
+
+	// Konstruktor
 	/**
 	 * constructor
+	 * 
 	 * @param firstName
 	 * @param lastName
+	 * @param profession
 	 * @param title
 	 * @param email
 	 * @param graduation
@@ -61,12 +58,13 @@ public class User implements DbControllable {
 	 * @param semester
 	 * @param rights
 	 */
-	public User(String firstName, String lastName, String title, String email,
+	public User(String firstName, String lastName, String profession, String title, String email,
 			String graduation, String password, int matricNum, int semester,
 			UserRights rights) {
-		
+
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.profession = profession;
 		this.title = title;
 		this.email = email.toLowerCase();
 		this.graduation = graduation;
@@ -76,9 +74,9 @@ public class User implements DbControllable {
 		this.userRights = rights;
 	}
 
-		
 	/**
 	 * constructor
+	 * 
 	 * @param email
 	 */
 	public User(String email) {
@@ -158,6 +156,14 @@ public class User implements DbControllable {
 		this.semester = semester;
 	}
 
+	public String getProfession() {
+		return profession;
+	}
+
+	public void setProfession(String profession) {
+		this.profession = profession;
+	}
+
 	public UserRights getUserRights() {
 		return userRights;
 	}
@@ -166,21 +172,13 @@ public class User implements DbControllable {
 		this.userRights = userRights;
 	}
 
-	
-	/* DATENBANK User
+	/*
+	 * DATENBANK User
 	 * 
-	 * VAR email
-	 * VAR firstName
-	 * VAR lastName
-	 * VAR title
-	 * INT matricNum
-	 * INT current_semester
-	 * VAR graduation
-	 * VAR password
-	 * 
-	 * */
-	
-	
+	 * VAR email VAR firstName VAR lastName VAR title INT matricNum INT
+	 * current_semester VAR graduation VAR password
+	 */
+
 	@Override
 	public String toValueNames() {
 		return arrayToString(toValueNamesArray());
@@ -193,28 +191,30 @@ public class User implements DbControllable {
 
 	@Override
 	public String[] toValuesArray() {
-		String[] values = {"'"+email+"'", "'"+firstName+"'", "'"+lastName+"'", "'"+title+"'", "'"+graduation+"'",
-				"'"+password+"'", ""+matricNum, ""+semester};
+		String[] values = { "'" + email + "'", "'" + firstName + "'",
+				"'" + lastName + "'", "'" + profession + "'", "'" + title + "'",
+				"'" + graduation + "'", "'" + password + "'", "" + matricNum,
+				"" + semester };
 		return values;
 	}
 
 	@Override
 	public String[] toValueNamesArray() {
-		String[] valueNames = {"email", "firstName", "lastName", "title", "graduation",
-				"password", "matricNum", "current_semester"};
+		String[] valueNames = { "email", "firstName", "lastName", "profession", "title",
+				"graduation", "password", "matricNum", "current_semester" };
 		return valueNames;
 	}
-	
+
 	protected String arrayToString(String[] array) {
 		String string = "";
-		for(int i=0; i<array.length-1; i++) {
+		for (int i = 0; i < array.length - 1; i++) {
 			string += array[i] + ", ";
 		}
-		string += array[array.length-1];
+		string += array[array.length - 1];
 		return string;
 	}
 
 	public String toString() {
-		return "["+arrayToString(toValuesArray())+"]";
+		return "[" + arrayToString(toValuesArray()) + "]";
 	}
 }

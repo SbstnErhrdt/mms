@@ -3156,17 +3156,18 @@ public class ContentDbController extends DbController {
 		}
 	}
 
-	public Event getEvent(String name, String lecturer_email) {
+	public Event getEvent(String name, String type, String lecturer_email) {
 		Event event = new Event();
 
 		String query = "SELECT " + event.toValueNames()
-				+ " FROM events WHERE name=? AND lecturer_email=?;";
+				+ " FROM events WHERE name=? AND type=? AND lecturer_email=?;";
 
 		try {
 			PreparedStatement ps = db.prepareStatement(query);
 
 			ps.setString(1, name);
-			ps.setString(2, lecturer_email);
+			ps.setString(2, type);
+			ps.setString(3, lecturer_email);
 
 			System.out.println("[db] getEvent " + ps);
 

@@ -246,7 +246,7 @@ public class TexParser {
 			String email = getEmailByName(matcher.group(2));
 			if(email == null) {
 				// no email found => insert the name
-				lecturers.add(matcher.group(1) + ". " +  matcher.group(2));
+				lecturers.add(matcher.group(2));
 			} else {
 				lecturers.add(email);
 			}	
@@ -281,8 +281,8 @@ public class TexParser {
 		
 		if(matcher.find()) {
 			fields[0] = matcher.group(2);
-			fields[1] = matcher.group(4);
-			fields[2] = matcher.group(5);
+			fields[1] = matcher.group(5);
+			fields[2] = matcher.group(6);
 		}
 		
 		return fields;
@@ -361,7 +361,7 @@ public class TexParser {
 				teachingForm = "Proseminar";
 			}
 			Event event = new Event();
-			event.setName(teachingForm + " " + matcher.group(2));
+			event.setName(matcher.group(2));
 			event.setLecturer_email(matcher.group(3));
 			ArrayList<Integer> moduleIDs = new ArrayList<Integer>();
 			moduleIDs.add(moduleID);
@@ -380,7 +380,7 @@ public class TexParser {
 	 */
 	private void createOrUpdateIfExists(Event event, int moduleID) {
 		ContentDbController db = new ContentDbController();
-		Event existingEvent = db.getEvent(event.getName(), event.getLecturer_email());
+		Event existingEvent = db.getEvent(event.getName(), event.getType(), event.getLecturer_email());
 		if(existingEvent == null) {
 			// create new Event
 			db.createEvent(event);

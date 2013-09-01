@@ -10,13 +10,15 @@ public class Employee extends User {
 
 	/**
 	 * constructor
+	 * 
 	 * @param email
 	 * @param password
 	 * @param address
 	 * @param phoneNum
 	 * @param talkTime
 	 */
-	public Employee(String email, String password, String address, String phoneNum, String talkTime)  {
+	public Employee(String email, String password, String address,
+			String phoneNum, String talkTime) {
 		super(email, password);
 		this.employeeRights = new EmployeeRights(false, false, false);
 		this.address = address;
@@ -24,30 +26,33 @@ public class Employee extends User {
 		this.talkTime = talkTime;
 		isEmployee = true;
 	}
-	
+
 	/**
 	 * constructor
+	 * 
 	 * @param email
 	 * @param password
 	 * @param firstName
 	 * @param lastName
+	 * @param profession
 	 * @param title
 	 * @param graduation
 	 * @param matricNum
 	 * @param semester
 	 * @param rights
 	 */
-	public Employee(String email, String password, String firstName, String lastName, String title,
-			String graduation, int matricNum, int semester,
-			UserRights rights) {
-		super(firstName, lastName, title, email, graduation, password, 
+	public Employee(String email, String password, String firstName,
+			String lastName, String profession, String title,
+			String graduation, int matricNum, int semester, UserRights rights) {
+		super(firstName, lastName, profession, title, email, graduation, password,
 				matricNum, semester, rights);
 		this.employeeRights = new EmployeeRights(false, false, false);
 		isEmployee = true;
 	}
-	
+
 	/**
 	 * constructor
+	 * 
 	 * @param email
 	 * @param password
 	 */
@@ -56,7 +61,7 @@ public class Employee extends User {
 		this.employeeRights = new EmployeeRights(false, false, false);
 		isEmployee = true;
 	}
-	
+
 	public EmployeeRights getEmployeeRights() {
 		return employeeRights;
 	}
@@ -88,29 +93,29 @@ public class Employee extends User {
 	public void setTalkTime(String talkTime) {
 		this.talkTime = talkTime;
 	}
-	
-	public String[] toEmployeeValuesArray() {	
-		String[] values = {"'"+email+"'", "'" + address + "'", "'" + phoneNum + "'", "'" + talkTime + "'"};
+
+	public String[] toEmployeeValuesArray() {
+		String[] values = { "'" + email + "'", "'" + address + "'",
+				"'" + phoneNum + "'", "'" + talkTime + "'" };
 		return values;
 	}
 
 	public String[] toEmployeeValueNamesArray() {
-		String[] valueNames = {"email", "address", "phoneNum", "talkTime"};
+		String[] valueNames = { "email", "address", "phoneNum", "talkTime" };
 		return valueNames;
 	}
-	
+
 	public String toEmployeeValues() {
 		return Utilities.arrayToString(toEmployeeValuesArray());
 	}
-	
+
 	public String toEmployeeValueNames() {
 		return Utilities.arrayToString(toEmployeeValueNamesArray());
 	}
-	
-	
+
 	public String toString() {
-		return "["+Utilities.arrayToString(toValuesArray())+
-				", "+ Utilities.arrayToString(toEmployeeValuesArray())+"]";
+		return "[" + Utilities.arrayToString(toValuesArray()) + ", "
+				+ Utilities.arrayToString(toEmployeeValuesArray()) + "]";
 	}
 
 }

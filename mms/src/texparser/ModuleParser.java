@@ -68,7 +68,7 @@ public class ModuleParser {
 		texString+="\\Dozenten{"+newLine;
 		// TODO adapt to model: Prof, PD, LB
 		for(String lecturer : module.getLecturers()) {
-			texString+="\\Prof{"+lecturer+"}"+newLine;
+			texString+=adaptLecturer(lecturer)+newLine;
 		}
 		texString+="}"+newLine;
 		texString+=newLine;
@@ -166,16 +166,34 @@ public class ModuleParser {
 		return texString;
 	}
 
+	private String adaptLecturer(String lecturer) {
+		return adaptDirector(lecturer);
+	}
+
 	private String adaptDirector(String director_email) {
 		UserDbController db = new UserDbController();
 		User user = db.getUser(new User(director_email));
 		db.closeConnection();
 		if(user != null) {
-			return user.getTitle()+" "+user.getFirstName()+" "+user.getLastName();
-		} else {
-			return director_email;
+			String profession = user.getProfession();
+			if(profession != null && !profession.equals("")) {
+				// TODO Hochschullehrer, Honorarprofessor, Privatdozent, Gastprofessor oder Lehrbeauftragter
+				if(profession.equals("Prof.")) profession = "Prof";
+				else if(profession.equals("Jun.-Prof.")) profession = "JunProf";
+				else if(profession.equals("Privatdozent")) profession = "PD";
+				else if(profession.equals("Lehrbeauftragter")) profession = "LB";
+			} else {
+				// default profession is Prof
+				profession = "Prof";
+			}
+			String title = user.getTitle();
+			if(title != null) {
+				return "\\"+profession+"{"+title+" "+user.getFirstName()+" "+user.getLastName()+"}";
+			} else {
+				return "\\"+profession+"{"+user.getFirstName()+" "+user.getLastName()+"}";
+			}
 		}
-		
+		return "\\Prof{"+director_email+"}";
 	}
 
 	private String adaptTeachingForm(int moduleID) {
