@@ -1,10 +1,9 @@
 package texparser;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import controller.ContentDbController;
+import controller.GlobalVarDbController;
 import controller.UserDbController;
 
 import model.User;
@@ -167,12 +166,8 @@ public class ModuleParser {
 	}
 
 	private String adaptLecturer(String lecturer) {
-		return adaptDirector(lecturer);
-	}
-
-	private String adaptDirector(String director_email) {
 		UserDbController db = new UserDbController();
-		User user = db.getUser(new User(director_email));
+		User user = db.getUser(new User(lecturer));
 		db.closeConnection();
 		if(user != null) {
 			String profession = user.getProfession();
@@ -193,7 +188,18 @@ public class ModuleParser {
 				return "\\"+profession+"{"+user.getFirstName()+" "+user.getLastName()+"}";
 			}
 		}
-		return "\\Prof{"+director_email+"}";
+		return "\\Prof{"+lecturer+"}";
+	}
+
+	private String adaptDirector(String director_email) {
+		GlobalVarDbController db = new GlobalVarDbController();
+		if(db.getGlobalVar("StudienDekanInf").equals(director_email)) {
+			db.closeConnection();
+			return "\\StudienDekanInf";
+		} else {
+			db.closeConnection();
+			return adaptLecturer(director_email);
+		}
 	}
 
 	private String adaptTeachingForm(int moduleID) {

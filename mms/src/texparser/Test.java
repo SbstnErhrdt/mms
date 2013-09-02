@@ -18,7 +18,7 @@ public class Test {
 		
 		Module module = new ContentDbController().getModule(802);
 		
-		new TexParseController(null).parseModule(module);
+		System.out.println(new TexParseController(null).parseModule(module).getName());
 		
 	}
 }

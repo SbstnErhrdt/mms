@@ -13,6 +13,8 @@ import model.content.Module;
 public class TexParseController {
 
 	private String modifier_email;
+	private final String exportPath = "./texfiles/";
+	
 
 	public TexParseController(String modifier_email) {
 		this.modifier_email = modifier_email;
@@ -130,21 +132,22 @@ public class TexParseController {
 		return module.getName();
 	}
 
-	public void parseModule(Module module) {
+	public File parseModule(Module module) {
 		ModuleParser mp = new ModuleParser();
 		String texString = mp.convertToTex(module);
 
 		System.out.println(texString);
 		
+		String filePath = exportPath+toValidFilename(module.getName())+".tex";
+		
 		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter("./texfiles/"+toValidFilename(module.getName())+".tex"));
+			BufferedWriter out = new BufferedWriter(new FileWriter(filePath));
 			out.write(texString);
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return;
-
+		return new File(filePath);
 	}
 
 	private String toValidFilename(String name) {

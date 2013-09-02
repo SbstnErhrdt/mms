@@ -10,8 +10,8 @@ public class DbController {
 
 	protected Connection db = null;
 	private static DbController instance = null;
-	private final String user = "sopratest";
-	private final String pw = "sopratest";
+	private final String user = "sopra";
+	private final String pw = "sopra";
 	private final String driver = "org.gjt.mm.mysql.Driver";
 	private final String url = "jdbc:mysql://localhost:3306/sopra?zeroDateTimeBehavior=convertToNull";
 
@@ -61,7 +61,6 @@ public class DbController {
 		try {
 			db.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
