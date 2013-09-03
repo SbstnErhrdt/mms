@@ -83,8 +83,8 @@ public class TexParser {
 	private String removeComment(String line) {
 		int index = line.indexOf("%");
 		if(index != -1) {
-			if(index == 0) { // '%' at line beginning
-				return line.substring(0, index);
+			if(index == 0) { // '%' at line beginning (of substring)
+				return "";
 			} else {
 				if(line.charAt(index-1) == '\\') { // '\%'
 					// go on searching for '%'s recursive 
@@ -135,9 +135,10 @@ public class TexParser {
 				// replace multiple whitespaces by one
 				contentString = contentString.replaceAll("\\s+", " ");
 				
-				contentString = contentString.trim();
-			
-				tn.setContent(contentString);
+				// replace \S by §
+				contentString = contentString.replaceAll("\\\\\\S(\\d+)", "§$1");
+						
+				tn.setContent(contentString.trim());
 			}
 		}
 		return texNodes;
