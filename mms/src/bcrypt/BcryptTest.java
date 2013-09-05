@@ -2,9 +2,9 @@ package bcrypt;
 
 public class BcryptTest {
 	
-	private static String pepper = "hanskuckindieLuft";
+	private static String pepper = " sebmodulmanagementsystemsopra20122013";
 	
-	private static String password = "tim";
+	private static String password = "seb";
 
 	/**
 	 * @param args

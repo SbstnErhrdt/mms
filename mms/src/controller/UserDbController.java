@@ -731,14 +731,14 @@ public class UserDbController extends DbController {
 			db.commit();
 
 			if (rs.next()) {
-				String dbPassword = rs.getString(6);
+				String dbPassword = rs.getString(7);
 				if (BCrypt.checkpw(user.getPassword(), dbPassword)) {
 					user.setFirstName(rs.getString(2)); // firstName
 					user.setLastName(rs.getString(3)); // lastName
-					user.setTitle(rs.getString(4)); // title
-					user.setGraduation(rs.getString(5));// graduation
-					user.setMatricNum(rs.getInt(7)); // matricNum
-					user.setSemester(rs.getInt(8)); // semester
+					user.setTitle(rs.getString(5)); // title
+					user.setGraduation(rs.getString(6));// graduation
+					user.setMatricNum(rs.getInt(8)); // matricNum
+					user.setSemester(rs.getInt(9)); // semester
 				} else {
 					System.out.println("[db] wrong password");
 					rs.close();

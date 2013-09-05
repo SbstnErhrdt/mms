@@ -4,15 +4,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import texparser.TexParseController;
 
@@ -31,7 +39,6 @@ import model.userRights.StudycourseRights;
 import model.userRights.SubjectRights;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import controller.ContentDbController;
@@ -41,6 +48,8 @@ public class ContentRoutes extends Routes {
 	private Gson gson = new Gson();
 	private java.sql.Date currentDate;
 
+	private final String uploadPath = "/var/lib/tomcat6/work/Catalina/localhost/mms";
+	
 	public ContentRoutes() {
 		db = new ContentDbController();
 		currentDate = new java.sql.Date(System.currentTimeMillis());
@@ -423,49 +432,129 @@ public class ContentRoutes extends Routes {
 	 * 
 	 * @param request
 	 * @param response
+	 * @throws IOException
 	 */
 	public void importModules(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response, HttpServlet servlet) throws IOException {
+
 		String json = "";
-
-		User actorUser = getActorUser(request);
-
-		// TODO check rights
-		if(actorUser != null) {
-			if (!actorUser.isEmployee()) {
-				json = gson
-						.toJson(new JsonErrorContainer(
-								new JsonError(
-										"actorUser is no employee and can therefore not import modules",
-										"importModules(...)")));
-				respond(response, json);
-				return;
-			}
-		} else {
-			json = gson.toJson(new JsonErrorContainer(
-							new JsonError(
-									"actorUser is null",
-									"importModules(...)")));
+		
+		// Check that we have a file upload request
+		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+		
+		if(!isMultipart) {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"no files uploaded in this request (!isMultipartContent(request))", "importModules(...)")));
 			respond(response, json);
 			return;
 		}
+	
+		// Create a factory for disk-based file items
+		FileItemFactory factory = new DiskFileItemFactory();
 
+		// Configure a repository (to ensure a secure temp location is used)
+		ServletContext servletContext = servlet.getServletConfig().getServletContext();
+		File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+		((DiskFileItemFactory) factory).setRepository(repository);
 
-		String path = request.getParameter("path");
-		if (path != null) {
-			try {
-				json = gson.toJson(new TexParseController(actorUser.getEmail())
-						.parseFile(path));
-			} catch (IOException e) {
-				e.printStackTrace();
-				json = gson.toJson(new JsonErrorContainer(new JsonError(
-						"IOException", "TexParseController.parse(path)")));
+		// Create a new file upload handler
+		ServletFileUpload upload = new ServletFileUpload(factory);
+
+		// Parse the request
+		try {
+			List<FileItem> items = upload.parseRequest(request);
+			json = gson.toJson(items);
+			
+			ArrayList<File> files = new ArrayList<File>();
+			
+			for(FileItem item : items) {
+				if (item.isFormField()) {
+					// ignore
+					System.out.println("item: "+item+" is a form field and will not be processed");
+				} else {
+					String fileName = item.getName();
+					File uploadedFile = new File(uploadPath+"/"+fileName);
+					item.write(uploadedFile);
+					files.add(uploadedFile);
+				}
 			}
-		} else {
+			
+			// TODO insert email
+			
+			json = gson.toJson(new TexParseController(null).parseFiles(files));
+			
+		} catch (FileUploadException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
-					"unspecified path in query", "importModule(...)")));
+					"FileUploadException", "importModules(...)")));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"Exception", "importModules(...)")));
 		}
+		
 		respond(response, json);
+		
+		/* Tomcat 7
+		String json;
+
+		ServletRequestContext req = new ServletRequestContext(request);
+
+		DiskFileItemFactory factory = new DiskFileItemFactory();
+		// maximum size that will be stored in memory
+		factory.setSizeThreshold(4096);
+		// the location for saving data that is larger than getSizeThreshold()
+		factory.setRepository(new File("/tmp"));
+
+		ServletFileUpload upload = new ServletFileUpload(factory);
+		// maximum size before a FileUploadException will be thrown
+		upload.setSizeMax(1000000);
+
+		List<FileItem> fileItems;
+		try {
+			fileItems = upload.parseRequest(req);
+
+			json = gson.toJson(fileItems);
+
+		} catch (FileUploadException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"FileUploadException", "importModules(...)")));
+		}
+		
+		respond(response, json);
+		*/
+
+
+		/*
+		 * OLD (without upload)
+		 * 
+		 * String json = "";
+		 * 
+		 * User actorUser = getActorUser(request);
+		 * 
+		 * // TODO check rights if(actorUser != null) { if
+		 * (!actorUser.isEmployee()) { json = gson .toJson(new
+		 * JsonErrorContainer( new JsonError(
+		 * "actorUser is no employee and can therefore not import modules",
+		 * "importModules(...)"))); respond(response, json); return; } } else {
+		 * json = gson.toJson(new JsonErrorContainer( new JsonError(
+		 * "actorUser is null", "importModules(...)"))); respond(response,
+		 * json); return; }
+		 * 
+		 * 
+		 * String path = request.getParameter("path"); if (path != null) { try {
+		 * json = gson.toJson(new TexParseController(actorUser.getEmail())
+		 * .parseFile(path)); } catch (IOException e) { e.printStackTrace();
+		 * json = gson.toJson(new JsonErrorContainer(new JsonError(
+		 * "IOException", "TexParseController.parse(path)"))); } } else { json =
+		 * gson.toJson(new JsonErrorContainer(new JsonError(
+		 * "unspecified path in query", "importModule(...)"))); }
+		 * respond(response, json);
+		 */
 	}
 
 	/**
@@ -478,9 +567,9 @@ public class ContentRoutes extends Routes {
 			HttpServletResponse response) {
 
 		User actorUser = getActorUser(request);
-
-		// TODO check rights
-
+		
+		// TODO check rights		
+		
 		String json = "";
 
 		String moduleIDString = request.getParameter("moduleID");
@@ -490,15 +579,18 @@ public class ContentRoutes extends Routes {
 
 			Module module = db.getModule(moduleID);
 
-			if(module == null) {
+			if (module == null) {
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
-						"no such module with this moduleID (moduleID="+moduleID+")", "exportModule(...)")));
+						"no such module with this moduleID (moduleID="
+								+ moduleID + ")", "exportModule(...)")));
 				respond(response, json);
 				return;
 			}
-			
+
 			// get tex file representation of the module
-			File texFile = new TexParseController(actorUser.getEmail())
+			
+			// TODO actorUser.getEmail()
+			File texFile = new TexParseController("null@ex-studios.net")
 					.parseModule(module);
 
 			// set headers
@@ -908,8 +1000,7 @@ public class ContentRoutes extends Routes {
 
 		// non Employees can only see enabled content
 		if (actorUser != null) {
-			if (!actorUser.isEmployee())
-				getOnlyEnabled = true;
+			if (!actorUser.isEmployee()) getOnlyEnabled = true;
 		} else
 			getOnlyEnabled = true;
 

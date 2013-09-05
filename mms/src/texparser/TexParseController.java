@@ -13,19 +13,52 @@ import model.content.Module;
 public class TexParseController {
 
 	private String modifier_email;
-	private final String exportPath = "./texfiles/";
+	private final String exportPath = "/var/lib/tomcat6/work/Catalina/localhost/mms";
 	
 
 	public TexParseController(String modifier_email) {
 		this.modifier_email = modifier_email;
 	}
 
+	
+	public ArrayList<Module> parseFiles(ArrayList<File> files) throws IOException {
+
+		System.out.println("....................................................");
+		System.out.println("[texparser] Starting to parse modules from " + files);
+		System.out.println("....................................................");
+		
+		double startTime = System.currentTimeMillis();
+		int numberOfModules = 0;
+
+		ArrayList<Module> modules = new ArrayList<Module>();
+
+		for(File file : files) {
+			Module module = parseTexFile(file);
+			if(module != null) {
+				modules.add(module);
+			}
+		}
+	
+		double endTime = System.currentTimeMillis();
+		double parseTime = (endTime - startTime) / 1000;
+
+		System.out
+				.println("....................................................");
+		System.out.println("[texparser] " + numberOfModules
+				+ " Modules parsed in " + parseTime + " seconds.");
+		System.out
+				.println("....................................................");
+
+		return modules;
+	}
+	
+	
 	/**
 	 * @param path
-	 * @return a liist with the names of the parsed modules
+	 * @return a list containing the parsed modules
 	 * @throws IOException
 	 */
-	public ArrayList<String> parseFile(String path) throws IOException {
+	public ArrayList<Module> parseFile(String path) throws IOException {
 
 		System.out
 				.println("....................................................");
@@ -36,7 +69,7 @@ public class TexParseController {
 		double startTime = System.currentTimeMillis();
 		int numberOfModules = 0;
 
-		ArrayList<String> names = new ArrayList<String>();
+		ArrayList<Module> modules = new ArrayList<Module>();
 
 		File file = new File(path);
 
@@ -46,7 +79,7 @@ public class TexParseController {
 			for (File f : listOfFiles) {
 				String name = f.getName();
 				if (name.substring(name.lastIndexOf('.')).equals(".tex")) {
-					names.add(parseTexFile(f));
+					modules.add(parseTexFile(f));
 					numberOfModules += 1;
 				} else {
 					System.out.println("[texparser] ignoring non-tex file "
@@ -57,7 +90,7 @@ public class TexParseController {
 			// single file
 			String name = file.getName();
 			if (name.substring(name.lastIndexOf('.')).equals(".tex")) {
-				names.add(parseTexFile(file));
+				modules.add(parseTexFile(file));
 				numberOfModules = 1;
 			}
 		}
@@ -71,7 +104,7 @@ public class TexParseController {
 		System.out
 				.println("....................................................");
 
-		return names;
+		return modules;
 	}
 
 	/**
@@ -94,10 +127,10 @@ public class TexParseController {
 
 	/**
 	 * @param file
-	 * @return the name of the parsed module
+	 * @return the parsed module
 	 * @throws IOException
 	 */
-	private String parseTexFile(File file) throws IOException {
+	private Module parseTexFile(File file) throws IOException {
 
 		BufferedReader br = new BufferedReader(new FileReader(file));
 
@@ -129,7 +162,7 @@ public class TexParseController {
 
 		System.out.println("[texparser] " + module);
 
-		return module.getName();
+		return module;
 	}
 
 	public File parseModule(Module module) {
@@ -138,7 +171,7 @@ public class TexParseController {
 
 		System.out.println(texString);
 		
-		String filePath = exportPath+toValidFilename(module.getName())+".tex";
+		String filePath = exportPath+"/"+toValidFilename(module.getName())+".tex";
 		
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(filePath));

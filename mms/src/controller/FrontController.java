@@ -119,7 +119,7 @@ public class FrontController extends HttpServlet {
 				contentRoutes.updateModule(request, response);
 			// import module
 			} else if(path.equals("/import/modules")) {
-				contentRoutes.importModules(request, response);
+				//contentRoutes.importModules(request, response);
 			// export module
 			} else if(path.equals("/export/module")) {
 				contentRoutes.exportModule(request, response);
@@ -246,6 +246,9 @@ public class FrontController extends HttpServlet {
 				userRoutes.login(request, response);
 			} else if(path.equals("/register")) { 
 				userRoutes.register(request, response);
+			// import module
+			} else if(path.equals("/import/modules")) {
+				contentRoutes.importModules(request, response, this);
 			} else if(!userRoutes.verifyUserHash(request, response)) {
 				System.out.println("no valid hash found");
 				System.out.println("closing database connections");

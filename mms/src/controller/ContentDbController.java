@@ -1938,6 +1938,7 @@ public class ContentDbController extends DbController {
 						rs.getString(3), rs.getString(4), rs.getBoolean(5),
 						rs.getString(6), rs.getBoolean(7), rs.getString(8),
 						rs.getTimestamp(9));
+				studycourses.add(studycourse);
 			}
 			rs.close();
 		} catch (SQLException e) {
