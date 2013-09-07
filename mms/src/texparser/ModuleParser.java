@@ -195,22 +195,34 @@ public class ModuleParser {
 
 	private String adaptDirector(String director_email) {
 		GlobalVarDbController db = new GlobalVarDbController();
-		if(db.getGlobalVar("StudiendekanInf").equals(director_email)) {
-			db.closeConnection();
-			return "\\StudiendekanInf";
-		} else if(db.getGlobalVar("StudiendekanET").equals(director_email)) {
-			db.closeConnection();
-			return "\\StudiendekanET";
-		} else if(db.getGlobalVar("StudiendekanIST").equals(director_email)) {
-			db.closeConnection();
-			return "\\StudiendekanIST";
-		} else if(db.getGlobalVar("StudiendekanComm").equals(director_email)) {
-			db.closeConnection();
-			return "\\StudiendekanComm";
-		} else {
-			db.closeConnection();
-			return adaptLecturer(director_email);
+		String dekan;
+		if((dekan = db.getGlobalVar("StudiendekanInf")) != null) {
+			if(dekan.equals(director_email)) {
+				db.closeConnection();
+				return "\\StudiendekanInf";
+			}
 		}
+		if((dekan = db.getGlobalVar("StudiendekanET")) != null) {
+			if(dekan.equals(director_email)) {
+				db.closeConnection();
+				return "\\StudiendekanET";
+			}
+		}
+		if((dekan = db.getGlobalVar("StudiendekanIST")) != null) {
+			if(dekan.equals(director_email)) {
+				db.closeConnection();
+				return "\\StudiendekanIST";
+			}
+		}
+		if((dekan = db.getGlobalVar("StudiendekanComm")) != null) {
+			if(dekan.equals(director_email)) {
+				db.closeConnection();
+				return "\\StudiendekanComm";
+			}
+		}
+		// no dekan
+		db.closeConnection();
+		return adaptLecturer(director_email);
 	}
 
 	private String adaptTeachingForm(int moduleID) {
