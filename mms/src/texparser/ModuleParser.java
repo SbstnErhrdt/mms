@@ -178,8 +178,9 @@ public class ModuleParser {
 				// TODO Hochschullehrer, Honorarprofessor, Privatdozent, Gastprofessor oder Lehrbeauftragter
 				if(profession.equals("Prof.")) profession = "Prof";
 				else if(profession.equals("Jun.-Prof.")) profession = "JunProf";
-				else if(profession.equals("Privatdozent")) profession = "PD";
+				else if(profession.equals("Priv.-Doz.")) profession = "PD";
 				else if(profession.equals("Lehrbeauftragter")) profession = "LB";
+				else if(profession.equals("apl. Prof.")) profession = "aplProf";
 			} else {
 				// default profession is Prof
 				profession = "Prof";
@@ -280,8 +281,14 @@ public class ModuleParser {
 		else if(studycourseGraduation.equals("Lehramt")) studycourseGraduation = "La";
 		
 		String subjectName = subject.getName();
-		subjectName = subjectName.replace("Mediale Informatik", "\\MEI");
-		subjectName = subjectName.replace("Praktische und Angewandte Informatik", "\\PAI");
+		if(subjectName.equals("Mediale Informatik")) subjectName = "\\MEI";
+		else if(subjectName.equals("Praktische und Angewandte Informatik")) subjectName = "\\PAI";			
+		else if(subjectName.equals("Technische und Systemnahe Informatik")) subjectName = "\\TSI";
+		else if(subjectName.equals("Theoretische und Mathematische Methoden der Informatik")) subjectName = "\\TMI";
+		else if(subjectName.equals("Medieninformatik")) subjectName = "\\Medieninformatik";
+		else if(subjectName.equals("Mathematik")) subjectName = "\\Mathematik";
+		else if(subjectName.equals("Angewandte Mathematik")) subjectName = "\\AngewandteMathematik";			
+		else if(subjectName.equals("Software-Engineering")) subjectName = "\\SoftwareEngineering";	
 		
 		return "\\"+studycourseName+"{\\"+studycourseGraduation+"}{\\"+subject.getType()+"}{"+subjectName+"}";
 	}

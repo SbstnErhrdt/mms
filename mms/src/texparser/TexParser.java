@@ -157,6 +157,9 @@ public class TexParser {
 				// replace \@ by @
 				content = content.replace("\\@", "@");
 				
+				// replace `` by \"
+				content = content.replace("``", "\"");
+				
 				tn.setContent(content.trim());
 			}
 		}
@@ -441,6 +444,11 @@ public class TexParser {
 		return adaptLists(content);
 	}
 	
+	/**
+	 * replaces tex lists with HTML lists
+	 * @param content
+	 * @return the adapted content
+	 */
 	private String adaptLists(String content) {
 		// replace \spiegelstrich with <ul> <li><\li> ... </ul>		
 		Pattern pattern = Pattern.compile("((\\\\spiegelstrich\\s?\\{.*?\\}\\s?)+)");
@@ -578,8 +586,14 @@ public class TexParser {
 			else if(tag2.equals("La")) tag2 = "Lehramt";
 				
 			String tag4 = matcher.group(4);
-			tag4 = tag4.replace("\\MEI", "Mediale Informatik");
-			tag4 = tag4.replace("\\PAI", "Praktische und Angewandte Informatik");
+			if(tag4.equals("\\MEI")) tag4 = "Mediale Informatik";
+			else if(tag4.equals("\\PAI")) tag4 = "Praktische und Angewandte Informatik";			
+			else if(tag4.equals("\\TSI")) tag4 = "Technische und Systemnahe Informatik";
+			else if(tag4.equals("\\TMI")) tag4 = "Theoretische und Mathematische Methoden der Informatik";
+			else if(tag4.equals("\\Medieninformatik")) tag4 = "Medieninformatik";
+			else if(tag4.equals("\\Mathematik")) tag4 = "Mathematik";
+			else if(tag4.equals("\\AngewandteMathematik")) tag4 = "Angewandte Mathematik";			
+			else if(tag4.equals("\\SoftwareEngineering")) tag4 = "Software-Engineering";			
 			
 			String[] tags = {tag2, tag1, matcher.group(3), tag4};
 			cTags.add(tags);
@@ -598,6 +612,19 @@ public class TexParser {
 		if(director.contains("\\StudiendekanInf") || director.contains("\\StudienDekanInf")) {
 			GlobalVarDbController db = new GlobalVarDbController();
 			email = db.getGlobalVar("StudiendekanInf");
+			db.closeConnection();
+		} else if(director.contains("StudiendekanET") || director.contains("StudienDekanET")) {
+			GlobalVarDbController db = new GlobalVarDbController();
+			email = db.getGlobalVar("StudiendekanET");
+			db.closeConnection();
+		} else if(director.contains("StudiendekanIST") || director.contains("StudienDekanIST")) {
+			GlobalVarDbController db = new GlobalVarDbController();
+			email = db.getGlobalVar("StudiendekanIST");
+			db.closeConnection();
+		} else if(director.contains("StudiendekanComm") || director.contains("StudienDekanComm")) {
+			GlobalVarDbController db = new GlobalVarDbController();
+			email = db.getGlobalVar("StudiendekanComm");
+			db.closeConnection();	
 		} else {
 			Pattern pattern = Pattern.compile("\\\\(.*?)\\{(.*?)\\}");
 			Matcher matcher = pattern.matcher(director);
@@ -613,8 +640,8 @@ public class TexParser {
 				email = director;
 			}
 		}
-
-		return email;
+		if(email != null) return email;
+		else return director;
 	}
 }
 
