@@ -24,7 +24,7 @@ public class TexParseController {
 	public ArrayList<Module> parseFiles(ArrayList<File> files) throws IOException {
 
 		System.out.println("....................................................");
-		System.out.println("[texparser] Starting to parse modules from " + files);
+		System.out.println("[texparser] Starting to parse modules from files " + files);
 		System.out.println("....................................................");
 		
 		double startTime = System.currentTimeMillis();
@@ -33,28 +33,36 @@ public class TexParseController {
 		ArrayList<Module> modules = new ArrayList<Module>();
 
 		for(File file : files) {
-			Module module = parseTexFile(file);
-			if(module != null) {
-				modules.add(module);
+			String name = file.getName();
+			if(name.substring(name.lastIndexOf('.')).equals(".tex")) {
+				Module module = parseTexFile(file);
+				if(module != null) {
+					modules.add(module);
+					numberOfModules += 1;
+				} else {
+					System.out.println("[texparser] error while parsing file "
+							+ name);
+				}
+			} else {
+				System.out.println("[texparser] ignoring non-tex file "
+						+ name);
 			}
 		}
 	
 		double endTime = System.currentTimeMillis();
 		double parseTime = (endTime - startTime) / 1000;
 
-		System.out
-				.println("....................................................");
+		System.out.println("....................................................");
 		System.out.println("[texparser] " + numberOfModules
 				+ " Modules parsed in " + parseTime + " seconds.");
-		System.out
-				.println("....................................................");
+		System.out.println("....................................................");
 
 		return modules;
 	}
 	
 	
 	/**
-	 * @param path
+	 * @param path to the file (or directory) on the server that will be parsed
 	 * @return a list containing the parsed modules
 	 * @throws IOException
 	 */

@@ -1,10 +1,14 @@
 package routes;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -82,4 +86,29 @@ public abstract class Routes {
 		}
 	}
 	
+	/**
+	 * writes the passed file into the response
+	 * @param response
+	 * @param file
+	 * @throws IOException
+	 */
+	protected void respond(HttpServletResponse response, File file) throws IOException {
+		// set headers
+		response.setContentType("application/octet-stream");
+		response.setHeader("Content-Disposition", "attachment;filename="
+				+ file.getName());
+		response.setContentLength((int) file.length());
+		
+		// get file stream
+		FileInputStream fileIn = new FileInputStream(file);
+		ServletOutputStream out = response.getOutputStream();
+		byte[] outputByte = new byte[4096];
+		// copy binary contect to output stream
+		while (fileIn.read(outputByte, 0, 4096) != -1) {
+			out.write(outputByte, 0, 4096);
+		}
+		fileIn.close();
+		out.flush();
+		out.close();
+	}	
 }

@@ -162,7 +162,7 @@ public class ModuleParser {
 			texString+=newLine;
 		}
 		
-		return texString;
+		return texString.trim();
 	}
 
 	private String adaptLecturer(String lecturer) {

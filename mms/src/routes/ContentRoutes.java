@@ -450,12 +450,12 @@ public class ContentRoutes extends Routes {
 		}
 	
 		// Create a factory for disk-based file items
-		FileItemFactory factory = new DiskFileItemFactory();
+		DiskFileItemFactory factory = new DiskFileItemFactory();
 
 		// Configure a repository (to ensure a secure temp location is used)
 		ServletContext servletContext = servlet.getServletConfig().getServletContext();
 		File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-		((DiskFileItemFactory) factory).setRepository(repository);
+		factory.setRepository(repository);
 
 		// Create a new file upload handler
 		ServletFileUpload upload = new ServletFileUpload(factory);
@@ -487,7 +487,8 @@ public class ContentRoutes extends Routes {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
-					"FileUploadException", "importModules(...)")));
+					"FileUploadException",
+					"importModules(...)")));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -588,28 +589,13 @@ public class ContentRoutes extends Routes {
 			}
 
 			// get tex file representation of the module
-			
 			// TODO actorUser.getEmail()
 			File texFile = new TexParseController("null@ex-studios.net")
 					.parseModule(module);
 
-			// set headers
-			response.setContentType("application/octet-stream");
-			response.setHeader("Content-Disposition", "attachment;filename="
-					+ texFile.getName());
-
 			// respond with tex-file
 			try {
-				FileInputStream fileIn = new FileInputStream(texFile);
-				ServletOutputStream out = response.getOutputStream();
-				byte[] outputByte = new byte[4096];
-				// copy binary contect to output stream
-				while (fileIn.read(outputByte, 0, 4096) != -1) {
-					out.write(outputByte, 0, 4096);
-				}
-				fileIn.close();
-				out.flush();
-				out.close();
+				respond(response, texFile);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				json = gson.toJson(new JsonErrorContainer(new JsonError(
