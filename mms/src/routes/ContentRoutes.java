@@ -42,13 +42,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import controller.ContentDbController;
+import controller.GlobalVarDbController;
 
 public class ContentRoutes extends Routes {
 	private ContentDbController db;
 	private Gson gson = new Gson();
 	private java.sql.Date currentDate;
-
-	private final String uploadPath = "/var/lib/tomcat6/work/Catalina/localhost/mms";
 	
 	public ContentRoutes() {
 		db = new ContentDbController();
@@ -465,6 +464,13 @@ public class ContentRoutes extends Routes {
 			List<FileItem> items = upload.parseRequest(request);
 			json = gson.toJson(items);
 			
+			// get upload path
+			GlobalVarDbController db = new GlobalVarDbController();
+			String uploadPath = db.getGlobalVar("fileUploadPath");
+			db.closeConnection();
+			
+			System.out.println("[fileupload] fileUploadPath: "+uploadPath);
+			
 			ArrayList<File> files = new ArrayList<File>();
 			
 			for(FileItem item : items) {
@@ -565,7 +571,7 @@ public class ContentRoutes extends Routes {
 	 * @param response
 	 */
 	public void exportModule(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response, HttpServlet servlet) {
 
 		User actorUser = getActorUser(request);
 		
@@ -595,7 +601,7 @@ public class ContentRoutes extends Routes {
 
 			// respond with tex-file
 			try {
-				respond(response, texFile);
+				respond(response, servlet, texFile);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				json = gson.toJson(new JsonErrorContainer(new JsonError(

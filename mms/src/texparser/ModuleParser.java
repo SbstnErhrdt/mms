@@ -20,7 +20,10 @@ public class ModuleParser {
 	 * @param module
 	 * @return a string representation of the module in tex syntax
 	 */
-	public String convertToTex(Module module) {
+	public String convertToTex(Module module) throws IllegalArgumentException {
+		
+		if(module == null) throw new IllegalArgumentException("module must not be null");
+		
 		String texString = "";
 		
 		// svnid

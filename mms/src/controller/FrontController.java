@@ -117,12 +117,9 @@ public class FrontController extends HttpServlet {
 			// update Module
 			} else if(path.equals("/update/module")) {
 				contentRoutes.updateModule(request, response);
-			// import module
-			} else if(path.equals("/import/modules")) {
-				//contentRoutes.importModules(request, response);
 			// export module
 			} else if(path.equals("/export/module")) {
-				contentRoutes.exportModule(request, response);
+				contentRoutes.exportModule(request, response, this);
 			}
 			
 			// read Subject

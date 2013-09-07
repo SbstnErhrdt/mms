@@ -127,18 +127,37 @@ public class TexParser {
 	private ArrayList<TexNode> cleanContent(ArrayList<TexNode> texNodes) {
 		for(TexNode tn : texNodes) {
 			if(tn.getContent() != null) {
-				String contentString = tn.getContent();
+				String content = tn.getContent();
 				
 				// replace tabs with spaces
-				contentString = contentString.replace("\t", " ");
+				content = content.replace("\t", " ");
 	
 				// replace multiple whitespaces by one
-				contentString = contentString.replaceAll("\\s+", " ");
+				content = content.replaceAll("\\s+", " ");
 				
 				// replace \S by §
-				contentString = contentString.replaceAll("\\\\\\S(\\d+)", "§$1");
+				content = content.replaceAll("\\\\\\S(\\d+)", "§$1");
 						
-				tn.setContent(contentString.trim());
+				// replace \"a by ä etc.
+				content = content.replace("\\\"a", "ä");
+				content = content.replace("\\\"o", "ö");
+				content = content.replace("\\\"u", "ü");
+				content = content.replace("\\\"A", "Ä");
+				content = content.replace("\\\"O", "Ö");
+				content = content.replace("\\\"U", "Ü");				
+				
+				// replace \'a etc by á etc.
+				content = content.replace("\\'a", "á");
+				content = content.replace("\\'o", "ó");
+				content = content.replace("\\'u", "ú");
+				
+				// replace \& by &
+				content = content.replace("\\&", "&");	
+				
+				// replace \@ by @
+				content = content.replace("\\@", "@");
+				
+				tn.setContent(content.trim());
 			}
 		}
 		return texNodes;
@@ -183,9 +202,9 @@ public class TexParser {
 			} else if(tnName.equals("Einordnung")) {
 				module.setSubjectIDs(adaptSubjectIDs(tn.getContent()));
 			} else if(tnName.equals("VoraussetzungenInhaltlich")) {
-				module.setRequirement_content(tn.getContent());
+				module.setRequirement_content(adaptLists(tn.getContent()));
 			} else if(tnName.equals("VoraussetzungenFormal")) {
-				module.setRequirement_formal(tn.getContent());
+				module.setRequirement_formal(adaptLists(tn.getContent()));
 			} else if(tnName.equals("Lernziele")) {
 				module.setLearningTarget(adaptLearningTargetAndContent(tn.getContent()));
 			} else if(tnName.equals("Inhalt")) {
@@ -401,10 +420,16 @@ public class TexParser {
 	 * @return the adapted content string
 	 */
 	private String adaptLiterature(String contentString) {
-		// replace \skript, \buch etc
-		contentString = contentString.replaceAll("\\\\buch\\s?\\{(.*?)\\}", "Buch: $1");
-		contentString = contentString.replaceAll("\\\\skript\\s?\\{(.*?)\\}", "Skript: $1");
-		contentString = contentString.replaceAll("\\\\aufsatz\\s?\\{(.*?)\\}", "Aufsatz: $1");
+		if(contentString != null) {
+			if(!contentString.equals("")) {
+				contentString = "<ul>"+contentString+"</ul>";
+				// replace \skript, \buch etc
+				contentString = contentString.replaceAll("\\\\textit\\s?\\{(.*?)\\}", "<li>$1</li>");
+				contentString = contentString.replaceAll("\\\\buch\\s?\\{(.*?)\\}", "<li>Buch: $1</li>");
+				contentString = contentString.replaceAll("\\\\skript\\s?\\{(.*?)\\}", "<li>Skript: $1</li>");
+				contentString = contentString.replaceAll("\\\\aufsatz\\s?\\{(.*?)\\}", "<li>Aufsatz: $1</li>");
+			}
+		}
 		return contentString;
 	}
 
@@ -413,6 +438,10 @@ public class TexParser {
 	 * @return the adapted content string
 	 */
 	private String adaptLearningTargetAndContent(String content) {
+		return adaptLists(content);
+	}
+	
+	private String adaptLists(String content) {
 		// replace \spiegelstrich with <ul> <li><\li> ... </ul>		
 		Pattern pattern = Pattern.compile("((\\\\spiegelstrich\\s?\\{.*?\\}\\s?)+)");
 		Matcher matcher = pattern.matcher(content);
@@ -421,7 +450,7 @@ public class TexParser {
 			content = matcher.replaceAll("<ul>"+replaceBulletPoints(matcher.group(1))+"</ul>");
 		}
 		
-		return content;
+		return content.trim();
 	}
 
 	/**
@@ -566,7 +595,7 @@ public class TexParser {
 	private String adaptDirector(String director) {
 		String email;
 		
-		if(director.contains("\\StudiendekanInf")) {
+		if(director.contains("\\StudiendekanInf") || director.contains("\\StudienDekanInf")) {
 			GlobalVarDbController db = new GlobalVarDbController();
 			email = db.getGlobalVar("StudiendekanInf");
 		} else {
@@ -580,7 +609,7 @@ public class TexParser {
 					email = matcher.group(2);
 				}
 			} else {
-				// patttern failed => set original string
+				// pattern failed => set original string
 				email = director;
 			}
 		}

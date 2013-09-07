@@ -8,19 +8,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import controller.GlobalVarDbController;
+
 import model.content.Module;
 
 public class TexParseController {
 
 	private String modifier_email;
-	private final String exportPath = "/var/lib/tomcat6/work/Catalina/localhost/mms";
-	
+	private String exportPath;
 
 	public TexParseController(String modifier_email) {
 		this.modifier_email = modifier_email;
+		// get export path
+		GlobalVarDbController db = new GlobalVarDbController();
+		exportPath = db.getGlobalVar("fileExportPath");
+		db.closeConnection();
 	}
 
-	
 	public ArrayList<Module> parseFiles(ArrayList<File> files) throws IOException {
 
 		System.out.println("....................................................");

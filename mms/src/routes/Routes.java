@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -92,9 +93,10 @@ public abstract class Routes {
 	 * @param file
 	 * @throws IOException
 	 */
-	protected void respond(HttpServletResponse response, File file) throws IOException {
+	protected void respond(HttpServletResponse response, HttpServlet servlet, File file) throws IOException {
 		// set headers
-		response.setContentType("application/octet-stream");
+		String mimeType = servlet.getServletContext().getMimeType(file.getAbsolutePath());
+		response.setContentType(mimeType != null? mimeType:"application/octet-stream");
 		response.setHeader("Content-Disposition", "attachment;filename="
 				+ file.getName());
 		response.setContentLength((int) file.length());
