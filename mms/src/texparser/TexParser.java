@@ -376,12 +376,20 @@ public class TexParser {
 			} else if(teachingForm.equals("Tut")) {
 				teachingForm = "Tutorium";
 			} else if(teachingForm.equals("Lab")) {
-				teachingForm = "Laborpraktikum";
+				teachingForm = "Labor";
 			} else if(teachingForm.equals("Sem")) {
 				teachingForm = "Seminar";
 			} else if(teachingForm.equals("ProSem")) {
 				teachingForm = "Proseminar";
-			}
+			} else if(teachingForm.equals("Pra")) {
+				teachingForm = "Praktikum";
+			} else if(teachingForm.equals("PrjSem")) {
+				teachingForm = "Projektseminar";
+			} else if(teachingForm.equals("BaArb")) {
+				teachingForm = "Bachelorarbeit";
+			} else if(teachingForm.equals("MaArb")) {
+				teachingForm = "Masterarbeit";
+			} 
 			Event event = new Event();
 			event.setName(matcher.group(2));
 			event.setLecturer_email(matcher.group(3));
@@ -593,8 +601,13 @@ public class TexParser {
 			else if(tag4.equals("\\Medieninformatik")) tag4 = "Medieninformatik";
 			else if(tag4.equals("\\Mathematik")) tag4 = "Mathematik";
 			else if(tag4.equals("\\AngewandteMathematik")) tag4 = "Angewandte Mathematik";			
-			else if(tag4.equals("\\SoftwareEngineering")) tag4 = "Software-Engineering";			
-			
+			else if(tag4.equals("\\SoftwareEngineering")) tag4 = "Software-Engineering";
+			else if(tag4.equals("\\AET")) tag4 = "Allgemeine Elektrotechnik";			
+			else if(tag4.equals("\\Ingwi")) tag4 = "Ingenieurwissenschaften";	
+			else if(tag4.equals("\\AUT")) tag4 = "Automatisierungs- und Energietechnik";
+			else if(tag4.equals("\\CE")) tag4 = "Communications Engineering";	
+			else if(tag4.equals("\\KUS")) tag4 = "Komunikations- und Systemtechnik";	
+			else if(tag4.equals("\\Mikro")) tag4 = "Mikroelektronik";	
 			String[] tags = {tag2, tag1, matcher.group(3), tag4};
 			cTags.add(tags);
 		}

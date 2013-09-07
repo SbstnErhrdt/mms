@@ -68,7 +68,6 @@ public class ModuleParser {
 		
 		// lecturers
 		texString+="\\Dozenten{"+newLine;
-		// TODO adapt to model: Prof, PD, LB
 		for(String lecturer : module.getLecturers()) {
 			texString+=adaptLecturer(lecturer)+newLine;
 		}
@@ -76,7 +75,6 @@ public class ModuleParser {
 		texString+=newLine;
 		
 		// director
-		// TODO adapt to model: get Name oe variable name
 		texString+="\\Modulverantwortlicher{"+adaptDirector(module.getDirector_email())+"}"+newLine;
 		texString+=newLine;
 		
@@ -197,9 +195,18 @@ public class ModuleParser {
 
 	private String adaptDirector(String director_email) {
 		GlobalVarDbController db = new GlobalVarDbController();
-		if(db.getGlobalVar("StudienDekanInf").equals(director_email)) {
+		if(db.getGlobalVar("StudiendekanInf").equals(director_email)) {
 			db.closeConnection();
-			return "\\StudienDekanInf";
+			return "\\StudiendekanInf";
+		} else if(db.getGlobalVar("StudiendekanET").equals(director_email)) {
+			db.closeConnection();
+			return "\\StudiendekanET";
+		} else if(db.getGlobalVar("StudiendekanIST").equals(director_email)) {
+			db.closeConnection();
+			return "\\StudiendekanIST";
+		} else if(db.getGlobalVar("StudiendekanComm").equals(director_email)) {
+			db.closeConnection();
+			return "\\StudiendekanComm";
 		} else {
 			db.closeConnection();
 			return adaptLecturer(director_email);
@@ -226,6 +233,10 @@ public class ModuleParser {
 			else if(type.equals("Laborpraktikum")) type = "Lab";
 			else if(type.equals("Seminar")) type = "Sem";
 			else if(type.equals("Proseminar")) type = "ProSem";
+			else if(type.equals("Pra"))	type = "Praktikum";
+			else if(type.equals("PrjSem")) type = "Projektseminar";
+			else if(type.equals("BaArb")) type = "Bachelorarbeit";
+			else if(type.equals("MaArb")) type = "Masterarbeit";			
 			
 			teachingForm += newLine+"\\"+type+"{"+e.getName()+"}{"+adaptDirector(e.getLecturer_email())+"}";
 		}
@@ -289,6 +300,12 @@ public class ModuleParser {
 		else if(subjectName.equals("Mathematik")) subjectName = "\\Mathematik";
 		else if(subjectName.equals("Angewandte Mathematik")) subjectName = "\\AngewandteMathematik";			
 		else if(subjectName.equals("Software-Engineering")) subjectName = "\\SoftwareEngineering";	
+		else if(subjectName.equals("Allgemeine Elektrotechnik")) subjectName = "\\AET";			
+		else if(subjectName.equals("Ingenieurwissenschaften")) subjectName = "\\Ingwi";	
+		else if(subjectName.equals("Automatisierungs- und Energietechnik")) subjectName = "\\AUT";
+		else if(subjectName.equals("Communications Engineering")) subjectName = "\\CE";	
+		else if(subjectName.equals("Komunikations- und Systemtechnik")) subjectName = "\\KUS";	
+		else if(subjectName.equals("Mikroelektronik")) subjectName = "\\Mikro";
 		
 		return "\\"+studycourseName+"{\\"+studycourseGraduation+"}{\\"+subject.getType()+"}{"+subjectName+"}";
 	}
