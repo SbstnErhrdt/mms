@@ -110,7 +110,7 @@ public class TexParser {
 		    // add 1 to curlyCounter if there is an opening tag
 		    if(c == '{') curlyCounter++;
 		    else if(c == '}') {
-		    	// remove 1 from curlyCounter os there is a closing tag
+		    	// remove 1 from curlyCounter if there is a closing tag
 		    	// if curlyCounter = 0, it is the last closing tag
 		    	if((curlyCounter=curlyCounter-1) == 0) {
 		    		return i;

@@ -6,12 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import util.Utilities;
 
 import model.content.Deadline;
-// IMPORT MODLES
 import model.content.Event;
 import model.content.Module;
 import model.content.ModuleHandbook;
@@ -2111,7 +2107,7 @@ public class ContentDbController extends DbController {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
 
-			ps.setDate(1, deadline.getDeadline());
+			ps.setDate(1, deadline.getDeadlineDate());
 			ps.setBoolean(2, deadline.isSose());
 			ps.setInt(3, deadline.getYear());
 
@@ -2144,7 +2140,7 @@ public class ContentDbController extends DbController {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
 
-			ps.setDate(1, deadline.getDeadline());
+			ps.setDate(1, deadline.getDeadlineDate());
 			ps.setBoolean(2, deadline.isSose());
 			ps.setInt(3, deadline.getYear());
 

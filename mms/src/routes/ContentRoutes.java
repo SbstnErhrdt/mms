@@ -1,7 +1,6 @@
 package routes;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -11,18 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-
-import texparser.TexParseController;
 
 import model.Employee;
 import model.User;
@@ -37,6 +27,13 @@ import model.userRights.ModuleHandbookRights;
 import model.userRights.ModuleRights;
 import model.userRights.StudycourseRights;
 import model.userRights.SubjectRights;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+import texparser.TexParseController;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -438,7 +435,9 @@ public class ContentRoutes extends Routes {
 
 		String json = "";
 		
-		// Check that we have a file upload request
+		User actorUser = getActorUser(request);
+		
+		// Check if the request is a file upload request
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		
 		if(!isMultipart) {

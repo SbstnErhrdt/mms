@@ -1,6 +1,5 @@
 package routes;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -8,15 +7,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import bcrypt.BCrypt;
-import bcrypt.BcryptTest;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import controller.EmailController;
-import controller.UserDbController;
 
 import model.Employee;
 import model.User;
@@ -27,8 +17,14 @@ import model.userRights.ModuleRights;
 import model.userRights.StudycourseRights;
 import model.userRights.SubjectRights;
 import model.userRights.UserRights;
-
 import util.Utilities;
+import bcrypt.BCrypt;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import controller.EmailController;
+import controller.UserDbController;
 
 public class UserRoutes extends Routes {
 	private UserDbController db;

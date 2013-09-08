@@ -53,11 +53,19 @@ public class Deadline {
 		this.year = year;
 	}
 
-	public Date getDeadline() {
+	public Date getDeadlineDate() {
 		return deadlineDate;
 	}
 
-	public void setDeadline(Date deadline) {
+	public void setDeadlineDate(Date deadline) {
 		this.deadlineDate = deadline;
+	}
+
+	public String getDeadline() {
+		return deadline;
+	}
+
+	public void setDeadline(String deadline) {
+		this.deadline = deadline;
 	}
 }
