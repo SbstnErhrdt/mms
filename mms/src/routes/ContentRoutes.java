@@ -34,12 +34,14 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import texparser.TexParseController;
+import util.Utilities;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import controller.ContentDbController;
 import controller.GlobalVarDbController;
+import fileuploader.CustomServletFileUpload;
 
 public class ContentRoutes extends Routes {
 	private ContentDbController db;
@@ -474,31 +476,29 @@ public class ContentRoutes extends Routes {
 			
 			for(FileItem item : items) {
 				if (item.isFormField()) {
-					// ignore
+					// ignore form fields
 					System.out.println("item: "+item+" is a form field and will not be processed");
 				} else {
 					String fileName = item.getName();
 					File uploadedFile = new File(uploadPath+"/"+fileName);
+					uploadedFile.getParentFile().mkdirs();	// create non-existent directories
 					item.write(uploadedFile);
 					files.add(uploadedFile);
 				}
 			}
 			
-			// TODO insert email
-			
+			// TODO insert email (instead of null)
 			json = gson.toJson(new TexParseController(null).parseFiles(files));
 			
 		} catch (FileUploadException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
-					"FileUploadException",
+					e+"\n"+Utilities.stackTraceToString(e),
 					"importModules(...)")));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			json = gson.toJson(new JsonErrorContainer(new JsonError(
-					"Exception", "importModules(...)")));
+					e+"\n"+Utilities.stackTraceToString(e), "importModules(...)")));
 		}
 		
 		respond(response, json);

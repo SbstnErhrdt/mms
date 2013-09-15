@@ -5,6 +5,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utilities {
+	
+	private final static String newLine = System.getProperty("line.separator");
+	
 	/**
 	 * @param array
 	 * @return the array as string, separated by commas
@@ -46,5 +49,18 @@ public class Utilities {
 		}
 		String output = sb.toString();
 		return output;
+	}
+	
+	/**
+	 * @param e
+	 * @return the stack trace of the passed Throwable instance as String
+	 */
+	public static String stackTraceToString(Throwable e) {
+	    StringBuilder sb = new StringBuilder();
+	    for (StackTraceElement element : e.getStackTrace()) {
+	        sb.append(element.toString());
+	        sb.append(newLine);
+	    }
+	    return sb.toString();
 	}
 }

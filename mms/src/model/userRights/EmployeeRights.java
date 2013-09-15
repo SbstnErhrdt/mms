@@ -2,8 +2,6 @@ package model.userRights;
 
 import java.util.ArrayList;
 
-import model.content.ModuleHandbook;
-
 import util.Utilities;
 
 public class EmployeeRights extends UserRights {

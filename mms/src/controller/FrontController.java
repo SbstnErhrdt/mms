@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import routes.UserRoutes;
 import routes.ContentRoutes;
+import util.Utilities;
 
 
 /**
@@ -228,7 +229,7 @@ public class FrontController extends HttpServlet {
 			
 		} catch(Exception e) {
 			e.printStackTrace();
-			response.getWriter().write(e + "\n"+stackTraceToString(e));
+			response.getWriter().write(e + "\n"+Utilities.stackTraceToString(e));
 		} finally {
 			System.out.println("closing database connections");
 			if(userRoutes != null) userRoutes.closeConnection();
@@ -354,24 +355,11 @@ public class FrontController extends HttpServlet {
 			
 		} catch(Exception e) {
 			e.printStackTrace();
-			response.getWriter().write(e + "\n"+stackTraceToString(e));
+			response.getWriter().write(e + "\n"+Utilities.stackTraceToString(e));
 		} finally {
 			System.out.println("closing database connections");
 			if(userRoutes != null) userRoutes.closeConnection();
 			if(contentRoutes != null) contentRoutes.closeConnection();
 		}
-	}
-	
-	/**
-	 * @param e
-	 * @return the stack trace of the passed Throwable instance as String
-	 */
-	public String stackTraceToString(Throwable e) {
-	    StringBuilder sb = new StringBuilder();
-	    for (StackTraceElement element : e.getStackTrace()) {
-	        sb.append(element.toString());
-	        sb.append("\n");
-	    }
-	    return sb.toString();
 	}
 }

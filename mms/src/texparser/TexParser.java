@@ -587,6 +587,9 @@ public class TexParser {
 			else if(tag1.equals("IST")) tag1 = "Informationssystemtechnik";
 			else if(tag1.equals("ET")) tag1 = "Elektrotechnik";
 			else if(tag1.equals("Comm")) tag1 = "Communications Technology";
+			else if(tag1.equals("AdvMat")) tag1 = "Advanced Materials";
+			else if(tag1.equals("Math")) tag1 = "Mathematik";
+			else if(tag1.equals("ChemIng")) tag1 = "Chemieingenieurwesen";
 			
 			String tag2 = matcher.group(2);
 			if(tag2.equals("Ba")) tag2 = "Bachelor";

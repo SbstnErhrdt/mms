@@ -14,7 +14,7 @@ import model.content.Subject;
 
 public class ModuleParser {
 	
-	private String newLine = System.getProperty("line.separator");
+	private final String newLine = System.getProperty("line.separator");
 	
 	/**
 	 * @param module
@@ -279,11 +279,12 @@ public class ModuleParser {
 	}
 
 	private String adaptSubjectID(int subjectID) {
-		// TODO adapt to model: \Inf{\Ba} ...
 		ContentDbController db = new ContentDbController();
 		
+		// get Subject
 		Subject subject = db.getSubject(subjectID);
 		
+		// get Studycourse
 		Studycourse studycourse = db.getStudycourse(subject.getStudycourses_studycourseID());
 		
 		db.closeConnection();
@@ -296,6 +297,9 @@ public class ModuleParser {
 		else if(studycourseName.equals("Informationssystemtechnik")) studycourseName = "IST";
 		else if(studycourseName.equals("Elektrotechnik")) studycourseName = "ET";
 		else if(studycourseName.equals("Communications Technology")) studycourseName = "Comm";
+		else if(studycourseName.equals("Advanced Materials")) studycourseName = "AdvMat";
+		else if(studycourseName.equals("Mathematik")) studycourseName = "Math";
+		else if(studycourseName.equals("Chemieingenieurwesen")) studycourseName = "ChemIng";
 		
 		String studycourseGraduation = studycourse.getGraduation();
 		
