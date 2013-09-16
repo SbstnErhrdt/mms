@@ -88,13 +88,13 @@ public class ModuleParser {
 		
 		// requirement_content
 		texString+="\\VoraussetzungenInhaltlich{"+newLine;
-		texString+=module.getRequirement_content();
+		texString+=adaptLists(module.getRequirement_content());
 		texString+="}"+newLine;
 		texString+=newLine;
 		
 		// requirement_formal
 		texString+="\\VoraussetzungenFormal{"+newLine;
-		texString+=module.getRequirement_formal();
+		texString+=adaptLists(module.getRequirement_formal());
 		texString+="}"+newLine;
 		texString+=newLine;
 		
@@ -259,11 +259,14 @@ public class ModuleParser {
 
 	private String adaptLiterature(String literature) {
 		// TODO replace \buch etc
-		return literature;
+		return adaptLists(literature);
 	}
 
 	private String adaptContent(String content) {
-		
+		return adaptLists(content);
+	}
+	
+	private String adaptLists(String content) {
 		// remove <ul> and </ul>
 		content = content.replace("<ul>", "");
 		content = content.replace("</ul>", "");
@@ -274,8 +277,7 @@ public class ModuleParser {
 	}
 
 	private String adaptLearningTarget(String learningTarget) {
-		learningTarget = adaptContent(learningTarget);
-		return learningTarget;
+		return adaptLists(learningTarget);
 	}
 
 	private String adaptSubjectID(int subjectID) {

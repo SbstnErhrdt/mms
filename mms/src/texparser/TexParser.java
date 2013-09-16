@@ -465,7 +465,6 @@ public class TexParser {
 		while(matcher.find()) {
 			content = matcher.replaceAll("<ul>"+replaceBulletPoints(matcher.group(1))+"</ul>");
 		}
-		
 		return content.trim();
 	}
 
