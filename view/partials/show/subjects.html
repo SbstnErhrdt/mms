@@ -25,6 +25,7 @@
 					<tr>
 						<th>#</th>
 						<th>Name</th>
+						<th>Typ</th>
 						<th>Archiviert</th>
 						<th>Freigegeben</th>
 						<th ng-show="isAuthorised()">Aktion</th>
@@ -34,6 +35,7 @@
 				<tr ng-repeat="subject in subjects | filter: search">
 					<td>{{subject.subjectID}}</td>
 					<td><a href="#/show/subject?subjectID={{subject.subjectID}}">{{subject.name}}</a></td>
+					<td>{{subject.type}}</td>
 					<td><span class="label" ng-hide="subject.archived">nicht archiviert</span><span class="label label-warning" ng-show="subject.archived">archiviert</span></td>
 					<td ng-hide="canDeblockContent()">
 						<span class="label" ng-hide="subject.enabled">nicht freigegeben</span>

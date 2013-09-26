@@ -1,0 +1,18 @@
+<div class="container-fluid">
+	<div class="row-fluid">
+		<ul class="span 12 breadcrumb">
+			<li><a href="#/home">Home</a> <span class="divider">/</span></li>
+			<li class="active">Modul-Upload</li>
+		</ul>
+	</div>
+	<div class="row-fluid">
+		<div class="span12">
+			<!--Body content-->
+			<h1>Modul-Upload</h1>
+			<p id="description"></p>
+			<input type="file" id="files" name="files[]" multiple webkitdirectory directory />
+			<output id="list"></output>
+			<button ng-click="send()" class="btn btn-default" ng-disabled="sending">Importieren</button>
+		</div>
+	</div>
+</div>

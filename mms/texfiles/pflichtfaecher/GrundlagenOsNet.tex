@@ -1,0 +1,128 @@
+\svnid{$Id$}
+
+\Modultitel{Grundlagen der Betriebssysteme und Rechnernetze}
+
+\Modulkuerzel{72020}
+
+\ECTS{12}
+
+\SWS{9} % 6V + 2Ü + 1P
+
+\Sprache{Deutsch}
+
+\Turnus{
+  \periodisch{\SoSe}
+}
+
+\Moduldauer{2}
+
+\Modulverantwortlicher{\StudiendekanInf}
+
+\Dozenten{
+  \Prof{Dr. Heiko Falk}
+  \Prof{Dr.-Ing. Franz J. Hauck}
+  \Prof{Dr. Frank Kargl}
+  \Prof{Dr.-Ing. Frank Slomka}
+  \LB{Dipl.-Ing. Jörg Siedenburg}
+}
+
+
+\Einordnung{
+  \Inf{\Ba}{\Pflichtfach}{\TSI}
+  \Inf{\La}{\Pflichtmodul}{}
+  \IST{\Ba}{\Pflichtmodul}{}
+  \MedInf{\Ba}{\Pflichtfach}{\TSI}
+  \SwEng{\Ba}{\Pflichtfach}{\TSI}
+}
+
+\VoraussetzungenInhaltlich{
+  Keine.
+}
+
+\Lernziele{
+  Die Studierenden identifizieren die Grundlagen der Funktionsweise von Rechensystemen aus der Sicht der externen Rechnerarchitektur. Sie fassen ein Rechensystem als Ausführungsplattform von Software auf, wie es aus der Perspektive des Programmierers wahrgenommen wird, d.h. sie erkennen die konzeptionelle Struktur und das funktionale Verhalten von Rechensystemen. Die Studierenden betrachten moderne Rechensysteme als Verbund miteinander kommunizierender Komponenten.
+
+  Nach erfolgreichem Besuch der Veranstaltung sind die Studierenden in der Lage, die Wechselwirkungen zwischen einem Rechensystem, seinen Kommunikationskanälen, der darauf laufenden Systemsoftware und Anwendungen beurteilen zu können. Insbesondere sollen sie die Konsequenzen der Ausführung von Anwendungen und Systemsoftware bis hinab auf die Ebene der Prozessor-Programmierung in Assembler erkennen können. Sie sollen so in die Lage versetzt werden, die Leistung eines Rechensystems auf Ebene des Prozessors, der Rechnernetze, der Systemsoftware, und auf Anwendungsebene abzuschätzen.
+
+  Studierende können die Aufgaben von Kommunikationsschichten anhand des ISO/OSI-Modells benennen und am Beispiel des Internets erläutern. Sie sind in der Lage, auf Basis von UDP und TCP kommunizierende Anwendungen in Java zu entwickeln. Sie verstehen gängige Routingalgorithmen, Verfahren zur zuverlässigen Datenübertragung und Protokolle zum Medienzugang und sind in der Lage, diese anhand ihrer Merkmale und Funktionen zu bewerten. Sie können skizzieren, wie grundlegende Verfahren der Computersicherheit funktionieren und wie diese auf netzwerkbasierte Kommunikation anwendbar sind.
+}
+
+% DONE: Inhalte anhand jetziger Vorlesungs-Gliederung aktualisiert.
+\Inhalt{
+  \spiegelstrich{Einführung: Ausführungsplattformen, Historische Entwicklung, Aufbau heutiger Rechner}
+  \spiegelstrich{Zahlendarstellungen und Rechnerarithmetik: Natürliche Zahlen, binäre Arithmetik, rationale Zahlen, Zeichensätze}
+}
+\InhaltForts{
+  \spiegelstrich{Einführung in Betriebssysteme: Aspekte von Betriebssystemen, Hardware-Unterstützung}
+  \spiegelstrich{Prozesse und Nebenläufigkeit: Prozesse, Auswahlstrategien (Scheduling), Aktivitätsträger (Threads), Parallelität und Nebenläufigkeit, Koordinierung}
+  \spiegelstrich{Filesysteme: UNIX/Linux, FAT32, NTFS, Journaling-Filesysteme, Limitierung der Plattennutzung}
+  \spiegelstrich{Rechnernetze: ISO/OSI-Modell, Anwendungs-, Transport-, Netzwerk- und Sicherungsschicht}
+  \spiegelstrich{Kommunikationsprotokolle: Ethernet, IPv4, IPv6, TCP, UDP, ICMP, DNS, ARP}
+  \spiegelstrich{Anwendungsprotokolle}
+  \spiegelstrich{Kommunikationssicherheit: kryptographische Grundlagen, Grundlagen der IT-Sicherheit, Sicherheitsprotokolle (z.B. TLS)}
+  \spiegelstrich{Speicherverwaltung: Speichervergabe, Mehrprogrammbetrieb, Virtueller Speicher}
+  \spiegelstrich{Rechteverwaltung}
+  \spiegelstrich{Ein-/Ausgabe und Gerätetreiber: Geräteaufbau, Treiberschnittstelle und Treiberimplementierung, UNIX/Linux, Windows I/O-System, Festplattentreiber, Treiber für weitere Geräte}
+  \spiegelstrich{Einführung in MIPS-Assembler: MIPS Architekturskizze, Werkzeuge zur Code-Erzeugung, Assemblersprache, MIPS-Assembler, Kontrollkonstrukte von Hochsprachen}
+}
+
+% DONE: Aktualisiert.
+\Literatur{
+  \buch{A. S. Tanenbaum. Moderne Betriebssysteme. 2. Auflage, Pearson, 2005.}
+  \buch{A. Silberschatz, P. B. Galvin, G. Gagne. Operating system concepts. 9. Auflage, John Wiley, 2012.}
+  \buch{W. Stallings. Operating systems: internals and design principles. 7. Auflage, Pearson, 2012.}
+  \buch{W. Stallings. Data and Computer Communications. 9. Auflage, Prentice Hall, 2011.}
+  \buch{J. F. Kurose, K. W. Ross. Computer Networking, A Top-Down Approach. 6. Auflage, Addison-Wesley, 2012.}
+  \buch{J. F. Kurose, K. W. Ross. Computernetzwerke, Der Top-Down-Ansatz. 5. Auflage, Pearson, 2012.}
+}
+
+\Grundlagen{
+  Vertiefende Module aus den verteilten Systemen, der Robotik und den eingebetteten Systemen.
+}
+
+% DONE: Übungen zu Rechnernetzen fehlten, hinzugefügt.
+% DONE: Benji raus, Nico rein.
+\Lehrformen{
+  \Vlg{Grundlagen der Betriebssysteme, 4 SWS}{Prof. Dr. Heiko Falk}
+  \Vlg{Grundlagen der Rechnernetze, 2 SWS}{Prof. Dr. Frank Kargl}
+  \Ubg{Grundlagen der Betriebssysteme, 1 SWS}{Dipl.-Inf. Nicolas Roeser}
+  \Ubg{Grundlagen der Rechnernetze, 1 SWS)}{Dipl.-Inf. Benjamin Erb}
+  \Lab{Hardwarenahe Programmierung (1 SWS)}{Dipl.-Ing. Jörg Siedenburg}
+}
+
+\Arbeitsaufwand{
+  \Praesenzzeit{135}
+  \VorNachbereitung{225}
+  \Summe{360}
+}
+
+% Nach Rücksprache mit Frank Kargl, Benjamin Erb und Nico:
+% - Es wird jede Semesterferien genau eine Klausur in Betriebssystemen und
+%   Rechnernetzen angeboten.
+% - Das bedeutet, dass insbes. nach dem Wintersemester NICHT Haupt- und
+%   Wiederholungsklausur angeboten werden.
+% DONE: Praktikum in Labor umbenannt.
+% DONE: "Technische Informatik I" umbenannt in "Grundlagen der Betriebssysteme
+%       und Rechnernetze.
+\Leistungsnachweis{
+  Die Vergabe der Leistungspunkte erfolgt aufgrund des Bestehens einer schriftlichen Modulprüfung sowie der erfolgreichen Teilnahme am Labor "`Hardwarenahe Programmierung"'. Die Modulprüfung zählt als Orientierungsprüfung "`Grundlagen der Betriebssysteme und Rechnernetze"' nach \S\,5 der fachspezifischen Prüfungsordnung Informatik, Medieninformatik und Software-Engineering.
+}
+
+% DONE: Zulassungsvoraussetzung definiert.
+\VoraussetzungenFormal{
+  Die Anmeldung zur Modulprüfung setzt die erfolgreiche Teilnahme an den Übungen Grundlagen der Betriebssysteme und an den Übungen "`Grundlagen der Rechnernetze"' voraus.
+}
+
+% DONE: Notenbonus entfernt.
+% Nach Rücksprache mit Frank Kargl, Benjamin Erb und Nico:
+% - Wir machen keinen Notenbonus, sondern eine Zulassungsvoraussetzung statt
+%   dessen.
+% - Für die Klausur werden die Punkte über beide Teile (Betriebssysteme und
+%   Rechnernetze) global summiert, und anhand dieser EINEN Punktezahl wird
+%   EINE Klausurnote ermittelt.
+% - Das bedeutet insbes., dass Studierende NICHT sowohl den Betriebssystem- als
+%   auch den Rechnernetze-Teil separat bestehen müssen, um die Klausur
+%   insgesamt zu bestehen.
+\Notenbildung{
+  Die Modulnote ergibt sich aus der Modulprüfung. Das Labor ist unbenotet.
+}

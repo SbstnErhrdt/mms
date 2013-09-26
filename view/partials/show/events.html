@@ -23,6 +23,7 @@
 						<tr>
 							<th>#</th>
 							<th>Name</th>
+							<th>Typ</th>
 							<th>Raum &amp; Ort</th>
 							<th>Zeiten</th>
 							<th>Archiviert</th>
@@ -33,7 +34,8 @@
 					<tbody>
 						<tr ng-repeat="event in events | filter: search">
 							<td>{{event.eventID}}</td>
-							<td><a href="#/show/event?eventID={{event.eventID}}">{{event.name}}</a></td>
+							<td style="width:30%"><a href="#/show/event?eventID={{event.eventID}}">{{event.name}}</a></td>
+							<td>{{event.type}}
 							<td>{{event.place}} - {{event.room}}</td>
 							<td>{{event.times}}</td>
 							<td><span class="label" ng-hide="event.archived">nicht archiviert</span><span class="label label-warning" ng-show="event.archived">archiviert</span></td>

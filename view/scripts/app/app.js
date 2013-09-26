@@ -95,6 +95,17 @@ MMSApp.config(function($routeProvider, $httpProvider) {
 		controller: requestCtrl
 	});
 
+	/*
+	*	UPLOAD & EXPORT ROUTES
+	*/
+	$routeProvider.when("/import/modules", {
+		templateUrl: pURL+"show/moduleUpload.html",
+		controller: moduleUploadCtrl
+	});
+	$routeProvider.when("/export/module", {
+		templateUrl: pURL+"show/modules.html",
+		controller: moduleUploadCtrl
+	});
 
 	/*
 	*	CREATE ROUTES
@@ -866,7 +877,7 @@ MMSApp.factory("UserFactory", function($http, $q) {
 		} else {
 			// Error
 			console.log("Error: Es wurden nicht alle nötigen Felder (email) ausgefüllt.");
-		}	
+		}
 	};
 
 	return factory;
@@ -1056,7 +1067,7 @@ MMSApp.factory("EventFactory", function($http, $q) {
 			deferred.reject(data);
 		});
 		return deferred.promise;
-	
+
 	};
 
 	factory.deleteEvent = function(eventID) {
@@ -1145,10 +1156,10 @@ MMSApp.factory("EventFactory", function($http, $q) {
 			if(url.error) {
 				return url.error;
 			}
-			
+
 			// enable hinzufügen zur URL
 			url = url+"&enabled="+enable;
-			
+
 
 			$http.get(url).success(function(data, status) {
 				if(eventID === data.eventID) {
@@ -1411,10 +1422,10 @@ MMSApp.factory("ModuleFactory", function($http, $q) {
 			if(url.error) {
 				return url.error;
 			}
-			
+
 			// enable hinzufügen zur URL
 			url = url+"&enabled="+enable;
-			
+
 
 			$http.get(url).success(function(data, status) {
 				if(moduleID === data.moduleID) {
@@ -1437,7 +1448,7 @@ MMSApp.factory("ModuleFactory", function($http, $q) {
 
 		} else {
 			sendError("Query nicht vollständig.");
-			
+
 		}
 		return deferred.promise;
 	};
@@ -1638,7 +1649,7 @@ MMSApp.factory("SubjectFactory", function($http, $q) {
 					// Error
 					console.log("Der Server lieferte 'null' zurück.");
 				} else {
-					
+
 					if(subject.name == data.name) {
 						console.log("Fach wurde geupdated.");
 					} else {
@@ -1667,10 +1678,10 @@ MMSApp.factory("SubjectFactory", function($http, $q) {
 			if(url.error) {
 				return url.error;
 			}
-			
+
 			// enable hinzufügen zur URL
 			url = url+"&enabled="+enable;
-			
+
 
 			$http.get(url).success(function(data, status) {
 				if(subjectID === data.subjectID) {
@@ -1818,7 +1829,7 @@ MMSApp.factory("ModuleHandbookFactory", function($http, $q) {
 		} else {
 			url = url+"read/modulehandbooks";
 		}
-		
+
 		var deferred = $q.defer();
 		$http.get(url).success(function(data, status) {
 
@@ -1904,7 +1915,7 @@ MMSApp.factory("ModuleHandbookFactory", function($http, $q) {
 			}).error(function(data, status, headers, config) {
 				sendError("Error: "+data+" - "+status);
 				callback();
-			});	
+			});
 		} else {
 			sendError("Es wurden nicht alle Felder ausgefüllt.");
 		}
@@ -1920,9 +1931,9 @@ MMSApp.factory("ModuleHandbookFactory", function($http, $q) {
 			if(url.error) {
 				return url.error;
 			}
-			
+
 			url = url+"&enabled="+enable;
-			
+
 			$http.get(url).success(function(data, status) {
 				if(moduleHandbookID === data.moduleHandbookID) {
 					ModuleHandbook.moduleHandbookID = data.moduleHandbookID;
@@ -2169,7 +2180,7 @@ MMSApp.factory("StudycourseFactory", function($http, $q) {
 			if(url.error) {
 				return url.error;
 			}
-			
+
 			// enable hinzufügen zur URL
 			url = url+"&enabled="+enable;
 

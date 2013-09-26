@@ -1,0 +1,23 @@
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<ul class="breadcrumb">
+				<li class="active">Upload</li>
+			</ul>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12" ng-show="isAdmin">
+			<h2>Upload</h2>
+			<p>Bitte w&auml;hlen Sie eine Datei aus, welche sie hochladen m&ouml;chten</p>
+			<hr />
+			<FORM ENCTYPE="multipart/form-data"
+			method="POST" action="http://sopra.ex-studios.net:8080/mms/import/modules">
+			<INPUT TYPE="file" NAME="files1" multiple="multiple">
+				<hr />
+				<br />
+				<INPUT TYPE="submit" class="btn" VALUE="upload">
+			</FORM>
+		</div>
+	</div>
+</div>

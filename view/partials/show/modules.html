@@ -14,7 +14,9 @@
 		      <span class="add-on">Filtern:</span>
 		      <input id="prependedInput" type="text" ng-model="search.name" placeholder="nach Name">
 		    </div>
-			<a ng-show="isEmployee" href="#/create/module" class="btn btn-success pull-left"><i class="icon-edit icon-white"></i> Neues Modul erstellen</a>
+			<a ng-show="isEmployee" href="#/create/module" class="btn btn-success pull-left"><i class="icon-edit icon-white"></i> Neues Modul erstellen </a> 
+
+			<a ng-show="isEmployee" href="#/import/modules" class="btn btn-inverse"><i class="icon-white icon-arrow-up"></i> Modul(e) importieren</a>
 		    <div style="clear: both;"></div>
 			<hr />
 			<table class="table table-hover">
@@ -48,6 +50,8 @@
 							<a href="#delete" class="btn btn-mini btn-danger" ng-click="deleteContentModal(module.moduleID, module.name, 'module')" data-target="#delete" data-toggle="modal" ng-show="canDelete(module.moduleID)"><i class="icon-trash icon-white"></i> l&ouml;schen</a>
 
 							<a href="#/update/module?moduleID={{module.moduleID}}" class="btn btn-mini btn-primary" ng-show="canEdit(module.moduleID)"><i class="icon-refresh icon-white"></i> bearbeiten</a>
+
+							<a href="http://sopra.ex-studios.net:8080/mms/export/module?moduleID={{module.moduleID}}" class="btn btn-mini btn-inverse" ng-show="isEmployee"><i class="icon-white icon-arrow-down"></i> exportieren</a>
 						</td>
 					</tr>
 				</tbody>

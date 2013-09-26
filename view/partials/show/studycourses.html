@@ -24,6 +24,7 @@
 		    	<thead>
 					<tr>
 						<th>#</th>
+						<th>Abschluss</th>
 						<th>Name</th>
 						<th>Archiviert</th>
 						<th>Freigegeben</th>
@@ -33,6 +34,7 @@
 		    	<tbody>
 				<tr ng-repeat="studycourse in studycourses | filter: search">
 					<td>{{studycourse.studycourseID}}</td>
+					<td>{{studycourse.graduation}}</td>
 					<td><a href="#/show/studycourse?studycourseID={{studycourse.studycourseID}}">{{studycourse.name}}</a></td>
 					<td><span class="label" ng-hide="studycourse.archived">nicht archiviert</span><span class="label label-warning" ng-show="studycourse.archived">archiviert</span></td>
 					

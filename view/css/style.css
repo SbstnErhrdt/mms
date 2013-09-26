@@ -157,3 +157,7 @@ ul.forward, ul.backward {
 .vco-feature {
 	display:none;
 }
+
+.importButton {
+	margin-left: 10px;
+}
