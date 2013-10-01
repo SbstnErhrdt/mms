@@ -19,6 +19,7 @@ import model.Employee;
 import model.User;
 import model.content.Event;
 import model.content.Module;
+import model.content.ModuleField;
 import model.content.ModuleHandbook;
 import model.content.Studycourse;
 import model.content.Subject;
@@ -137,7 +138,7 @@ public class Test {
 				"test", true, "irgend n Raum", "irgendwo", "Vorlesung", "Dienstag 10 bis 12", 
 				"rob@rob.com", null);
 		
-		*/
+		
 		
 		ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
 		subjectIDs.add(248);
@@ -151,7 +152,7 @@ public class Test {
 				"6", "4", "german", "slomka@uni-ulm.de", "keine", "keine", "WiSe", "muendl", "bissele schwatze", 
 				"dein Leben", "was soll des sein", "überleben", "Mikey Maus", false, true, false, false, null, 
 				subjectIDs, lecturers);
-		
+		*/
 		
 		ContentDbController cdbc = new ContentDbController();
 		
@@ -204,7 +205,7 @@ public class Test {
 		*/
 		
 		
-		
+		/*
 		Studycourse studycourse = new Studycourse(1, 2, "Bachelor", "Medieninformatik", false, null, false, "sopra@ex-studios.net", null);
 		
 		System.out.println(studycourse);
@@ -220,7 +221,7 @@ public class Test {
 		
 		System.out.println(studycourse);
 		
-		/*
+		
 		
 		ModuleHandbook mhb = new ModuleHandbook(2, "Neues Testmodulhandbuch", 2, "SoSe2013", false);
 		
@@ -442,5 +443,15 @@ public class Test {
 		
 		*/
 		
+		ModuleField mf1 = new ModuleField(-1, 1, "Testfeld1", "Testwert1");
+		ModuleField mf2 = new ModuleField(-1, 1, "Testfeld2", "Testwert1");
+		
+		ArrayList<ModuleField> moduleFields = new ArrayList<ModuleField>();
+		moduleFields.add(mf1);
+		moduleFields.add(mf2);
+		
+		Module module = new Module(-1, "Testname", null, null, moduleFields);
+		
+		System.out.println(cdbc.createModule(module));
 	}
 }
