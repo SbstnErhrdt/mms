@@ -1,54 +1,78 @@
 package model.content;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import util.Utilities;
 
 public class Module extends Content {
-	
+
 	private int moduleID;
-	
+
 	// parent subjects
 	private ArrayList<Integer> subjectIDs;
-	
+
 	// lecturers
 	private ArrayList<String> lecturers_emails;
-	
+
 	// content fields
 	private ArrayList<ModuleField> moduleFields;
 
 	/**
-	 * constructor 
+	 * constructor
 	 */
 	public Module() {
 		super();
 	}
 
-	/** 
+	/**
 	 * constructor
+	 * 
 	 * @param moduleID
 	 */
 	public Module(int moduleID) {
 		super();
 		this.moduleID = moduleID;
 	}
-	
-	/** 
+
+	/**
 	 * constructor
+	 * 
 	 * @param moduleID
+	 * @param name
+	 * @param lastModified
+	 * @param modifier_email
+	 * @param enabled
+	 */
+	public Module(int moduleID, String name, Timestamp lastModified,
+			String modifier_email, boolean enabled) {
+		this.moduleID = moduleID;
+		this.name = name;
+		this.lastModified = lastModified;
+		this.modifier_email = modifier_email;
+		this.enabled = enabled;
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param moduleID
+	 * @param name
+	 * @param enabled
 	 * @param subjectIDs
 	 * @param lecturers_emails
 	 * @param moduleFields
 	 */
-	public Module(int moduleID, String name, ArrayList<Integer> subjectIDs,
-			ArrayList<String> lecturers_emails,
+	public Module(int moduleID, String name, boolean enabled,
+			ArrayList<Integer> subjectIDs, ArrayList<String> lecturers_emails,
 			ArrayList<ModuleField> moduleFields) {
 		super();
 		this.moduleID = moduleID;
+		this.name = name;
+		this.enabled = enabled;
 		this.subjectIDs = subjectIDs;
 		this.lecturers_emails = lecturers_emails;
 		this.moduleFields = moduleFields;
-		this.name = name;
 	}
 
 	public int getID() {
@@ -81,5 +105,15 @@ public class Module extends Content {
 
 	public void setModuleFields(ArrayList<ModuleField> moduleFields) {
 		this.moduleFields = moduleFields;
-	}	
+	}
+
+	@Override
+	public String toString() {
+		return "Module [moduleID=" + moduleID + ", subjectIDs=" + subjectIDs
+				+ ", lecturers_emails=" + lecturers_emails + ", moduleFields="
+				+ moduleFields + ", name=" + name + ", content=" + content
+				+ ", modifier_email=" + modifier_email + ", lastModified="
+				+ lastModified + ", archived=" + archived + ", enabled="
+				+ enabled + ", version=" + version + "]";
+	}
 }

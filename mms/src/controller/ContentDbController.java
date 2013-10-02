@@ -396,6 +396,7 @@ public class ContentDbController extends DbController {
 
 	/**
 	 * creates a new module in the database
+	 * 
 	 * @param module
 	 * @return true, if module was created successfully
 	 */
@@ -403,7 +404,7 @@ public class ContentDbController extends DbController {
 
 		// create entry in modules table
 		String query = "INSERT INTO modules(name, modifier_email) VALUES(?,?);";
-		
+
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query,
@@ -436,30 +437,56 @@ public class ContentDbController extends DbController {
 				e.printStackTrace();
 			}
 		}
-		
+
+		// creates entries in the modules_subjects table
+		ArrayList<Integer> subjectIDs = module.getSubjectIDs();
+		if(subjectIDs != null) {
+			if (!insertModulesSubjectsRelations(module.getID(),
+					subjectIDs))
+				return false;
+		}
+
+		// creates entries in the module_lecturers table
+		ArrayList<String> lecturers = module.getLecturers();
+		if(lecturers != null) {
+			if (!insertModuleLecturersRelations(module.getID(),
+					lecturers))
+				return false;
+		}
+
 		// checks, if the moduleFields need to be created (moduleFieldID == -1)
 		// and creates them if needed
 		ArrayList<ModuleField> moduleFields = module.getModuleFields();
-		for(ModuleField mf : moduleFields) {
-			if(mf.getModuleFieldID() == -1) {
+		for (ModuleField mf : moduleFields) {
+			if (mf.getModuleFieldID() == -1) {
 				createModuleField(mf);
 			}
 		}
-		
-		// links the new Module to existent ModuleFields with the modules_moduleFields table
-		query = "INSERT INTO modules_moduleFields(moduleID, moduleFieldID) VALUES(?,?);";
-		
+		return insertModulesModuleFieldsRelations(module.getID(), moduleFields);
+	}
+
+	/**
+	 * updates a module
+	 * 
+	 * @param module
+	 * @return true, if module was updated successfully
+	 */
+	public boolean updateModule(Module module) {
+
+		String query = "UPDATE modules SET name=?, modifier_email=?, "
+				+ "lastModified=CURRENT_TIMESTAMP WHERE moduleID=?;";
+
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
 
-			for(ModuleField mf : moduleFields) {
-				ps.setInt(1, module.getID()); 				// moduleID
-				ps.setInt(2, mf.getModuleFieldID());		// moduleFieldID
-				System.out.println("[db] createModule: " + ps);
-				ps.executeUpdate();
-			}
-			
+			ps.setString(1, module.getName());
+			ps.setString(2, module.getModifier_email());
+			ps.setInt(3, module.getID());
+
+			System.out.println("[db] updateModule: " + ps);
+
+			ps.executeUpdate();
 			db.commit();
 			ps.close();
 		} catch (SQLException e) {
@@ -473,256 +500,353 @@ public class ContentDbController extends DbController {
 				e.printStackTrace();
 			}
 		}
-		
-		
-		/*
-		 * // GET VALUENAMES String valueNames =
-		 * "duration, effort_presenceTime, " +
-		 * "effort_preAndPost, name, content, " +
-		 * "modifier_email, token, englishTitle, " +
-		 * "lp, sws, language, director_email, " +
-		 * "requirement_formal, requirement_content, " +
-		 * "rotation, performanceRecord, gradeFormation, " +
-		 * "basisFor, ilias, learningTarget, " +
-		 * "literature, isCritical, periodicalRotation, " + "archived, enabled";
-		 * 
-		 * // QUERY String query = "INSERT INTO modules (" + valueNames +
-		 * ") VALUES (" + getXQuestionMarks(25) + ");";
-		 * 
-		 * try { db.setAutoCommit(false); PreparedStatement ps =
-		 * db.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-		 * 
-		 * ps.setInt(1, module.getDuration()); // duration ps.setInt(2,
-		 * module.getEffort_presenceTime()); // effort_presenceTime ps.setInt(3,
-		 * module.getEffort_preAndPost()); // effort_preAndPost ps.setString(4,
-		 * module.getName()); // name ps.setString(5, module.getContent()); //
-		 * content ps.setString(6, module.getModifier_email()); //
-		 * modifier_email ps.setString(7, module.getToken()); // token
-		 * ps.setString(8, module.getEnglishTitle()); // englishTitle
-		 * ps.setString(9, module.getLp()); // lp ps.setString(10,
-		 * module.getSws()); // sws ps.setString(11, module.getLanguage()); //
-		 * language ps.setString(12, module.getDirector_email()); //
-		 * director_email ps.setString(13, module.getRequirement_formal()); //
-		 * requirement_formal ps.setString(14, module.getRequirement_content());
-		 * // requirement_content ps.setString(15, module.getRotation()); //
-		 * rotation ps.setString(16, module.getPerformanceRecord()); //
-		 * performanceRecord ps.setString(17, module.getGradeFormation()); //
-		 * gradeFormation ps.setString(18, module.getBasisFor()); // basisFor
-		 * ps.setString(19, module.getIlias()); // ilias ps.setString(20,
-		 * module.getLearningTarget()); // learningTarget ps.setString(21,
-		 * module.getLiterature()); // literature ps.setBoolean(22,
-		 * module.isCritical()); // isCritical ps.setBoolean(23,
-		 * module.isPeriodicalRotation()); // periodicalRotation
-		 * ps.setBoolean(24, module.isArchived()); // archived ps.setBoolean(25,
-		 * false); // enabled
-		 * 
-		 * System.out.println("[db] createModule: " + ps);
-		 * 
-		 * ps.executeUpdate(); db.commit();
-		 * 
-		 * // get generated moduleID ResultSet rs = ps.getGeneratedKeys(); if
-		 * (rs.next()) { module.setID(rs.getInt(1)); //
-		 * System.out.println("Generated moduleID: " + module.getID()); }
-		 * 
-		 * ps.close(); rs.close(); } catch (SQLException e) {
-		 * e.printStackTrace(); return false; } finally { try {
-		 * db.setAutoCommit(true); } catch (SQLException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); } }
-		 * 
-		 * // CREATE ENTRIES IN TABLE modules_subjects query =
-		 * "INSERT INTO modules_subjects(moduleID, subjectID) VALUES (" +
-		 * module.getID() + ", ?)";
-		 * 
-		 * try { db.setAutoCommit(false); PreparedStatement ps =
-		 * db.prepareStatement(query);
-		 * 
-		 * System.out.println("[db] createModule: " + ps);
-		 * 
-		 * ArrayList<Integer> subjectIDs = module.getSubjectIDs(); for (int
-		 * subjectID : subjectIDs) { ps.setInt(1, subjectID);
-		 * ps.executeUpdate(); db.commit(); }
-		 * 
-		 * } catch (SQLException e) { e.printStackTrace(); return false; }
-		 * finally { try { db.setAutoCommit(true); } catch (SQLException e) {
-		 * e.printStackTrace(); } }
-		 * 
-		 * // CREATE ENTRIES IN TABLE modules_lecturers query =
-		 * "INSERT INTO module_lecturers(modules_moduleID, employees_email) " +
-		 * "VALUES (" + module.getID() + ", ?)";
-		 * 
-		 * try { db.setAutoCommit(false); PreparedStatement ps =
-		 * db.prepareStatement(query);
-		 * 
-		 * System.out.println("[db] createModule: " + ps);
-		 * 
-		 * ArrayList<String> lecturers = module.getLecturers(); for (String
-		 * lecturer_email : lecturers) { ps.setString(1, lecturer_email);
-		 * ps.executeUpdate(); db.commit(); }
-		 * 
-		 * } catch (SQLException e) { e.printStackTrace(); return false; }
-		 * finally { try { db.setAutoCommit(true); } catch (SQLException e) {
-		 * e.printStackTrace(); } }
-		 */
-		return true;
+
+		// deletes entries from the modules_subjects table
+		query = "DELETE FROM modules_subjects WHERE moduleID=?;";
+
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+
+			ps.setInt(1, module.getID());
+
+			System.out.println("[db] updateModule: " + ps);
+
+			ps.executeUpdate();
+			db.commit();
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		// re-creates entries in the modules_subjects table
+		ArrayList<Integer> subjectIDs = module.getSubjectIDs();
+		if(subjectIDs != null) {
+			if (!insertModulesSubjectsRelations(module.getID(),
+					subjectIDs))
+				return false;
+		}
+
+		// deletes entries from the module_lecturers table
+		query = "DELETE FROM module_lecturers WHERE modules_moduleID=?;";
+
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+
+			ps.setInt(1, module.getID());
+
+			System.out.println("[db] updateModule: " + ps);
+
+			ps.executeUpdate();
+			db.commit();
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		// re-creates entries in the module_lecturers table
+		ArrayList<String> lecturers = module.getLecturers();
+		if(lecturers != null) {
+			if (!insertModuleLecturersRelations(module.getID(),
+					lecturers))
+				return false;
+		}
+
+		// checks, if the moduleFields need to be created (moduleFieldID == -1)
+		// and creates them if needed
+		// else updates them if any changes
+		ArrayList<ModuleField> moduleFields = module.getModuleFields();
+		for (ModuleField mf : moduleFields) {
+			if (mf.getModuleFieldID() == -1) {
+				createModuleField(mf);
+			} else {
+				// check if any changes
+				if (!mf.equals(getModuleField(mf.getModuleFieldID()))) {
+					System.out
+							.println("[db] changes detected at ModuleField with id="
+									+ mf.getModuleFieldID());
+					updateModuleField(mf);
+				}
+			}
+		}
+
+		// delete old relations
+		query = "DELETE FROM modules_moduleFields WHERE moduleID=?;";
+
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+
+			ps.setInt(1, module.getID());
+
+			System.out.println("[db] updateModule: " + ps);
+
+			ps.executeUpdate();
+			db.commit();
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		// re-insert updated relations
+		return insertModulesModuleFieldsRelations(module.getID(), moduleFields);
 	}
 
-	// MODULE UPDATEN
 	/**
-	 * @param module
-	 * @return true, if module was updated successfully
-	 */
-	public boolean updateModule(Module module) {
-		/*
-		 * // GET VALUENAMES String[] valueNames = module.toValueNamesArray();
-		 * 
-		 * // QUERY String query = "UPDATE modules SET ";
-		 * 
-		 * for (int i = 1; i < valueNames.length - 1; i++) { query +=
-		 * valueNames[i] + "=?, "; } query += valueNames[valueNames.length - 1]
-		 * + "=CURRENT_TIMESTAMP"; query += " WHERE moduleID=" + module.getID()
-		 * + ";";
-		 * 
-		 * try { db.setAutoCommit(false); PreparedStatement ps =
-		 * db.prepareStatement(query);
-		 * 
-		 * ps.setInt(1, module.getDuration()); // duration ps.setInt(2,
-		 * module.getEffort_presenceTime()); // effort_presenceTime ps.setInt(3,
-		 * module.getEffort_preAndPost()); // effort_preAndPost ps.setString(4,
-		 * module.getName()); // name ps.setString(5, module.getContent()); //
-		 * content ps.setString(6, module.getModifier_email()); //
-		 * modifier_email ps.setString(7, module.getToken()); // token
-		 * ps.setString(8, module.getEnglishTitle()); // englishTitle
-		 * ps.setString(9, module.getLp()); // lp ps.setString(10,
-		 * module.getSws()); // sws ps.setString(11, module.getLanguage()); //
-		 * language ps.setString(12, module.getDirector_email()); //
-		 * director_email ps.setString(13, module.getRequirement_formal()); //
-		 * requirement_formal ps.setString(14, module.getRequirement_content());
-		 * // requirement_content ps.setString(15, module.getRotation()); //
-		 * rotation ps.setString(16, module.getPerformanceRecord()); //
-		 * performanceRecord ps.setString(17, module.getGradeFormation()); //
-		 * gradeFormation ps.setString(18, module.getBasisFor()); // basisFor
-		 * ps.setString(19, module.getIlias()); // ilias ps.setString(20,
-		 * module.getLearningTarget()); // learningTarget ps.setString(21,
-		 * module.getLiterature()); // literature ps.setBoolean(22,
-		 * module.isCritical()); // isCritical ps.setBoolean(23,
-		 * module.isPeriodicalRotation()); // periodicalRotation
-		 * ps.setBoolean(24, module.isArchived()); // archived ps.setBoolean(25,
-		 * false); // enabled
-		 * 
-		 * System.out.println("[db] updateModule: " + ps);
-		 * 
-		 * ps.executeUpdate(); db.commit();
-		 * 
-		 * ps.close(); } catch (SQLException e) { e.printStackTrace(); return
-		 * false; } finally { try { db.setAutoCommit(true); } catch
-		 * (SQLException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); } }
-		 * 
-		 * // UPDATE modules_subjects: delete and recreate query =
-		 * "DELETE FROM modules_subjects WHERE moduleID=" + module.getID();
-		 * 
-		 * System.out.println("[db] updateModule: " + query);
-		 * 
-		 * try { db.createStatement().executeUpdate(query); } catch
-		 * (SQLException e) { e.printStackTrace(); return false; }
-		 * 
-		 * query = "INSERT INTO modules_subjects(moduleID, subjectID) VALUES ("
-		 * + module.getID() + ", ?)"; System.out.println("[db] updateModule: " +
-		 * query);
-		 * 
-		 * try { db.setAutoCommit(false); PreparedStatement ps =
-		 * db.prepareStatement(query);
-		 * 
-		 * ArrayList<Integer> subjectIDs = module.getSubjectIDs(); for (int
-		 * subjectID : subjectIDs) { ps.setInt(1, subjectID);
-		 * ps.executeUpdate(); db.commit(); }
-		 * 
-		 * } catch (SQLException e) { e.printStackTrace(); return false; }
-		 * finally { try { db.setAutoCommit(true); } catch (SQLException e) {
-		 * e.printStackTrace(); } }
-		 * 
-		 * // UPDATE modules_lecturers: delete and recreate query =
-		 * "DELETE FROM module_lecturers WHERE modules_moduleID=" +
-		 * module.getID();
-		 * 
-		 * System.out.println("[db] updateModule: " + query);
-		 * 
-		 * try { db.createStatement().executeUpdate(query); } catch
-		 * (SQLException e) { e.printStackTrace(); return false; }
-		 * 
-		 * // CREATE ENTRIES IN TABLE modules_lecturers query =
-		 * "INSERT INTO module_lecturers(modules_moduleID, employees_email) " +
-		 * "VALUES (" + module.getID() + ", ?)";
-		 * 
-		 * try { db.setAutoCommit(false); PreparedStatement ps =
-		 * db.prepareStatement(query);
-		 * 
-		 * ArrayList<String> lecturers = module.getLecturers(); for (String
-		 * lecturer_email : lecturers) { ps.setString(1, lecturer_email);
-		 * System.out.println(ps); ps.executeUpdate(); db.commit(); }
-		 * 
-		 * System.out.println("[db] updateModule: " + ps);
-		 * 
-		 * } catch (SQLException e) { e.printStackTrace(); return false; }
-		 * finally { try { db.setAutoCommit(true); } catch (SQLException e) {
-		 * e.printStackTrace(); } }
-		 */
-		return true;
-	}
-
-	// MODULE HOLEN
-	/**
+	 * gets a module object from the database
+	 * 
 	 * @param moduleID
-	 * @return module with specified moduleID
+	 * @return the module with the specified moduleID
 	 */
 	public Module getModule(int moduleID) {
-		/*
-		 * Module module = new Module(moduleID); String query = "SELECT " +
-		 * module.toValueNames() + " FROM modules WHERE moduleID=" + moduleID +
-		 * ";"; System.out.println("[db] getModule " + query); try { ResultSet
-		 * rs = db.createStatement().executeQuery(query);
-		 * 
-		 * if (rs.next()) { module = new Module(rs.getInt(1), rs.getInt(2),
-		 * rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getString(6),
-		 * rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10),
-		 * rs.getString(11), rs.getString(12), rs.getString(13),
-		 * rs.getString(14), rs.getString(15), rs.getString(16),
-		 * rs.getString(17), rs.getString(18), rs.getString(19),
-		 * rs.getString(20), rs.getString(21), rs.getString(22),
-		 * rs.getBoolean(23), rs.getBoolean(24), rs.getBoolean(25),
-		 * rs.getBoolean(26), rs.getTimestamp(27), new ArrayList<Integer>(), new
-		 * ArrayList<String>()); } else {
-		 * System.out.println("[db] No Module found with this ID."); rs.close();
-		 * return null; } rs.close();
-		 * 
-		 * } catch (SQLException e) { e.printStackTrace(); return null; }
-		 * 
-		 * // subjectIDs query =
-		 * "SELECT subjectID FROM modules_subjects WHERE moduleID=" + moduleID;
-		 * try { System.out.println("[db] getModule " + query); ResultSet rs =
-		 * db.createStatement().executeQuery(query);
-		 * 
-		 * ArrayList<Integer> subjectIDs = new ArrayList<Integer>(); while
-		 * (rs.next()) { subjectIDs.add(rs.getInt(1)); }
-		 * module.setSubjectIDs(subjectIDs); rs.close(); } catch (SQLException
-		 * e) { e.printStackTrace(); return module; }
-		 * 
-		 * // lecturers query =
-		 * "SELECT employees_email FROM module_lecturers WHERE modules_moduleID=?;"
-		 * ; try { PreparedStatement ps = db.prepareStatement(query);
-		 * 
-		 * ps.setInt(1, moduleID);
-		 * 
-		 * System.out.println("[db] getModule " + ps);
-		 * 
-		 * ResultSet rs = ps.executeQuery();
-		 * 
-		 * ArrayList<String> lecturers = new ArrayList<String>(); while
-		 * (rs.next()) { lecturers.add(rs.getString(1)); }
-		 * module.setLecturers(lecturers); rs.close(); return module; } catch
-		 * (SQLException e) { e.printStackTrace(); return module; }
-		 */
-		return null;
+
+		Module module;
+		String query = "SELECT name, lastModified, modifier_email, enabled "
+				+ "FROM modules WHERE moduleID=?;";
+
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+
+			ps.setInt(1, moduleID);
+
+			System.out.println("[db] getModule: " + ps);
+
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+
+			if (rs.next()) {
+				module = new Module(moduleID, rs.getString(1),
+						rs.getTimestamp(2), rs.getString(3), rs.getBoolean(4));
+				rs.close();
+				ps.close();
+			} else {
+				System.out.println("DEBUG3");
+				rs.close();
+				ps.close();
+				System.out
+						.println("[db] no module found with this moduleID (moduleID="
+								+ moduleID + ")");
+				return null;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		// gets the ModuleFields of the module
+		ArrayList<ModuleField> moduleFields = getModuleFields(moduleID);
+		if (moduleFields != null) {
+			module.setModuleFields(moduleFields);
+		} else {
+			// if something went wrong, set an ampty list
+			module.setModuleFields(new ArrayList<ModuleField>());
+		}
+
+		// get subjectIDs
+		module.setSubjectIDs(getModuleSubjectIDs(moduleID));
+
+		// get lecturer_emails
+		module.setLecturers(getModuleLecturerEmails(moduleID));
+
+		return module;
+	}
+
+	/**
+	 * gets the subjectIDs from the modules_subjects table that belong to the
+	 * moduleID
+	 * 
+	 * @param moduleID
+	 * @return a list of Integers containing the subjectIDs that belong to the
+	 *         module
+	 */
+	private ArrayList<Integer> getModuleSubjectIDs(int moduleID) {
+		ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
+
+		String query = "SELECT subjectID FROM modules_subjects WHERE moduleID=?;";
+
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+
+			ps.setInt(1, moduleID);
+
+			System.out.println("[db] getModuleSubjectIDs: " + ps);
+
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+
+			while (rs.next()) {
+				subjectIDs.add(rs.getInt(1));
+			}
+
+			rs.close();
+			ps.close();
+
+			return subjectIDs;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return subjectIDs;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private ArrayList<String> getModuleLecturerEmails(int moduleID) {
+		ArrayList<String> lecturers = new ArrayList<String>();
+
+		String query = "SELECT employees_email FROM module_lecturers WHERE modules_moduleID=?;";
+
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+
+			ps.setInt(1, moduleID);
+
+			System.out.println("[db] getModuleLecturerEmails: " + ps);
+
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+
+			while (rs.next()) {
+				lecturers.add(rs.getString(1));
+			}
+
+			rs.close();
+			ps.close();
+
+			return lecturers;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return lecturers;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * inserts the realtions between modules and subjects into the databse
+	 * 
+	 * @param moduleID
+	 * @param subjectIDs
+	 * @return true if the enrteis were inserted successfully
+	 */
+	private boolean insertModulesSubjectsRelations(int moduleID,
+			ArrayList<Integer> subjectIDs) {
+		String query = "INSERT INTO modules_subjects(moduleID, subjectID) VALUES(?,?);";
+
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+
+			for (int subjectID : subjectIDs) {
+				ps.setInt(1, moduleID); // moduleID
+				ps.setInt(2, subjectID); // subjectID
+
+				System.out
+						.println("[db] insertModulesSubjectsRelations: " + ps);
+
+				ps.executeUpdate();
+			}
+
+			db.commit();
+			ps.close();
+
+			return true;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private boolean insertModuleLecturersRelations(int moduleID,
+			ArrayList<String> lecturers) {
+		String query = "INSERT INTO module_lecturers(modules_moduleID, employees_email) VALUES(?,?);";
+
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+
+			for (String lecturer : lecturers) {
+				ps.setInt(1, moduleID); // modules_moduleID
+				ps.setString(2, lecturer); // employees_email
+
+				System.out
+						.println("[db] insertModuleLecturersRelations: " + ps);
+
+				ps.executeUpdate();
+			}
+
+			db.commit();
+
+			ps.close();
+
+			return true;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	// MODULE ENTFERNEN
@@ -3130,7 +3254,7 @@ public class ContentDbController extends DbController {
 
 			ps.setInt(1, moduleFieldID);
 
-			System.out.println("[db] getModuleField " + ps);
+			System.out.println("[db] getModuleField: " + ps);
 
 			ResultSet rs = ps.executeQuery();
 
@@ -3168,7 +3292,7 @@ public class ContentDbController extends DbController {
 			ps.setString(2, mf.getFieldName());
 			ps.setString(3, mf.getFieldValue());
 
-			System.out.println("[db] createModuleField " + ps);
+			System.out.println("[db] createModuleField: " + ps);
 
 			ps.executeUpdate();
 
@@ -3206,7 +3330,7 @@ public class ContentDbController extends DbController {
 			ps.setString(3, mf.getFieldValue());
 			ps.setInt(4, mf.getModuleFieldID());
 
-			System.out.println("[db] updateModuleField " + ps);
+			System.out.println("[db] updateModuleField: " + ps);
 
 			ps.executeUpdate();
 			ps.close();
@@ -3232,7 +3356,7 @@ public class ContentDbController extends DbController {
 
 			ps.setInt(1, moduleFieldID);
 
-			System.out.println("[db] deleteModuleField " + ps);
+			System.out.println("[db] deleteModuleField: " + ps);
 
 			ps.executeUpdate();
 			ps.close();
@@ -3242,6 +3366,81 @@ public class ContentDbController extends DbController {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		}
+	}
+
+	/**
+	 * links the new Module to existent ModuleFields with the
+	 * modules_moduleFields table
+	 * 
+	 * @param moduleFields
+	 * @return true if the relations were inserted in the database successfully
+	 */
+	private boolean insertModulesModuleFieldsRelations(int moduleID,
+			ArrayList<ModuleField> moduleFields) {
+		String query = "INSERT INTO modules_moduleFields(moduleID, moduleFieldID) VALUES(?,?);";
+
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+
+			for (ModuleField mf : moduleFields) {
+				ps.setInt(1, moduleID); // moduleID
+				ps.setInt(2, mf.getModuleFieldID()); // moduleFieldID
+				System.out.println("[db] createModule: " + ps);
+				ps.executeUpdate();
+			}
+
+			db.commit();
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * searches for entries in the module_moduleFields table that belong to the
+	 * moduleID and gets the ModuleFields with the found moduleFieldIDs
+	 * 
+	 * @param moduleID
+	 * @return a list of ModuleFields that belong to the passed moduleID
+	 */
+	private ArrayList<ModuleField> getModuleFields(int moduleID) {
+
+		ArrayList<ModuleField> moduleFields = new ArrayList<ModuleField>();
+
+		String query = "SELECT moduleFieldID, fieldType, fieldName, fieldValue FROM moduleFields "
+				+ "WHERE moduleFieldID IN (SELECT moduleFieldID FROM modules_moduleFields "
+				+ "WHERE moduleID=?);";
+		try {
+			PreparedStatement ps = db.prepareStatement(query);
+
+			ps.setInt(1, moduleID);
+
+			System.out.println("[db] getModuleFields: " + ps);
+
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				ModuleField mf = new ModuleField(rs.getInt(1), rs.getInt(2),
+						rs.getString(3), rs.getString(4));
+				moduleFields.add(mf);
+			}
+			rs.close();
+			ps.close();
+			return moduleFields;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 

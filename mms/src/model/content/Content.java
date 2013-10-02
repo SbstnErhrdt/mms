@@ -89,16 +89,4 @@ public class Content implements DbControllable {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	public String toString() {
-		String string = "[";
-		String[] values = toValuesArray();
-		String[] valueNames = toValueNamesArray();
-		for(int i=0; i<values.length-1; i++) {
-			string += valueNames[i]+"="+values[i]+", ";
-		}
-		string += valueNames[values.length-1]+"="+values[values.length-1]+"]";
-		
-		return string;
-	}
 }

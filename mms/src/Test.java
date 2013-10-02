@@ -450,8 +450,29 @@ public class Test {
 		moduleFields.add(mf1);
 		moduleFields.add(mf2);
 		
-		Module module = new Module(-1, "Testname", null, null, moduleFields);
+		Module module = new Module(-1, "Testname", false, null, null, moduleFields);
 		
 		System.out.println(cdbc.createModule(module));
+		
+		mf2.setFieldValue("updated");
+		mf2.setModuleFieldID(-1);
+		
+		ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
+		
+		subjectIDs.add(462);
+		subjectIDs.add(463);
+		
+		module.setSubjectIDs(subjectIDs);
+		
+		ArrayList<String> lecturers = new ArrayList<String>();
+		
+		lecturers.add("gerhard.baur@uni-ulm.de");
+		lecturers.add("maurits.ortmanns@uni-ulm.de");
+		
+		module.setLecturers(lecturers);
+		
+		System.out.println(cdbc.updateModule(module));
+		
+		System.out.println(new Gson().toJson(cdbc.getModule(module.getID())));
 	}
 }
