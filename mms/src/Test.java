@@ -474,5 +474,11 @@ public class Test {
 		System.out.println(cdbc.updateModule(module));
 		
 		System.out.println(new Gson().toJson(cdbc.getModule(module.getID())));
+		
+		System.out.println(new Gson().toJson(cdbc.getModules(false)));
+		
+		System.out.println(new Gson().toJson(cdbc.getSubjectModules(462, false)));
+		
+		
 	}
 }

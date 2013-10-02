@@ -79,7 +79,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -167,7 +166,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -433,24 +431,21 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
 		// creates entries in the modules_subjects table
 		ArrayList<Integer> subjectIDs = module.getSubjectIDs();
-		if(subjectIDs != null) {
-			if (!insertModulesSubjectsRelations(module.getID(),
-					subjectIDs))
+		if (subjectIDs != null) {
+			if (!insertModulesSubjectsRelations(module.getID(), subjectIDs))
 				return false;
 		}
 
 		// creates entries in the module_lecturers table
 		ArrayList<String> lecturers = module.getLecturers();
-		if(lecturers != null) {
-			if (!insertModuleLecturersRelations(module.getID(),
-					lecturers))
+		if (lecturers != null) {
+			if (!insertModuleLecturersRelations(module.getID(), lecturers))
 				return false;
 		}
 
@@ -496,7 +491,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -522,16 +516,14 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
 		// re-creates entries in the modules_subjects table
 		ArrayList<Integer> subjectIDs = module.getSubjectIDs();
-		if(subjectIDs != null) {
-			if (!insertModulesSubjectsRelations(module.getID(),
-					subjectIDs))
+		if (subjectIDs != null) {
+			if (!insertModulesSubjectsRelations(module.getID(), subjectIDs))
 				return false;
 		}
 
@@ -556,16 +548,14 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
 		// re-creates entries in the module_lecturers table
 		ArrayList<String> lecturers = module.getLecturers();
-		if(lecturers != null) {
-			if (!insertModuleLecturersRelations(module.getID(),
-					lecturers))
+		if (lecturers != null) {
+			if (!insertModuleLecturersRelations(module.getID(), lecturers))
 				return false;
 		}
 
@@ -608,7 +598,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -662,7 +651,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -725,7 +713,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -763,7 +750,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -806,7 +792,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -843,28 +828,45 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
-	// MODULE ENTFERNEN
 	/**
+	 * deletes a module
+	 * 
 	 * @param module
 	 * @return true, if module was deleted successfully
 	 */
-	public boolean deleteModule(Module module) {
-		String query = "DELETE FROM modules ";
-		query += "WHERE moduleID = " + module.getID() + ";";
-		System.out.println("[db] deleteModule " + query);
+	public boolean deleteModule(int moduleID) {
+		String query = "DELETE FROM modules WHERE moduleID=?;";
+
 		try {
-			db.createStatement().executeUpdate(query);
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+
+			ps.setInt(1, moduleID);
+
+			System.out.println("[db] deleteModule: " + ps);
+
+			ps.executeUpdate();
+			db.commit();
+
+			ps.close();
+
+			return true;
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-		return true;
 	}
 
 	/**
@@ -932,66 +934,98 @@ public class ContentDbController extends DbController {
 
 	/**
 	 * @param getOnlyEnabled
-	 * @return list of modules, if getOnlyEnabled is true, only modules that
-	 *         have enabled=true are selected
+	 * @return a list of modules with reduced attributes, if getOnlyEnabled is
+	 *         true, only modules that have enabled=true are selected
 	 */
 	public ArrayList<Module> getModules(boolean getOnlyEnabled) {
+		ArrayList<Module> modules = new ArrayList<Module>();
 
-		/*
-		 * ArrayList<Module> modules = new ArrayList<Module>(); Module module =
-		 * new Module(0);
-		 * 
-		 * String query = "SELECT " + module.toValueNames() + " FROM modules";
-		 * if (getOnlyEnabled) query += " WHERE enabled=true"; query += ";";
-		 * 
-		 * System.out.println("[db] " + query);
-		 * 
-		 * try { ResultSet rs = db.createStatement().executeQuery(query);
-		 * 
-		 * while (rs.next()) { module = null; int moduleID = rs.getInt(1);
-		 * module = new Module(rs.getInt(1), rs.getInt(2), rs.getInt(3),
-		 * rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7),
-		 * rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11),
-		 * rs.getString(12), rs.getString(13), rs.getString(14),
-		 * rs.getString(15), rs.getString(16), rs.getString(17),
-		 * rs.getString(18), rs.getString(19), rs.getString(20),
-		 * rs.getString(21), rs.getString(22), rs.getBoolean(23),
-		 * rs.getBoolean(24), rs.getBoolean(25), rs.getBoolean(26),
-		 * rs.getTimestamp(27), new ArrayList<Integer>(), new
-		 * ArrayList<String>());
-		 * 
-		 * // subjectIDs ArrayList<Integer> subjectIDs = new
-		 * ArrayList<Integer>(); query =
-		 * "SELECT subjectID FROM modules_subjects WHERE moduleID=" + moduleID +
-		 * ";"; System.out.println("[db] " + query);
-		 * 
-		 * try { ResultSet rs1 = db.createStatement().executeQuery(query); while
-		 * (rs1.next()) { subjectIDs.add(rs1.getInt(1)); // subjectID }
-		 * rs1.close(); module.setSubjectIDs(subjectIDs); } catch (SQLException
-		 * e) { e.printStackTrace(); }
-		 * 
-		 * // lecturers query =
-		 * "SELECT employees_email FROM module_lecturers WHERE modules_moduleID=?;"
-		 * ; try { PreparedStatement ps = db.prepareStatement(query);
-		 * 
-		 * ps.setInt(1, moduleID);
-		 * 
-		 * ResultSet rs2 = ps.executeQuery();
-		 * 
-		 * ArrayList<String> lecturers = new ArrayList<String>(); while
-		 * (rs2.next()) { lecturers.add(rs.getString(1)); }
-		 * module.setLecturers(lecturers); rs2.close(); } catch (SQLException e)
-		 * { e.printStackTrace(); }
-		 * 
-		 * modules.add(module); }
-		 * 
-		 * rs.close();
-		 * 
-		 * } catch (SQLException e) { e.printStackTrace(); }
-		 * 
-		 * return modules;
-		 */
-		return null;
+		String query = "SELECT moduleID, name, lastModified, modifier_email, enabled "
+				+ "FROM modules";
+		if (getOnlyEnabled)
+			query += " WHERE enabled=true";
+
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+
+			System.out.println("[db] getModules: " + ps);
+
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+
+			while (rs.next()) {
+				Module module;
+				module = new Module(rs.getInt(1), rs.getString(2),
+						rs.getTimestamp(3), rs.getString(4), rs.getBoolean(5));
+				modules.add(module);
+			}
+			rs.close();
+			ps.close();
+
+			return modules;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return modules;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * @param subjectID
+	 * @param getOnlyEnabled
+	 * @return list of modules that belong to the subject with the passed
+	 *         subjectID, if getOnlyEnabled = true, only enabled modules are
+	 *         selected
+	 */
+	public ArrayList<Module> getSubjectModules(int subjectID,
+			boolean getOnlyEnabled) {
+		ArrayList<Module> modules = new ArrayList<Module>();
+
+		String query = "SELECT moduleID, name, lastModified, modifier_email, enabled "
+				+ "FROM modules WHERE moduleID IN (SELECT moduleID FROM modules_subjects "
+				+ "WHERE subjectID=?);";
+		if (getOnlyEnabled)
+			query += " AND enabled=true";
+
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+
+			ps.setInt(1, subjectID);
+			
+			System.out.println("[db] getSubjectModules: " + ps);
+
+			ResultSet rs = ps.executeQuery();
+			db.commit();
+
+			while (rs.next()) {
+				Module module;
+				module = new Module(rs.getInt(1), rs.getString(2),
+						rs.getTimestamp(3), rs.getString(4), rs.getBoolean(5));
+				modules.add(module);
+			}
+			rs.close();
+			ps.close();
+
+			return modules;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return modules;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	// MODUL EVENTS LISTE
@@ -1113,7 +1147,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -1166,7 +1199,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -1334,77 +1366,6 @@ public class ContentDbController extends DbController {
 		return subjects;
 	}
 
-	// SUBJECT MODULE LISTE
-	// Holt die Modules eines Subjects und gibt diese in einer ArrayList aus
-	/**
-	 * @param subjectID
-	 * @param getOnlyEnabled
-	 * @return list of modules that belong to the subject with the passed
-	 *         subjectID, if getOnlyEnabled = true, only enabled modules are
-	 *         selected
-	 */
-	public ArrayList<Module> getSubjectModules(int subjectID,
-			boolean getOnlyEnabled) {
-
-		/*
-		 * ArrayList<Module> modules = new ArrayList<Module>(); Module module =
-		 * new Module(0);
-		 * 
-		 * String query = "SELECT " + module.toValueNames() + " FROM modules " +
-		 * "WHERE moduleID IN (SELECT moduleID FROM modules_subjects " +
-		 * "WHERE subjectID=" + subjectID + ")"; if (getOnlyEnabled) query +=
-		 * " AND enabled=true"; query += ";";
-		 * 
-		 * System.out.println("[db] " + query);
-		 * 
-		 * try { ResultSet rs = db.createStatement().executeQuery(query);
-		 * 
-		 * while (rs.next()) { module = null; int moduleID = rs.getInt(1);
-		 * module = new Module(rs.getInt(1), rs.getInt(2), rs.getInt(3),
-		 * rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7),
-		 * rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11),
-		 * rs.getString(12), rs.getString(13), rs.getString(14),
-		 * rs.getString(15), rs.getString(16), rs.getString(17),
-		 * rs.getString(18), rs.getString(19), rs.getString(20),
-		 * rs.getString(21), rs.getString(22), rs.getBoolean(23),
-		 * rs.getBoolean(24), rs.getBoolean(25), rs.getBoolean(26),
-		 * rs.getTimestamp(27), new ArrayList<Integer>(), new
-		 * ArrayList<String>());
-		 * 
-		 * // subjectIDs ArrayList<Integer> subjectIDs = new
-		 * ArrayList<Integer>(); query =
-		 * "SELECT subjectID FROM modules_subjects WHERE moduleID=" + moduleID +
-		 * ";"; System.out.println("[db] " + query);
-		 * 
-		 * try { ResultSet rs1 = db.createStatement().executeQuery(query); while
-		 * (rs1.next()) { subjectIDs.add(rs1.getInt(1)); // subjectID }
-		 * rs1.close(); module.setSubjectIDs(subjectIDs); } catch (SQLException
-		 * e) { e.printStackTrace(); }
-		 * 
-		 * // lecturers query =
-		 * "SELECT employees_email FROM module_lecturers WHERE modules_moduleID=?;"
-		 * ; try { PreparedStatement ps = db.prepareStatement(query);
-		 * 
-		 * ps.setInt(1, moduleID);
-		 * 
-		 * ResultSet rs2 = ps.executeQuery();
-		 * 
-		 * ArrayList<String> lecturers = new ArrayList<String>(); while
-		 * (rs2.next()) { lecturers.add(rs.getString(1)); }
-		 * module.setLecturers(lecturers); rs2.close(); } catch (SQLException e)
-		 * { e.printStackTrace(); }
-		 * 
-		 * modules.add(module); }
-		 * 
-		 * rs.close();
-		 * 
-		 * } catch (SQLException e) { e.printStackTrace(); }
-		 * 
-		 * return modules;
-		 */
-		return null;
-	}
-
 	// ####################################################
 	// MODULE HANDBOOKS
 	// ####################################################
@@ -1461,7 +1422,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -1514,7 +1474,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -1707,7 +1666,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -1759,7 +1717,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -3400,7 +3357,6 @@ public class ContentDbController extends DbController {
 			try {
 				db.setAutoCommit(true);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
