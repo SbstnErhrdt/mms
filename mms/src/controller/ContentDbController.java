@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import util.Utilities;
+
 import model.content.Deadline;
 import model.content.Event;
 import model.content.Module;
@@ -401,7 +403,7 @@ public class ContentDbController extends DbController {
 	public boolean createModule(Module module) {
 
 		// create entry in modules table
-		String query = "INSERT INTO modules(name, modifier_email) VALUES(?,?);";
+		String query = "INSERT INTO modules(name, modifier_email, isCritical) VALUES(?,?,?);";
 
 		try {
 			db.setAutoCommit(false);
@@ -410,6 +412,7 @@ public class ContentDbController extends DbController {
 
 			ps.setString(1, module.getName()); // name
 			ps.setString(2, module.getModifier_email()); // modifier_email
+			ps.setBoolean(3, module.isCritical()); // isCritical
 
 			System.out.println("[db] createModule: " + ps);
 
@@ -615,7 +618,7 @@ public class ContentDbController extends DbController {
 	public Module getModule(int moduleID) {
 
 		Module module;
-		String query = "SELECT name, lastModified, modifier_email, enabled "
+		String query = "SELECT name, lastModified, modifier_email, isCritical, enabled "
 				+ "FROM modules WHERE moduleID=?;";
 
 		try {
@@ -631,7 +634,8 @@ public class ContentDbController extends DbController {
 
 			if (rs.next()) {
 				module = new Module(moduleID, rs.getString(1),
-						rs.getTimestamp(2), rs.getString(3), rs.getBoolean(4));
+						rs.getTimestamp(2), rs.getString(3), rs.getBoolean(4),
+						rs.getBoolean(5));
 				rs.close();
 				ps.close();
 			} else {
@@ -940,8 +944,8 @@ public class ContentDbController extends DbController {
 	public ArrayList<Module> getModules(boolean getOnlyEnabled) {
 		ArrayList<Module> modules = new ArrayList<Module>();
 
-		String query = "SELECT moduleID, name, lastModified, modifier_email, enabled "
-				+ "FROM modules";
+		String query = "SELECT moduleID, name, lastModified, modifier_email, "
+				+ "isCritical, enabled FROM modules";
 		if (getOnlyEnabled)
 			query += " WHERE enabled=true";
 
@@ -955,10 +959,9 @@ public class ContentDbController extends DbController {
 			db.commit();
 
 			while (rs.next()) {
-				Module module;
-				module = new Module(rs.getInt(1), rs.getString(2),
-						rs.getTimestamp(3), rs.getString(4), rs.getBoolean(5));
-				modules.add(module);
+				modules.add(new Module(rs.getInt(1), rs.getString(2), rs
+						.getTimestamp(3), rs.getString(4), rs.getBoolean(5), rs
+						.getBoolean(6)));
 			}
 			rs.close();
 			ps.close();
@@ -988,7 +991,7 @@ public class ContentDbController extends DbController {
 			boolean getOnlyEnabled) {
 		ArrayList<Module> modules = new ArrayList<Module>();
 
-		String query = "SELECT moduleID, name, lastModified, modifier_email, enabled "
+		String query = "SELECT moduleID, name, lastModified, modifier_email, isCritical, enabled "
 				+ "FROM modules WHERE moduleID IN (SELECT moduleID FROM modules_subjects "
 				+ "WHERE subjectID=?);";
 		if (getOnlyEnabled)
@@ -999,17 +1002,16 @@ public class ContentDbController extends DbController {
 			PreparedStatement ps = db.prepareStatement(query);
 
 			ps.setInt(1, subjectID);
-			
+
 			System.out.println("[db] getSubjectModules: " + ps);
 
 			ResultSet rs = ps.executeQuery();
 			db.commit();
 
 			while (rs.next()) {
-				Module module;
-				module = new Module(rs.getInt(1), rs.getString(2),
-						rs.getTimestamp(3), rs.getString(4), rs.getBoolean(5));
-				modules.add(module);
+				modules.add(new Module(rs.getInt(1), rs.getString(2), rs
+						.getTimestamp(3), rs.getString(4), rs.getBoolean(5), rs
+						.getBoolean(6)));
 			}
 			rs.close();
 			ps.close();
@@ -3247,7 +3249,7 @@ public class ContentDbController extends DbController {
 
 			ps.setInt(1, mf.getFieldType());
 			ps.setString(2, mf.getFieldName());
-			ps.setString(3, mf.getFieldValue());
+			ps.setString(3, ""+mf.getFieldValue());
 
 			System.out.println("[db] createModuleField: " + ps);
 
@@ -3284,7 +3286,7 @@ public class ContentDbController extends DbController {
 
 			ps.setInt(1, mf.getFieldType());
 			ps.setString(2, mf.getFieldName());
-			ps.setString(3, mf.getFieldValue());
+			ps.setString(3, ""+mf.getFieldValue());
 			ps.setInt(4, mf.getModuleFieldID());
 
 			System.out.println("[db] updateModuleField: " + ps);

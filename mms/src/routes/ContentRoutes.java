@@ -377,7 +377,7 @@ public class ContentRoutes extends Routes {
 				return;
 			}
 
-			if (db.deleteModule(new Module(moduleID))) {
+			if (db.deleteModule(moduleID)) {
 				json = "{\"moduleID\":" + moduleID + "}";
 			}
 		} else {

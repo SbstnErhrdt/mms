@@ -443,24 +443,26 @@ public class Test {
 		
 		*/
 		
-		ModuleField mf1 = new ModuleField(-1, 1, "Testfeld1", "Testwert1");
-		ModuleField mf2 = new ModuleField(-1, 1, "Testfeld2", "Testwert1");
+		ModuleField mf1 = new ModuleField(-1, 1, "Testfeld1", "24");
+		ModuleField mf2 = new ModuleField(-1, 6, "Testfeld2", "true");
+		ModuleField mf3 = new ModuleField(-1, 3, "Testfeld3", "TestString");
 		
 		ArrayList<ModuleField> moduleFields = new ArrayList<ModuleField>();
 		moduleFields.add(mf1);
 		moduleFields.add(mf2);
+		moduleFields.add(mf3);
 		
 		Module module = new Module(-1, "Testname", false, null, null, moduleFields);
 		
 		System.out.println(cdbc.createModule(module));
 		
-		mf2.setFieldValue("updated");
+		//mf2.setFieldValue("updated");
 		mf2.setModuleFieldID(-1);
 		
 		ArrayList<Integer> subjectIDs = new ArrayList<Integer>();
 		
-		subjectIDs.add(462);
-		subjectIDs.add(463);
+		subjectIDs.add(467);
+		subjectIDs.add(468);
 		
 		module.setSubjectIDs(subjectIDs);
 		
@@ -477,8 +479,7 @@ public class Test {
 		
 		System.out.println(new Gson().toJson(cdbc.getModules(false)));
 		
-		System.out.println(new Gson().toJson(cdbc.getSubjectModules(462, false)));
-		
+		System.out.println(new Gson().toJson(cdbc.getSubjectModules(467, false)));
 		
 	}
 }
