@@ -14,6 +14,7 @@ import model.content.Event;
 import model.content.Module;
 import model.content.ModuleField;
 import model.content.ModuleHandbook;
+import model.content.ModuleTemplate;
 import model.content.Studycourse;
 import model.content.Subject;
 
@@ -403,7 +404,7 @@ public class ContentDbController extends DbController {
 	public boolean createModule(Module module) {
 
 		// create entry in modules table
-		String query = "INSERT INTO modules(name, modifier_email, isCritical) VALUES(?,?,?);";
+		String query = "INSERT INTO modules(name, director_email, modifier_email, isCritical) VALUES(?,?,?,?);";
 
 		try {
 			db.setAutoCommit(false);
@@ -411,8 +412,9 @@ public class ContentDbController extends DbController {
 					Statement.RETURN_GENERATED_KEYS);
 
 			ps.setString(1, module.getName()); // name
-			ps.setString(2, module.getModifier_email()); // modifier_email
-			ps.setBoolean(3, module.isCritical()); // isCritical
+			ps.setString(2, module.getDirector_email()); // director_email
+			ps.setString(3, module.getModifier_email()); // modifier_email
+			ps.setBoolean(4, module.isCritical()); // isCritical
 
 			System.out.println("[db] createModule: " + ps);
 
@@ -471,16 +473,18 @@ public class ContentDbController extends DbController {
 	 */
 	public boolean updateModule(Module module) {
 
-		String query = "UPDATE modules SET name=?, modifier_email=?, "
-				+ "lastModified=CURRENT_TIMESTAMP WHERE moduleID=?;";
+		String query = "UPDATE modules SET name=?, director_email=?, "
+				+ "modifier_email=?, lastModified=CURRENT_TIMESTAMP "
+				+ "WHERE moduleID=?;";
 
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
 
 			ps.setString(1, module.getName());
-			ps.setString(2, module.getModifier_email());
-			ps.setInt(3, module.getID());
+			ps.setString(2, module.getDirector_email());
+			ps.setString(3, module.getModifier_email());
+			ps.setInt(4, module.getID());
 
 			System.out.println("[db] updateModule: " + ps);
 
@@ -618,7 +622,7 @@ public class ContentDbController extends DbController {
 	public Module getModule(int moduleID) {
 
 		Module module;
-		String query = "SELECT name, lastModified, modifier_email, isCritical, enabled "
+		String query = "SELECT name, director_email, lastModified, modifier_email, isCritical, enabled "
 				+ "FROM modules WHERE moduleID=?;";
 
 		try {
@@ -633,9 +637,9 @@ public class ContentDbController extends DbController {
 			db.commit();
 
 			if (rs.next()) {
-				module = new Module(moduleID, rs.getString(1),
-						rs.getTimestamp(2), rs.getString(3), rs.getBoolean(4),
-						rs.getBoolean(5));
+				module = new Module(moduleID, rs.getString(1), rs.getString(2),
+						rs.getTimestamp(3), rs.getString(4), rs.getBoolean(5),
+						rs.getBoolean(6));
 				rs.close();
 				ps.close();
 			} else {
@@ -944,7 +948,7 @@ public class ContentDbController extends DbController {
 	public ArrayList<Module> getModules(boolean getOnlyEnabled) {
 		ArrayList<Module> modules = new ArrayList<Module>();
 
-		String query = "SELECT moduleID, name, lastModified, modifier_email, "
+		String query = "SELECT moduleID, name, director_email, lastModified, modifier_email, "
 				+ "isCritical, enabled FROM modules";
 		if (getOnlyEnabled)
 			query += " WHERE enabled=true";
@@ -960,8 +964,8 @@ public class ContentDbController extends DbController {
 
 			while (rs.next()) {
 				modules.add(new Module(rs.getInt(1), rs.getString(2), rs
-						.getTimestamp(3), rs.getString(4), rs.getBoolean(5), rs
-						.getBoolean(6)));
+						.getString(3), rs.getTimestamp(4), rs.getString(5), rs
+						.getBoolean(6), rs.getBoolean(7)));
 			}
 			rs.close();
 			ps.close();
@@ -991,7 +995,7 @@ public class ContentDbController extends DbController {
 			boolean getOnlyEnabled) {
 		ArrayList<Module> modules = new ArrayList<Module>();
 
-		String query = "SELECT moduleID, name, lastModified, modifier_email, isCritical, enabled "
+		String query = "SELECT moduleID, name, director_email, lastModified, modifier_email, isCritical, enabled "
 				+ "FROM modules WHERE moduleID IN (SELECT moduleID FROM modules_subjects "
 				+ "WHERE subjectID=?);";
 		if (getOnlyEnabled)
@@ -1010,8 +1014,8 @@ public class ContentDbController extends DbController {
 
 			while (rs.next()) {
 				modules.add(new Module(rs.getInt(1), rs.getString(2), rs
-						.getTimestamp(3), rs.getString(4), rs.getBoolean(5), rs
-						.getBoolean(6)));
+						.getString(3), rs.getTimestamp(4), rs.getString(5), rs
+						.getBoolean(6), rs.getBoolean(7)));
 			}
 			rs.close();
 			ps.close();
@@ -3249,7 +3253,7 @@ public class ContentDbController extends DbController {
 
 			ps.setInt(1, mf.getFieldType());
 			ps.setString(2, mf.getFieldName());
-			ps.setString(3, ""+mf.getFieldValue());
+			ps.setString(3, "" + mf.getFieldValue());
 
 			System.out.println("[db] createModuleField: " + ps);
 
@@ -3286,7 +3290,7 @@ public class ContentDbController extends DbController {
 
 			ps.setInt(1, mf.getFieldType());
 			ps.setString(2, mf.getFieldName());
-			ps.setString(3, ""+mf.getFieldValue());
+			ps.setString(3, "" + mf.getFieldValue());
 			ps.setInt(4, mf.getModuleFieldID());
 
 			System.out.println("[db] updateModuleField: " + ps);
@@ -3396,6 +3400,71 @@ public class ContentDbController extends DbController {
 			rs.close();
 			ps.close();
 			return moduleFields;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * gets a ModuleTemplate from the database
+	 * 
+	 * @param moduleTemplateID
+	 * @return the Module containing a list of ModuleFields that the template
+	 *         specifies
+	 */
+	public ModuleTemplate getModuleTemplate(int moduleTemplateID) {
+		ModuleTemplate moduleTemplate = new ModuleTemplate();
+
+		// get the name of the template
+		String query = "SELECT moduleTemplateName FROM moduleTemplates "
+				+ "WHERE moduleTemplateID=?;";
+		try {
+			PreparedStatement ps = db.prepareStatement(query);
+
+			ps.setInt(1, moduleTemplateID);
+
+			System.out.println("[db] getModuleTemplate: " + ps);
+
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+				moduleTemplate.setTemplateName(rs.getString(1));
+			} else {
+				rs.close();
+				ps.close();
+				System.out
+						.println("[db] no ModuleTemplate found with the moduleTemplateID "
+								+ moduleTemplateID);
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		// get the fields of the ModuleTemplate
+		ArrayList<ModuleField> moduleTemplateFields = new ArrayList<ModuleField>();
+
+		query = "SELECT fieldType, fieldName FROM moduleTemplateFields "
+				+ "WHERE moduleTemplateID=?;";
+		try {
+			PreparedStatement ps = db.prepareStatement(query);
+
+			ps.setInt(1, moduleTemplateID);
+
+			System.out.println("[db] getModuleTemplate: " + ps);
+
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				ModuleField mf = new ModuleField(moduleTemplateID,
+						rs.getInt(1), rs.getString(2));
+				moduleTemplateFields.add(mf);
+			}
+			rs.close();
+			ps.close();
+			return moduleTemplate;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;

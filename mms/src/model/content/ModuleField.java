@@ -8,10 +8,24 @@ public class ModuleField {
 	private Object fieldValue;
 
 	/**
-	 * constructor 
+	 * constructor
 	 */
 	public ModuleField() {
 		super();
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param moduleFieldID
+	 * @param fieldType
+	 * @param fieldName
+	 */
+	public ModuleField(int moduleFieldID, int fieldType, String fieldName) {
+		super();
+		this.moduleFieldID = moduleFieldID;
+		this.fieldType = fieldType;
+		this.fieldName = fieldName;
 	}
 
 	/**
@@ -59,8 +73,8 @@ public class ModuleField {
 		return fieldValue;
 	}
 
-	public void setFieldValue(Object fieldValue) {
-		this.fieldValue = fieldValue;
+	public void setFieldValue(String fieldValueString) {
+		this.fieldValue = Utilities.parseType(fieldType, fieldValueString);
 	}
 
 	@Override

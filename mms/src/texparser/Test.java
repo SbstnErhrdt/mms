@@ -14,11 +14,11 @@ public class Test {
 		
 		Gson gson = new Gson();
 		
-		//System.out.println(gson.toJson(new TexParseController(null).parseFile("./texfiles")));	
+		System.out.println(gson.toJson(new TexParseController(null).parseFile("./texfiles/test")));	
 		
-		Module module = new ContentDbController().getModule(1149);
+		//Module module = new ContentDbController().getModule(1149);
 		
-		System.out.println(new TexParseController(null).parseModule(module).getName());
+		//System.out.println(new TexParseController(null).parseModule(module).getName());
 		
 	}
 }

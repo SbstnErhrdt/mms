@@ -8,7 +8,7 @@ import util.Utilities;
 public class Module extends Content {
 
 	private int moduleID;
-	
+	private String director_email;
 	private boolean isCritical;
 
 	// parent subjects
@@ -25,6 +25,9 @@ public class Module extends Content {
 	 */
 	public Module() {
 		super();
+		this.subjectIDs = new ArrayList<Integer>();
+		this.lecturers_emails = new ArrayList<String>();
+		this.moduleFields = new ArrayList<ModuleField>();
 	}
 
 	/**
@@ -35,6 +38,9 @@ public class Module extends Content {
 	public Module(int moduleID) {
 		super();
 		this.moduleID = moduleID;
+		this.subjectIDs = new ArrayList<Integer>();
+		this.lecturers_emails = new ArrayList<String>();
+		this.moduleFields = new ArrayList<ModuleField>();
 	}
 
 	/**
@@ -42,19 +48,24 @@ public class Module extends Content {
 	 * 
 	 * @param moduleID
 	 * @param name
+	 * @param director_email
 	 * @param lastModified
 	 * @param modifier_email
 	 * 
 	 * @param enabled
 	 */
-	public Module(int moduleID, String name, Timestamp lastModified,
+	public Module(int moduleID, String name, String director_email, Timestamp lastModified,
 			String modifier_email, boolean isCritical, boolean enabled) {
 		this.moduleID = moduleID;
 		this.name = name;
+		this.director_email = director_email;
 		this.lastModified = lastModified;
 		this.modifier_email = modifier_email;
 		this.isCritical = isCritical;
 		this.enabled = enabled;
+		this.subjectIDs = new ArrayList<Integer>();
+		this.lecturers_emails = new ArrayList<String>();
+		this.moduleFields = new ArrayList<ModuleField>();
 	}
 
 	/**
@@ -77,6 +88,9 @@ public class Module extends Content {
 		this.subjectIDs = subjectIDs;
 		this.lecturers_emails = lecturers_emails;
 		this.moduleFields = moduleFields;
+		this.subjectIDs = new ArrayList<Integer>();
+		this.lecturers_emails = new ArrayList<String>();
+		this.moduleFields = new ArrayList<ModuleField>();
 	}
 
 	public int getID() {
@@ -125,6 +139,22 @@ public class Module extends Content {
 
 	public void setCritical(boolean isCritical) {
 		this.isCritical = isCritical;
+	}
+	
+	public String getDirector_email() {
+		return director_email;
+	}
+
+	public void setDirector_email(String director_email) {
+		this.director_email = director_email;
+	}
+
+	public ArrayList<String> getLecturers_emails() {
+		return lecturers_emails;
+	}
+
+	public void setLecturers_emails(ArrayList<String> lecturers_emails) {
+		this.lecturers_emails = lecturers_emails;
 	}
 
 	@Override

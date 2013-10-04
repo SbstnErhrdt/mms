@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import controller.GlobalVarDbController;
 
 import model.content.Module;
+import model.content.ModuleField;
 
 public class TexParseController {
 
@@ -203,5 +204,11 @@ public class TexParseController {
 		name = name.replace("Ü", "Ue");
 		name = name.replace("Ö", "Oe");
 		return name;
+	}
+	
+	private boolean checkModuleCompatibility(Module module) {
+		// TODO check if all required ModuleFields are specified
+		ArrayList<ModuleField> requiredFields; 
+		return false;
 	}
 }

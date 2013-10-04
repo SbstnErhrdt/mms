@@ -15,6 +15,7 @@ import controller.UserDbController;
 
 import model.content.Event;
 import model.content.Module;
+import model.content.ModuleField;
 import model.content.Studycourse;
 import model.content.Subject;
 
@@ -175,6 +176,7 @@ public class TexParser {
 	public Module convertToModuleAndDumpInDatabase(ArrayList<TexNode> texNodes, String modifier_email) {
 		Module module = new Module();
 		String teachingForms = "";
+		ArrayList<ModuleField> moduleFields = new ArrayList<ModuleField>();
 		
 		for(TexNode tn : texNodes) {
 			String tnName = tn.getName();
@@ -182,21 +184,21 @@ public class TexParser {
 			if(tnName.equals("Modultitel")) {
 				module.setName(tn.getContent());
 			} else if(tnName.equals("EnglischerTitel")) {
-				module.setEnglishTitle(tn.getContent());
+				moduleFields.add(new ModuleField(-1, 3, "Englischer Titel", tn.getContent()));
 			} else if(tnName.equals("Modulkuerzel")) {
-				module.setToken(tn.getContent());
+				moduleFields.add(new ModuleField(-1, 3, "Kürzel", tn.getContent()));
 			} else if(tnName.equals("Sprache")) {
-				module.setLanguage(tn.getContent());
+				moduleFields.add(new ModuleField(-1, 3, "Sprache", tn.getContent()));
 			} else if(tnName.equals("SWS")) {
-				module.setSws(tn.getContent());
+				moduleFields.add(new ModuleField(-1, 1, "SWS", tn.getContent()));
 			} else if(tnName.equals("ECTS")) {
-				module.setLp(tn.getContent());
+				moduleFields.add(new ModuleField(-1, 1, "ECTS", tn.getContent()));
 			} else if(tnName.equals("Moduldauer")) {
-				module.setDuration(Integer.parseInt(tn.getContent()));
+				moduleFields.add(new ModuleField(-1, 1, "Dauer", tn.getContent()));
 			} else if(tnName.equals("Turnus")) {
 				String[] rotations = adaptRotation(tn.getContent());
-				module.setRotation(rotations[0]);
-				module.setPeriodicalRotation(Boolean.parseBoolean(rotations[1]));
+				moduleFields.add(new ModuleField(-1, 3, "Turnus", rotations[0]));
+				moduleFields.add(new ModuleField(-1, 6, "periodisch", rotations[1]));
 			} else if(tnName.equals("Modulverantwortlicher")) {
 				module.setDirector_email(adaptDirector(tn.getContent()));
 			} else if(tnName.equals("Dozenten")) {
@@ -205,30 +207,30 @@ public class TexParser {
 			} else if(tnName.equals("Einordnung")) {
 				module.setSubjectIDs(adaptSubjectIDs(tn.getContent()));
 			} else if(tnName.equals("VoraussetzungenInhaltlich")) {
-				module.setRequirement_content(adaptLists(tn.getContent()));
+				moduleFields.add(new ModuleField(-1, 4, "Voraussetzungen (inhaltlich)", adaptLists(tn.getContent())));
 			} else if(tnName.equals("VoraussetzungenFormal")) {
-				module.setRequirement_formal(adaptLists(tn.getContent()));
+				moduleFields.add(new ModuleField(-1, 4, "Voraussetzungen (formal)", adaptLists(tn.getContent())));
 			} else if(tnName.equals("Lernziele")) {
-				module.setLearningTarget(adaptLearningTargetAndContent(tn.getContent()));
+				moduleFields.add(new ModuleField(-1, 4, "Lernziele", adaptLearningTargetAndContent(tn.getContent())));
 			} else if(tnName.equals("Inhalt")) {
-				module.setContent(adaptLearningTargetAndContent(tn.getContent()));
+				moduleFields.add(new ModuleField(-1, 4, "Inhalt", adaptLearningTargetAndContent(tn.getContent())));
 			} else if(tnName.equals("Literatur")) {
-				module.setLiterature(adaptLiterature(tn.getContent()));
+				moduleFields.add(new ModuleField(-1, 4, "Literatur", adaptLiterature(tn.getContent())));
 			} else if(tnName.equals("Lehrformen")) {
 				// handle later
 				teachingForms = tn.getContent();				
 			} else if(tnName.equals("Arbeitsaufwand")) {
 				int[] efforts = adaptEffort(tn.getContent());
-				module.setEffort_presenceTime(efforts[0]);
-				module.setEffort_preAndPost(efforts[1]);
+				moduleFields.add(new ModuleField(-1, 1, "Präsenzzeit", ""+efforts[0]));
+				moduleFields.add(new ModuleField(-1, 1, "Vor- und Nachbereitung", ""+efforts[1]));
 			} else if(tnName.equals("Leistungsnachweis")) {
-				module.setPerformanceRecord(tn.getContent());
+				moduleFields.add(new ModuleField(-1, 4, "Leistungsnachweis", tn.getContent()));
 			} else if(tnName.equals("Notenbildung")) {
-				module.setGradeFormation(tn.getContent());
+				moduleFields.add(new ModuleField(-1, 4, "Notenbildung", tn.getContent()));
 			} else if(tnName.equals("Grundlagen")) {
-				module.setBasisFor(tn.getContent());
+				moduleFields.add(new ModuleField(-1, 4, "Grundlage für", tn.getContent()));
 			} else if(tnName.equals("Ilias")) {
-				module.setIlias(tn.getContent());
+				moduleFields.add(new ModuleField(-1, 3, "Ilias", tn.getContent()));
 			}
 		}
 	
@@ -241,6 +243,8 @@ public class TexParser {
 		// at least the name must not be null
 		if(module.getName() != null) {
 			ContentDbController db = new ContentDbController();
+			
+			module.setModuleFields(moduleFields);
 			
 			db.createModule(module);
 			
