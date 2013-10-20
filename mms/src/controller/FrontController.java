@@ -102,10 +102,6 @@ public class FrontController extends HttpServlet {
 			} else if(path.equals("/read/events")) {
 				contentRoutes = new ContentRoutes();
 				contentRoutes.readEvents(request, response);
-			// update Event
-			} else if(path.equals("/update/event")) {
-				contentRoutes = new ContentRoutes();
-				contentRoutes.updateEvent(request, response);
 			}
 				
 			// read Module
@@ -120,10 +116,6 @@ public class FrontController extends HttpServlet {
 			} else if(path.equals("/read/modules")) {
 				contentRoutes = new ContentRoutes();
 				contentRoutes.readModules(request, response);
-			// update Module
-			} else if(path.equals("/update/module")) {
-				contentRoutes = new ContentRoutes();
-				contentRoutes.updateModule(request, response);
 			// export module
 			} else if(path.equals("/export/module")) {
 				contentRoutes = new ContentRoutes();
@@ -134,18 +126,14 @@ public class FrontController extends HttpServlet {
 			else if(path.equals("/read/subject")) {
 				contentRoutes = new ContentRoutes();
 				contentRoutes.readSubject(request, response);
-			// delete Module
+			// delete Subject
 			} else if(path.equals("/delete/subject")) {
 				contentRoutes = new ContentRoutes();
 				contentRoutes.deleteSubject(request, response);
-			// read Modules
+			// read Subjects
 			} else if(path.equals("/read/subjects")) {
 				contentRoutes = new ContentRoutes();
 				contentRoutes.readSubjects(request, response);
-			// update Subject
-			} else if(path.equals("/update/subject")) {
-				contentRoutes = new ContentRoutes();
-				contentRoutes.updateSubject(request, response);
 			}
 			
 			// read Studycourse
@@ -160,10 +148,6 @@ public class FrontController extends HttpServlet {
 			} else if(path.equals("/read/studycourses")) {
 				contentRoutes = new ContentRoutes();
 				contentRoutes.readStudycourses(request, response);
-			// update Studycourse
-			} else if(path.equals("/update/studycourse")) {
-				contentRoutes = new ContentRoutes();
-				contentRoutes.updateStudycourse(request, response);
 			}
 			
 			// read ModuleHandbook
@@ -178,10 +162,16 @@ public class FrontController extends HttpServlet {
 			} else if(path.equals("/read/modulehandbooks")) {
 				contentRoutes = new ContentRoutes();
 				contentRoutes.readModuleHandbooks(request, response);
-			// update ModuleHandbook
-			} else if(path.equals("/update/modulehandbook")) {
+			}
+			
+			// read ModuleTemplate
+			else if(path.equals("/read/moduletemplate")) {
 				contentRoutes = new ContentRoutes();
-				contentRoutes.updateModuleHandbook(request, response);
+				contentRoutes.readModuleTemplate(request, response);
+			// delete ModuleTemplate
+			} else if(path.equals("/delete/moduletemplate")) {
+				contentRoutes = new ContentRoutes();
+				contentRoutes.deleteModuleTemplate(request, response);
 			}
 			
 			// ####################################################
@@ -329,6 +319,16 @@ public class FrontController extends HttpServlet {
 			} else if(path.equals("/update/modulehandbook")) {
 				contentRoutes = new ContentRoutes();
 				contentRoutes.updateModuleHandbook(request, response);
+			}
+			
+			// create ModuleTemplate
+			else if(path.equals("/create/moduletemplate")) {
+				contentRoutes = new ContentRoutes();
+				contentRoutes.createModuleTemplate(request, response);
+			// update ModuleTemplate
+			} else if(path.equals("/update/moduletemplate")) {
+				contentRoutes = new ContentRoutes();
+				contentRoutes.updateModuleTemplate(request, response);
 			}
 			
 			// ####################################################

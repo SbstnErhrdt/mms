@@ -167,6 +167,15 @@ public class Module extends Content {
 				+ lastModified + ", archived=" + archived + ", enabled="
 				+ enabled + ", version=" + version + "]";
 	}
+	
+	public Object getModuleFieldValue(String fieldName) {
+		for(ModuleField mf : moduleFields) {
+			if(mf.getFieldName().equals(fieldName)) {
+				return mf.getFieldValue();
+			}
+		}
+		return null;
+	}
 }
 
 	

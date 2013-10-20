@@ -35,34 +35,34 @@ public class ModuleParser {
 		texString+=newLine;
 		
 		// token
-		texString+="\\Modulkuerzel{"+module.getToken()+"}"+newLine;
+		texString+="\\Modulkuerzel{"+module.getModuleFieldValue("Kürzel")+"}"+newLine;
 		texString+=newLine;
 		
 		// englishTitle
-		texString+="\\EnglischerTitel{"+module.getEnglishTitle()+"}"+newLine;
+		texString+="\\EnglischerTitel{"+module.getModuleFieldValue("Englischer Titel")+"}"+newLine;
 		texString+=newLine;
 		
 		// sws
-		texString+="\\SWS{"+module.getSws()+"}"+newLine;
+		texString+="\\SWS{"+module.getModuleFieldValue("SWS")+"}"+newLine;
 		texString+=newLine;
 		
 		// lp
-		texString+="\\ECTS{"+module.getLp()+"}"+newLine;
+		texString+="\\ECTS{"+module.getModuleFieldValue("ECTS")+"}"+newLine;
 		texString+=newLine;
 		
 		// language
-		texString+="\\Sprache{"+module.getLanguage()+"}"+newLine;
+		texString+="\\Sprache{"+module.getModuleFieldValue("Sprache")+"}"+newLine;
 		texString+=newLine;
 		
 		// duration
-		texString+="\\Moduldauer{"+module.getDuration()+"}"+newLine;
+		texString+="\\Moduldauer{"+module.getModuleFieldValue("Dauer")+"}"+newLine;
 		texString+=newLine;
 		
 		// rotation
 		texString+="\\Turnus{"+newLine;
-		if(module.isPeriodicalRotation()) texString+="\\periodisch{";
+		if((Boolean) module.getModuleFieldValue("periodisch")) texString+="\\periodisch{";
 		else texString+="\\sporadisch{";
-		texString+=module.getRotation()+"}"+newLine;
+		texString+=module.getModuleFieldValue("Turnus")+"}"+newLine;
 		texString+="}"+newLine;
 		texString+=newLine;
 		
@@ -88,31 +88,31 @@ public class ModuleParser {
 		
 		// requirement_content
 		texString+="\\VoraussetzungenInhaltlich{"+newLine;
-		texString+=adaptLists(module.getRequirement_content());
+		texString+=adaptLists((String) module.getModuleFieldValue("Voraussetzungen (inhaltlich)"))+newLine;
 		texString+="}"+newLine;
 		texString+=newLine;
 		
 		// requirement_formal
 		texString+="\\VoraussetzungenFormal{"+newLine;
-		texString+=adaptLists(module.getRequirement_formal());
+		texString+=adaptLists((String) module.getModuleFieldValue("Voraussetzungen (formal)"))+newLine;
 		texString+="}"+newLine;
 		texString+=newLine;
 		
 		// learningTarget
 		texString+="\\Lernziele{"+newLine;
-		texString+=adaptLearningTarget(module.getLearningTarget())+newLine;
+		texString+=adaptLearningTarget((String) module.getModuleFieldValue("Lernziele"))+newLine;
 		texString+="}"+newLine;
 		texString+=newLine;
 		
 		// content
 		texString+="\\Inhalt{"+newLine;
-		texString+=adaptContent(module.getContent())+newLine;
+		texString+=adaptContent((String) module.getModuleFieldValue("Inhalt"))+newLine;
 		texString+="}"+newLine;
 		texString+=newLine;
 		
 		// literature
 		texString+="\\Literatur{"+newLine;
-		texString+=adaptLiterature(module.getLiterature())+newLine;
+		texString+=adaptLiterature((String) module.getModuleFieldValue("Literatur"))+newLine;
 		texString+="}"+newLine;
 		texString+=newLine;
 		
@@ -125,10 +125,10 @@ public class ModuleParser {
 		// effort
 		texString+="\\Arbeitsaufwand{"+newLine;
 		// effort_presenceTime
-		int effort_presenceTime = module.getEffort_presenceTime();
+		int effort_presenceTime = (Integer) module.getModuleFieldValue("Präsenzzeit");
 		texString+="\\Praesenzzeit{"+effort_presenceTime+"}"+newLine;
 		// effort_preAndPost
-		int effort_preAndPost = module.getEffort_preAndPost();
+		int effort_preAndPost = (Integer) module.getModuleFieldValue("Vor- und Nachbereitung");
 		texString+="\\VorNachbereitung{"+effort_preAndPost+"}"+newLine;
 		// sum
 		texString+="\\Summe{"+(effort_presenceTime+effort_preAndPost)+"}"+newLine;
@@ -137,28 +137,28 @@ public class ModuleParser {
 		
 		// performance_record
 		texString+="\\Leistungsnachweis{"+newLine;
-		texString+=module.getPerformanceRecord()+newLine;
+		texString+=module.getModuleFieldValue("Leistungsnachweis")+newLine;
 		texString+="}"+newLine;
 		texString+=newLine;
 		
 		// gradeFormation
 		texString+="\\Notenbildung{"+newLine;
-		texString+=module.getGradeFormation()+newLine;
+		texString+=module.getModuleFieldValue("Notenbildung")+newLine;
 		texString+="}"+newLine;
 		texString+=newLine;
 		
 		// basisFor
-		if(module.getBasisFor() != null) {
+		if(module.getModuleFieldValue("Grundlage für") != null) {
 			texString+="\\Grundlagen{"+newLine;
-			texString+=module.getBasisFor()+newLine;
+			texString+=module.getModuleFieldValue("Grundlage für")+newLine;
 			texString+="}"+newLine;
 			texString+=newLine;
 		}
 
 		// ilias
-		if(module.getIlias() != null) {
+		if(module.getModuleFieldValue("Ilias") != null) {
 			texString+="\\Ilias{"+newLine;
-			texString+=module.getIlias()+newLine;
+			texString+=module.getModuleFieldValue("Ilias")+newLine;
 			texString+="}"+newLine;
 			texString+=newLine;
 		}

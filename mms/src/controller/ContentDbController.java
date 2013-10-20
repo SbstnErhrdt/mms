@@ -3464,6 +3464,7 @@ public class ContentDbController extends DbController {
 			}
 			rs.close();
 			ps.close();
+			moduleTemplate.setModuleFields(moduleTemplateFields);
 			return moduleTemplate;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -3471,4 +3472,187 @@ public class ContentDbController extends DbController {
 		}
 	}
 
+	/**
+	 * inserts a new ModuleTemplate into the database
+	 * 
+	 * @param moduleTemplate
+	 * @return true if the ModuleTemplate was created in the database
+	 *         successfully, else false
+	 */
+	public boolean createModuleTemplate(ModuleTemplate moduleTemplate) {
+
+		// create entry in moduleTemplates table
+		String query = "INSERT INTO moduleTemplates(moduleTemplateName) VALUES(?);";
+
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query,
+					Statement.RETURN_GENERATED_KEYS);
+
+			ps.setString(1, moduleTemplate.getTemplateName()); // moduleTemplateName
+
+			System.out.println("[db] createModuleTemplate: " + ps);
+
+			ps.executeUpdate();
+			db.commit();
+
+			// get generated moduleID
+			ResultSet rs = ps.getGeneratedKeys();
+			if (rs.next()) {
+				moduleTemplate.setTemplateID(rs.getInt(1));
+			}
+
+			ps.close();
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// insert the module template fields if the module template
+		return insertModuleTemplateFields(moduleTemplate.getTemplateID(), moduleTemplate.getModuleFields());
+	}
+
+	/**
+	 * deletes a module template from the database
+	 * 
+	 * @param moduleTemplateID
+	 * @return true if the ModuleTemplate was deleted successfully or if no
+	 *         template was found with such id
+	 */
+	public boolean deleteModuleTemplate(int moduleTemplateID) {
+		String query = "DELETE FROM moduleTemplates WHERE moduleTemplateID=?;";
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			ps.setInt(1, moduleTemplateID);
+
+			System.out.println("[db] deleteModuleTemplate: " + ps);
+
+			ps.executeUpdate();
+			db.commit();
+			ps.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * updates an existing module template in the database
+	 * 
+	 * @param moduleTemplate
+	 * @return true if the template was updates successfully
+	 */
+	public boolean updateModuleTemplate(ModuleTemplate moduleTemplate) {
+
+		int moduleTemplateID = moduleTemplate.getTemplateID();
+		
+		// update the name
+		String query = "UPDATE moduleTemplates SET moduleTemplateName=? WHERE moduleTemplateID=?;";
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			ps.setString(1, moduleTemplate.getTemplateName());
+			ps.setInt(2, moduleTemplateID);
+
+			System.out.println("[db] updateModuleTemplate: " + ps);
+
+			ps.executeUpdate();
+			db.commit();
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// delete template fields and re-insert them
+		if (deleteModuleTemplateFields(moduleTemplateID)) {
+			return insertModuleTemplateFields(moduleTemplateID, moduleTemplate.getModuleFields());
+		} else
+			return false;
+	}
+
+	/**
+	 * delete all module template fields that belong to the passed moduleTemplateID
+	 * 
+	 * @param moduleTemplateID
+	 * @return true if the module template fields were deleted successfully
+	 */
+	private boolean deleteModuleTemplateFields(int moduleTemplateID) {
+		String query = "DELETE FROM moduleTemplateFields WHERE moduleTemplateID=?;";
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+
+			ps.setInt(1, moduleTemplateID);
+
+			System.out.println("[db] deleteModuleTemplateFields: " + ps);
+
+			ps.executeUpdate();
+			db.commit();
+			ps.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * inserts a list of ModuleFields into the database with the passed moduleTemplateID
+	 * 
+	 * @param moduleTemplateID
+	 * @param moduleFields
+	 * @return true if the fields were inserted successfully
+	 */
+	private boolean insertModuleTemplateFields(int moduleTemplateID, ArrayList<ModuleField> moduleFields) {
+		String query = "INSERT INTO moduleTemplateFields(moduleTemplateID, fieldName, fieldType) VALUES(?,?,?);";
+		try {
+			db.setAutoCommit(false);
+			PreparedStatement ps = db.prepareStatement(query);
+			for (ModuleField mf : moduleFields) {
+				ps.setInt(1, moduleTemplateID);
+				ps.setString(2, mf.getFieldName());
+				ps.setInt(3, mf.getFieldType());
+				ps.executeUpdate();
+			}
+			db.commit();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				db.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

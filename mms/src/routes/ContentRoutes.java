@@ -20,6 +20,7 @@ import model.content.Deadline;
 import model.content.Event;
 import model.content.Module;
 import model.content.ModuleHandbook;
+import model.content.ModuleTemplate;
 import model.content.Studycourse;
 import model.content.Subject;
 import model.userRights.EventRights;
@@ -47,7 +48,7 @@ public class ContentRoutes extends Routes {
 	private ContentDbController db;
 	private Gson gson = new Gson();
 	private java.sql.Date currentDate;
-	
+
 	public ContentRoutes() {
 		db = new ContentDbController();
 		currentDate = new java.sql.Date(System.currentTimeMillis());
@@ -433,28 +434,34 @@ public class ContentRoutes extends Routes {
 	 * @throws IOException
 	 */
 	public void importModules(HttpServletRequest request,
-			HttpServletResponse response, HttpServlet servlet) throws IOException {
+			HttpServletResponse response, HttpServlet servlet)
+			throws IOException {
 
 		String json = "";
-		
+
 		User actorUser = getActorUser(request);
-		
+
 		// Check if the request is a file upload request
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-		
-		if(!isMultipart) {
-			json = gson.toJson(new JsonErrorContainer(new JsonError(
-					"no files uploaded in this request (!isMultipartContent(request))", "importModules(...)")));
+
+		if (!isMultipart) {
+			json = gson
+					.toJson(new JsonErrorContainer(
+							new JsonError(
+									"no files uploaded in this request (!isMultipartContent(request))",
+									"importModules(...)")));
 			respond(response, json);
 			return;
 		}
-	
+
 		// Create a factory for disk-based file items
 		DiskFileItemFactory factory = new DiskFileItemFactory();
 
 		// Configure a repository (to ensure a secure temp location is used)
-		ServletContext servletContext = servlet.getServletConfig().getServletContext();
-		File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+		ServletContext servletContext = servlet.getServletConfig()
+				.getServletContext();
+		File repository = (File) servletContext
+				.getAttribute("javax.servlet.context.tempdir");
 		factory.setRepository(repository);
 
 		// Create a new file upload handler
@@ -464,76 +471,71 @@ public class ContentRoutes extends Routes {
 		try {
 			List<FileItem> items = upload.parseRequest(request);
 			json = gson.toJson(items);
-			
+
 			// get upload path
 			GlobalVarDbController db = new GlobalVarDbController();
 			String uploadPath = db.getGlobalVar("fileUploadPath");
 			db.closeConnection();
-			
-			System.out.println("[fileupload] fileUploadPath: "+uploadPath);
-			
+
+			System.out.println("[fileupload] fileUploadPath: " + uploadPath);
+
 			ArrayList<File> files = new ArrayList<File>();
-			
-			for(FileItem item : items) {
+
+			for (FileItem item : items) {
 				if (item.isFormField()) {
 					// ignore form fields
-					System.out.println("item: "+item+" is a form field and will not be processed");
+					System.out.println("item: " + item
+							+ " is a form field and will not be processed");
 				} else {
 					String fileName = item.getName();
-					File uploadedFile = new File(uploadPath+"/"+fileName);
-					uploadedFile.getParentFile().mkdirs();	// create non-existent directories
+					File uploadedFile = new File(uploadPath + "/" + fileName);
+					uploadedFile.getParentFile().mkdirs(); // create
+															// non-existent
+															// directories
 					item.write(uploadedFile);
 					files.add(uploadedFile);
 				}
 			}
-			
+
 			// TODO insert email (instead of null)
 			json = gson.toJson(new TexParseController(null).parseFiles(files));
-			
+
 		} catch (FileUploadException e) {
 			e.printStackTrace();
-			json = gson.toJson(new JsonErrorContainer(new JsonError(
-					e+"\n"+Utilities.stackTraceToString(e),
-					"importModules(...)")));
+			json = gson.toJson(new JsonErrorContainer(new JsonError(e + "\n"
+					+ Utilities.stackTraceToString(e), "importModules(...)")));
 		} catch (Exception e) {
 			e.printStackTrace();
-			json = gson.toJson(new JsonErrorContainer(new JsonError(
-					e+"\n"+Utilities.stackTraceToString(e), "importModules(...)")));
+			json = gson.toJson(new JsonErrorContainer(new JsonError(e + "\n"
+					+ Utilities.stackTraceToString(e), "importModules(...)")));
 		}
-		
+
 		respond(response, json);
-		
-		/* Tomcat 7
-		String json;
 
-		ServletRequestContext req = new ServletRequestContext(request);
-
-		DiskFileItemFactory factory = new DiskFileItemFactory();
-		// maximum size that will be stored in memory
-		factory.setSizeThreshold(4096);
-		// the location for saving data that is larger than getSizeThreshold()
-		factory.setRepository(new File("/tmp"));
-
-		ServletFileUpload upload = new ServletFileUpload(factory);
-		// maximum size before a FileUploadException will be thrown
-		upload.setSizeMax(1000000);
-
-		List<FileItem> fileItems;
-		try {
-			fileItems = upload.parseRequest(req);
-
-			json = gson.toJson(fileItems);
-
-		} catch (FileUploadException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			json = gson.toJson(new JsonErrorContainer(new JsonError(
-					"FileUploadException", "importModules(...)")));
-		}
-		
-		respond(response, json);
-		*/
-
+		/*
+		 * Tomcat 7 String json;
+		 * 
+		 * ServletRequestContext req = new ServletRequestContext(request);
+		 * 
+		 * DiskFileItemFactory factory = new DiskFileItemFactory(); // maximum
+		 * size that will be stored in memory factory.setSizeThreshold(4096); //
+		 * the location for saving data that is larger than getSizeThreshold()
+		 * factory.setRepository(new File("/tmp"));
+		 * 
+		 * ServletFileUpload upload = new ServletFileUpload(factory); // maximum
+		 * size before a FileUploadException will be thrown
+		 * upload.setSizeMax(1000000);
+		 * 
+		 * List<FileItem> fileItems; try { fileItems = upload.parseRequest(req);
+		 * 
+		 * json = gson.toJson(fileItems);
+		 * 
+		 * } catch (FileUploadException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); json = gson.toJson(new JsonErrorContainer(new
+		 * JsonError( "FileUploadException", "importModules(...)"))); }
+		 * 
+		 * respond(response, json);
+		 */
 
 		/*
 		 * OLD (without upload)
@@ -573,9 +575,9 @@ public class ContentRoutes extends Routes {
 			HttpServletResponse response, HttpServlet servlet) {
 
 		User actorUser = getActorUser(request);
-		
-		// TODO check rights		
-		
+
+		// TODO check rights
+
 		String json = "";
 
 		String moduleIDString = request.getParameter("moduleID");
@@ -991,7 +993,8 @@ public class ContentRoutes extends Routes {
 
 		// non Employees can only see enabled content
 		if (actorUser != null) {
-			if (!actorUser.isEmployee()) getOnlyEnabled = true;
+			if (!actorUser.isEmployee())
+				getOnlyEnabled = true;
 		} else
 			getOnlyEnabled = true;
 
@@ -2639,5 +2642,128 @@ public class ContentRoutes extends Routes {
 	 */
 	public void closeConnection() {
 		db.closeConnection();
+	}
+
+	/**
+	 * reads a module template from the database and writes it into the response
+	 * 
+	 * @param request
+	 * @param response
+	 */
+	public void readModuleTemplate(HttpServletRequest request,
+			HttpServletResponse response) {
+		String json;
+		if (request.getParameter("moduleTemplateID") != null) {
+			int moduleTemplateID = Integer.parseInt(request
+					.getParameter("moduleTemplateID"));
+			ModuleTemplate moduleTemplate = db
+					.getModuleTemplate(moduleTemplateID);
+
+			if (moduleTemplate == null
+					|| (json = gson.toJson(moduleTemplate)) == null) {
+				json = gson
+						.toJson(new JsonErrorContainer(new JsonError(
+								"an error occurred while trying to read the moduleTemplate with id="
+										+ moduleTemplateID,
+								"readModuleTemplate(...)")));
+			}
+		} else {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"unspecified moduleTemplateID in query",
+					"readModuleTemplate(...)")));
+		}
+		respond(response, json);
+	}
+
+	/**
+	 * delete a module template from the database and writes the
+	 * moduleTemplateID of the deleted ModuleTemplate into the reponse if the
+	 * deletion was successfull
+	 * 
+	 * @param request
+	 * @param response
+	 */
+	public void deleteModuleTemplate(HttpServletRequest request,
+			HttpServletResponse response) {
+		String json;
+		if (request.getParameter("moduleTemplateID") != null) {
+			int moduleTemplateID = Integer.parseInt(request
+					.getParameter("moduleTemplateID"));
+			if (db.deleteModuleTemplate(moduleTemplateID)) {
+				json = "{\"moduleTemplateID\":" + moduleTemplateID + "}";
+			} else {
+				json = gson.toJson(new JsonErrorContainer(
+						new JsonError(
+								"an error occurred while trying to delete the moduleTemplate with id="
+										+ moduleTemplateID,
+								"deleteModuleTemplate(...)")));
+			}
+		} else {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"unspecified moduleTemplateID in query",
+					"deleteModuleTemplate(...)")));
+		}
+		respond(response, json);
+
+	}
+
+	/**
+	 * updates a ModuleTemplate in the database that is passed as request body
+	 * in the request
+	 * 
+	 * @param request
+	 * @param response
+	 */
+	public void updateModuleTemplate(HttpServletRequest request,
+			HttpServletResponse response) {
+		String json;
+		ModuleTemplate moduleTemplate;
+		if ((json = getRequestBody(request)) == null) {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"an error occured while trying to parse the request body",
+					"updateModuleTemplate(...)")));
+		} else if ((moduleTemplate = gson.fromJson(json, ModuleTemplate.class)) == null) {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"an error occured while trying to parse the request body",
+					"updateModuleTemplate(...)")));
+		} else if (!db.updateModuleTemplate(moduleTemplate)) {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"an error occured while trying to update the ModuleTemplate with id="
+							+ moduleTemplate.getTemplateID(),
+					"updateModuleTemplate(...)")));
+		} else {
+			json = gson.toJson(moduleTemplate);
+		}
+		respond(response, json);
+	}
+
+	/**
+	 * creates a new ModuleTemplate in the database as passed in the request
+	 * body
+	 * 
+	 * @param request
+	 * @param response
+	 */
+	public void createModuleTemplate(HttpServletRequest request,
+			HttpServletResponse response) {
+		String json;
+		ModuleTemplate moduleTemplate;
+		if ((json = getRequestBody(request)) == null) {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"an error occured while trying to parse the request body",
+					"createModuleTemplate(...)")));
+		} else if ((moduleTemplate = gson.fromJson(json, ModuleTemplate.class)) == null) {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"an error occured while trying to parse the request body",
+					"createModuleTemplate(...)")));
+		} else if (!db.createModuleTemplate(moduleTemplate)) {
+			json = gson.toJson(new JsonErrorContainer(new JsonError(
+					"an error occured while trying to create the ModuleTemplate with name="
+							+ moduleTemplate.getTemplateName(),
+					"createModuleTemplate(...)")));
+		} else {
+			json = gson.toJson(moduleTemplate);
+		}
+		respond(response, json);
 	}
 }

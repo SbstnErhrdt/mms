@@ -21,6 +21,7 @@ import model.content.Event;
 import model.content.Module;
 import model.content.ModuleField;
 import model.content.ModuleHandbook;
+import model.content.ModuleTemplate;
 import model.content.Studycourse;
 import model.content.Subject;
 import model.userRights.EmployeeRights;
@@ -442,7 +443,8 @@ public class Test {
 		System.out.println(gson.toJson(cdbc.getStudycourseVersions(1)));
 		
 		*/
-		
+	
+		/*
 		ModuleField mf1 = new ModuleField(-1, 1, "Testfeld1", "24");
 		ModuleField mf2 = new ModuleField(-1, 6, "Testfeld2", "true");
 		ModuleField mf3 = new ModuleField(-1, 3, "Testfeld3", "TestString");
@@ -480,6 +482,27 @@ public class Test {
 		System.out.println(new Gson().toJson(cdbc.getModules(false)));
 		
 		System.out.println(new Gson().toJson(cdbc.getSubjectModules(467, false)));
+		*/
+		
+		ModuleTemplate mt = cdbc.getModuleTemplate(1);
+		System.out.println(mt.getModuleFields());
+		System.out.println(new Gson().toJson(mt));
+		
+		mt.setTemplateName("TestTemplate");
+		
+		System.out.println(cdbc.createModuleTemplate(mt));
+		
+		mt.setTemplateName("UpdatedTemplate");
+		
+		ArrayList<ModuleField> mfs = mt.getModuleFields();
+		
+		mfs.add(new ModuleField(-1, 1, "Neu"));
+		
+		mt.setModuleFields(mfs);
+		
+		System.out.println(cdbc.updateModuleTemplate(mt));
+		
+		System.out.println(cdbc.deleteModuleTemplate(7));
 		
 	}
 }
