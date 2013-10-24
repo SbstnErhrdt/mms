@@ -17,6 +17,8 @@ public class ModuleParser {
 	private final String newLine = System.getProperty("line.separator");
 	
 	/**
+	 * converts a Module object to a string representation of a tex file
+	 * 
 	 * @param module
 	 * @return a string representation of the module in tex syntax
 	 */
@@ -166,6 +168,10 @@ public class ModuleParser {
 		return texString.trim();
 	}
 
+	/**
+	 * @param lecturer
+	 * @return the adapted string
+	 */
 	private String adaptLecturer(String lecturer) {
 		UserDbController db = new UserDbController();
 		User user = db.getUser(new User(lecturer));
@@ -193,6 +199,10 @@ public class ModuleParser {
 		return "\\Prof{"+lecturer+"}";
 	}
 
+	/**
+	 * @param director_email
+	 * @return the adapted string
+	 */
 	private String adaptDirector(String director_email) {
 		GlobalVarDbController db = new GlobalVarDbController();
 		String dekan;
@@ -225,6 +235,10 @@ public class ModuleParser {
 		return adaptLecturer(director_email);
 	}
 
+	/**
+	 * @param moduleID
+	 * @return the adapted string
+	 */
 	private String adaptTeachingForm(int moduleID) {
 		// TODO get Event names and types
 		ContentDbController db = new ContentDbController();
@@ -257,15 +271,29 @@ public class ModuleParser {
 	}
 
 
+	/**
+	 * @param literature
+	 * @return the adapted string
+	 */
 	private String adaptLiterature(String literature) {
 		// TODO replace \buch etc
 		return adaptLists(literature);
 	}
 
+	/**
+	 * @param content
+	 * @return the adapted string
+	 */
 	private String adaptContent(String content) {
 		return adaptLists(content);
 	}
 	
+	/**
+	 * converts html list tags to valid tex list items
+	 * 
+	 * @param content
+	 * @return the adapted string
+	 */
 	private String adaptLists(String content) {
 		// remove <ul> and </ul>
 		content = content.replace("<ul>", "");
@@ -276,10 +304,18 @@ public class ModuleParser {
 		return content.trim();
 	}
 
+	/**
+	 * @param learningTarget
+	 * @return the adapted string
+	 */
 	private String adaptLearningTarget(String learningTarget) {
 		return adaptLists(learningTarget);
 	}
 
+	/**
+	 * @param subjectID
+	 * @return the adapted string
+	 */
 	private String adaptSubjectID(int subjectID) {
 		ContentDbController db = new ContentDbController();
 		

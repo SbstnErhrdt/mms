@@ -88,9 +88,9 @@ public class Module extends Content {
 		this.subjectIDs = subjectIDs;
 		this.lecturers_emails = lecturers_emails;
 		this.moduleFields = moduleFields;
-		this.subjectIDs = new ArrayList<Integer>();
-		this.lecturers_emails = new ArrayList<String>();
-		this.moduleFields = new ArrayList<ModuleField>();
+		this.subjectIDs = subjectIDs;
+		this.lecturers_emails = lecturers_emails;
+		this.moduleFields = moduleFields;
 	}
 
 	public int getID() {

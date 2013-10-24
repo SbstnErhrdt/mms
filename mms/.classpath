@@ -19,5 +19,7 @@
 	<classpathentry kind="lib" path="res/javax.mail.jar"/>
 	<classpathentry kind="lib" path="res/commons-fileupload-1.3.jar"/>
 	<classpathentry kind="lib" path="res/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="res/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="res/junit-4.11.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import util.Utilities;
@@ -643,7 +644,6 @@ public class ContentDbController extends DbController {
 				rs.close();
 				ps.close();
 			} else {
-				System.out.println("DEBUG3");
 				rs.close();
 				ps.close();
 				System.out
@@ -3210,7 +3210,7 @@ public class ContentDbController extends DbController {
 	 * @return the ModuleField that belongs to the passed moduleFieldID
 	 */
 	public ModuleField getModuleField(int moduleFieldID) {
-		String query = "SELECT fieldType, fieldName, fieldValue FROM moduleFields "
+		String query = "SELECT fieldType, fieldName, fieldValue, timestamp FROM moduleFields "
 				+ "WHERE moduleFieldID=?;";
 		try {
 			PreparedStatement ps = db.prepareStatement(query);
@@ -3223,7 +3223,7 @@ public class ContentDbController extends DbController {
 
 			if (rs.next()) {
 				ModuleField mf = new ModuleField(moduleFieldID, rs.getInt(1),
-						rs.getString(2), rs.getString(3));
+						rs.getString(2), rs.getString(3), rs.getTimestamp(4));
 				rs.close();
 				ps.close();
 				return mf;
@@ -3245,15 +3245,27 @@ public class ContentDbController extends DbController {
 	 * @return true if the moduleField was created successfully, else false
 	 */
 	public boolean createModuleField(ModuleField mf) {
-		String query = "INSERT INTO moduleFields (fieldType, fieldName, fieldValue) "
-				+ "VALUES(" + getXQuestionMarks(3) + ");";
+		String query = "INSERT INTO moduleFields (fieldType, fieldName, fieldValue, timestamp) "
+				+ "VALUES(" + getXQuestionMarks(4) + ");";
 		try {
 			PreparedStatement ps = db.prepareStatement(query,
 					Statement.RETURN_GENERATED_KEYS);
 
+			// generate timestamp
+			java.util.Date date= new java.util.Date();
+			Timestamp timestamp = new Timestamp(date.getTime());
+			
+			// set timestamp of the module field
+			mf.setTimestamp(timestamp);
+			
 			ps.setInt(1, mf.getFieldType());
 			ps.setString(2, mf.getFieldName());
-			ps.setString(3, "" + mf.getFieldValue());
+			if(mf.getFieldValue() != null) {
+				ps.setString(3, "" + mf.getFieldValue());
+			} else {
+				ps.setString(3, null);
+			}
+			ps.setTimestamp(4, timestamp);
 
 			System.out.println("[db] createModuleField: " + ps);
 
@@ -3341,15 +3353,16 @@ public class ContentDbController extends DbController {
 	 */
 	private boolean insertModulesModuleFieldsRelations(int moduleID,
 			ArrayList<ModuleField> moduleFields) {
-		String query = "INSERT INTO modules_moduleFields(moduleID, moduleFieldID) VALUES(?,?);";
+		String query = "INSERT INTO modules_moduleFields(moduleID, moduleFieldID, moduleField_timestamp) VALUES(?,?,?);";
 
 		try {
 			db.setAutoCommit(false);
 			PreparedStatement ps = db.prepareStatement(query);
 
 			for (ModuleField mf : moduleFields) {
-				ps.setInt(1, moduleID); // moduleID
-				ps.setInt(2, mf.getModuleFieldID()); // moduleFieldID
+				ps.setInt(1, moduleID); 				// moduleID
+				ps.setInt(2, mf.getModuleFieldID()); 	// moduleFieldID
+				ps.setTimestamp(3, mf.getTimestamp()); 	// moduleField_timestamp
 				System.out.println("[db] createModule: " + ps);
 				ps.executeUpdate();
 			}
@@ -3380,7 +3393,7 @@ public class ContentDbController extends DbController {
 
 		ArrayList<ModuleField> moduleFields = new ArrayList<ModuleField>();
 
-		String query = "SELECT moduleFieldID, fieldType, fieldName, fieldValue FROM moduleFields "
+		String query = "SELECT moduleFieldID, fieldType, fieldName, fieldValue, timestamp FROM moduleFields "
 				+ "WHERE moduleFieldID IN (SELECT moduleFieldID FROM modules_moduleFields "
 				+ "WHERE moduleID=?);";
 		try {
@@ -3394,7 +3407,7 @@ public class ContentDbController extends DbController {
 
 			while (rs.next()) {
 				ModuleField mf = new ModuleField(rs.getInt(1), rs.getInt(2),
-						rs.getString(3), rs.getString(4));
+						rs.getString(3), rs.getString(4), rs.getTimestamp(5));
 				moduleFields.add(mf);
 			}
 			rs.close();

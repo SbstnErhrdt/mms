@@ -34,6 +34,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import texparser.IncompatibleModuleException;
 import texparser.TexParseController;
 import util.Utilities;
 
@@ -513,7 +514,9 @@ public class ContentRoutes extends Routes {
 		respond(response, json);
 
 		/*
-		 * Tomcat 7 String json;
+		 * Tomcat 7 
+		 * 
+		 * String json;
 		 * 
 		 * ServletRequestContext req = new ServletRequestContext(request);
 		 * 
@@ -597,8 +600,17 @@ public class ContentRoutes extends Routes {
 
 			// get tex file representation of the module
 			// TODO actorUser.getEmail()
-			File texFile = new TexParseController("null@ex-studios.net")
-					.parseModule(module);
+			File texFile;
+			try {
+				texFile = new TexParseController("null@ex-studios.net")
+						.parseModule(module);
+			} catch (IncompatibleModuleException ime) {
+				ime.printStackTrace();
+				json = gson.toJson(new JsonErrorContainer(new JsonError(
+						ime.getMessage(), "exportModule(...)")));
+				respond(response, json);
+				return;
+			}
 
 			// respond with tex-file
 			try {
@@ -2638,13 +2650,6 @@ public class ContentRoutes extends Routes {
 	}
 
 	/**
-	 * closes database connection
-	 */
-	public void closeConnection() {
-		db.closeConnection();
-	}
-
-	/**
 	 * reads a module template from the database and writes it into the response
 	 * 
 	 * @param request
@@ -2704,7 +2709,6 @@ public class ContentRoutes extends Routes {
 					"deleteModuleTemplate(...)")));
 		}
 		respond(response, json);
-
 	}
 
 	/**
@@ -2765,5 +2769,12 @@ public class ContentRoutes extends Routes {
 			json = gson.toJson(moduleTemplate);
 		}
 		respond(response, json);
+	}
+	
+	/**
+	 * closes database connection
+	 */
+	public void closeConnection() {
+		db.closeConnection();
 	}
 }

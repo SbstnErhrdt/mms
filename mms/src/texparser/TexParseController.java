@@ -18,6 +18,11 @@ public class TexParseController {
 	private String modifier_email;
 	private String exportPath;
 
+	/**
+	 * constructor
+	 * 
+	 * @param modifier_email
+	 */
 	public TexParseController(String modifier_email) {
 		this.modifier_email = modifier_email;
 		// get export path
@@ -26,6 +31,14 @@ public class TexParseController {
 		db.closeConnection();
 	}
 
+	/**
+	 * parses a list of passed tex files to Module objects and returns them as
+	 * ArrayList
+	 * 
+	 * @param files
+	 * @return a list of parsed Modules
+	 * @throws IOException
+	 */
 	public ArrayList<Module> parseFiles(ArrayList<File> files)
 			throws IOException {
 
@@ -144,6 +157,8 @@ public class TexParseController {
 	}
 
 	/**
+	 * parses a tex file to a Module object
+	 * 
 	 * @param file
 	 * @return the parsed module
 	 * @throws IOException
@@ -183,12 +198,25 @@ public class TexParseController {
 		return module;
 	}
 
-	public File parseModule(Module module) {
-		
-		if(!checkModuleCompatibility(module)) {
-			throw new IllegalArgumentException("the passed module is not compatible");
+	/**
+	 * parses a Module object to a tex file
+	 * 
+	 * @param module
+	 * @return the parsed tex file
+	 * @throws IncompatibleModuleException
+	 */
+	public File parseModule(Module module) throws IncompatibleModuleException {
+
+		if (!checkModuleCompatibility(module)) {
+			String errorMessage = "the passed module is incompatible "
+					+ "(must specify the following fields: ";
+			for(ModuleField mf : getRequiredFields()) {
+				errorMessage += mf.getFieldName() + "(type="+mf.getFieldType()+") ";
+			}
+			errorMessage += ")";
+			throw new IncompatibleModuleException(errorMessage);
 		}
-		
+
 		ModuleParser mp = new ModuleParser();
 		String texString = mp.convertToTex(module);
 
@@ -207,6 +235,12 @@ public class TexParseController {
 		return new File(filePath);
 	}
 
+	/**
+	 * modifies the passed String so that it is a valid filename
+	 * 
+	 * @param name
+	 * @return the name as valid filename
+	 */
 	private String toValidFilename(String name) {
 		name = name.replace("ä", "ae");
 		name = name.replace("ü", "ue");
@@ -225,11 +259,11 @@ public class TexParseController {
 	 * @return true if the module is compatible, else false
 	 */
 	private boolean checkModuleCompatibility(Module module) {
-		// TODO check if all required ModuleFields are specified
+		// get the required module fields
 		ArrayList<ModuleField> requiredFields = getRequiredFields();
 		ArrayList<ModuleField> moduleFields = module.getModuleFields();
 
-		// for each required field check if there is
+		// for each required field: check if there is
 		// a ModuleField with the same name and type
 		for (ModuleField requiredField : requiredFields) {
 			boolean found = false;
@@ -242,7 +276,7 @@ public class TexParseController {
 					break;
 				}
 			}
-			// if no ModuleField with same name was found, return false
+			// if no ModuleField with same name and type was found, return false
 			if (!found) {
 				System.out
 						.println("[texparser] the passed module has no field with name="

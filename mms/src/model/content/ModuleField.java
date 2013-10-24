@@ -1,11 +1,13 @@
 package model.content;
 
 import util.Utilities;
+import java.sql.Timestamp;
 
 public class ModuleField {
 	private int moduleFieldID, fieldType;
 	private String fieldName;
 	private Object fieldValue;
+	private Timestamp timestamp;
 
 	/**
 	 * constructor
@@ -29,7 +31,26 @@ public class ModuleField {
 	}
 
 	/**
-	 * constructor
+	 * contructor
+	 * 
+	 * @param moduleFieldID
+	 * @param fieldType
+	 * @param fieldName
+	 * @param fieldValueString
+	 * @param timestamp
+	 */
+	public ModuleField(int moduleFieldID, int fieldType, String fieldName,
+			String fieldValueString, Timestamp timestamp) {
+		super();
+		this.moduleFieldID = moduleFieldID;
+		this.fieldType = fieldType;
+		this.fieldName = fieldName;
+		this.fieldValue = Utilities.parseType(fieldType, fieldValueString);
+		this.timestamp = timestamp;
+	}
+	
+	/**
+	 * contructor
 	 * 
 	 * @param moduleFieldID
 	 * @param fieldType
@@ -43,6 +64,14 @@ public class ModuleField {
 		this.fieldType = fieldType;
 		this.fieldName = fieldName;
 		this.fieldValue = Utilities.parseType(fieldType, fieldValueString);
+	}
+
+	public Timestamp getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Timestamp timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public int getModuleFieldID() {
